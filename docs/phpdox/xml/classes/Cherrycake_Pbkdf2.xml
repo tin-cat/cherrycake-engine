@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Pbkdf2" namespace="Cherrycake" name="Pbkdf2" abstract="false" final="false" start="54" end="152">
+  <file path="/var/www/lib/cherrycake/classes" file="Pbkdf2.class.php" realpath="/var/www/lib/cherrycake/classes/Pbkdf2.class.php" size="5432" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="398ce4d9467c063dd0d497e2e9a5209fd93c8d86" relative="classes/Pbkdf2.class.php"/>
+  <docblock>
+    <description compact="Pbkdf2">Implements Password-Based Key Derivation Function 2 (PBFDK2: http://en.wikipedia.org/wiki/PBKDF2)
+Based on "Password Hashing With PBKDF2" (http://crackstation.net/hashing-security.htm), implementation by Taylor Hornby (Copyright (c) 2013, All rights reserved), original: https://defuse.ca/php-pbkdf2.htm / https://github.com/defuse/password-hashing
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <method name="createHash" start="55" end="68" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="password" byreference="false" type="{unknown}"/>
+    <inline>
+      <comment value="format: algorithm:iterations:salt:hash" line="57"/>
+    </inline>
+  </method>
+  <method name="checkPassword" start="70" end="87" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="password" byreference="false" type="{unknown}"/>
+    <parameter name="correct_hash" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="slowEquals" start="90" end="98" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="a" byreference="false" type="{unknown}"/>
+    <parameter name="b" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="pbkdf2" start="115" end="151" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="algorithm" byreference="false" type="{unknown}"/>
+    <parameter name="password" byreference="false" type="{unknown}"/>
+    <parameter name="salt" byreference="false" type="{unknown}"/>
+    <parameter name="count" byreference="false" type="{unknown}"/>
+    <parameter name="key_length" byreference="false" type="{unknown}"/>
+    <parameter name="raw_output" byreference="false" type="boolean" default="false"/>
+  </method>
+</class>

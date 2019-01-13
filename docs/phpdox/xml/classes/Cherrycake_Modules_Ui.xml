@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\Ui" namespace="Cherrycake\Modules" name="Ui" abstract="false" final="false" start="20" end="123">
+  <file path="/var/www/lib/cherrycake/modules/Ui" file="Ui.class.php" realpath="/var/www/lib/cherrycake/modules/Ui/Ui.class.php" size="3953" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="d73dd28c1706e7339f9c794a789c55604de28a7f" relative="modules/Ui/Ui.class.php"/>
+  <docblock>
+    <description compact="Ui">Provides User interface creation tools.
+Works with Ui components, which automatically include themselves the needed files in the "ui" Css and Javascript sets.</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="config" type="array" default="" visibility="protected" static="false" line="25">
+    <docblock>
+      <description/>
+      <var description="$config Holds the default configuration for this module" type="array"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="35">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+    </docblock>
+  </member>
+  <member name="uiComponents" visibility="public" static="false" line="44">
+    <docblock>
+      <description compact="var @array $UiComponents The array of UiComponent objects that have been added to Ui"/>
+    </docblock>
+  </member>
+  <method name="init" start="53" end="87" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the module and loads the Ui components</description>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+    <inline>
+      <comment value="Adds cherrycake Css and Javascript sets for UiComponents" line="62"/>
+      <comment value="Sets up Ui components" line="77"/>
+    </inline>
+  </method>
+  <method name="addCherrycakeUiComponent" start="96" end="104" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="addCherrycakeUiComponent">Adds a Cherrycake Ui component.</description>
+      <param description="The name of the class of the Cherrycake Ui component to add" type="string" variable="$UiComponentName"/>
+    </docblock>
+    <parameter name="UiComponentName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="addAppUiComponent" start="113" end="122" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="addAppUiComponent">Adds an App Ui component.</description>
+      <param description="The name of the class of the App Ui component to add" type="string" variable="$UiComponentName"/>
+    </docblock>
+    <parameter name="UiComponentName" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>

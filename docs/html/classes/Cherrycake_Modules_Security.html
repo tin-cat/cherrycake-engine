@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\Security</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">Security</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#hierarchy">Hierarchy</a>
+          </li>
+          <li>
+            <a href="#members">Members</a>
+          </li>
+          <li>
+            <a href="#methods">Methods</a>
+          </li>
+          <li>
+            <a href="../source/modules/Security/Security.class.php.html#line53">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1 id="introduction"><small>Cherrycake\Modules\</small>Security</h1>
+        <h4>Security</h4>
+        <p>Provides security measures<br/><br/>Configuration example for security.config.php:<br/>&lt;code&gt;<br/>$securityConfig = [<br/>"isCheckMaliciousBadBrowsers" =&gt; true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true<br/>"permanentlyBannedIps" =&gt; [ // An array of banned IPs that must be blocked from accessing the application<br/>"1.1.1.1"<br/>],<br/>"isAutoBannedIps" =&gt; true, // Whether to automatically ban IPs when a hack is detected<br/>"autoBannedIpsCacheProviderName" =&gt; "fast", // The name of the CacheProvider used to store banned Ips<br/>"autoBannedIpsCacheTtl" =&gt; \Cherrycake\Modules\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip<br/>"autoBannedIpsThreshold" =&gt; 10 // The number hack intrusions detected from the same Ip to consider it banned<br/>];<br/>&lt;/code&gt;</p>
+        <ul/>
+        <h2 id="synopsis">Synopsis</h2>
+        <div class="synopsis">class Security
+                extends <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Module</a>
+            {<br/><ul class="none"><li>// members</li><li>public array <a href="#members">$config</a> =
+                        ;
+                    </li><li>public array <a href="#members">$dependentCherrycakeModules</a> =
+                        ;
+                    </li><li>public array <a href="#members">$fixedParameterRules</a> =
+                        ;
+                    </li><li>public array <a href="#members">$fixedParametersFilters</a> =
+                        ;
+                    </li><li>public string <a href="#members">$sqlInjectionDetectRegexp</a> =
+                        "[insert( *)into|delete( *)from|alter( *)table|drop( *)table|drop( *)database|select( *)select|union( *)all|select( *)union|select( *)count|waitfor( *)delay|information_schema|limit( +)0|select( +)1|,null|rand\(|\tables|1=1|0x31303235343830303536]i";
+                    </li><li>public string <a href="#members">$maliciousBrowserStringsRegexp</a> =
+                        "[Havij|WinInet Test]i";
+                    </li></ul><ul class="none"><li>// Inherited members from <span title="Cherrycake\Module">Module</span></li><li>protected <span title="Cherrycake\bool">bool</span> <a href="#members">$isConfigFile</a>;
+                        </li><li>protected  <a href="#members">$config</a>;
+                        </li><li>protected  <a href="#members">$dependentCherrycakeModules</a>;
+                        </li><li>protected  <a href="#members">$dependentAppModules</a>;
+                        </li></ul><ul class="none"><li>// methods</li><li>public boolean <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/init.html">init</a>()
+                    </li><li>public Result <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/checkValue.html">checkValue</a>()
+                    </li><li>public mixed <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/filterValue.html">filterValue</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/checkRequest.html">checkRequest</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getCsrfToken.html">getCsrfToken</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/isCsrfTokenInSession.html">isCsrfTokenInSession</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getCsrfTokenInSession.html">getCsrfTokenInSession</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/setCsrfTokenInSession.html">setCsrfTokenInSession</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/generateCsrfToken.html">generateCsrfToken</a>()
+                    </li><li>public mix <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/generateSlug.html">generateSlug</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/isAutoBannedIp.html">isAutoBannedIp</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/autoBanIp.html">autoBanIp</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/removeAutoBannedIp.html">removeAutoBannedIp</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getClientIp.html">getClientIp</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getClientBrowserString.html">getClientBrowserString</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/clean.html">clean</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/stripXss.html">stripXss</a>()
+                    </li></ul><ul class="none"><li>// Inherited methods from <span title="Cherrycake\Module">Module</span></li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config</a>()
+                        </li><li>public mixed <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig</a>()
+                        </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies</a>()
+                        </li><li>public static void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript</a>()
+                        </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init</a>()
+                        </li><li>public array <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct</a>()
+                        </li></ul>
+
+            }<br/></div>
+        <h2 id="hierarchy">Hierarchy</h2>
+        <div class="styled">
+          <h4>Extends</h4>
+          <ul>
+            <li>
+              <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Cherrycake\Module</a>
+            </li>
+          </ul>
+        </div>
+        <h2 id="members">Members</h2>
+        <div class="styled members">
+          <h4>protected</h4>
+          <ul class="members">
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="dependentAppModules"><strong>$dependentAppModules</strong>
+                —
+                array</li>
+            <li id="dependentCherrycakeModules"><strong>$dependentCherrycakeModules</strong>
+                —
+                array</li>
+            <li id="isConfigFile"><strong>$isConfigFile</strong>
+                —
+                <a title="Cherrycake\bool" href="../classes/Cherrycake_bool.html">Cherrycake\bool</a></li>
+          </ul>
+          <h4>public</h4>
+          <ul class="members">
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="dependentCherrycakeModules"><strong>$dependentCherrycakeModules</strong>
+                —
+                array</li>
+            <li id="fixedParameterRules"><strong>$fixedParameterRules</strong>
+                —
+                array</li>
+            <li id="fixedParametersFilters"><strong>$fixedParametersFilters</strong>
+                —
+                array</li>
+            <li id="maliciousBrowserStringsRegexp">
+              <strong>$maliciousBrowserStringsRegexp</strong>
+            </li>
+            <li id="sqlInjectionDetectRegexp">
+              <strong>$sqlInjectionDetectRegexp</strong>
+            </li>
+          </ul>
+        </div>
+        <h2 id="methods">Methods</h2>
+        <div class="styled">
+          <h4>public</h4>
+          <ul>
+            <li id="autoBanIp"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/autoBanIp.html">autoBanIp()</a>
+                — autoBanIp</li>
+            <li id="checkRequest"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/checkRequest.html">checkRequest()</a>
+                — Checks the given Request object for security problems</li>
+            <li id="checkValue"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/checkValue.html">checkValue()</a>
+                — Checks the given value against the fixed rules and the additional specific given ones</li>
+            <li id="clean"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/clean.html">clean()</a>
+                — Cleans string coming from untrusted sources like user input. Should prevent XSS attacks.</li>
+            <li id="filterValue"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/filterValue.html">filterValue()</a>
+                — Filters the given value with the fixed rules and the additional specific given ones</li>
+            <li id="generateCsrfToken">
+              <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/generateCsrfToken.html">generateCsrfToken()</a>
+            </li>
+            <li id="generateSlug"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/generateSlug.html">generateSlug()</a>
+                — Generates a valid slug based on the given string</li>
+            <li id="getClientBrowserString"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getClientBrowserString.html">getClientBrowserString()</a>
+                — getClientBrowserString</li>
+            <li id="getClientIp"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getClientIp.html">getClientIp()</a>
+                — getClientIp</li>
+            <li id="getCsrfToken"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getCsrfToken.html">getCsrfToken()</a>
+                — Returns the token for this session. If no token stored yet, creates one and stores it in the session.</li>
+            <li id="getCsrfTokenInSession">
+              <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/getCsrfTokenInSession.html">getCsrfTokenInSession()</a>
+            </li>
+            <li id="init"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/init.html">init()</a>
+                — init</li>
+            <li id="isAutoBannedIp"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/isAutoBannedIp.html">isAutoBannedIp()</a>
+                — isAutoBannedIp</li>
+            <li id="isCsrfTokenInSession">
+              <a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/isCsrfTokenInSession.html">isCsrfTokenInSession()</a>
+            </li>
+            <li id="removeAutoBannedIp"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/removeAutoBannedIp.html">removeAutoBannedIp()</a>
+                — removeAutoBannedIp</li>
+            <li id="setCsrfTokenInSession"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/setCsrfTokenInSession.html">setCsrfTokenInSession()</a>
+                — Stores the given token in the current session</li>
+            <li id="stripXss"><a title="Cherrycake\Modules\Security" href="../classes/Cherrycake_Modules_Security/stripXss.html">stripXss()</a>
+                — Removes XSS attacks from the given string</li>
+          </ul>
+          <h3>Inherited from <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Cherrycake\Module</a></h3>
+          <h4>public</h4>
+          <ul>
+            <li id="addCssAndJavascript"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript()</a>
+                — addCssAndJavascript</li>
+            <li id="arrayMergeRecursiveDistinct"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct()</a>
+                — arrayMergeRecursiveDistinct</li>
+            <li id="config"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config()</a>
+                — config</li>
+            <li id="getConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig()</a>
+                — getConfig</li>
+            <li id="init"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init()</a>
+                — init</li>
+            <li id="loadConfigFile"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile()</a>
+                — loadConfigFile</li>
+            <li id="loadDependencies"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies()</a>
+                — loadDependencies</li>
+            <li id="mapActions"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions()</a>
+                — mapActions</li>
+            <li id="setConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig()</a>
+                — setConfig</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+.UiComponentIcon {
+	display: inline-block;
+}
+
+.UiComponentIcon.circled {
+	border: solid white 1px;
+	<?= $e->Css->buildUnsupportedProperty("border-radius", "50%") ?>
+	padding: <?= $e->Css->unit(8, "px") ?>;
+}
+
+.UiComponentIcon.circled.white {
+	border-color: #fff;
+}
+
+.UiComponentIcon.circled.black {
+	border-color: #000;
+}
+
+a.UiComponentIcon:hover {
+	opacity: .8;
+}
+
+.UiComponentIcon.loading {
+	animation: loading 5s infinite linear;
+}
+
+@keyframes loading {
+    0% {transform: rotate(0deg); -webkit-transform: rotate(0deg)}
+    100% {transform: rotate(360deg); -webkit-transform: rotate(360deg)}
+}

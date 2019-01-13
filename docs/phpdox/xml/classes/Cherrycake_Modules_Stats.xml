@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\Stats" namespace="Cherrycake\Modules" name="Stats" abstract="false" final="false" start="32" end="127">
+  <file path="/var/www/lib/cherrycake/modules/Stats" file="Stats.class.php" realpath="/var/www/lib/cherrycake/modules/Stats/Stats.class.php" size="3771" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="beaec0e685883755b7f9541c0eaf9e7b29ff5542" relative="modules/Stats/Stats.class.php"/>
+  <docblock>
+    <description compact="Stores and manages statistical information">Configuration example for stats.config.php:
+&lt;code&gt;
+$statsConfig = [
+	"databaseProviderName" =&gt; "main", // The name of the database provider.
+	"cacheProviderName" =&gt; "huge", // The name of the cache provider used to temporarily store stats events. Must support queueing.
+	"cacheKeyUniqueId" =&gt; "QueuedStats", // The unique cache key to use when storing stat events into cache. Defaults to "QueuedStats"
+	"tableName" =&gt; "stats", // The name of the table on the database to store stats data.
+	"isQueueInCache" =&gt; true, // Whether to store the stats events into cache (queue it) in order to be later processed by JanitorTaskStats, or directly store it on the database. Defaults to true.
+];
+&lt;/code&gt;</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="isConfigFile" type="boolean" default="true" visibility="protected" static="false" line="36">
+    <docblock>
+      <description/>
+      <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </var>
+    </docblock>
+  </member>
+  <member name="config" type="array" default="" visibility="public" static="false" line="41">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="50">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="61" end="70" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Initializes the module"/>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="trigger" start="77" end="84" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Triggers an stats event. This is the method that should be called whenever a statistical event happens."/>
+      <param description="The StatsEvent object to trigger" type="object" variable="$statsEvent">
+        <type full="Cherrycake\Modules\StatsEvent" namespace="Cherrycake\Modules" name="StatsEvent"/>
+      </param>
+      <return description="True if everything went ok, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="statsEvent" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="queueEventInCache" start="91" end="94" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Stores the given StatsEvent into cache for later processing via JanitorTaskStats by calling the flushCache method"/>
+      <param description="The StatsEvent object to store into cache" type="object" variable="$statsEvent">
+        <type full="Cherrycake\Modules\StatsEvent" namespace="Cherrycake\Modules" name="StatsEvent"/>
+      </param>
+      <return description="True if everything went ok, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="statsEvent" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getCacheKey" start="99" end="104" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The cache key to use when retrieveing and storing cache items" type="string"/>
+    </docblock>
+  </method>
+  <method name="commit" start="110" end="126" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Stores the cached StatsEvents into the database, should be called periodically, normally via a JanitorTask"/>
+      <return description="An array where the first key is a boolean indicating wether the opeartion went ok or not, and the second key is an optional hash array containing detailed information about the operation done." type="array"/>
+    </docblock>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>

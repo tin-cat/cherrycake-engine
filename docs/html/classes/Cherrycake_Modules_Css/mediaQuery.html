@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:pu="http://schema.phpunit.de/coverage/1.0" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\Css::mediaQuery</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">
+            <a title="Cherrycake\Modules\Css" href="../../classes/Cherrycake_Modules_Css.html">Css</a>
+          </li>
+          <li class="separator">mediaQuery</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#parameter">Parameter</a>
+          </li>
+          <li>
+            <a href="#return">Return</a>
+          </li>
+          <li>
+            <a href="../../source/modules/Css/Css.class.php.html#line552">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1><small>Cherrycake\Modules\Css::</small>mediaQuery</h1>
+        <h4>mediaQuery</h4>
+        <p>Returns a CSS media query aimed to match devices with specific characteristics, or different maximum screen widths</p>
+        <ul/>
+        <h2 id="signature">Signature</h2>
+        <div class="styled synopsis">
+          <code>public function mediaQuery(array
+        $setup )
+            </code>
+        </div>
+        <h2 id="parameterlist">Parameters</h2>
+        <dl class="styled">
+          <dt><code>$setup</code>
+                —
+                array</dt>
+          <dd>The specific characteristics for this media query to match, in the syntax:<br/>- css: The CSS code for this media query<br/>- predefined: One of the available CSS_MEDIAQUERY_* consts (Optional)<br/>- maxWidthBreakpoint: One of the configured widths on the config variable responsiveWidthBreakpoints to be used as a max width breakpoint for the generated media query (The CSS will take effect when the page width is the specified width or less)<br/>- minWidthBreakpoint: One of the configured widths on the config variable responsiveWidthBreakpoints to be used as a min width breakpoint for the generated media query (The CSS will take effect when the page width is the specified width or more)<br/>- characteristics: A key-value array with the specific characteristics for this media query, for example:<br/>"min-device-width" =&gt; "768px",<br/>"max-device-width" =&gt; "1024px",<br/>"-webkit-min-device-pixel-ratio" =&gt; 2,<br/>     "orientation" =&gt; "portrait"</dd>
+        </dl>
+        <h2 id="return">Returns</h2>
+        <dl class="styled">
+          <dt>string</dt>
+          <dd>The Css</dd>
+        </dl>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

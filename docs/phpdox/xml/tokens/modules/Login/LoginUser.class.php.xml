@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<source xmlns="http://xml.phpdox.net/token">
+  <file xmlns="http://xml.phpdox.net/src" path="/var/www/lib/cherrycake/modules/Login" file="LoginUser.class.php" realpath="/var/www/lib/cherrycake/modules/Login/LoginUser.class.php" size="2029" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="2fc7fa23081073b220654733298053bc839beddd" relative="modules/Login/LoginUser.class.php"/>
+  <line no="1">
+    <token name="T_OPEN_TAG">&lt;?php</token>
+  </line>
+  <line no="2"/>
+  <line no="3">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="4">
+    <token name="T_DOC_COMMENT"> * LoginUser</token>
+  </line>
+  <line no="5">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="6">
+    <token name="T_DOC_COMMENT"> * @package Cherrycake</token>
+  </line>
+  <line no="7">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="8"/>
+  <line no="9">
+    <token name="T_NAMESPACE">namespace</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">Cherrycake</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="10"/>
+  <line no="11">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="12">
+    <token name="T_DOC_COMMENT"> * LoginUser</token>
+  </line>
+  <line no="13">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="14">
+    <token name="T_DOC_COMMENT"> * An interface to be implemented by the App class that represents a user when interacting with the Login module</token>
+  </line>
+  <line no="15">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="16">
+    <token name="T_DOC_COMMENT"> * @package Cherrycake</token>
+  </line>
+  <line no="17">
+    <token name="T_DOC_COMMENT"> * @category Modules</token>
+  </line>
+  <line no="18">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="19">
+    <token name="T_INTERFACE">interface</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">LoginUser</token>
+  </line>
+  <line no="20">
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="21">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="22">
+    <token name="T_DOC_COMMENT">	 * loadFromId</token>
+  </line>
+  <line no="23">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="24">
+    <token name="T_DOC_COMMENT">	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.</token>
+  </line>
+  <line no="25">
+    <token name="T_DOC_COMMENT">	 * Loads a user with the given $userId</token>
+  </line>
+  <line no="26">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="27">
+    <token name="T_DOC_COMMENT">	 * @param integer $userId The user id of the user to load</token>
+  </line>
+  <line no="28">
+    <token name="T_DOC_COMMENT">	 * @return boolean True if the user could be loaded ok, or false if the load failed, or the user does not exists.</token>
+  </line>
+  <line no="29">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="30">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PUBLIC">public</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">loadFromId</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$userId</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="31"/>
+  <line no="32">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="33">
+    <token name="T_DOC_COMMENT">	 * loadFromStringField</token>
+  </line>
+  <line no="34">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="35">
+    <token name="T_DOC_COMMENT">	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.</token>
+  </line>
+  <line no="36">
+    <token name="T_DOC_COMMENT">	 * Loads a user with the given $userName. $userName is whatever is required to the user as username; normally, an email or a username.</token>
+  </line>
+  <line no="37">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="38">
+    <token name="T_DOC_COMMENT">	 * @param string $userName The username of the user to load. Usually, an email or a username.</token>
+  </line>
+  <line no="39">
+    <token name="T_DOC_COMMENT">	 * @return boolean True if the user could be loaded ok, or false if the load failed, or the user does not exists.</token>
+  </line>
+  <line no="40">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="41">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PUBLIC">public</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">loadFromStringField</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$userName</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="42"/>
+  <line no="43">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="44">
+    <token name="T_DOC_COMMENT">	 * getEncryptedPassword</token>
+  </line>
+  <line no="45">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="46">
+    <token name="T_DOC_COMMENT">	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.</token>
+  </line>
+  <line no="47">
+    <token name="T_DOC_COMMENT">	 * Returns the loaded user's encrypted password to be checked by the Login module.</token>
+  </line>
+  <line no="48">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="49">
+    <token name="T_DOC_COMMENT">	 * @return string The user's encrypted password, false if doesn't has one or if the user can't login.</token>
+  </line>
+  <line no="50">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="51">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PUBLIC">public</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">getEncryptedPassword</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="52"/>
+  <line no="53">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="54">
+    <token name="T_DOC_COMMENT">	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.</token>
+  </line>
+  <line no="55">
+    <token name="T_DOC_COMMENT">	 * It performs any initialization needed for the user object when it represents a successfully logged in user.</token>
+  </line>
+  <line no="56">
+    <token name="T_DOC_COMMENT">	 * @return boolean True if success, false otherwise</token>
+  </line>
+  <line no="57">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="58">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PUBLIC">public</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">afterLoginInit</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="59">
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+</source>

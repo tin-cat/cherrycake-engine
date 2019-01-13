@@ -1,0 +1,80 @@
+.UiComponentGrid {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.UiComponentGrid > div {
+	overflow: hidden;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.UiComponentGrid.allowBiggerContents > div, 
+.UiComponentGrid > div.allowBiggerContents {
+	overflow: visible;
+}
+
+.UiComponentGrid.noPadding > div {
+	padding: 0;
+}
+
+.UiComponentGrid.paddingSmall > div {
+	padding: 20px;
+}
+
+.UiComponentGrid.paddingBig > div {
+	padding: 40px;
+}
+
+.UiComponentGrid.debug > div {
+	outline: solid grey 1px;
+}
+
+/* six */
+.UiComponentGrid.six > div { flex-basis: 16.666%; }
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["big"],
+	"css" => ".UiComponentGrid.six > div { flex-basis: 33.333%; }"])
+?>
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["medium"],
+	"css" => ".UiComponentGrid.six > div { flex-basis: 50%; }"])
+?>
+
+/* five */
+.UiComponentGrid.five > div { flex-basis: 20%; }
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["big"],
+	"css" => ".UiComponentGrid.five > div { flex-basis: 33.333%; } .UiComponentGrid.five > div:nth-child(n+4) { flex-basis: 50%; }"])
+?>
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["medium"],
+	"css" => ".UiComponentGrid.five > div { flex-basis: 50%; } .UiComponentGrid.five > div:nth-child(n+5) { flex-basis: 100%; }"])
+?>
+
+/* four */
+.UiComponentGrid.four > div { flex-basis: 25%; }
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["medium"],
+	"css" => ".UiComponentGrid.four > div { flex-basis: 50%; }"])
+?>
+
+/* three */
+.UiComponentGrid.three > div { flex-basis: 33.333%; }
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["medium"],
+	"css" => ".UiComponentGrid.three > div { flex-basis: 50%; } .UiComponentGrid.three > div:nth-child(n+3) { flex-basis: 100%; }"])
+?>
+
+/* two */
+.UiComponentGrid.two > div { flex-basis: 50%; }
+
+/* one */
+.UiComponentGrid.one > div { flex-basis: 100%; }
+
+/* all */
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentGrid"]->getConfig("responsiveBreakpoints")["small"],
+	"css" => ".UiComponentGrid > div { flex-basis: 100% !important; }"])
+?>

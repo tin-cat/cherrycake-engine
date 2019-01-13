@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Engine" namespace="Cherrycake" name="Engine" abstract="false" final="false" start="20" end="212">
+  <file path="/var/www/lib/cherrycake" file="Engine.class.php" realpath="/var/www/lib/cherrycake/Engine.class.php" size="7872" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="f3a0ca4eb93f7195ab8f37d22b2e4a30735bbef9" relative="Engine.class.php"/>
+  <docblock>
+    <description compact="Engine">The main class that loads modules and configurations, and the entry point of the application.
+Cherrycake uses global variables for configuring modules and global configuration, be sure to set "register_globals" to "off" in php.ini to avoid security issues.</description>
+    <package value="Cherrycake"/>
+    <category value="Main"/>
+  </docblock>
+  <member name="appNamespace" visibility="private" static="false" line="24">
+    <docblock>
+      <description/>
+      <var description="$appNamespace Holds the namespace for the specific App, it is set in the Init method" type="string"/>
+    </docblock>
+  </member>
+  <member name="loadedModules" visibility="private" static="false" line="29">
+    <docblock>
+      <description/>
+      <var description="$loadedModules Stores the names of all included modules" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="45" end="68" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the engine
+
+Setup keys:
+
+* namespace: Specifies the App namespace
+* baseCherrycakeModules: An ordered array of the base Cherrycake module names that has to be always loaded on application start. These must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
+* additionalAppConfigFiles: An ordered array of any additional App config files to load that are found under the App config directory</description>
+      <param description="The initial engine configuration information." type="array" variable="$setup"/>
+      <return description="Whether all the modules have been loaded ok" type="boolean"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getAppNamespace" start="75" end="77" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getAppNamespace"/>
+      <return description="The namespace used by the App" type="string"/>
+    </docblock>
+  </method>
+  <method name="loadCherrycakeModule" start="88" end="90" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadCherrycakeModule">Specific method to load a Cherrycake module. Cherrycake modules are classes extending the module class that provide engine-specific functionalities.</description>
+      <param description="The name of the module to load" type="string" variable="$moduleName"/>
+      <return description="Whether the module has been loaded ok" type="boolean"/>
+    </docblock>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadAppModule" start="101" end="103" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadAppModule">Specific method to load an application-specific module. App modules are classes extending the module class that provide app-specific functionalities.</description>
+      <param description="The name of the module to load" type="string" variable="$moduleName"/>
+      <return description="Whether the module has been loaded ok" type="boolean"/>
+    </docblock>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadModule" start="117" end="134" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadModule">Generic method to load a module. Modules are classes extending the module class providing specific functionalities in a modular-type framework. Module can have its own configuration file.</description>
+      <param description="Directory where modules are stored" type="string" variable="$modulesDirectory"/>
+      <param description="Directory where module configuration files are stored with the syntax [module name].config.php" type="string" variable="$configDirectory"/>
+      <param description="The name of the module to load" type="string" variable="$moduleName"/>
+      <param description="The namespace of the module" type="string" variable="$namespace"/>
+      <return description="Whether the module has been loaded and initted ok" type="boolean"/>
+    </docblock>
+    <parameter name="modulesDirectory" byreference="false" type="{unknown}"/>
+    <parameter name="configDirectory" byreference="false" type="{unknown}"/>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+    <parameter name="namespace" byreference="false" type="{unknown}"/>
+    <inline>
+      <comment value="Avoids a module to be loaded more than once" line="118"/>
+    </inline>
+  </method>
+  <method name="includeModuleClass" start="144" end="146" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="modulesDirectory" byreference="false" type="{unknown}"/>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadCherrycakeClass" start="155" end="157" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadCherrycakeClass">Loads a Cherrycake-specific class. Cherrycake classes are any other classes that are not modules, nor related to any Cherrycake module.</description>
+      <param description="name of the class to load, must be stored in LIB_DIR/[class name].class.php" variable="$className" type="object">
+        <type full="Cherrycake\The" namespace="Cherrycake" name="The"/>
+      </param>
+    </docblock>
+    <parameter name="className" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadCherrycakeModuleClass" start="167" end="169" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadCherrycakeModuleClass">Loads a cherrycake-specific class. Cherrycake module classes are any other classes that are not modules, but related to a Cherrycake module.</description>
+      <param description="name of the module to which the class belongs" variable="$moduleName" type="object">
+        <type full="Cherrycake\The" namespace="Cherrycake" name="The"/>
+      </param>
+      <param description="name of the class" variable="$className" type="object">
+        <type full="Cherrycake\The" namespace="Cherrycake" name="The"/>
+      </param>
+    </docblock>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+    <parameter name="className" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadAppClass" start="178" end="180" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadAppClass">Loads an app-specific class. App classes are any other classes that are not directly related to a module.</description>
+      <param description="The name of the class to load, must be stored in APP_CLASSES_DIR/[class name].class.php" type="string" variable="$className"/>
+    </docblock>
+    <parameter name="className" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="loadAppModuleClass" start="190" end="192" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadAppModuleClass">Loads an app-module specific class. App module classes are classes that do not extend the module class but provide functionalities related to a module.</description>
+      <param description="The name of the module to which the class belongs" type="string" variable="$moduleName"/>
+      <param description="The name of the class" type="string" variable="$className"/>
+    </docblock>
+    <parameter name="moduleName" byreference="false" type="{unknown}"/>
+    <parameter name="className" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="run" start="199" end="201" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="run">Starts the application by invoking Actions-&gt;Run</description>
+    </docblock>
+  </method>
+  <method name="end" start="208" end="211" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="end">Ends the application by dumping the Output buffer to the client</description>
+    </docblock>
+  </method>
+</class>

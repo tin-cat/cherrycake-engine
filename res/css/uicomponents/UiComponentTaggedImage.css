@@ -1,0 +1,19 @@
+.taggedImage {
+    position: relative;
+    overflow: hidden;
+}
+
+.taggedImage > .taggedImageContainer {
+    position: absolute;
+}
+
+.taggedImage > .taggedImageContainer > .taggedImage {
+    position: absolute;
+}
+
+.taggedImage > .taggedImageContainer > .tag {
+    position: absolute;
+}
+
+.taggedImage {
+}

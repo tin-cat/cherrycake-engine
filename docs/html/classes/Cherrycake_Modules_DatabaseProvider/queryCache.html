@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:pu="http://schema.phpunit.de/coverage/1.0" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\DatabaseProvider::queryCache</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">
+            <a title="Cherrycake\Modules\DatabaseProvider" href="../../classes/Cherrycake_Modules_DatabaseProvider.html">DatabaseProvider</a>
+          </li>
+          <li class="separator">queryCache</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#parameter">Parameter</a>
+          </li>
+          <li>
+            <a href="#return">Return</a>
+          </li>
+          <li>
+            <a href="../../source/modules/Database/DatabaseProvider.class.php.html#line180">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1><small>Cherrycake\Modules\DatabaseProvider::</small>queryCache</h1>
+        <h4>queryCache</h4>
+        <p>Performs a query to the database with Cache capabilities.
+If the query results are stored in the cache, it retrieves it. If not in cache, it performs the query and stores the results in cache.
+Stores results in cache in the form of a tridimensional arrays, storing the DatabaseResult-&gt;data variable.
+
+ Example:
+&lt;code&gt;
+$result = $e-&gt;Database-&gt;main-&gt;QueryCache(
+	"select * from stuff order by rand() limit 3", // The query
+	\Cherrycake\Modules\CACHE_TTL_MINIMAL, // The TTL
+	[ // A key naming options array
+		"cacheSpecificPrefix" =&gt; "TestQuery"
+	],
+	"fast" // A name of a cache provider that overrides the one configured in database.config.php
+);
+&lt;/code&gt;</p>
+        <ul/>
+        <h2 id="signature">Signature</h2>
+        <div class="styled synopsis">
+          <code>public function queryCache(string
+        $sql,
+            [boolean
+        $cacheTtl = false,
+            [boolean
+        $cacheKeyNamingOptions = false,
+            [boolean
+        $overrideCacheProviderName = false,
+            [boolean
+        $isStoreInCacheWhenNoResults = true,
+            [boolean
+        $setup = false]]]]] )
+            </code>
+        </div>
+        <h2 id="parameterlist">Parameters</h2>
+        <dl class="styled">
+          <dt><code>$sql</code>
+                —
+                string</dt>
+          <dd>The SQL sentence to query to the database.</dd>
+          <dt><code>$cacheTtl</code>
+                —
+                boolean</dt>
+          <dd>The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used</dd>
+          <dt><code>$cacheKeyNamingOptions</code>
+                —
+                boolean</dt>
+          <dd>If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey</dd>
+          <dt><code>$overrideCacheProviderName</code>
+                —
+                boolean</dt>
+          <dd>The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php</dd>
+          <dt><code>$isStoreInCacheWhenNoResults</code>
+                —
+                boolean</dt>
+          <dd>Whether to store results in the cache when the query returned no rows or not</dd>
+          <dt><code>$setup</code>
+                —
+                boolean</dt>
+          <dd>Optional array with additional options, See DatabaseResult::$setup for available options</dd>
+        </dl>
+        <h2 id="return">Returns</h2>
+        <dl class="styled">
+          <dt>DatabaseResult</dt>
+          <dd>A provider-specific DatabaseResult class if the query has been executed or retrieved from the cache correctly, false otherwise.<br/>
+        </dd>
+        </dl>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

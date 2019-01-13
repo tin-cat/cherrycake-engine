@@ -1,0 +1,75 @@
+table.UiComponentTable {
+	border-spacing: 0;
+}
+
+table.UiComponentTable.centered {
+	margin-left: 50%;
+	<?= $e->Css->buildUnsupportedProperty("transform", "translate(-50%, 0)"); ?>
+}
+
+table.UiComponentTable.fullWidth {
+	width: 100%;
+}
+
+table.UiComponentTable th,
+table.UiComponentTable td {
+	padding: 1em;
+}
+
+table.UiComponentTable th.alignLeft,
+table.UiComponentTable td.alignLeft {
+	text-align: left;
+}
+
+table.UiComponentTable th.alignCenter,
+table.UiComponentTable td.alignCenter {
+	text-align: center;
+}
+
+table.UiComponentTable th.alignRight,
+table.UiComponentTable td.alignRight {
+	text-align: right;
+}
+
+table.UiComponentTable > thead.title > tr > th {
+	font-weight: bold;
+	text-align: left;
+}
+
+table.UiComponentTable > thead > tr > th {
+	border-bottom: solid rgba(0, 0, 0, 0.1) 1px;
+}
+
+table.UiComponentTable > thead > tr > th {
+	font-weight: normal;
+}
+
+table.UiComponentTable td.image > img {
+	max-height: 5em;
+	border-radius: 5px;
+}
+
+table.UiComponentTable td.buttons {
+}
+
+table.UiComponentTable td.buttons > .UiComponentButton {
+	margin: 0 5px 5px 0;
+	float: left;
+}
+
+table.UiComponentTable td.buttons > .UiComponentButton:last-child {
+	margin-right: 0;
+}
+
+table.UiComponentTable.loading {
+	background-image: repeating-linear-gradient(45deg, transparent 0px, transparent 5px, rgba(250, 121, 121, 0.04) 5px, rgba(0, 0, 0, .04) 10px, transparent 10px);
+	background-repeat: repeat;
+	background-size: 42px 42px;
+	
+	animation: Gradient 1s linear infinite;
+}
+
+@keyframes Gradient {
+	0% { background-position: 0px 0px }
+	100% { background-position: 42px 0px }
+}

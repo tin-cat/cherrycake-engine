@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\DatabaseRow" namespace="Cherrycake" name="DatabaseRow" abstract="false" final="false" start="19" end="107">
+  <file path="/var/www/lib/cherrycake/modules/Database" file="DatabaseRow.class.php" realpath="/var/www/lib/cherrycake/modules/Database/DatabaseRow.class.php" size="3132" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="76b7819cd3b2727e8b062d47db864278fac92edc" relative="modules/Database/DatabaseRow.class.php"/>
+  <docblock>
+    <description compact="DatabaseRow">Class that represents a row retrieved from a query to a database</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <member name="data" visibility="protected" static="false" line="23">
+    <docblock>
+      <description/>
+      <var description="A bidimensional hash array containing the row data" type="array"/>
+    </docblock>
+  </member>
+  <member name="setup" visibility="protected" static="false" line="28">
+    <docblock>
+      <description/>
+      <var description="$setup Optional array with additional options, See DatabaseResult::$setup for available options" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="38" end="41" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the row, stablishing the data.</description>
+      <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+      <param description="A hash array containing the row data" type="array" variable="$data"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getData" start="49" end="57" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns a hash array of all the data. If $fields is specified, the returned data is treated accordingly."/>
+      <param description="An optional array definition of fields and their types" type="array" variable="$fields"/>
+      <return description="A hash array of all the data on this DatabaseRow" type="array"/>
+    </docblock>
+    <parameter name="fields" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="setData" start="66" end="74" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setData">Sets the data for this row. Can be overloaded, i.e., in order to take into account any $this-&gt;setup configuration that affect the field values</description>
+      <param description="A bidimensional hash array containing the row data" type="array" variable="$data"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getField" start="85" end="96" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getField">Returns the value of the specified field on the row. If $fields is specified, the returned data is treated accordingly.</description>
+      <param description="key of the field" variable="$key" type="object">
+        <type full="Cherrycake\The" namespace="Cherrycake" name="The"/>
+      </param>
+      <param description="An optional array definition of fields and their types" type="array" variable="$fields"/>
+      <return description="The value of the field" type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="fields" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="treatFieldData" start="104" end="106" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns a treated version of the given data according to the given \Cherrycake\Modules\DATABASE_FIELD_TYPE_* fieldType. $data contains data as is came out from the database."/>
+      <param description="The data to treat, as it came out of the database" type="mixed" variable="$data"/>
+      <param description="The field type, one of \Cherrycake\Modules\DATABASE_FIELD_TYPE_" type="integer" variable="$fieldType"/>
+      <return description="The treated data" type="mixed"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+    <parameter name="fieldType" byreference="false" type="{unknown}"/>
+  </method>
+  <extenders>
+    <extender full="Cherrycake\DatabaseRowMysql" namespace="Cherrycake" name="DatabaseRowMysql"/>
+  </extenders>
+</class>

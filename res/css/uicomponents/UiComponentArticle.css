@@ -1,0 +1,332 @@
+.UiComponentArticle {
+    width: 100%;
+    float: left;
+    max-width: 800px;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+    padding: 0 40px;
+    box-sizing: border-box;
+
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+}
+
+.UiComponentArticle.isolated {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.UiComponentArticle.isolated + .UiComponentArticle.isolated {
+    padding-top: 0;
+}
+
+.UiComponentArticle.slim {
+    max-width: 600px;
+}
+
+.UiComponentArticle.justified {
+    text-align: justify;
+}
+
+/* All elements immediately inside the article have a margin on top and bottom. Some elements also have the margin even if they're inside other elements */
+.UiComponentArticle > *,
+.UiComponentArticle ul,
+.UiComponentArticle code {
+    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+}
+
+/* Isolated elements have a bigger margin on top and bottom. Some elements also have the margin even if they're inside other elements */
+.UiComponentArticle > *.isolated,
+.UiComponentArticle ul.isolated,
+.UiComponentArticle code.isolated {
+    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 4 ?>px 0 !important;
+}
+
+/* All H elements leave a larger margin on top to separate from other contents */
+.UiComponentArticle > h1,
+.UiComponentArticle > h2,
+.UiComponentArticle > h3,
+.UiComponentArticle > h4,
+.UiComponentArticle > h5 {
+    position: relative;
+    margin-top: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 4 ?>px;
+    margin-bottom: 0;
+}
+
+.UiComponentArticle > h1.step,
+.UiComponentArticle > h2.step,
+.UiComponentArticle > h3.step {
+    position: relative;
+}
+
+.UiComponentArticle > h1.step:before,
+.UiComponentArticle > h2.step:before,
+.UiComponentArticle > h3.step:before {
+    position: absolute;
+    left: 0;
+    content: attr(step-number);
+    border: solid 2px;
+    box-sizing: border-box;
+    
+    text-align: center;
+    margin-right: 1em;
+    
+    font-weight: bold;
+}
+
+.UiComponentArticle > h1.step {
+    padding-left: 1.1em;
+}
+.UiComponentArticle > h1.step:before {
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    line-height: 25px;
+    font-size: .4em;
+}
+
+.UiComponentArticle > h2.step {
+    padding-left: 1.5em;
+}
+.UiComponentArticle > h2.step:before {
+    top: 3px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    line-height: 25px;
+    font-size: .7em;
+}
+
+.UiComponentArticle > h3.step {
+    padding-left: 1.6em;
+}
+.UiComponentArticle > h3.step:before {
+    top: 3px;
+    width: 25px;
+    height: 25px;
+    border-radius: 15px;
+    line-height: 20px;
+    font-size: .6em;
+}
+
+/* First element on the article never has margin at the top */
+.UiComponentArticle > *:first-child {
+    margin-top: 0;
+}
+
+/* Last element on the article never has margin at the bottom */
+.UiComponentArticle > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* elements after an H have a smaller top margin to look more integrated with the H */
+.UiComponentArticle > h1 + *,
+.UiComponentArticle > h2 + *,
+.UiComponentArticle > h3 + *,
+.UiComponentArticle > h4 + *,
+.UiComponentArticle > h5 + * {
+    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px 0;
+}
+
+.UiComponentArticle > .header {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* regular list */
+.UiComponentArticle > ul {
+    list-style: none;
+    padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
+}
+
+.UiComponentArticle > ul > li {
+    position: relative;
+    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+}
+
+.UiComponentArticle > ul > li:before {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    content: '_';
+    width: 10px;
+    font-size: 10pt;
+    font-weight: bold;
+    box-sizing: border-box;
+    margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+}
+
+.UiComponentArticle > ul > li > label {
+    display: block;
+    font-weight: bold;
+}
+
+
+/* ordered list */
+.UiComponentArticle > ol {
+    list-style: none;
+    padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
+}
+
+.UiComponentArticle > ol > li {
+    position: relative;
+    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+}
+
+.UiComponentArticle > ol > li[data-title]:after {
+    position: absolute;
+    content: attr(data-title);
+    right: 100%;
+    top: 0;
+    border: solid 1px;
+    font-size: 10pt;
+    font-weight: bold;
+    box-sizing: border-box;
+    padding: 0 7px;
+    line-height: 20px;
+    min-width: 20px;
+    border-radius: 20px;
+    text-align: center;
+    margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+    white-space: nowrap;
+}
+
+
+.UiComponentArticle > .image {
+    text-align: center;
+}
+
+.UiComponentArticle > .image > img {
+    max-width: 100%;
+    max-height: 900px;
+}
+
+.UiComponentArticle > .image.small > img {
+    max-height: 300px;
+}
+
+.UiComponentArticle > .image.isolated {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.UiComponentArticle > .file {
+    display: inline-block;
+    border: solid 1px;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.UiComponentArticle > .file > .UiComponentIcon.download {
+    width: 40px;
+    height: 40px;
+    background-size: 40px;
+    margin-left: 50%;
+    margin-bottom: 10px;
+    transform: translate(-50%, 0);
+}
+
+.UiComponentArticle > .file > .title {
+    white-space: nowrap;
+}
+
+.UiComponentArticle > .file.isolated {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.UiComponentArticle code {
+    display: block;
+    white-space: pre;
+    background: #fff;
+    padding: 1.5em 2em;
+    font-family: Monospace;
+    font-weight: normal;
+    font-size: 8.5pt;
+    line-height: 1.5em;
+    border-radius: 1em;
+    box-sizing: border-box;
+    overflow: scroll;
+}
+
+.UiComponentArticle code u {
+    background: rgba(255, 255, 150, 0.5);
+    text-decoration: none;
+}
+
+.UiComponentArticle code.php {
+}
+
+.UiComponentArticle code.executionResult {
+    background: #ffd68a;
+}
+
+.UiComponentArticle code.shell {
+    background: #444;
+    color: rgba(255, 255, 255, .8);
+}
+
+.UiComponentArticle code.shell u {
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.UiComponentArticle code.config {
+    background: #ffe6aa;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.UiComponentArticle span.note {
+    position: relative;
+    border-bottom: dashed rgba(0, 0, 0, .2) 1px;
+    cursor: default;
+}
+
+.UiComponentArticle span.note:after {
+    opacity: 0;
+    transition: all .5s linear;
+}
+
+.UiComponentArticle span.note[data-note]:hover:after {
+    position: absolute;
+    opacity: 1;
+    left: 0;
+    top: calc(100% + 10px);
+    content: attr(data-note);
+    font-size: 9pt;
+    line-height: 1.4em;
+    padding: 10px 15px;
+    min-width: 150px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.UiComponentArticle > blockquote[data-credit]:after {
+    content: attr(data-credit);
+    display: block;
+    text-align: right;
+    margin-top: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+}
+
+.UiComponentArticleFullScreenContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.UiComponentArticleFullScreenContainer > .UiComponentArticle {
+    width: auto;
+}
+
+body.withUiComponentMenuBar .UiComponentArticleFullScreenContainer {
+    height: calc(100vh - <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px);
+}

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Color" namespace="Cherrycake" name="Color" abstract="false" final="false" start="19" end="452">
+  <file path="/var/www/lib/cherrycake/classes" file="Color.class.php" realpath="/var/www/lib/cherrycake/classes/Color.class.php" size="8809" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="e2801e4a44799be9496d3d376f0fae2deeca8f52" relative="classes/Color.class.php"/>
+  <docblock>
+    <description compact="Color">Class that represents a color.</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <member name="r" visibility="private" static="false" line="23">
+    <docblock>
+      <description/>
+      <var description="The red component" type="object">
+        <type full="Cherrycake\$r" namespace="Cherrycake" name="$r"/>
+      </var>
+    </docblock>
+  </member>
+  <member name="g" visibility="private" static="false" line="28">
+    <docblock>
+      <description/>
+      <var description="The green component" type="object">
+        <type full="Cherrycake\$r" namespace="Cherrycake" name="$r"/>
+      </var>
+    </docblock>
+  </member>
+  <member name="b" visibility="private" static="false" line="33">
+    <docblock>
+      <description/>
+      <var description="The blue component" type="object">
+        <type full="Cherrycake\$r" namespace="Cherrycake" name="$r"/>
+      </var>
+    </docblock>
+  </member>
+  <member name="alpha" type="integer" default="1" visibility="private" static="false" line="38">
+    <docblock>
+      <description/>
+      <var description="The alpha value" type="object">
+        <type full="Cherrycake\$alpha" namespace="Cherrycake" name="$alpha"/>
+      </var>
+    </docblock>
+  </member>
+  <constructor name="__construct" start="45" end="61" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Constructor factory"/>
+      <param description="How to populate the created color object. Leave to false for unpopulated request." type="string" variable="$with"/>
+    </docblock>
+    <parameter name="with" byreference="false" type="boolean" default="false"/>
+    <parameter name="parameter" byreference="false" type="boolean" default="false"/>
+  </constructor>
+  <method name="getClone" start="70" end="72" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getClone">Clones the current color</description>
+      <return description="A cloned Color object" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="setRgb" start="82" end="87" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setRgb">Sets the color to the passed RGB values</description>
+      <param description="An array containing r, g and b values. Can optionally have a fourth alpha value." type="array" variable="$rgb"/>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="rgb" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="setHex" start="97" end="122" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setHex">Sets the color to the passed hexadecimal value</description>
+      <param description="The hexadecimal color value" type="string" variable="$hex"/>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="hex" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="setHsl" start="132" end="201" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setHsl">Sets the color to the passed HSL values (Hue, Saturation, Lightness)</description>
+      <param description="The HSL values" type="array" variable="$hsl"/>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="hsl" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="setHsv" start="211" end="272" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setHsv">Sets the color to the passed HSV values (Hue, Saturation, Value)</description>
+      <param description="The HSV values" type="array" variable="$hsv"/>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="hsv" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="setAlpha" start="282" end="285" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setAlpha">Sets the alpha value for the color.</description>
+      <param description="The alpha value, from 0 to 1" type="float" variable="$alpha"/>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="alpha" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="__toString" start="294" end="296" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="__toString">Wrapper for __toString magic method</description>
+      <returns value="string Css hexadecimal representation of the color"/>
+    </docblock>
+  </method>
+  <method name="getCss" start="303" end="319" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getCss"/>
+      <return description="Basic Css hexadecimal representation of the color. i.e: #ffc020" type="string"/>
+    </docblock>
+  </method>
+  <method name="getCssRgba" start="326" end="328" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getCssRgba"/>
+      <return description="The Css color representation in the rgba(r, g, b, a) format." type="string"/>
+    </docblock>
+  </method>
+  <method name="getRgb" start="337" end="339" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getRgb">Returns the RGB values in the form of an array</description>
+      <return description="The RGB values" type="array"/>
+    </docblock>
+  </method>
+  <method name="getHex" start="349" end="363" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getHex">Returns the hexadecimmal value as a string, suitable for HTML and CSS
+By Sverri: http://snipplr.com/view/39498/rgb2hex</description>
+      <return description="The hexadecimal value" type="string"/>
+    </docblock>
+  </method>
+  <method name="lighten" start="373" end="388" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="lighten">Lightens the color</description>
+      <param description="of light to add" variable="$amount" type="object">
+        <type full="Cherrycake\Amount" namespace="Cherrycake" name="Amount"/>
+      </param>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="amount" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="darken" start="398" end="413" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="darken">Darkens the color</description>
+      <param description="of light to substract" variable="$amount" type="object">
+        <type full="Cherrycake\Amount" namespace="Cherrycake" name="Amount"/>
+      </param>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+    <parameter name="amount" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="invert" start="421" end="428" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="invert">Inverts the color</description>
+      <return description="The same object to allow for chaining" type="object">
+        <type full="Cherrycake\Color" namespace="Cherrycake" name="Color"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="getLuminosity" start="433" end="435" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The luminosity of the color, where 0 is completely dark and 255 is completely light" type="integer"/>
+    </docblock>
+  </method>
+  <method name="isLight" start="441" end="443" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <param description="The minimum luminosity to consider a color is light instead of dark" type="integer" variable="$threshold"/>
+      <return description="Whether the color is considered to be light" type="boolean"/>
+    </docblock>
+    <parameter name="threshold" byreference="false" type="integer" default="128"/>
+  </method>
+  <method name="isDark" start="449" end="451" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <param description="The maximum luminosity to consider a color is dark instead of light" type="integer" variable="$threshold"/>
+      <return description="Whether the color is considered to be dark" type="boolean"/>
+    </docblock>
+    <parameter name="threshold" byreference="false" type="integer" default="128"/>
+  </method>
+</class>

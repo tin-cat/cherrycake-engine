@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\RequestPathComponent" namespace="Cherrycake" name="RequestPathComponent" abstract="false" final="false" start="23" end="158">
+  <file path="/var/www/lib/cherrycake/modules/Actions" file="RequestPathComponent.class.php" realpath="/var/www/lib/cherrycake/modules/Actions/RequestPathComponent.class.php" size="4140" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="180afe0598b47d3013f1d20dc6769e0f4e6327f0" relative="modules/Actions/RequestPathComponent.class.php"/>
+  <docblock>
+    <description compact="Request">A class that represents a path component of a Request</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <member name="name" type="boolean" default="false" visibility="public" static="false" line="24"/>
+  <member name="type" visibility="public" static="false" line="25"/>
+  <member name="string" type="boolean" default="false" visibility="public" static="false" line="26"/>
+  <member name="value" visibility="private" static="false" line="27"/>
+  <member name="securityRules" type="boolean" default="false" visibility="private" static="false" line="28"/>
+  <member name="filters" type="boolean" default="false" visibility="private" static="false" line="29"/>
+  <constructor name="__construct" start="36" end="50" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="RequestPathComponent">Constructor</description>
+    </docblock>
+    <parameter name="setup" byreference="false" type="{unknown}"/>
+  </constructor>
+  <method name="isMatchesString" start="60" end="74" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="isMatchesString">Checks whether the given string matches this RequestPathComponent syntax, to know if the given string is or could be representing this RequestPathComponent</description>
+      <param description="The string to check against to" type="string" variable="$string"/>
+      <return description="Returns true if the given $string is or could be representing this RequestPathComponent" type="object">
+        <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="string" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getTypeName" start="81" end="93" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getTypeName"/>
+      <return description="The name of this RequestPathComponent's type, mainly for debugging purposes" type="string"/>
+    </docblock>
+  </method>
+  <method name="getValue" start="100" end="102" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getValue"/>
+      <return description="Returns the value passed for this path component, if its type is either REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING or REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC" type="string"/>
+    </docblock>
+  </method>
+  <method name="setValue" start="111" end="114" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setValue">Sets the value for this path component. Intented to apply only for REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING and REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC types</description>
+      <param description="The value for this path component" type="mixed" variable="$value"/>
+    </docblock>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="checkValueSecurity" start="123" end="126" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="checkValueSecurity">Checks this path component's value against its configured security rules (and/or the Security defaulted rules)</description>
+      <return description="Returns an array containing a security report, the same result as Security::checkValue" type="array"/>
+    </docblock>
+  </method>
+  <method name="debug" start="133" end="157" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="debug"/>
+      <return description="Debug info about this RequestPathComponent" type="string"/>
+    </docblock>
+  </method>
+</class>

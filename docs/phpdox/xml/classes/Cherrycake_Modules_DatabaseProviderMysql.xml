@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\DatabaseProviderMysql" namespace="Cherrycake\Modules" name="DatabaseProviderMysql" abstract="false" final="false" start="20" end="292">
+  <file path="/var/www/lib/cherrycake/modules/Database" file="DatabaseProviderMysql.class.php" realpath="/var/www/lib/cherrycake/modules/Database/DatabaseProviderMysql.class.php" size="9237" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="841e5f39fd4d6940ec428628597eeed9565e6604" relative="modules/Database/DatabaseProviderMysql.class.php"/>
+  <docblock>
+    <description compact="DatabaseProviderMysql">Database provider based on MySQL, using mysqli PHP interface.
+Requires PHP to be compiled with the native MySQLnd driver, which improves perfomance. See here: http://www.php.net/manual/es/book.mysqlnd.php</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <extends full="Cherrycake\Modules\DatabaseProvider" namespace="Cherrycake\Modules" name="DatabaseProvider"/>
+  <member name="fieldTypes" type="array" default="" visibility="protected" static="false" line="24">
+    <docblock>
+      <description/>
+      <var description="Configuration about fieldtypes (\Cherrycake\Modules\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider" type="array"/>
+    </docblock>
+  </member>
+  <member name="connectionHandler" visibility="private" static="false" line="72">
+    <docblock>
+      <description/>
+      <var description="Holds the MySQL connection handler" type="object">
+        <type full="Cherrycake\Modules\MySQLConnection" namespace="Cherrycake\Modules" name="MySQLConnection"/>
+      </var>
+    </docblock>
+  </member>
+  <member name="resultClassName" type="string" default="&quot;DatabaseResultMysql&quot;" visibility="protected" static="false" line="77">
+    <docblock>
+      <description/>
+      <var description="$resultClassName Holds the name of the class that handles MySQL results." type="string"/>
+    </docblock>
+  </member>
+  <method name="connect" start="85" end="102" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="connect">Connects to MySQL</description>
+      <return description="True if the connection has been established, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="disconnect" start="110" end="120" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="disconnect">Disconnect from the database provider if needed.</description>
+      <return description="True if the disconnection has been done, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="query" start="131" end="143" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="query">Performs a query to MySQL.</description>
+      <param description="The SQL sentence to query to the database." type="string" variable="$sql"/>
+      <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+      <return description="A provider-specific DatabaseResultMysql object if the query has been executed correctly, false otherwise." type="object">
+        <type full="Cherrycake\Modules\DatabaseResultMysql" namespace="Cherrycake\Modules" name="DatabaseResultMysql"/>
+      </return>
+    </docblock>
+    <parameter name="sql" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="prepare" start="156" end="168" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="prepare">Prepares a query to be done to the dabase using prepared queries methodology.</description>
+      <param description="The SQL sentence to prepare to be queried to the database." type="string" variable="$sql"/>
+      <return description="A hash array with the following keys:" type="array">- sql: The passed sql query
+ - statement: A provider-specific statement object if the query has been executed correctly, false otherwise.</return>
+    </docblock>
+    <parameter name="sql" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="execute" start="185" end="261" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="execute">Executes a previously prepared query with the given parameters.</description>
+      <param description="The prepared result as returned by the prepare method" type="array" variable="$prepareResult"/>
+      <param description="Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:" type="array" variable="$parameters">* type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Modules\DATABASE_FIELD_TYPE_
+* value: The value to be used for this variable on the prepared statement</param>
+      <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+      <return description="A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise." type="object">
+        <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+      </return>
+    </docblock>
+    <parameter name="prepareResult" byreference="false" type="{unknown}"/>
+    <parameter name="parameters" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="convertArrayValuesToRefForCallUserFuncArray" start="271" end="279" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="convertArrayValuesToRefForCallUserFuncArray">From a given regular one-dimensional array, it returns the same array but with its values as references. Intended to be used to call bind_param method within a call_user_func_array function call.</description>
+      <param description="The array to convert" type="array" variable="$array"/>
+      <return description="The converted array" type="array"/>
+    </docblock>
+    <parameter name="array" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="safeString" start="288" end="291" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="safeString">Treats the given string in order to let it be safely included in an SQL sentence as a string literal.</description>
+      <param description="The safe string" type="string" variable="$string"/>
+    </docblock>
+    <parameter name="string" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Modules\DatabaseProvider" namespace="Cherrycake\Modules" name="DatabaseProvider">
+    <member name="config" type="array" default="" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$config Default configuration options" type="array"/>
+      </docblock>
+    </member>
+    <member name="fieldTypes" visibility="protected" static="false" line="47">
+      <docblock>
+        <description/>
+        <var description="Configuration about fieldtypes (\Cherrycake\Modules\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider" type="array"/>
+      </docblock>
+    </member>
+    <member name="isConnected" type="boolean" default="false" visibility="protected" static="false" line="52">
+      <docblock>
+        <description/>
+        <var description="$isConnected Whether this database is connected to the provider, when needed" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="resultClassName" visibility="protected" static="false" line="57">
+      <docblock>
+        <description/>
+        <var description="$resultClassName Holds the name of the class that handles database results. Must be set by an overloaded class" type="string"/>
+      </docblock>
+    </member>
+    <method name="createDatabaseResultObject" start="66" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="createDatabaseResultObject">Creates a database provider-dependant DatabaseResult type object and returns it.</description>
+        <return description="The higher-level DatabaseResult object type" type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="init" start="78" end="83" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the provider.</description>
+        <return description="True if initialization has been done ok, false otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="config" start="92" end="97" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the configuration of the database provider.</description>
+        <param description="The database provider parameters" type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="106" end="108" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="connect" start="116" end="117" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="connect">Connects to the database provider. Intended to be overloaded by a higher level database system implementation class.</description>
+        <return description="True if the connection has been established, false otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="requireConnection" start="126" end="130" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="requireConnection">Calls the connect method in case this provider is not yet connected</description>
+        <return description="if connection is stablished (or has already been stablished), false if connection error" type="object">
+          <type full="Cherrycake\Modules\True" namespace="Cherrycake\Modules" name="True"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="disconnect" start="138" end="139" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="disconnect">Disconnect from the database provider if needed.</description>
+        <return description="True if the disconnection has been done, false otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="query" start="150" end="151" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="query">Performs a query to the database. Intended to be overloaded by a higher level implementation class.</description>
+        <param description="The SQL sentence to query to the database." type="string" variable="$sql"/>
+        <param description="Optional array with additional options. See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="queryCache" start="180" end="202" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="queryCache">Performs a query to the database with Cache capabilities.
+If the query results are stored in the cache, it retrieves it. If not in cache, it performs the query and stores the results in cache.
+Stores results in cache in the form of a tridimensional arrays, storing the DatabaseResult-&gt;data variable.
+
+ Example:
+&lt;code&gt;
+$result = $e-&gt;Database-&gt;main-&gt;QueryCache(
+	"select * from stuff order by rand() limit 3", // The query
+	\Cherrycake\Modules\CACHE_TTL_MINIMAL, // The TTL
+	[ // A key naming options array
+		"cacheSpecificPrefix" =&gt; "TestQuery"
+	],
+	"fast" // A name of a cache provider that overrides the one configured in database.config.php
+);
+&lt;/code&gt;</description>
+        <param description="The SQL sentence to query to the database." type="string" variable="$sql"/>
+        <param description="The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used" type="string" variable="$cacheTtl"/>
+        <param description="If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey" type="array" variable="$cacheKeyNamingOptions"/>
+        <param description="The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php" type="string" variable="$overrideCacheProviderName"/>
+        <param description="Whether to store results in the cache when the query returned no rows or not" type="boolean" variable="$isStoreInCacheWhenNoResults"/>
+        <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult class if the query has been executed or retrieved from the cache correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="cacheTtl" byreference="false" type="boolean" default="false"/>
+      <parameter name="cacheKeyNamingOptions" byreference="false" type="boolean" default="false"/>
+      <parameter name="overrideCacheProviderName" byreference="false" type="boolean" default="false"/>
+      <parameter name="isStoreInCacheWhenNoResults" byreference="false" type="boolean" default="true"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="buildQueryCacheKey" start="215" end="220" abstract="false" final="false" static="false" visibility="protected">
+      <docblock>
+        <description compact="buildQueryCacheKey">Builds a cache key that uniquely identifies the query, based on the configuration provided via $cacheKeyNamingConfig
+The cache key is always prefixed with the configuration value "cacheKeyPrefix", if set. (For clarity purposes when browsing the cached elements)
+It uses MD4 algorithm to create a unique string based on the query because is faster, and we do not require any security here.  MD4 algorithm generates a 32-char hexadecimal code, allowing for 16^32 different keys (approx. 3.4*10^38, 340 undecillion different values)</description>
+        <param description="SQL sentence." variable="$sql" type="object">
+          <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+        </param>
+        <param description="If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey" type="array" variable="$cacheKeyNamingOptions"/>
+        <return description="The cache key" type="string"/>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="cacheKeyNamingOptions" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="prepare" start="233" end="234" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="prepare">Prepares a query to be done to the dabase using prepared queries methodology. Intended to be overloaded by a higher level implementation class</description>
+        <param description="The SQL sentence to prepare to be queried to the database." type="string" variable="$sql"/>
+        <return description="A hash array with the following keys:" type="array">- sql: The passed sql query
+ - statement: A provider-specific statement object if the query has been executed correctly, false otherwise.</return>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="execute" start="251" end="252" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="execute">Executes a previously prepared query with the given parameters. Intended to be overloaded by a higher level implementation class</description>
+        <param description="The prepared result as returned by the prepare method" type="array" variable="$prepareResult"/>
+        <param description="Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:" type="array" variable="$parameters">* type: One of the prepared statement variable type consts, i.e.: DATABASE_FIELD_TYPE_
+* value: The value to be used for this variable on the prepared statement</param>
+        <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="prepareResult" byreference="false" type="{unknown}"/>
+      <parameter name="parameters" byreference="false" type="{unknown}"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="prepareAndExecute" start="265" end="273" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="prepareAndExecute">Performs a full prepared query procedure in just one call. Does the same as if we're executing prepare and execute methods separaterly. Intended for performing prepared queries that won't be repeated in a loop (thus we don't need the benefits of separately preparing the query and then executing it multiple times with different values).</description>
+        <param description="The SQL sentence to prepare to be queried to the database." type="string" variable="$sql"/>
+        <param description="Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Same syntax as in the execute method." type="array" variable="$parameters"/>
+        <param description="Optional array with additional options, See DatabaseResult::$setup for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="parameters" byreference="false" type="{unknown}"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="executeCache" start="291" end="313" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="executeCache">Executes a prepared query with Cache capabilities.
+If the prepared query results are stored in the cache, it retrieves it. If not in cache, it normally executes the prepared query and stores the results in cache.
+Stores results in cache in the form of a tridimensional arrays, storing the DatabaseResult-&gt;data variable.</description>
+        <param description="The prepared result as returned by the prepare method" type="array" variable="$prepareResult"/>
+        <param description="Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Same syntax as in execute method" type="array" variable="$parameters"/>
+        <param description="The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used" type="string" variable="$cacheTtl"/>
+        <param description="If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey" type="array" variable="$cacheKeyNamingOptions"/>
+        <param description="The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php" type="string" variable="$overrideCacheProviderName"/>
+        <param description="Whether to store results in the cache when the query returned no rows or not" type="boolean" variable="$isStoreInCacheWhenNoResults"/>
+        <param description="Optional array with additional options, See DatabaseResult::init for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult class if the query has been executed or retrieved from the cache correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="prepareResult" byreference="false" type="{unknown}"/>
+      <parameter name="parameters" byreference="false" type="{unknown}"/>
+      <parameter name="cacheTtl" byreference="false" type="boolean" default="false"/>
+      <parameter name="cacheKeyNamingOptions" byreference="false" type="boolean" default="false"/>
+      <parameter name="overrideCacheProviderName" byreference="false" type="boolean" default="false"/>
+      <parameter name="isStoreInCacheWhenNoResults" byreference="false" type="boolean" default="true"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="prepareAndExecuteCache" start="329" end="337" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="prepareAndExecuteCache">Performs a full prepared query procedure in just one call with Cache capabilities. Does the same as if we're executing prepare and execute methods separaterly. Intended for performing prepared queries that won't be repeated in a loop (thus we don't need the benefits of separately preparing the query and then executing it multiple times with different values). Intended to be overloaded.</description>
+        <param description="The SQL sentence to prepare to be queried to the database." type="string" variable="$sql"/>
+        <param description="Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Same syntax as in the execute method." type="array" variable="$parameters"/>
+        <param description="The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used" type="string" variable="$cacheTtl"/>
+        <param description="If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey" type="array" variable="$cacheKeyNamingOptions"/>
+        <param description="The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php" type="string" variable="$overrideCacheProviderName"/>
+        <param description="Whether to store results in the cache when the query returned no rows or not" type="boolean" variable="$isStoreInCacheWhenNoResults"/>
+        <param description="Optional array with additional options, See DatabaseResult::init for available options" type="array" variable="$setup"/>
+        <return description="A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise." type="object">
+          <type full="Cherrycake\Modules\DatabaseResult" namespace="Cherrycake\Modules" name="DatabaseResult"/>
+        </return>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="parameters" byreference="false" type="{unknown}"/>
+      <parameter name="cacheTtl" byreference="false" type="boolean" default="false"/>
+      <parameter name="cacheKeyNamingOptions" byreference="false" type="boolean" default="false"/>
+      <parameter name="overrideCacheProviderName" byreference="false" type="boolean" default="false"/>
+      <parameter name="isStoreInCacheWhenNoResults" byreference="false" type="boolean" default="true"/>
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="buildPreparedQueryCacheKey" start="350" end="359" abstract="false" final="false" static="false" visibility="protected">
+      <docblock>
+        <description compact="buildPreparedQueryCacheKey">Builds a cache key that uniquely identifies a prepared query with the given parameters, based on the configuration provided via $cacheKeyNamingConfig</description>
+        <param description="SQL sentence." variable="$sql" type="object">
+          <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+        </param>
+        <param description="Hash array of the variables to be applied to the prepared query, with the same syntax as in the execute method" type="array" variable="$parameters"/>
+        <param description="If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey" type="array" variable="$cacheKeyNamingOptions"/>
+        <return description="The cache key" type="string"/>
+      </docblock>
+      <parameter name="sql" byreference="false" type="{unknown}"/>
+      <parameter name="parameters" byreference="false" type="{unknown}"/>
+      <parameter name="cacheKeyNamingOptions" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="insert" start="367" end="372" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Inserts a row into the specified table on the current database, with the given fields."/>
+        <param description="The table name" type="string" variable="$table"/>
+        <param description="A hash array of field values" type="array" variable="$fields"/>
+        <return description="If everything went ok, the id of the inserted row if the table had an autonumeric field, true if didn't have one. False otherwise." type="mixed"/>
+      </docblock>
+      <parameter name="tableName" byreference="false" type="{unknown}"/>
+      <parameter name="fields" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="updateByUniqueField" start="382" end="395" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Updates a single row in the database identified by the given $idFieldName and $idFieldValue with the given $fields data. More complex updates should be done by the app by calling other methods on this class like prepareAndExecute"/>
+        <param description="The table name" type="string" variable="$tableName"/>
+        <param description="The name of the field that uniquely identified the row to be updated" type="string" variable="$idFieldName"/>
+        <param description="The field value for the row to be update" type="mixed" variable="$idFieldValue"/>
+        <param description="A hash array of field values" type="array" variable="$fields"/>
+        <return description="True if everything went ok, false otherwise" type="boolean"/>
+      </docblock>
+      <parameter name="tableName" byreference="false" type="{unknown}"/>
+      <parameter name="idFieldName" byreference="false" type="{unknown}"/>
+      <parameter name="idFieldValue" byreference="false" type="{unknown}"/>
+      <parameter name="fields" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="deleteByUniqueField" start="404" end="418" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Deletes a single row in the database identified by the given $idFieldName and $idFieldValue. More complex deletes should be done by the app by calling other methods on this class like prepareAndExecute"/>
+        <param description="[description]" type="object" variable="$tableName">
+          <type full="Cherrycake\Modules\[type]" namespace="Cherrycake\Modules" name="[type]"/>
+        </param>
+        <param description="[description]" type="object" variable="$idFieldName">
+          <type full="Cherrycake\Modules\[type]" namespace="Cherrycake\Modules" name="[type]"/>
+        </param>
+        <param description="[description]" type="object" variable="$idFieldValue">
+          <type full="Cherrycake\Modules\[type]" namespace="Cherrycake\Modules" name="[type]"/>
+        </param>
+        <return description="[description]" type="object">
+          <type full="Cherrycake\Modules\[type]" namespace="Cherrycake\Modules" name="[type]"/>
+        </return>
+      </docblock>
+      <parameter name="tableName" byreference="false" type="{unknown}"/>
+      <parameter name="idFieldName" byreference="false" type="{unknown}"/>
+      <parameter name="idFieldValue" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="safeString" start="427" end="428" abstract="false" final="false" static="false" visibility="protected">
+      <docblock>
+        <description compact="safeString">Treats the given string in order to let it be safely included in an SQL sentence as a string literal. Intended to be overloaded.</description>
+        <param description="The safe string" type="string" variable="$string"/>
+      </docblock>
+      <parameter name="string" byreference="false" type="{unknown}"/>
+    </method>
+  </parent>
+</class>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\CacheProviderMemcached" namespace="Cherrycake\Modules" name="CacheProviderMemcached" abstract="false" final="false" start="19" end="178">
+  <file path="/var/www/lib/cherrycake/modules/Cache" file="CacheProviderMemcached.class.php" realpath="/var/www/lib/cherrycake/modules/Cache/CacheProviderMemcached.class.php" size="5787" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="472abd36616af29bb76b1a42dc7c10df9370eedf" relative="modules/Cache/CacheProviderMemcached.class.php"/>
+  <docblock>
+    <description compact="CacheProviderMemcached">Cache Provider based on Memcached. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored. Memcached daemon can also be setup to run in a server cluster.</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <extends full="Cherrycake\Modules\CacheProvider" namespace="Cherrycake\Modules" name="CacheProvider"/>
+  <implements full="Cherrycake\Modules\CacheProviderInterface" namespace="Cherrycake\Modules" name="CacheProviderInterface"/>
+  <member name="config" type="array" default="" visibility="protected" static="false" line="28">
+    <docblock>
+      <description compact="Configuration keys:">* isPersistentConnection: Whether to use a persistent connection to Memcached servers or not. This is actually only taken into account on the Disconnect method due to the way Memcached works.
+* isCompression: Whether to compress cache or not. Defaulted to false. When isCompression is set to false, the method append is much faster.</description>
+      <var description="$config Holds the configuration of the cache provider when needed; things like host, port and password. This is set by the Cache object from the Cherrycake configuration files when this cache provider is setup." type="array"/>
+    </docblock>
+  </member>
+  <member name="memcached" visibility="public" static="false" line="36">
+    <docblock>
+      <description/>
+      <var description="Holds the Memcached object" type="object">
+        <type full="Cherrycake\Modules\Memcached" namespace="Cherrycake\Modules" name="Memcached"/>
+      </var>
+    </docblock>
+  </member>
+  <method name="connect" start="43" end="53" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="connect">Connects to the cache provider if needed. Intended to be overloaded by a higher level cache system implementation class.</description>
+    </docblock>
+  </method>
+  <method name="disconnect" start="61" end="71" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="disconnect">Disconnects from the cache provider if needed.</description>
+      <return description="True if the disconnection has been done, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="set" start="83" end="86" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="set">Stores a value in the Memcached cache.</description>
+      <param description="The identifier key" type="string" variable="$key"/>
+      <param description="The value" type="mixed" variable="$value"/>
+      <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+      <return description="Wether the value has been correctly stored. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="get" start="96" end="99" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="get">Gets a value from the Memcached cache.</description>
+      <param description="The identifier key" type="string" variable="$key"/>
+      <return description="The stored value or false if it doesn't exists." type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="delete" start="109" end="112" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="delete">Deletes a value from the Memcached cache.</description>
+      <param description="The identifier key for the object to be deleted" type="string" variable="$key"/>
+      <return description="True if the object could be deleted. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="increment" start="123" end="125" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="increment">Increments a number stored in the cache by the given step</description>
+      <param description="The identified key for the object to be incremented" type="string" variable="$key"/>
+      <param description="The amount to increment the value, defaults to 1" type="integer" variable="$step"/>
+      <return description="The current value stored in the cache key, or false if error" type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="step" byreference="false" type="integer" default="1"/>
+  </method>
+  <method name="append" start="141" end="147" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="append">Appends the given value to the existent value in the cache. The key must already exists, or error will be returned.
+
+The $ttl parameter is ignored for Memcached since memcached does not provides a way of changing the TTL when appending contents to an existent cache item.
+
+When the config key "isCompression" is set to false, this method is much faster because it can use Memcached's own "append" mechanism.</description>
+      <param description="The item key to append the given value to" type="string" variable="$key"/>
+      <param description="The string to append" type="string" variable="$value"/>
+      <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+      <return description="Wether the value has been correctly stored. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="isKey" start="157" end="164" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="isKey">Checks whether a value is stored or not in the Memcached cache. Since Memcached hasn't an specific method to check for the existence of an object, a workaround is done here (probably slow)</description>
+      <param description="identifier key" variable="$key" type="object">
+        <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+      </param>
+      <return description="True if the value exists in the cache, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="touch" start="174" end="177" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="touch">Stablishes a new expiration TTL for an element in the Memcached cache.</description>
+      <param description="The identifier key for the object to be touched" type="string" variable="$key"/>
+      <param description="The new TTL (Time To Live) for the stored value in seconds" type="integer" variable="$ttl"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Modules\CacheProvider" namespace="Cherrycake\Modules" name="CacheProvider">
+    <member name="config" type="array" default="" visibility="protected" static="false" line="156">
+      <docblock>
+        <description/>
+        <var description="$config Default configuration options" type="array"/>
+      </docblock>
+    </member>
+    <member name="isConnected" type="boolean" default="false" visibility="protected" static="false" line="161">
+      <docblock>
+        <description/>
+        <var description="$isConnected Whether this cache is connected to the provider, when needed" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <method name="config" start="170" end="172" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the configuration of the cache provider.</description>
+        <param description="The cache provider parameters" type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="181" end="183" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="connect" start="190" end="191" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="connect">Connects to the cache provider. Intended to be overloaded by a higher level cache system implementation class.</description>
+      </docblock>
+    </method>
+    <method name="disconnect" start="199" end="200" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="disconnect">Disconnects from the cache provider if needed.</description>
+        <return description="True if the disconnection has been done, false otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+    </method>
+    <method name="requireConnection" start="207" end="210" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="requireConnection">Calls the connect method in case this provider is not yet connected</description>
+      </docblock>
+    </method>
+    <method name="serialize" start="217" end="219" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Returns a string representation of the value passed to be stored on the cache"/>
+        <param description="The value to serialize" type="mixed" variable="$value"/>
+        <return description="The serialized value" type="string"/>
+      </docblock>
+      <parameter name="value" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="unserialize" start="226" end="228" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Unserializes the given value"/>
+        <param description="The value to unserialize" type="string" variable="$value"/>
+        <return description="The unserialized value" type="mixed"/>
+      </docblock>
+      <parameter name="value" byreference="false" type="{unknown}"/>
+    </method>
+  </parent>
+  <interface full="Cherrycake\Modules\CacheProviderInterface" namespace="Cherrycake\Modules" name="CacheProviderInterface">
+    <method name="set" start="23" end="23" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Stores a value in cache."/>
+        <param description="The identifier key" type="string" variable="$key"/>
+        <param description="The value" type="mixed" variable="$value"/>
+        <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+        <return description="Whether the value has been correctly stored. False otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="{unknown}"/>
+      <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="get" start="31" end="31" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Gets a value from the cache."/>
+        <param description="The identifier key" type="string" variable="$key"/>
+        <return description="The stored value or false if it doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="delete" start="39" end="39" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Deletes a value from the cache."/>
+        <param description="The identifier key for the object to be deleted" type="string" variable="$key"/>
+        <return description="True if the object could be deleted. False otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="increment" start="48" end="48" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Increments a number stored in the cache by the given step"/>
+        <param description="The identified key for the object to be incremented" type="string" variable="$key"/>
+        <param description="The amount to increment the value, defaults to 1" type="integer" variable="$step"/>
+        <return description="The current value stored in the cache key, or false if error" type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+      <parameter name="step" byreference="false" type="integer" default="1"/>
+    </method>
+    <method name="append" start="58" end="58" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Appends the given value to the existent value in the cache. The key must already exists, or error will be returned."/>
+        <param description="The item key to append the given value to" type="string" variable="$key"/>
+        <param description="The string to append" type="string" variable="$value"/>
+        <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+        <return description="Wether the value has been correctly stored. False otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="{unknown}"/>
+      <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="isKey" start="66" end="66" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Checks whether a value is stored or not in the cache."/>
+        <param description="identifier key" variable="$key" type="object">
+          <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+        </param>
+        <return description="True if the value exists in the cache, false otherwise" type="object">
+          <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+        </return>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="touch" start="74" end="74" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Stablishes a new expiration TTL for an element in the cache."/>
+        <param description="The identifier key for the object to be touched" type="string" variable="$key"/>
+        <param description="The new TTL (Time To Live) for the stored value in seconds" type="integer" variable="$ttl"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+      <parameter name="ttl" byreference="false" type="{unknown}"/>
+    </method>
+  </interface>
+</class>

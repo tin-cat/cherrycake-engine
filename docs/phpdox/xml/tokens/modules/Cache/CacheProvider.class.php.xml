@@ -1,0 +1,947 @@
+<?xml version="1.0"?>
+<source xmlns="http://xml.phpdox.net/token">
+  <file xmlns="http://xml.phpdox.net/src" path="/var/www/lib/cherrycake/modules/Cache" file="CacheProvider.class.php" realpath="/var/www/lib/cherrycake/modules/Cache/CacheProvider.class.php" size="6170" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="2b061cf49e8796f22e92f780332c7fae6ab1ac20" relative="modules/Cache/CacheProvider.class.php"/>
+  <line no="1">
+    <token name="T_OPEN_TAG">&lt;?php</token>
+  </line>
+  <line no="2"/>
+  <line no="3">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="4">
+    <token name="T_DOC_COMMENT"> * CacheProvider</token>
+  </line>
+  <line no="5">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="6">
+    <token name="T_DOC_COMMENT"> * @package Cherrycake</token>
+  </line>
+  <line no="7">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="8"/>
+  <line no="9">
+    <token name="T_NAMESPACE">namespace</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">Cherrycake</token>
+    <token name="T_NS_SEPARATOR">\</token>
+    <token name="T_STRING">Modules</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="10"/>
+  <line no="11">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="12">
+    <token name="T_DOC_COMMENT"> * Interface for all cache providers</token>
+  </line>
+  <line no="13">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="14">
+    <token name="T_INTERFACE">interface</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">CacheProviderInterface</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="15">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="16">
+    <token name="T_DOC_COMMENT">	 * Stores a value in cache.</token>
+  </line>
+  <line no="17">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="18">
+    <token name="T_DOC_COMMENT">	 * @param string $key The identifier key</token>
+  </line>
+  <line no="19">
+    <token name="T_DOC_COMMENT">	 * @param mixed $value The value</token>
+  </line>
+  <line no="20">
+    <token name="T_DOC_COMMENT">	 * @param integer $ttl The TTL (Time To Live) of the stored value in seconds since now</token>
+  </line>
+  <line no="21">
+    <token name="T_DOC_COMMENT">	 * @return bool Whether the value has been correctly stored. False otherwise</token>
+  </line>
+  <line no="22">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="23">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">set</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$ttl</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">false</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="24"/>
+  <line no="25">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="26">
+    <token name="T_DOC_COMMENT">	 * Gets a value from the cache.</token>
+  </line>
+  <line no="27">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="28">
+    <token name="T_DOC_COMMENT">	 * @param string $key The identifier key</token>
+  </line>
+  <line no="29">
+    <token name="T_DOC_COMMENT">	 * @return mixed The stored value or false if it doesn't exists.</token>
+  </line>
+  <line no="30">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="31">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">get</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="32"/>
+  <line no="33">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="34">
+    <token name="T_DOC_COMMENT">	 * Deletes a value from the cache.</token>
+  </line>
+  <line no="35">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="36">
+    <token name="T_DOC_COMMENT">	 * @param string $key The identifier key for the object to be deleted</token>
+  </line>
+  <line no="37">
+    <token name="T_DOC_COMMENT">	 * @return bool True if the object could be deleted. False otherwise</token>
+  </line>
+  <line no="38">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="39">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">delete</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="40"/>
+  <line no="41">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="42">
+    <token name="T_DOC_COMMENT">	 * Increments a number stored in the cache by the given step</token>
+  </line>
+  <line no="43">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="44">
+    <token name="T_DOC_COMMENT">	 * @param string $key The identified key for the object to be incremented</token>
+  </line>
+  <line no="45">
+    <token name="T_DOC_COMMENT">	 * @param integer $step The amount to increment the value, defaults to 1</token>
+  </line>
+  <line no="46">
+    <token name="T_DOC_COMMENT">	 * @return mixed The current value stored in the cache key, or false if error</token>
+  </line>
+  <line no="47">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="48">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">increment</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$step</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_LNUMBER">1</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="49"/>
+  <line no="50">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="51">
+    <token name="T_DOC_COMMENT">	 * Appends the given value to the existent value in the cache. The key must already exists, or error will be returned.</token>
+  </line>
+  <line no="52">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="53">
+    <token name="T_DOC_COMMENT">	 * @param string $key The item key to append the given value to</token>
+  </line>
+  <line no="54">
+    <token name="T_DOC_COMMENT">	 * @param string $value The string to append</token>
+  </line>
+  <line no="55">
+    <token name="T_DOC_COMMENT">	 * @param integer $ttl The TTL (Time To Live) of the stored value in seconds since now</token>
+  </line>
+  <line no="56">
+    <token name="T_DOC_COMMENT">	 * @return bool Wether the value has been correctly stored. False otherwise</token>
+  </line>
+  <line no="57">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="58">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">append</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$ttl</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">false</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="59"/>
+  <line no="60">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="61">
+    <token name="T_DOC_COMMENT">	 * Checks whether a value is stored or not in the cache.</token>
+  </line>
+  <line no="62">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="63">
+    <token name="T_DOC_COMMENT">	 * @param $key The identifier key</token>
+  </line>
+  <line no="64">
+    <token name="T_DOC_COMMENT">	 * @return bool True if the value exists in the cache, false otherwise</token>
+  </line>
+  <line no="65">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="66">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">isKey</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="67"/>
+  <line no="68">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="69">
+    <token name="T_DOC_COMMENT">	 * Stablishes a new expiration TTL for an element in the cache.</token>
+  </line>
+  <line no="70">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="71">
+    <token name="T_DOC_COMMENT">	 * @param string $key The identifier key for the object to be touched</token>
+  </line>
+  <line no="72">
+    <token name="T_DOC_COMMENT">	 * @param integer $ttl The new TTL (Time To Live) for the stored value in seconds</token>
+  </line>
+  <line no="73">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="74">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">touch</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$ttl</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="75">
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="76"/>
+  <line no="77">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="78">
+    <token name="T_DOC_COMMENT"> * Additional interface for all cache providers that additionally implement Pool functionalities</token>
+  </line>
+  <line no="79">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="80">
+    <token name="T_INTERFACE">interface</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">CacheProviderInterfacePool</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="81">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="82">
+    <token name="T_DOC_COMMENT">	 * Stores a value in a cache pool</token>
+  </line>
+  <line no="83">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="84">
+    <token name="T_DOC_COMMENT">	 * @param string $poolName The name of the pool</token>
+  </line>
+  <line no="85">
+    <token name="T_DOC_COMMENT">	 * @param string $value The value</token>
+  </line>
+  <line no="86">
+    <token name="T_DOC_COMMENT">	 * @return bool Whether the value has been correctly stored. False otherwise</token>
+  </line>
+  <line no="87">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="88">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">poolAdd</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$poolName</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="89"/>
+  <line no="90">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="91">
+    <token name="T_DOC_COMMENT">	 * Gets a random value from the pool and removes it</token>
+  </line>
+  <line no="92">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="93">
+    <token name="T_DOC_COMMENT">	 * @param string $poolName The name of the pool</token>
+  </line>
+  <line no="94">
+    <token name="T_DOC_COMMENT">	 * @return mixed The stored value or false if it doesn't exists.</token>
+  </line>
+  <line no="95">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="96">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">poolPop</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$poolName</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="97"/>
+  <line no="98">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="99">
+    <token name="T_DOC_COMMENT">	 * Checks whether a value is stored or not in the pool.</token>
+  </line>
+  <line no="100">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="101">
+    <token name="T_DOC_COMMENT">	 * @param string $poolName The name of the pool</token>
+  </line>
+  <line no="102">
+    <token name="T_DOC_COMMENT">	 * @param $value The value</token>
+  </line>
+  <line no="103">
+    <token name="T_DOC_COMMENT">	 * @return bool True if the value exists in the pool, false otherwise</token>
+  </line>
+  <line no="104">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="105">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">isInPool</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$poolName</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="106">
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="107"/>
+  <line no="108">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="109">
+    <token name="T_DOC_COMMENT"> * Additional interface for all cache providers that additionally implement Queueing functionalities</token>
+  </line>
+  <line no="110">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="111">
+    <token name="T_INTERFACE">interface</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">CacheProviderInterfaceQueue</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="112">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="113">
+    <token name="T_DOC_COMMENT">	 * Puts a value into the end of a queue</token>
+  </line>
+  <line no="114">
+    <token name="T_DOC_COMMENT">	 * @param string $queueName The name of the queue</token>
+  </line>
+  <line no="115">
+    <token name="T_DOC_COMMENT">	 * @param mixed $value The value to store</token>
+  </line>
+  <line no="116">
+    <token name="T_DOC_COMMENT">	 * @return boolean True if everything went ok, false otherwise</token>
+  </line>
+  <line no="117">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="118">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">rPush</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$queueName</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="119"/>
+  <line no="120">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="121">
+    <token name="T_DOC_COMMENT">	 * Puts a value into the beggining of a queue</token>
+  </line>
+  <line no="122">
+    <token name="T_DOC_COMMENT">	 * @param string $queueName The name of the queue</token>
+  </line>
+  <line no="123">
+    <token name="T_DOC_COMMENT">	 * @param mixed $value The value to store</token>
+  </line>
+  <line no="124">
+    <token name="T_DOC_COMMENT">	 * @return boolean True if everything went ok, false otherwise</token>
+  </line>
+  <line no="125">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="126">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">lPush</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$queueName</token>
+    <token name="T_PHPDOX_COMMA">,</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="127"/>
+  <line no="128">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="129">
+    <token name="T_DOC_COMMENT">	 * Returns the element at the end of a queue, and removes it</token>
+  </line>
+  <line no="130">
+    <token name="T_DOC_COMMENT">	 * @param string $queueName The name of the queue</token>
+  </line>
+  <line no="131">
+    <token name="T_DOC_COMMENT">	 * @return mixed The stored value</token>
+  </line>
+  <line no="132">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="133">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">rPop</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$queueName</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="134"/>
+  <line no="135">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="136">
+    <token name="T_DOC_COMMENT">	 * Returns the element at the beggining of a queue, and removes it</token>
+  </line>
+  <line no="137">
+    <token name="T_DOC_COMMENT">	 * @param string $queueName The name of the queue</token>
+  </line>
+  <line no="138">
+    <token name="T_DOC_COMMENT">	 * @return mixed The stored value</token>
+  </line>
+  <line no="139">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="140">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">lPop</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$queueName</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="141">
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="142"/>
+  <line no="143">
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="144">
+    <token name="T_DOC_COMMENT"> * CacheProvider</token>
+  </line>
+  <line no="145">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="146">
+    <token name="T_DOC_COMMENT"> * Base class for cache provider implementations. Intended to be overloaded by a higher level cache system implementation class.</token>
+  </line>
+  <line no="147">
+    <token name="T_DOC_COMMENT"> * Cache providers are only connected when required (when the first request is received)</token>
+  </line>
+  <line no="148">
+    <token name="T_DOC_COMMENT"> *</token>
+  </line>
+  <line no="149">
+    <token name="T_DOC_COMMENT"> * @package Cherrycake</token>
+  </line>
+  <line no="150">
+    <token name="T_DOC_COMMENT"> * @category Classes</token>
+  </line>
+  <line no="151">
+    <token name="T_DOC_COMMENT"> */</token>
+  </line>
+  <line no="152">
+    <token name="T_CLASS">class</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">CacheProvider</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="153">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="154">
+    <token name="T_DOC_COMMENT">	 * @var array $config Default configuration options</token>
+  </line>
+  <line no="155">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="156">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PROTECTED">protected</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$config</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_SQUARE">[</token>
+    <token name="T_PHPDOX_CLOSE_SQUARE">]</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="157"/>
+  <line no="158">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="159">
+    <token name="T_DOC_COMMENT">	 * @var bool $isConnected Whether this cache is connected to the provider, when needed</token>
+  </line>
+  <line no="160">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="161">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PROTECTED">protected</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$isConnected</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">false</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="162"/>
+  <line no="163">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="164">
+    <token name="T_DOC_COMMENT">	 * config</token>
+  </line>
+  <line no="165">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="166">
+    <token name="T_DOC_COMMENT">	 * Sets the configuration of the cache provider.</token>
+  </line>
+  <line no="167">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="168">
+    <token name="T_DOC_COMMENT">	 * @param array $config The cache provider parameters</token>
+  </line>
+  <line no="169">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="170">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">config</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$config</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="171">
+    <token name="T_WHITESPACE">		</token>
+    <token name="T_VARIABLE">$this</token>
+    <token name="T_OBJECT_OPERATOR">-&gt;</token>
+    <token name="T_STRING">config</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_EQUAL">=</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$config</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="172">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="173"/>
+  <line no="174">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="175">
+    <token name="T_DOC_COMMENT">	 * getConfig</token>
+  </line>
+  <line no="176">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="177">
+    <token name="T_DOC_COMMENT">	 * Gets a configuration value</token>
+  </line>
+  <line no="178">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="179">
+    <token name="T_DOC_COMMENT">	 * @param string $key The configuration key</token>
+  </line>
+  <line no="180">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="181">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">getConfig</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="182">
+    <token name="T_WHITESPACE">		</token>
+    <token name="T_RETURN">return</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_VARIABLE">$this</token>
+    <token name="T_OBJECT_OPERATOR">-&gt;</token>
+    <token name="T_STRING">config</token>
+    <token name="T_PHPDOX_OPEN_SQUARE">[</token>
+    <token name="T_VARIABLE">$key</token>
+    <token name="T_PHPDOX_CLOSE_SQUARE">]</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="183">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="184"/>
+  <line no="185">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="186">
+    <token name="T_DOC_COMMENT">	 * connect</token>
+  </line>
+  <line no="187">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="188">
+    <token name="T_DOC_COMMENT">	 * Connects to the cache provider. Intended to be overloaded by a higher level cache system implementation class.</token>
+  </line>
+  <line no="189">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="190">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">connect</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="191">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="192"/>
+  <line no="193">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="194">
+    <token name="T_DOC_COMMENT">	 * disconnect</token>
+  </line>
+  <line no="195">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="196">
+    <token name="T_DOC_COMMENT">	 * Disconnects from the cache provider if needed.</token>
+  </line>
+  <line no="197">
+    <token name="T_DOC_COMMENT">	 * @return bool True if the disconnection has been done, false otherwise</token>
+  </line>
+  <line no="198">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="199">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">disconnect</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="200">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="201"/>
+  <line no="202">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="203">
+    <token name="T_DOC_COMMENT">	 * requireConnection</token>
+  </line>
+  <line no="204">
+    <token name="T_DOC_COMMENT">	 *</token>
+  </line>
+  <line no="205">
+    <token name="T_DOC_COMMENT">	 * Calls the connect method in case this provider is not yet connected</token>
+  </line>
+  <line no="206">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="207">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">requireConnection</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="208">
+    <token name="T_WHITESPACE">		</token>
+    <token name="T_IF">if</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_EXCLAMATION_MARK">!</token>
+    <token name="T_VARIABLE">$this</token>
+    <token name="T_OBJECT_OPERATOR">-&gt;</token>
+    <token name="T_STRING">isConnected</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+  </line>
+  <line no="209">
+    <token name="T_WHITESPACE">			</token>
+    <token name="T_VARIABLE">$this</token>
+    <token name="T_OBJECT_OPERATOR">-&gt;</token>
+    <token name="T_STRING">Connect</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="210">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="211"/>
+  <line no="212">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="213">
+    <token name="T_DOC_COMMENT">	 * Returns a string representation of the value passed to be stored on the cache</token>
+  </line>
+  <line no="214">
+    <token name="T_DOC_COMMENT">	 * @param  mixed $value The value to serialize</token>
+  </line>
+  <line no="215">
+    <token name="T_DOC_COMMENT">	 * @return string The serialized value</token>
+  </line>
+  <line no="216">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="217">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">serialize</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="218">
+    <token name="T_WHITESPACE">		</token>
+    <token name="T_RETURN">return</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">serialize</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="219">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="220"/>
+  <line no="221">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_DOC_COMMENT">/**</token>
+  </line>
+  <line no="222">
+    <token name="T_DOC_COMMENT">	 * Unserializes the given value</token>
+  </line>
+  <line no="223">
+    <token name="T_DOC_COMMENT">	 * @param string $value The value to unserialize</token>
+  </line>
+  <line no="224">
+    <token name="T_DOC_COMMENT">	 * @return mixed The unserialized value</token>
+  </line>
+  <line no="225">
+    <token name="T_DOC_COMMENT">	 */</token>
+  </line>
+  <line no="226">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_FUNCTION">function</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">unserialize</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_PHPDOX_OPEN_CURLY">{</token>
+  </line>
+  <line no="227">
+    <token name="T_WHITESPACE">		</token>
+    <token name="T_RETURN">return</token>
+    <token name="T_WHITESPACE"> </token>
+    <token name="T_STRING">unserialize</token>
+    <token name="T_PHPDOX_OPEN_BRACKET">(</token>
+    <token name="T_VARIABLE">$value</token>
+    <token name="T_PHPDOX_CLOSE_BRACKET">)</token>
+    <token name="T_PHPDOX_SEMICOLON">;</token>
+  </line>
+  <line no="228">
+    <token name="T_WHITESPACE">	</token>
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+  <line no="229">
+    <token name="T_PHPDOX_CLOSE_CURLY">}</token>
+  </line>
+</source>

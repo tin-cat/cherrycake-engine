@@ -1,0 +1,42 @@
+.UiComponentFormInput.ajax {
+	display: inline-block;
+	position: relative;
+}
+
+.UiComponentFormInput.ajax > .wrapper {
+	position: relative;
+}
+
+.UiComponentFormInput.ajax input {
+	position: relative;
+	width: 100%;
+	transition: padding .1s ease-in-out;
+}
+
+.UiComponentFormInput.ajax .UiComponentButton.send {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	height: inherit;
+	opacity: 0;
+	transition: opacity .1s ease-in-out;
+	pointer-events: none;
+	padding: 0 1em;
+}
+
+
+.UiComponentFormInput.ajax .UiComponentButton.send > .UiComponentIcon {
+	height: 100%;
+}
+
+
+.UiComponentFormInput.ajax.showSaveButton .UiComponentButton.send {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+
+.UiComponentFormInput.ajax.showSaveButton input {
+	padding-right: 55px;
+}

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\CacheProvider</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">CacheProvider</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#members">Members</a>
+          </li>
+          <li>
+            <a href="#methods">Methods</a>
+          </li>
+          <li>
+            <a href="../source/modules/Cache/CacheProvider.class.php.html#line152">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1 id="introduction"><small>Cherrycake\Modules\</small>CacheProvider</h1>
+        <h4>CacheProvider</h4>
+        <p>Base class for cache provider implementations. Intended to be overloaded by a higher level cache system implementation class.<br/>Cache providers are only connected when required (when the first request is received)</p>
+        <ul/>
+        <h2 id="synopsis">Synopsis</h2>
+        <div class="synopsis">class CacheProvider
+            {<br/><ul class="none"><li>// members</li><li>protected array <a href="#members">$config</a> =
+                        ;
+                    </li><li>protected <span title="Cherrycake\Modules\bool">bool</span> <a href="#members">$isConnected</a> =
+                        false;
+                    </li></ul><ul class="none"><li>// methods</li><li>public void <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/config.html">config</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/getConfig.html">getConfig</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/connect.html">connect</a>()
+                    </li><li>public bool <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/disconnect.html">disconnect</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/requireConnection.html">requireConnection</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/serialize.html">serialize</a>()
+                    </li><li>public mixed <a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/unserialize.html">unserialize</a>()
+                    </li></ul>
+
+            }<br/></div>
+        <h2 id="members">Members</h2>
+        <div class="styled members">
+          <h4>protected</h4>
+          <ul class="members">
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="isConnected"><strong>$isConnected</strong>
+                —
+                <a title="Cherrycake\Modules\bool" href="../classes/Cherrycake_Modules_bool.html">Cherrycake\Modules\bool</a></li>
+          </ul>
+        </div>
+        <h2 id="methods">Methods</h2>
+        <div class="styled">
+          <h4>public</h4>
+          <ul>
+            <li id="config"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/config.html">config()</a>
+                — config</li>
+            <li id="connect"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/connect.html">connect()</a>
+                — connect</li>
+            <li id="disconnect"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/disconnect.html">disconnect()</a>
+                — disconnect</li>
+            <li id="getConfig"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/getConfig.html">getConfig()</a>
+                — getConfig</li>
+            <li id="requireConnection"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/requireConnection.html">requireConnection()</a>
+                — requireConnection</li>
+            <li id="serialize"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/serialize.html">serialize()</a>
+                — Returns a string representation of the value passed to be stored on the cache</li>
+            <li id="unserialize"><a title="Cherrycake\Modules\CacheProvider" href="../classes/Cherrycake_Modules_CacheProvider/unserialize.html">unserialize()</a>
+                — Unserializes the given value</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

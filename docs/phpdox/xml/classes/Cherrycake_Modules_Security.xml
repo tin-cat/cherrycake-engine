@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\Security" namespace="Cherrycake\Modules" name="Security" abstract="false" final="false" start="53" end="613">
+  <file path="/var/www/lib/cherrycake/modules/Security" file="Security.class.php" realpath="/var/www/lib/cherrycake/modules/Security/Security.class.php" size="19652" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="337fef979261ceef870514f418a1b6358319a6f7" relative="modules/Security/Security.class.php"/>
+  <docblock>
+    <description compact="Security">Provides security measures
+
+Configuration example for security.config.php:
+&lt;code&gt;
+$securityConfig = [
+	"isCheckMaliciousBadBrowsers" =&gt; true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true
+	"permanentlyBannedIps" =&gt; [ // An array of banned IPs that must be blocked from accessing the application
+		"1.1.1.1"
+	],
+	"isAutoBannedIps" =&gt; true, // Whether to automatically ban IPs when a hack is detected
+	"autoBannedIpsCacheProviderName" =&gt; "fast", // The name of the CacheProvider used to store banned Ips
+	"autoBannedIpsCacheTtl" =&gt; \Cherrycake\Modules\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
+	"autoBannedIpsThreshold" =&gt; 10 // The number hack intrusions detected from the same Ip to consider it banned
+];
+&lt;/code&gt;</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="config" type="array" default="" visibility="public" static="false" line="58">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="68">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+    </docblock>
+  </member>
+  <member name="fixedParameterRules" type="array" default="" visibility="public" static="false" line="78">
+    <docblock>
+      <description/>
+      <var description="$fixedParameterRules Contains the rules that must be always met when checking parameter values" type="array"/>
+    </docblock>
+  </member>
+  <member name="fixedParametersFilters" type="array" default="" visibility="public" static="false" line="85">
+    <docblock>
+      <description/>
+      <var description="$fixedParametersFilters Contains the filters that must be always applied when retrieving parameter values" type="array"/>
+    </docblock>
+  </member>
+  <member name="sqlInjectionDetectRegexp" type="string" default="&quot;[insert( *)into|delete( *)from|alter( *)table|drop( *)table|drop( *)database|select( *)select|union( *)all|select( *)union|select( *)count|waitfor( *)delay|information_schema|limit( +)0|select( +)1|,null|rand\(|\tables|1=1|0x31303235343830303536]i&quot;" visibility="public" static="false" line="89"/>
+  <member name="maliciousBrowserStringsRegexp" type="string" default="&quot;[Havij|WinInet Test]i&quot;" visibility="public" static="false" line="91"/>
+  <method name="init" start="101" end="149" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the module.
+Performs the init security checks.</description>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+    <inline>
+      <comment value="Check permanently banned Ips" line="106"/>
+      <comment value="Check automatically banned Ips" line="120"/>
+      <comment value="Check malicious browserstrings" line="134"/>
+    </inline>
+  </method>
+  <method name="checkValue" start="169" end="273" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Checks the given value against the fixed rules and the additional specific given ones"/>
+      <param description="The value to check" type="mixed" variable="$value"/>
+      <param description="A hash array of the check rules to perform, with the syntax:" type="array" variable="$rules">{
+	&lt;RULE&gt;,
+	{
+		&lt;RULE&gt;,
+		&lt;additional parameter to the rule&gt;
+	},
+	...
+}</param>
+      <param description="Whether to also check for the fixed rules or not" type="boolean" variable="$isFixedRules"/>
+      <return description="A Result object with optionally the following additional payloads:" type="object">* description: An array containing the list of errors found when checking the value<type full="Cherrycake\Modules\Result" namespace="Cherrycake\Modules" name="Result"/></return>
+    </docblock>
+    <parameter name="value" byreference="false" type="{unknown}" default="" constant="NULL"/>
+    <parameter name="rules" byreference="false" type="boolean" default="false"/>
+    <parameter name="isFixedRules" byreference="false" type="boolean" default="true"/>
+  </method>
+  <method name="filterValue" start="292" end="327" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Filters the given value with the fixed rules and the additional specific given ones"/>
+      <param description="The value to filter" type="mixed" variable="$value"/>
+      <param description="A hash array of the filters to apply, with the syntax:" type="array" variable="$filters">{
+	&lt;FILTER&gt;,
+	{
+		&lt;FILTER&gt;,
+		&lt;additional parameter to the filter&gt;
+	},
+	...
+}</param>
+      <param description="Whether to also apply the fixed filters or not" type="boolean" variable="$isFixedFilters"/>
+      <return description="The filtered value" type="mixed"/>
+    </docblock>
+    <parameter name="value" byreference="false" type="{unknown}" default="" constant="NULL"/>
+    <parameter name="filters" byreference="false" type="boolean" default="false"/>
+    <parameter name="isFixedFilters" byreference="false" type="boolean" default="true"/>
+  </method>
+  <method name="checkRequest" start="334" end="389" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Checks the given Request object for security problems"/>
+      <param description="The Request object to check" type="object" variable="$request">
+        <type full="Cherrycake\Modules\Request" namespace="Cherrycake\Modules" name="Request"/>
+      </param>
+      <return description="True if no issues found during checking, false otherwise." type="boolean"/>
+    </docblock>
+    <parameter name="request" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getCsrfToken" start="395" end="401" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns the token for this session. If no token stored yet, creates one and stores it in the session."/>
+      <return description="The token" type="string"/>
+    </docblock>
+  </method>
+  <method name="isCsrfTokenInSession" start="406" end="409" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="Whether there is a Csrf token stored on this session" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="getCsrfTokenInSession" start="414" end="417" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The token stored in session. False if none was present in session." type="string"/>
+    </docblock>
+  </method>
+  <method name="setCsrfTokenInSession" start="423" end="427" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Stores the given token in the current session"/>
+      <param description="True if everything went ok, false otherwise." type="boolean"/>
+    </docblock>
+    <parameter name="token" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="generateCsrfToken" start="432" end="434" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="A secure token suitable for being stored in the session and being used to detect Csrf attacks." type="string"/>
+    </docblock>
+  </method>
+  <method name="generateSlug" start="446" end="501" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Generates a valid slug based on the given string"/>
+      <param description="The base string" type="string" variable="$string"/>
+      <param description="The separator to use when needed" type="string" variable="$separator"/>
+      <param description="The minimum length of the generated slug. Resulting slugs shorter than this will be considered invalid and return false." type="integer" variable="$minLength"/>
+      <param description="The maximum length of the generated slug. Resulting slugs will be cut to this maximum length" type="integer" variable="$maxLength"/>
+      <param description="Whether to generate an all-lowercase slug or not" type="boolean" variable="$isLowercase"/>
+      <param description="Whether to allow for slugs that are entirely numeric or not" type="boolean" variable="$isAllowNumeric"/>
+      <return description="The slug, or false if it couldn't be generated" type="object">
+        <type full="Cherrycake\Modules\mix" namespace="Cherrycake\Modules" name="mix"/>
+      </return>
+    </docblock>
+    <parameter name="string" byreference="false" type="{unknown}"/>
+    <parameter name="separator" byreference="false" type="string" default="&quot;-&quot;"/>
+    <parameter name="minLength" byreference="false" type="integer" default="1"/>
+    <parameter name="maxLength" byreference="false" type="integer" default="140"/>
+    <parameter name="isLowercase" byreference="false" type="boolean" default="true"/>
+    <parameter name="isAllowNumeric" byreference="false" type="boolean" default="true"/>
+    <inline>
+      <comment value="Filter the string to end only with the $allowedCharacters.$extraAllowedCharacters" line="470"/>
+      <comment value="Remove repeated separators" line="478"/>
+      <comment value="Remove trailing and leading $extraAllowedCharacters" line="481"/>
+    </inline>
+  </method>
+  <method name="isAutoBannedIp" start="511" end="524" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="isAutoBannedIp">Checks if the given Ip is auto banned</description>
+      <param description="Ip to check. The current client's Ip is used if not specified" variable="$ip" type="object">
+        <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+      </param>
+      <return description="Whether the given Ip has been auto banned or not" type="boolean"/>
+    </docblock>
+    <parameter name="ip" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="autoBanIp" start="532" end="547" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="autoBanIp">Adds the given Ip to the automatically banned Ips list. If the Ip is already on the list, the TTL is updated</description>
+      <param description="Ip to ban. The current client's Ip is used if not specified" variable="$ip" type="object">
+        <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+      </param>
+    </docblock>
+    <parameter name="ip" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="removeAutoBannedIp" start="555" end="565" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="removeAutoBannedIp">Deletes the given Ip to the automatically banned Ips list. If the Ip is already on the list, the TTL is updated</description>
+      <param description="Ip to unban. The current client's Ip is used if not specified" variable="$ip" type="object">
+        <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+      </param>
+    </docblock>
+    <parameter name="ip" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="getClientIp" start="572" end="577" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getClientIp"/>
+      <return description="The client's IP" type="string"/>
+    </docblock>
+  </method>
+  <method name="getClientBrowserString" start="584" end="586" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getClientBrowserString"/>
+      <return description="The client's browserstring" type="string"/>
+    </docblock>
+  </method>
+  <method name="clean" start="593" end="602" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Cleans string coming from untrusted sources like user input. Should prevent XSS attacks."/>
+      <param description="The string to clean" type="string" variable="$string"/>
+      <return description="The cleaned string" type="string"/>
+    </docblock>
+    <parameter name="string" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="stripXss" start="609" end="611" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Removes XSS attacks from the given string"/>
+      <param description="The string" type="string" variable="$string"/>
+      <return description="The string with XSS attacks removed" type="string"/>
+    </docblock>
+    <parameter name="string" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>

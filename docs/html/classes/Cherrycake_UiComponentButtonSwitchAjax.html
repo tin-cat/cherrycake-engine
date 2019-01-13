@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\UiComponentButtonSwitchAjax</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html#Cherrycake">Cherrycake</a>
+          </li>
+          <li class="separator">UiComponentButtonSwitchAjax</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#hierarchy">Hierarchy</a>
+          </li>
+          <li>
+            <a href="#members">Members</a>
+          </li>
+          <li>
+            <a href="#methods">Methods</a>
+          </li>
+          <li>
+            <a href="../source/modules/Ui/UiComponentButtonSwitchAjax.class.php.html#line19">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1 id="introduction"><small>Cherrycake\</small>UiComponentButtonSwitchAjax</h1>
+        <h4>UiComponentButtonSwitchAjax</h4>
+        <p>A Ui component for button that switch between two states and send an ajax query when switching</p>
+        <ul/>
+        <h2 id="synopsis">Synopsis</h2>
+        <div class="synopsis">class UiComponentButtonSwitchAjax
+                extends <a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton.html">UiComponentButton</a>
+            {<br/><ul class="none"><li>// members</li><li>protected  <a href="#members">$defaultState</a>;
+                    </li><li>protected  <a href="#members">$states</a>;
+                    </li></ul><ul class="none"><li>// Inherited members from <span title="Cherrycake\UiComponentButton">UiComponentButton</span></li><li>protected  <a href="#members">$style</a>;
+                        </li><li>protected  <a href="#members">$additionalCssClasses</a>;
+                        </li><li>protected  <a href="#members">$title</a>;
+                        </li><li>protected  <a href="#members">$iconName</a>;
+                        </li><li>protected string <a href="#members">$iconVariant</a>;
+                        </li><li>protected string <a href="#members">$iconPosition</a>;
+                        </li><li>protected  <a href="#members">$domId</a>;
+                        </li><li>protected  <a href="#members">$href</a>;
+                        </li><li>protected boolean <a href="#members">$isNewWindow</a>;
+                        </li><li>public  <a href="#members">$onClick</a>;
+                        </li><li>public boolean <a href="#members">$isAddJsControl</a>;
+                        </li></ul><ul class="none"><li>// Inherited members from <span title="Cherrycake\UiComponent">UiComponent</span></li><li>protected  <a href="#members">$dependentCherrycakeUiComponents</a>;
+                        </li><li>protected  <a href="#members">$dependentAppUiComponents</a>;
+                        </li><li>protected <span title="Cherrycake\bool">bool</span> <a href="#members">$isConfigFile</a>;
+                        </li><li>protected  <a href="#members">$config</a>;
+                        </li></ul><ul class="none"><li>// methods</li><li>public void <a title="Cherrycake\UiComponentButtonSwitchAjax" href="../classes/Cherrycake_UiComponentButtonSwitchAjax/addCssAndJavascript.html">addCssAndJavascript</a>()
+                    </li><li>public void <a title="Cherrycake\UiComponentButtonSwitchAjax" href="../classes/Cherrycake_UiComponentButtonSwitchAjax/buildHtml.html">buildHtml</a>()
+                    </li></ul><ul class="none"><li>// Inherited methods from <span title="Cherrycake\UiComponentButton">UiComponentButton</span></li><li>public void <a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton/addCssAndJavascript.html">addCssAndJavascript</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton/buildHtml.html">buildHtml</a>()
+                        </li></ul><ul class="none"><li>// Inherited methods from <span title="Cherrycake\UiComponent">UiComponent</span></li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/loadConfigFile.html">loadConfigFile</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/config.html">config</a>()
+                        </li><li>public boolean <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/init.html">init</a>()
+                        </li><li>public boolean <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/loadDependencies.html">loadDependencies</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/getConfig.html">getConfig</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/AddCssAndJavascriptSetsToHtmlDocument.html">AddCssAndJavascriptSetsToHtmlDocument</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/addCssAndJavascript.html">addCssAndJavascript</a>()
+                        </li><li>public void <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/__toString.html">__toString</a>()
+                        </li></ul><ul class="none"><li>// Inherited methods from <span title="Cherrycake\BasicObject">BasicObject</span></li><li>public static BasicObject <a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/build.html">build</a>()
+                        </li><li>public void <a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/__construct.html">__construct</a>()
+                        </li><li>public void <a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/setProperties.html">setProperties</a>()
+                        </li><li>public void <a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/treatParameters.html">treatParameters</a>()
+                        </li></ul>
+
+            }<br/></div>
+        <h2 id="hierarchy">Hierarchy</h2>
+        <div class="styled">
+          <h4>Extends</h4>
+          <ul>
+            <li>
+              <a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton.html">Cherrycake\UiComponentButton</a>
+            </li>
+          </ul>
+        </div>
+        <h2 id="members">Members</h2>
+        <div class="styled members">
+          <h4>protected</h4>
+          <ul class="members">
+            <li id="additionalCssClasses">
+              <strong>$additionalCssClasses</strong>
+            </li>
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="defaultState">
+              <strong>$defaultState</strong>
+            </li>
+            <li id="dependentAppUiComponents"><strong>$dependentAppUiComponents</strong>
+                —
+                array</li>
+            <li id="dependentCherrycakeUiComponents"><strong>$dependentCherrycakeUiComponents</strong>
+                —
+                array</li>
+            <li id="domId">
+              <strong>$domId</strong>
+            </li>
+            <li id="href">
+              <strong>$href</strong>
+            </li>
+            <li id="iconName">
+              <strong>$iconName</strong>
+            </li>
+            <li id="iconPosition">
+              <strong>$iconPosition</strong>
+            </li>
+            <li id="iconVariant">
+              <strong>$iconVariant</strong>
+            </li>
+            <li id="isConfigFile"><strong>$isConfigFile</strong>
+                —
+                <a title="Cherrycake\bool" href="../classes/Cherrycake_bool.html">Cherrycake\bool</a></li>
+            <li id="isNewWindow">
+              <strong>$isNewWindow</strong>
+            </li>
+            <li id="states">
+              <strong>$states</strong>
+            </li>
+            <li id="style">
+              <strong>$style</strong>
+            </li>
+            <li id="title">
+              <strong>$title</strong>
+            </li>
+          </ul>
+          <h4>public</h4>
+          <ul class="members">
+            <li id="isAddJsControl">
+              <strong>$isAddJsControl</strong>
+            </li>
+            <li id="onClick">
+              <strong>$onClick</strong>
+            </li>
+          </ul>
+        </div>
+        <h2 id="methods">Methods</h2>
+        <div class="styled">
+          <h4>public</h4>
+          <ul>
+            <li id="addCssAndJavascript">
+              <a title="Cherrycake\UiComponentButtonSwitchAjax" href="../classes/Cherrycake_UiComponentButtonSwitchAjax/addCssAndJavascript.html">addCssAndJavascript()</a>
+            </li>
+            <li id="buildHtml">
+              <a title="Cherrycake\UiComponentButtonSwitchAjax" href="../classes/Cherrycake_UiComponentButtonSwitchAjax/buildHtml.html">buildHtml()</a>
+            </li>
+          </ul>
+          <h3>Inherited from <a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton.html">Cherrycake\UiComponentButton</a></h3>
+          <h4>public</h4>
+          <ul>
+            <li id="addCssAndJavascript"><a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton/addCssAndJavascript.html">addCssAndJavascript()</a>
+                — AddCssAndJavascriptSetsToHtmlDocument</li>
+            <li id="buildHtml"><a title="Cherrycake\UiComponentButton" href="../classes/Cherrycake_UiComponentButton/buildHtml.html">buildHtml()</a>
+                — Builds the HTML of the input. Any setup keys can be given, which will overwrite the ones (if any) given when constructing the object.</li>
+          </ul>
+          <h3>Inherited from <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent.html">Cherrycake\UiComponent</a></h3>
+          <h4>public</h4>
+          <ul>
+            <li id="AddCssAndJavascriptSetsToHtmlDocument"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/AddCssAndJavascriptSetsToHtmlDocument.html">AddCssAndJavascriptSetsToHtmlDocument()</a>
+                — AddCssAndJavascriptSetsToHtmlDocument</li>
+            <li id="__toString">
+              <a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/__toString.html">__toString()</a>
+            </li>
+            <li id="addCssAndJavascript"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/addCssAndJavascript.html">addCssAndJavascript()</a>
+                — addCssAndJavascript</li>
+            <li id="config"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/config.html">config()</a>
+                — config</li>
+            <li id="getConfig"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/getConfig.html">getConfig()</a>
+                — getConfig</li>
+            <li id="init"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/init.html">init()</a>
+                — init</li>
+            <li id="loadConfigFile"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/loadConfigFile.html">loadConfigFile()</a>
+                — loadConfigFile</li>
+            <li id="loadDependencies"><a title="Cherrycake\UiComponent" href="../classes/Cherrycake_UiComponent/loadDependencies.html">loadDependencies()</a>
+                — loadDependencies</li>
+          </ul>
+          <h3>Inherited from <a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject.html">Cherrycake\BasicObject</a></h3>
+          <h4>public</h4>
+          <ul>
+            <li id="build"><a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/build.html">build()</a>
+                — Creates an object and returns it</li>
+            <li id="setProperties"><a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/setProperties.html">setProperties()</a>
+                — Bulk sets the given properties for this object</li>
+            <li id="treatParameters"><a title="Cherrycake\BasicObject" href="../classes/Cherrycake_BasicObject/treatParameters.html">treatParameters()</a>
+                — Provides a system to pass complex parameters to a method, where parameters are passed in a hash array instead of the usual parameters passing method. A method using this system should accept a hash array of parameters and pass them as the first parameter to this method via a parent::treatParameters call, specifying as a second parameter a setup hash array of options for each parameter to be treated in a special way.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

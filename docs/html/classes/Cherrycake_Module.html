@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Module</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html#Cherrycake">Cherrycake</a>
+          </li>
+          <li class="separator">Module</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#members">Members</a>
+          </li>
+          <li>
+            <a href="#methods">Methods</a>
+          </li>
+          <li>
+            <a href="../source/module.class.php.html#line19">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1 id="introduction"><small>Cherrycake\</small>Module</h1>
+        <h4>Module</h4>
+        <p>The base class for modules. Intented to be overloaded by specific functionality classes</p>
+        <ul/>
+        <h2 id="synopsis">Synopsis</h2>
+        <div class="synopsis">class Module
+            {<br/><ul class="none"><li>// members</li><li>protected <span title="Cherrycake\bool">bool</span> <a href="#members">$isConfigFile</a> =
+                        false;
+                    </li><li>protected  <a href="#members">$config</a>;
+                    </li><li>protected  <a href="#members">$dependentCherrycakeModules</a>;
+                    </li><li>protected  <a href="#members">$dependentAppModules</a>;
+                    </li></ul><ul class="none"><li>// methods</li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile</a>()
+                    </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config</a>()
+                    </li><li>public mixed <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig</a>()
+                    </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig</a>()
+                    </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies</a>()
+                    </li><li>public static void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions</a>()
+                    </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript</a>()
+                    </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init</a>()
+                    </li><li>public array <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct</a>()
+                    </li></ul>
+
+            }<br/></div>
+        <h2 id="members">Members</h2>
+        <div class="styled members">
+          <h4>protected</h4>
+          <ul class="members">
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="dependentAppModules"><strong>$dependentAppModules</strong>
+                —
+                array</li>
+            <li id="dependentCherrycakeModules"><strong>$dependentCherrycakeModules</strong>
+                —
+                array</li>
+            <li id="isConfigFile"><strong>$isConfigFile</strong>
+                —
+                <a title="Cherrycake\bool" href="../classes/Cherrycake_bool.html">Cherrycake\bool</a></li>
+          </ul>
+        </div>
+        <h2 id="methods">Methods</h2>
+        <div class="styled">
+          <h4>public</h4>
+          <ul>
+            <li id="addCssAndJavascript"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript()</a>
+                — addCssAndJavascript</li>
+            <li id="arrayMergeRecursiveDistinct"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct()</a>
+                — arrayMergeRecursiveDistinct</li>
+            <li id="config"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config()</a>
+                — config</li>
+            <li id="getConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig()</a>
+                — getConfig</li>
+            <li id="init"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init()</a>
+                — init</li>
+            <li id="loadConfigFile"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile()</a>
+                — loadConfigFile</li>
+            <li id="loadDependencies"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies()</a>
+                — loadDependencies</li>
+            <li id="mapActions"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions()</a>
+                — mapActions</li>
+            <li id="setConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig()</a>
+                — setConfig</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

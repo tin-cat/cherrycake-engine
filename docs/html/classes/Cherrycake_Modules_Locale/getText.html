@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:pu="http://schema.phpunit.de/coverage/1.0" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\Locale::getText</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">
+            <a title="Cherrycake\Modules\Locale" href="../../classes/Cherrycake_Modules_Locale.html">Locale</a>
+          </li>
+          <li class="separator">getText</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#parameter">Parameter</a>
+          </li>
+          <li>
+            <a href="#return">Return</a>
+          </li>
+          <li>
+            <a href="../../source/modules/Locale/Locale.class.php.html#line244">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1><small>Cherrycake\Modules\Locale::</small>getText</h1>
+        <h4>getText</h4>
+        <p>Returns a text from the multilingual texts database</p>
+        <ul/>
+        <h2 id="signature">Signature</h2>
+        <div class="styled synopsis">
+          <code>public function getText(string
+        $code,
+            [boolean
+        $setup = false] )
+            </code>
+        </div>
+        <h2 id="parameterlist">Parameters</h2>
+        <dl class="styled">
+          <dt><code>$code</code>
+                —
+                string</dt>
+          <dd>The code of the text. Can also be specified as &lt;category code&gt;/&lt;text code&gt; in order to discern texts that are stored with the same code in different categories.</dd>
+          <dt><code>$setup</code>
+                —
+                boolean</dt>
+          <dd>Additional setup with the following possible keys:<br/>* variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {&lt;key&gt;} will be replaced with its corresponding value on this array, in the syntax:<br/>[<br/>"key" =&gt; "value",<br/>"key" =&gt; [LANGUAGE_SPANISH =&gt; "spanish value", LANGUAGE_ENGLISH =&gt; "english value"],<br/>...<br/>]<br/>* forceLanguage: Force the retrieval of the text on this language. Otherwise, the detected language is used.<br/>* forceTextCacheTtl: Use this Ttl for the text cache instead of the module configuration variable textCacheDefaultTtl<br/>* isPurifyVariables: True. Whether to purify values from specified variables for security purposes or not.</dd>
+        </dl>
+        <h2 id="return">Returns</h2>
+        <dl class="styled">
+          <dt>string</dt>
+          <dd>The text</dd>
+        </dl>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

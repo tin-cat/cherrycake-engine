@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\CacheProviderInterface" namespace="Cherrycake\Modules" name="CacheProviderInterface" abstract="false" final="false" start="14" end="75">
+  <file path="/var/www/lib/cherrycake/modules/Cache" file="CacheProvider.class.php" realpath="/var/www/lib/cherrycake/modules/Cache/CacheProvider.class.php" size="6170" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="2b061cf49e8796f22e92f780332c7fae6ab1ac20" relative="modules/Cache/CacheProvider.class.php"/>
+  <docblock>
+    <description compact="Interface for all cache providers"/>
+  </docblock>
+  <method name="set" start="23" end="23" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Stores a value in cache."/>
+      <param description="The identifier key" type="string" variable="$key"/>
+      <param description="The value" type="mixed" variable="$value"/>
+      <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+      <return description="Whether the value has been correctly stored. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="get" start="31" end="31" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Gets a value from the cache."/>
+      <param description="The identifier key" type="string" variable="$key"/>
+      <return description="The stored value or false if it doesn't exists." type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="delete" start="39" end="39" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Deletes a value from the cache."/>
+      <param description="The identifier key for the object to be deleted" type="string" variable="$key"/>
+      <return description="True if the object could be deleted. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="increment" start="48" end="48" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Increments a number stored in the cache by the given step"/>
+      <param description="The identified key for the object to be incremented" type="string" variable="$key"/>
+      <param description="The amount to increment the value, defaults to 1" type="integer" variable="$step"/>
+      <return description="The current value stored in the cache key, or false if error" type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="step" byreference="false" type="integer" default="1"/>
+  </method>
+  <method name="append" start="58" end="58" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Appends the given value to the existent value in the cache. The key must already exists, or error will be returned."/>
+      <param description="The item key to append the given value to" type="string" variable="$key"/>
+      <param description="The string to append" type="string" variable="$value"/>
+      <param description="The TTL (Time To Live) of the stored value in seconds since now" type="integer" variable="$ttl"/>
+      <return description="Wether the value has been correctly stored. False otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="isKey" start="66" end="66" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Checks whether a value is stored or not in the cache."/>
+      <param description="identifier key" variable="$key" type="object">
+        <type full="Cherrycake\Modules\The" namespace="Cherrycake\Modules" name="The"/>
+      </param>
+      <return description="True if the value exists in the cache, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="touch" start="74" end="74" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Stablishes a new expiration TTL for an element in the cache."/>
+      <param description="The identifier key for the object to be touched" type="string" variable="$key"/>
+      <param description="The new TTL (Time To Live) for the stored value in seconds" type="integer" variable="$ttl"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+    <parameter name="ttl" byreference="false" type="{unknown}"/>
+  </method>
+  <implementors>
+    <class full="Cherrycake\Modules\CacheProviderMemcached" namespace="Cherrycake\Modules" name="CacheProviderMemcached"/>
+    <class full="Cherrycake\Modules\CacheProviderRedis" namespace="Cherrycake\Modules" name="CacheProviderRedis"/>
+    <class full="Cherrycake\Modules\CacheProviderApcu" namespace="Cherrycake\Modules" name="CacheProviderApcu"/>
+    <class full="Cherrycake\Modules\CacheProviderApc" namespace="Cherrycake\Modules" name="CacheProviderApc"/>
+  </implementors>
+</interface>

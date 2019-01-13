@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\Patterns" namespace="Cherrycake\Modules" name="Patterns" abstract="false" final="false" start="42" end="180">
+  <file path="/var/www/lib/cherrycake/modules/Patterns" file="Patterns.class.php" realpath="/var/www/lib/cherrycake/modules/Patterns/Patterns.class.php" size="5981" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="faec851e10de65a4c926877f4e053e44ed6a60e6" relative="modules/Patterns/Patterns.class.php"/>
+  <docblock>
+    <description compact="Patterns">Module to manage patterns.
+
+* It reads and parses pattern files
+* Allows pattern nesting and in-pattern commands
+* Can work in conjunction with Cache module to provide a pattern-level cache
+
+Be very careful by not allowing user-entered data or data received via a request to be parsed. Never parse a user-entered information as a pattern.
+It takes configuration from the App-layer configuration file.
+
+Configuration example for patterns.config.php:
+&lt;code&gt;
+$patternsConfig = [
+	"directory" =&gt; "patterns", // The directory where patterns reside
+	"cache" =&gt; [
+		"cacheProviderName" =&gt; "fast", // The default cache provider to use for cached patterns when no specific per-pattern cache provider is specified
+		"items" =&gt; [
+			"home/cacheddemo.html" =&gt; [  // A pattern to cache
+				"ttl" =&gt; \Cherrycake\Modules\CACHE_TTL_MINIMAL, // The TTL
+				"cacheProviderName" =&gt; "huge" // A cache provider to use for this pattern that overrides the default one specified above
+			]
+		]
+	]
+];
+&lt;/code&gt;</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="config" type="array" default="" visibility="public" static="false" line="46">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="53">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="66" end="72" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the module</description>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="out" start="83" end="89" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="out">Parses a pattern and sets the result as the output response payload</description>
+      <param description="The name of the pattern to out" type="string" variable="$patternName"/>
+      <param description="Additional setup with additional options. See Parse method for details." type="array" variable="$setup"/>
+      <param description="The response code to send, one of the RESPONSE_* available" type="object" variable="$code">
+        <type full="Cherrycake\Modules\integet" namespace="Cherrycake\Modules" name="integet"/>
+      </param>
+    </docblock>
+    <parameter name="patternName" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    <parameter name="code" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="parse" start="105" end="147" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="parse">Parses a pattern</description>
+      <param description="The name of the pattern to parse" type="string" variable="$patternName"/>
+      <param description="Additional setup with the following possible keys:" type="array" variable="$setup">* directoryOverride: When specified, the pattern is taken from this directory instead of the default configured directory.
+* noParse: When set to true, the pattern is returned without any parsing
+* fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
+* variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" =&gt; $variable</param>
+      <return description="The parsed pattern. Returns false if some error occurred" type="string"/>
+    </docblock>
+    <parameter name="patternName" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="Check cache" line="110"/>
+      <comment value="Cache store" line="142"/>
+    </inline>
+  </method>
+  <method name="getPatternFileName" start="158" end="160" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getPatternFileName">Builds the complete filename and path of a pattern</description>
+      <param description="The pattern name" type="string" variable="$patternName"/>
+      <param description="When specified, the pattern is taken from this directory instead of the default configured directory." type="string" variable="$directoryOverride"/>
+      <return description="The complete pattern filename" type="string"/>
+    </docblock>
+    <parameter name="patternName" byreference="false" type="{unknown}"/>
+    <parameter name="directoryOverride" byreference="false" type="{unknown}" default="" constant="null"/>
+  </method>
+  <method name="wipeCache" start="170" end="179" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="wipeCache">Deletes a cached pattern from the cache</description>
+      <param description="The pattern name" type="string" variable="$patternName"/>
+      <param description="When specified, the pattern is taken from this directory instead of the default configured directory." type="string" variable="$directoryOverride"/>
+    </docblock>
+    <parameter name="patternName" byreference="false" type="{unknown}"/>
+    <parameter name="directoryOverride" byreference="false" type="boolean" default="false"/>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>

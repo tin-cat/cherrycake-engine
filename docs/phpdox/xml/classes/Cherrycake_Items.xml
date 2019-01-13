@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Items" namespace="Cherrycake" name="Items" abstract="true" final="false" start="16" end="543">
+  <file path="/var/www/lib/cherrycake/classes" file="Items.class.php" realpath="/var/www/lib/cherrycake/classes/Items.class.php" size="22262" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="9075f30d2f6af7166194f243f3bc5877941633b5" relative="classes/Items.class.php"/>
+  <docblock>
+    <description compact="Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method"/>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+    <todo value="Check the caching and the cache clearing performed by the fillFromParameters, clearCache and buildCacheKeyNamingOptions methods"/>
+  </docblock>
+  <extends full="Cherrycake\BasicObject" namespace="Cherrycake" name="BasicObject"/>
+  <implements full="Iterator" namespace="" name="Iterator"/>
+  <member name="tableName" visibility="protected" static="false" line="20">
+    <docblock>
+      <description/>
+      <var description="The name of the table where this items reside on the database" type="string"/>
+    </docblock>
+  </member>
+  <member name="itemClassName" type="string" default="&quot;Item&quot;" visibility="protected" static="false" line="25">
+    <docblock>
+      <description/>
+      <var description="The name of the Item class to use" type="string"/>
+    </docblock>
+  </member>
+  <member name="items" visibility="private" static="false" line="30">
+    <docblock>
+      <description/>
+      <var description="An array containing the Item objects" type="array"/>
+    </docblock>
+  </member>
+  <member name="totalNumberOf" visibility="private" static="false" line="35">
+    <docblock>
+      <description/>
+      <var description="Stores the number of resulting items after executing the get method if it's been executed with the numberOf. This stores the entire number of items even when parameters like isPaging have been used when calling the get method." type="integer"/>
+    </docblock>
+  </member>
+  <member name="databaseProviderName" type="string" default="&quot;main&quot;" visibility="protected" static="false" line="40">
+    <docblock>
+      <description/>
+      <var description="The database provider name to use on the fillFromParameters method" type="string"/>
+    </docblock>
+  </member>
+  <member name="isCache" type="boolean" default="false" visibility="protected" static="false" line="45">
+    <docblock>
+      <description/>
+      <var description="Whether to cache the result or not on the fillFromParameters method" type="boolean"/>
+    </docblock>
+  </member>
+  <member name="cacheTtl" type="{unknown}" default="" constant="Cherrycake\Modules\CACHE_TTL_NORMAL" visibility="protected" static="false" line="50">
+    <docblock>
+      <description/>
+      <var description="The cache ttl to use on the fillFromParameters method" type="integer"/>
+    </docblock>
+  </member>
+  <member name="cacheProviderName" type="boolean" default="false" visibility="protected" static="false" line="55">
+    <docblock>
+      <description/>
+      <var description="The name of the cache provider to use on the fillFromParameters method" type="string"/>
+    </docblock>
+  </member>
+  <member name="cachedKeysPoolName" type="boolean" default="false" visibility="protected" static="false" line="68">
+    <docblock>
+      <description compact="The CachedKeysPool mechanism allows for the wiping of multiple cached queries at once that are related to the same Items set.">When a cachedKeyPoolsName is specified, all the cache keys for queries performed by this Items object will be remembered in an internal pool. So, when executing the clearCachedKeysPool (executes also on the clearCache method), all the cached queries performed by this Items object will be cleared.
+
+For example, when we have an Items object that gets certai items lists by accepts a page parameter for paged results, we don't know in advance how many pages will be cached, nor which pages will be cached, hence preventing us from easily clearing all the cached queries (since each cached items set will have an uncertain cache key that should contain the page number). The CachedKeysPool mechanism adds all the used cache keys to the pool as soon as they're used, so we end having a list of all the used cache keys. The clearCachedKeysPool method loops through that list and removes all the cache entries corresponding to each stored key from cache, effectively clearing all the cached queries related to this Items object.
+
+It uses the same cacheProviderName as the rest of the Items functionalities.</description>
+      <var description="The name of the cachedKeys pool to use. False if no pool of cache keys is to be used." type="string"/>
+    </docblock>
+  </member>
+  <constructor name="__construct" start="76" end="107" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Constructor, allows to create an instance object which automatically fills itself in one of the available forms"/>
+      <param description="Specifications on how to create the Items object, or an array of objects to fill the list with" type="array" variable="$setup"/>
+      <return description="Whether the object could be initialized ok or not" type="boolean"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="Try to guess different type of shortcut calls to the constructor" line="83"/>
+    </inline>
+  </constructor>
+  <method name="getItemClassName" start="113" end="115" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Determines the Item class name that has to be created. When using a DatabaseRow, the DatabaseRow is passed as an argument to help determine the class name if needed. This is intended to be overloaded when different Item classes must be used depending on the specific implementation. If not overloaded, it just uses $this-&gt;itemClassName"/>
+      <return description="The Item class name" type="string"/>
+    </docblock>
+    <parameter name="databaseRow" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="fillFromDatabaseResult" start="132" end="155" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Fills the list with Items loaded from the given DatabaseResult object">Setup keys:
+
+* databaseResult: The DatabaseResult object
+* keyField: The name of the field to be used as the key for the list
+* itemLoadMethod: The method to use to load Items, available methods
+ - fromDatabaseRow: Uses the method Item::loadFromDatabaseRow to load the item, passing each corresponding DatabaseRow
+	- fromId: Uses the method Item::loadFromId to load the item, passing the value of the field specified by keyField setup variable
+* items: An array of objects (should be of the given type itemClassName) to be loaded into the list</description>
+      <param description="Specifications on how to fill the List with Items with the given DatabaseResult" type="array" variable="$setup"/>
+      <return description="True on success, even if there are no results to fill the list, false on error" type="boolean"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="fillFromArray" start="162" end="166" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Fills the list with the given arrays"/>
+      <param description="An array of items to fill the list with" type="array" variable="$items"/>
+      <return description="True on success, false on error" type="boolean"/>
+    </docblock>
+    <parameter name="items" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="fillFromParameters" start="199" end="347" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Fills the list with items loaded according to the given parameters. Intended to be overloaded and called from a parent class."/>
+      <param description="A hash array of parameters, with the following possible keys, plush the additional keys specifically needed in each implementation of this class, as specified on the implementation's get overloaded method, if any." type="array" variable="$p">* 	: &lt;string&gt; Default: id. The name of the field on the database table that uniquely identifies each item, most probably the primary key.
+* selects: &lt;array&gt; Default: All fields from this Object's tableName. An array of select SQL parts to select from. Example: ["tableName.*", "tableName2.id"]
+* tables: &lt;array&gt; Default This object's tableName. An array of tables to be used on the SQL query.
+* wheres: &lt;array|false&gt; Default: false. An array of wheres, where each item is a hash array containing the following keys:
+* sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
+* values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
+* * type: The type of the value, must be one of the \Cherrycake\Modules\DATABASE_FIELD_TYPE_
+* * value: The value itself
+* limit: &lt;integer|false&gt; Default: false. Maximum number of items returned
+* order &lt;array|false&gt; Default: false: An ordered array of orders to apply to results, on which each item can be one of the configured in the "orders" parameter
+* orders &lt;array|false&gt; The order "random" is implemented by default. A hash array of the available orders to be applied to results, where key is the order name as used in the "order" parameter, and the value is the SQL order part.
+* orderRandomSeed &lt;string|false&gt;: The seed to use to randomize results when the "random" order is used.
+* isPaging: &lt;true|false&gt; Default: false. Whether to page results based on the given page and itemsPerPage parameters
+* page: &lt;integer&gt; Default: 0. The number of page to return when paging is active.
+* itemsPerPage: &lt;integer&gt; Default: 10. The number of items per page when paging is active.
+* isBuildTotalNumberOfItems: &lt;true|false&gt; Default: false. Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account the specified limit, if specified.
+* isFillItems: &lt;true|false&gt; Default: true. Whether to return the matching items or not in the "items" results key.
+* isForceNoCache: &lt;true|false&gt; Default: false. If set to true, the query won't use cache, even if the object is configured to do so.
+* cacheKeyNamingOptions: &lt;array|false&gt; Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built byt the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Modules\Cache::buildCacheKey
+* isStoreInCacheWhenNoResults: &lt;boolean&gt; Default: true. Whether to store results in cache even when there are no results.
+
+Stores the results on the following object variables, so they can be later used by other methods:
+*	items: An array of objects containing the matched items, if isFillItems has been set to true.
+*	totalNumberOf: The total number of matching items found, whether paging has been used or not (it takes into account the specified limit, if specified), if isBuildTotalNumberOfItems has been set to true.</param>
+      <return description="True if everything went ok, false otherwise." type="boolean"/>
+    </docblock>
+    <parameter name="p" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="Build the cacheKeyNamingOptions if needed" line="223"/>
+      <comment value="Build $wheres and $fields based on the passed wheres" line="227"/>
+      <comment value="Fill this object with the query resulting item objects" line="236"/>
+      <comment value="Build totalNumberOf" line="315"/>
+    </inline>
+  </method>
+  <method name="buildCacheKeyNamingOptions" start="354" end="358" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Builds a suitable cacheKeyNamingOptions array for performing queries and also clearing cache. Takes the same parameters as the fillFromParameters method. Intended to be overloaded."/>
+      <param description="A hash array of options, with the same specs as the one passed to the fillFromParameters method. Only the relevan keys will be used." type="array" variable="$p"/>
+      <return description="A cacheKeyNamingOptions hash array suitable to be used when performing queries to the database or clearing the queries cache." type="array"/>
+    </docblock>
+    <parameter name="p" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="clearCache" start="365" end="372" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Clears the cache for the query represented by the given $p parameters, just as they were passed to buildCacheKeyNamingOptions (most probably passed first to fillFromParameters)"/>
+      <param description="A hash array of parameters that will be used to build the cache key to clear, so it has to be the same as the parameters passed to buildCacheKeyNamingOptions (and also to fillFromParameters, and to the constructor, if that's the case)" type="array" variable="$p"/>
+      <return description="True if the cache could be cleared, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="p" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters" line="369"/>
+    </inline>
+  </method>
+  <method name="addCachedKey" start="380" end="390" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Adds the given cache key to the pool of cached keys."/>
+      <param description="The cached key name to add to the CachedKeysPool" type="string" variable="$cachedKey"/>
+      <return description="True if the operation went well, false otherwise." type="boolean"/>
+    </docblock>
+    <parameter name="cachedKey" byreference="false" type="{unknown}"/>
+    <inline>
+      <comment value="If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters" line="383"/>
+    </inline>
+  </method>
+  <method name="clearCachedKeysPool" start="397" end="411" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="When using the CachedKeysPool mechanism, this method removes all the cache entries corresponding to each stored key from cache, effectively clearing all the cached queries related to this Items object."/>
+      <return description="True if the cachedKeysPool could be cleared, false otherwise" type="boolean"/>
+    </docblock>
+    <inline>
+      <comment value="If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters" line="403"/>
+    </inline>
+  </method>
+  <method name="addItem" start="419" end="424" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Ads an Item to the list with the given key if specified"/>
+      <param description="The Item to add to the list" type="object" variable="$item">
+        <type full="Cherrycake\Item" namespace="Cherrycake" name="Item"/>
+      </param>
+      <param description="The key used to store the Item on the list. If not specified, the object is stored without a key at the end of the list" type="mixed" variable="$key"/>
+    </docblock>
+    <parameter name="item" byreference="false" type="{unknown}"/>
+    <parameter name="key" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="isExists" start="432" end="437" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Checks whether the Item with the given key exists on the list"/>
+      <param description="The key of the Item to check" type="mixed" variable="$key"/>
+      <return description="True if the item exists, false if not" type="object">
+        <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="isAny" start="442" end="449" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="True when there is at least one Item on the list, false otherwise" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="count" start="454" end="461" abstract="false" final="false" static="false" visibility="public"/>
+  <method name="remove" start="469" end="476" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Removes the Item with the given key from the list"/>
+      <param description="The key to remove" type="mixed" variable="$key"/>
+      <return description="True if the item has been removed, false if the item doesn't exists" type="object">
+        <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+      </return>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="find" start="484" end="488" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Finds the item with the given key"/>
+      <param description="The key to find" type="mixed" variable="$key"/>
+      <return description="The found Item, or false if it wasn't found" type="mixed"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="current" start="493" end="495" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The Item being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns false." type="mixed"/>
+    </docblock>
+  </method>
+  <method name="key" start="500" end="502" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The key of the list element that is being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns null." type="mixed"/>
+    </docblock>
+  </method>
+  <method name="next" start="507" end="509" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The Item that's next in the list of Items, and advances the interal Items pointer by one. Returns false if there are no more elements" type="mixed"/>
+    </docblock>
+  </method>
+  <method name="prev" start="514" end="516" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="The previous Item in the list of Items, and rewinds the interal Items pointer by one. Returns false if there are no more elements" type="mixed"/>
+    </docblock>
+  </method>
+  <method name="rewind" start="521" end="523" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="Rewinds the internal Items pointer to the first element and returns it. Returns false if the list is empty." type="mixed"/>
+    </docblock>
+  </method>
+  <method name="valid" start="528" end="530" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description/>
+      <return description="True if the current key exists, false otherwise" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="filter" start="536" end="542" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Filters the items using the passed function."/>
+      <param description="An anonymous function that will be called for each element on the list, and will receive two parameters: the index of the element and the element itself. This function must return true if the element is to be kept on the list, and false if it's to be removed." type="object" variable="$function">
+        <type full="Cherrycake\callable" namespace="Cherrycake" name="callable"/>
+      </param>
+    </docblock>
+    <parameter name="function" byreference="false" type="{unknown}"/>
+  </method>
+  <extenders>
+    <extender full="Cherrycake\SystemLogItems" namespace="Cherrycake" name="SystemLogItems"/>
+    <extender full="Cherrycake\LogItems" namespace="Cherrycake" name="LogItems"/>
+    <extender full="Cherrycake\TextCategoryItems" namespace="Cherrycake" name="TextCategoryItems"/>
+    <extender full="Cherrycake\JanitorLogItems" namespace="Cherrycake" name="JanitorLogItems"/>
+    <extender full="Cherrycake\TextItems" namespace="Cherrycake" name="TextItems"/>
+  </extenders>
+  <parent full="Cherrycake\BasicObject" namespace="Cherrycake" name="BasicObject">
+    <method name="build" start="22" end="25" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="Creates an object and returns it"/>
+        <param description="A hash array with the select specs" type="array" variable="$setup"/>
+        <return description="The object" type="object">
+          <type full="Cherrycake\BasicObject" namespace="Cherrycake" name="BasicObject"/>
+        </return>
+      </docblock>
+      <parameter name="properties" byreference="false" type="boolean" default="false"/>
+    </method>
+    <constructor name="__construct" start="30" end="32" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description/>
+        <param description="A hash array with the setup keys" type="array" variable="$properties"/>
+      </docblock>
+      <parameter name="properties" byreference="false" type="boolean" default="false"/>
+    </constructor>
+    <method name="setProperties" start="39" end="45" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Bulk sets the given properties for this object"/>
+        <param description="A hash array of properties" type="array" variable="$properties"/>
+        <param description="Whether to overwrite properties if already set" type="boolean" variable="$isOverwrite"/>
+      </docblock>
+      <parameter name="properties" byreference="false" type="{unknown}"/>
+      <parameter name="isOverwrite" byreference="false" type="boolean" default="true"/>
+    </method>
+    <method name="treatParameters" start="52" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Provides a system to pass complex parameters to a method, where parameters are passed in a hash array instead of the usual parameters passing method. A method using this system should accept a hash array of parameters and pass them as the first parameter to this method via a parent::treatParameters call, specifying as a second parameter a setup hash array of options for each parameter to be treated in a special way."/>
+        <param description="&amp;$parameters The hash array of received parameters" type="array"/>
+        <param description="A hash array of setup options on how to treat each passed parameter" type="array" variable="$setup"/>
+      </docblock>
+      <parameter name="parameters" byreference="true" type="{unknown}"/>
+      <parameter name="setup" byreference="false" type="{unknown}"/>
+    </method>
+  </parent>
+  <interface full="Iterator" namespace="" name="Iterator">
+    <extends full="Traversable" namespace="" name="Traversable"/>
+    <method name="current" abstract="false" static="false" visibility="public" final="false">
+    <docblock>
+      <description compact="Return the current element"/>
+      <return type="mixed"/>
+    </docblock>
+  </method>
+    <method name="key" abstract="false" static="false" visibility="public" final="false">
+    <docblock>
+      <description compact="Return the key of the current element"/>
+      <return type="scalar"/>
+    </docblock>
+  </method>
+    <method name="next" abstract="false" static="false" visibility="public" final="false">
+    <docblock>
+      <description compact="Move forward to next element">Moves the current position to the next element.</description>
+      <return type="void"/>
+    </docblock>
+  </method>
+    <method name="rewind" abstract="false" static="false" visibility="public" final="false">
+    <docblock>
+      <description compact="Rewind the Iterator to the first element">Rewinds back to the first element of the Iterator.</description>
+      <return type="void"/>
+    </docblock>
+  </method>
+    <method name="valid" abstract="false" static="false" visibility="public" final="false">
+    <docblock>
+      <description compact="Checks if current position is valid"/>
+      <return type="boolean"/>
+    </docblock>
+  </method>
+  </interface>
+</class>

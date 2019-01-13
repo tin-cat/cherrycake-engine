@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\CacheProviderInterfaceQueue" namespace="Cherrycake\Modules" name="CacheProviderInterfaceQueue" abstract="false" final="false" start="111" end="141">
+  <file path="/var/www/lib/cherrycake/modules/Cache" file="CacheProvider.class.php" realpath="/var/www/lib/cherrycake/modules/Cache/CacheProvider.class.php" size="6170" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="2b061cf49e8796f22e92f780332c7fae6ab1ac20" relative="modules/Cache/CacheProvider.class.php"/>
+  <docblock>
+    <description compact="Additional interface for all cache providers that additionally implement Queueing functionalities"/>
+  </docblock>
+  <method name="rPush" start="118" end="118" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Puts a value into the end of a queue"/>
+      <param description="The name of the queue" type="string" variable="$queueName"/>
+      <param description="The value to store" type="mixed" variable="$value"/>
+      <return description="True if everything went ok, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="queueName" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="lPush" start="126" end="126" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Puts a value into the beggining of a queue"/>
+      <param description="The name of the queue" type="string" variable="$queueName"/>
+      <param description="The value to store" type="mixed" variable="$value"/>
+      <return description="True if everything went ok, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="queueName" byreference="false" type="{unknown}"/>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="rPop" start="133" end="133" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns the element at the end of a queue, and removes it"/>
+      <param description="The name of the queue" type="string" variable="$queueName"/>
+      <return description="The stored value" type="mixed"/>
+    </docblock>
+    <parameter name="queueName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="lPop" start="140" end="140" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns the element at the beggining of a queue, and removes it"/>
+      <param description="The name of the queue" type="string" variable="$queueName"/>
+      <return description="The stored value" type="mixed"/>
+    </docblock>
+    <parameter name="queueName" byreference="false" type="{unknown}"/>
+  </method>
+  <implementors>
+    <class full="Cherrycake\Modules\CacheProviderRedis" namespace="Cherrycake\Modules" name="CacheProviderRedis"/>
+  </implementors>
+</interface>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\AjaxTooltipResponseJson" namespace="Cherrycake" name="AjaxTooltipResponseJson" abstract="false" final="false" start="19" end="34">
+  <file path="/var/www/lib/cherrycake/classes" file="AjaxTooltipResponseJson.class.php" realpath="/var/www/lib/cherrycake/classes/AjaxTooltipResponseJson.class.php" size="888" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="a1df2d788f7bafdcd32c6158115c3e2b7a24d9ba" relative="classes/AjaxTooltipResponseJson.class.php"/>
+  <docblock>
+    <description compact="AjaxTooltipResponseJson">A class that represents an Ajax JSON response suited for the UiComponentTooltip Ui component when showing tooltips containing results from ajax queries, intended to be handled by the Javascript part of the Ajax module</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <extends full="Cherrycake\AjaxResponseJson" namespace="Cherrycake" name="AjaxResponseJson"/>
+  <constructor name="__construct" start="27" end="33" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="AjaxResponse">Constructor factory</description>
+      <param description="The configuration for the Ajax response" type="string" variable="$setup"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="{unknown}"/>
+  </constructor>
+  <parent full="Cherrycake\AjaxResponseJson" namespace="Cherrycake" name="AjaxResponseJson">
+    <member name="code" visibility="protected" static="false" line="32">
+      <docblock>
+        <description/>
+        <var description="$code The response code, one of the available AJAXRESPONSEJSON_* consts" type="integer"/>
+      </docblock>
+    </member>
+    <member name="description" visibility="protected" static="false" line="37">
+      <docblock>
+        <description/>
+        <var description="$description The succes description, if any" type="string"/>
+      </docblock>
+    </member>
+    <member name="messageType" type="{unknown}" default="" constant="AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NONE" visibility="protected" static="false" line="42">
+      <docblock>
+        <description/>
+        <var description="$messageType The type of the message to show to the user, when there is one. One of the available AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* consts" type="integer"/>
+      </docblock>
+    </member>
+    <member name="data" visibility="protected" static="false" line="47">
+      <docblock>
+        <description/>
+        <var description="Arbitraty data to include on the response" type="array"/>
+      </docblock>
+    </member>
+    <constructor name="__construct" start="56" end="61" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="AjaxResponse">Constructor factory</description>
+        <param description="The configuration for the Ajax response" type="string" variable="$setup"/>
+      </docblock>
+      <parameter name="setup" byreference="false" type="{unknown}"/>
+      <inline>
+        <comment value="The response code, one of AJAXRESPONSEJSON_* available consts" line="57"/>
+        <comment value="The description of the response code, whether successed or failed. Leave to empty if no notification should be shown." line="58"/>
+        <comment value="The message type to be shown when a description is specified, one of const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* available consts." line="59"/>
+        <comment value="Any additional data to be included on the response. It is used by other classes extended from this in order to provide specific functionalities on how to display results, like AjaxPopupResponseJson or AjaxNoticeResponseJson" line="60"/>
+      </inline>
+    </constructor>
+    <method name="output" start="68" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="output">Outputs the ajax response</description>
+      </docblock>
+    </method>
+  </parent>
+</class>

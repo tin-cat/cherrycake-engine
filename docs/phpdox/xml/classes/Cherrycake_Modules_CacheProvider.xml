@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\CacheProvider" namespace="Cherrycake\Modules" name="CacheProvider" abstract="false" final="false" start="152" end="229">
+  <file path="/var/www/lib/cherrycake/modules/Cache" file="CacheProvider.class.php" realpath="/var/www/lib/cherrycake/modules/Cache/CacheProvider.class.php" size="6170" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="2b061cf49e8796f22e92f780332c7fae6ab1ac20" relative="modules/Cache/CacheProvider.class.php"/>
+  <docblock>
+    <description compact="CacheProvider">Base class for cache provider implementations. Intended to be overloaded by a higher level cache system implementation class.
+Cache providers are only connected when required (when the first request is received)</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <member name="config" type="array" default="" visibility="protected" static="false" line="156">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="isConnected" type="boolean" default="false" visibility="protected" static="false" line="161">
+    <docblock>
+      <description/>
+      <var description="$isConnected Whether this cache is connected to the provider, when needed" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </var>
+    </docblock>
+  </member>
+  <method name="config" start="170" end="172" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="config">Sets the configuration of the cache provider.</description>
+      <param description="The cache provider parameters" type="array" variable="$config"/>
+    </docblock>
+    <parameter name="config" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getConfig" start="181" end="183" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getConfig">Gets a configuration value</description>
+      <param description="The configuration key" type="string" variable="$key"/>
+    </docblock>
+    <parameter name="key" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="connect" start="190" end="191" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="connect">Connects to the cache provider. Intended to be overloaded by a higher level cache system implementation class.</description>
+    </docblock>
+  </method>
+  <method name="disconnect" start="199" end="200" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="disconnect">Disconnects from the cache provider if needed.</description>
+      <return description="True if the disconnection has been done, false otherwise" type="object">
+        <type full="Cherrycake\Modules\bool" namespace="Cherrycake\Modules" name="bool"/>
+      </return>
+    </docblock>
+  </method>
+  <method name="requireConnection" start="207" end="210" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="requireConnection">Calls the connect method in case this provider is not yet connected</description>
+    </docblock>
+  </method>
+  <method name="serialize" start="217" end="219" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns a string representation of the value passed to be stored on the cache"/>
+      <param description="The value to serialize" type="mixed" variable="$value"/>
+      <return description="The serialized value" type="string"/>
+    </docblock>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="unserialize" start="226" end="228" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Unserializes the given value"/>
+      <param description="The value to unserialize" type="string" variable="$value"/>
+      <return description="The unserialized value" type="mixed"/>
+    </docblock>
+    <parameter name="value" byreference="false" type="{unknown}"/>
+  </method>
+  <extenders>
+    <extender full="Cherrycake\Modules\CacheProviderMemcached" namespace="Cherrycake\Modules" name="CacheProviderMemcached"/>
+    <extender full="Cherrycake\Modules\CacheProviderRedis" namespace="Cherrycake\Modules" name="CacheProviderRedis"/>
+    <extender full="Cherrycake\Modules\CacheProviderApcu" namespace="Cherrycake\Modules" name="CacheProviderApcu"/>
+    <extender full="Cherrycake\Modules\CacheProviderApc" namespace="Cherrycake\Modules" name="CacheProviderApc"/>
+  </extenders>
+</class>

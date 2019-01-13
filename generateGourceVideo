@@ -1,0 +1,19 @@
+gource \
+    -s 1 \
+    -1920x1080 \
+    --auto-skip-seconds .1 \
+    --multi-sampling \
+    --no-vsync \
+    --stop-at-end \
+    --key \
+    --highlight-users \
+    --hide mouse,progress \
+    --file-idle-time 0 \
+    --file-filter /vendor/ \
+    --max-files 0 \
+    --background-colour 000000 \
+    --font-size 22 \
+    --title "Cherrycake" \
+#    --output-ppm-stream - \
+    --output-framerate 60 \
+#   | avconv -y -r 60 -f image2pipe -vcodec ppm -i - -b 65536K movie.mp4

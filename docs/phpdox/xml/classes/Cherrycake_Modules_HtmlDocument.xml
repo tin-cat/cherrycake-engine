@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\HtmlDocument" namespace="Cherrycake\Modules" name="HtmlDocument" abstract="false" final="false" start="81" end="435">
+  <file path="/var/www/lib/cherrycake/modules/HtmlDocument" file="HtmlDocument.class.php" realpath="/var/www/lib/cherrycake/modules/HtmlDocument/HtmlDocument.class.php" size="16573" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="c9779631db03dc28ae84249c0b881df21654c2b3" relative="modules/HtmlDocument/HtmlDocument.class.php"/>
+  <docblock>
+    <description compact="HtmlDocument">Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
+
+Configuration example for htmldocument.config.php:
+&lt;code&gt;
+$htmlDocumentConfig = [
+	"title" =&gt; "Cherrycake test", // The default page title
+	"description" =&gt; "A test application built with the Cherrycake engine", // The default page description
+	"copyright" =&gt; "Copyright Cherrycake ".date("Y"), // The default page copyright info
+	"keywords" =&gt; ["Cherrycake", "Engine", "Test"], // The default page keywords
+	"isAllowRobotsIndex" =&gt; false, // Whether to allow robots to index the document
+	"isAllowRobotsFollow" =&gt; false, // Whether to allow robots to follow links on the document
+ "googleAnalyticsTrackingId" =&gt; false, // Set it to the Google Analytics Tracking Id (UA-999999-99) to setup GA Statistics. Leave it to false to not use Google Analytics. Only added when not in devel environment.
+ "matomoTrackingId" =&gt; false, // Set it to the Matomo Analytics Tracking Id. Leave it to false to not use Matomo. Only added when not in devel environment.
+ "matomoServerUrl" =&gt; false, // When using Matomo, set it to the Matomo¡s server url
+	"defaultCssSetsToInclude" =&gt; [] // The CSS sets that will be included by default in the document if none specified. Each element of the array corresponds to one &lt;link rel ...&gt; in the html document (use this logic to combine version caching capabilities while reducing the number of different CSS requests to be done by the client)
+"main"
+	],
+	"defaultJavascriptSetsToInclude" =&gt; [ // The Javascript sets that will be included by default in the document if none specified. Each element of the array corresponds to one &lt;script src ...&gt; in the html document (use this logic to combine version caching capabilities while reducing the number of different Javascript request to be done by the client)
+		"main"
+	],
+ "mobileViewport" =&gt; [ // Configuration for the site when viewed in a mobile device, via the viewport meta
+     "width" =&gt; 500, // The width of the viewport: A number of pixels, or "device-width"
+     "userScalable" =&gt; false, // Optional, whether or not to let the user pinch to zoom in/out
+     "initialScale" =&gt; 1, // Optional, the initial scale
+     "maximumScale" =&gt; 2 // Optional, the maximum scale
+ ],
+ "isNoticeForOlderInternetExplorer" =&gt; false, // When set to true, adds a warning on the page for users visiting with an old Internet Explorer browser
+ "isDeferJavascript" =&gt; false // Whether to defer javascript sets loading
+ // Most of the following information and images can be automatically generated with http://realfavicongenerator.net/
+ "microsoftApplicationInfo" =&gt; [ // Application info for Microsoft standards (i.e: When adding the web as a shortcut in Windows 8)
+     "name" =&gt; "", // The name of the app
+     "tileColor" =&gt; "", // The color of the tile on Windows 8, in HTML hexadecimal format (i.e: #dd2153)
+     "tileImage" =&gt; "", // Path to an image to use as a tile image for Windows 8. Must be in png format
+ ],
+ "appleApplicationInfo" =&gt; [ // Application info for Apple standards (i.e: When adding the web as a shortcut in iOs devices, or to hint the users about the App store APP for this site)
+     "name" =&gt; "", // The name of the app
+     "iTunesAppId" =&gt; "", // The id of the related application on iTunes, if any
+     "icons" =&gt; [ // Image SRCs for common icon sizes. Must be in png format
+         "57x57" =&gt; "",
+         "114x114" =&gt; "",
+         "72x72" =&gt; "",
+         "144x144" =&gt; "",
+         "60x60" =&gt; "",
+         "120x120" =&gt; "",
+         "76x76" =&gt; "",
+         "152x152" =&gt; ""
+     ]
+ ],
+ "favIcons" =&gt; [ // Image SRCs for common favicon files. Must be in png format
+     "196x196" =&gt; "",
+     "160x160" =&gt; "",
+     "96x96" =&gt; "",
+     "16x16" =&gt; "",
+     "32x32" =&gt; ""
+ ]
+);
+&lt;/code&gt;</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+    <todo value="Make html tag's lang parameter match the real language using the Locale module in header method"/>
+    <todo value="Implement link rel=&quot;canonical&quot; based on the Locale module config key &quot;canonicalLocale&quot; (info: https://support.google.com/webmasters/answer/139394?hl=es)"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="config" type="array" default="" visibility="public" static="false" line="85">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="cssSets" visibility="private" static="false" line="97">
+    <docblock>
+      <description/>
+      <var description="$cssSets An array of Css sets that must be requested on this HTML document" type="array"/>
+    </docblock>
+  </member>
+  <member name="javascriptSets" visibility="private" static="false" line="102">
+    <docblock>
+      <description/>
+      <var description="$javascriptSets An array of Javascript sets that must be requested on this HTML document" type="array"/>
+    </docblock>
+  </member>
+  <member name="inlineJavascript" visibility="private" static="false" line="107">
+    <docblock>
+      <description/>
+      <var description="$inlineJavascript Javascript code that must be executed inline from the HTML" type="string"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="112">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module, to be dumped on the header method" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="124" end="138" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the module</description>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="setTitle" start="147" end="149" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setTitle">Sets the Html document's title</description>
+      <param description="The title" type="string" variable="$title"/>
+    </docblock>
+    <parameter name="title" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="setDescription" start="158" end="160" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="setDescription">Sets the Html document's description</description>
+      <param description="The description" type="string" variable="$description"/>
+    </docblock>
+    <parameter name="description" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="addKeywords" start="169" end="174" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="addKeywords">Adds keywords to the document</description>
+      <param description="An array of keywords or a single string keyword" type="mixed" variable="$keywords"/>
+    </docblock>
+    <parameter name="keywords" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="addCssSet" start="176" end="179" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="setName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="addJavascriptSet" start="181" end="184" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="setName" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="addInlineJavascript" start="193" end="195" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="addInlineJavascript">Adds Javascript code to be executed inline on the HTML itself. If isDeferJavascript is true, this code will be executed only after Javascript sets have been loaded by the client</description>
+      <param variable="$javascript"/>
+    </docblock>
+    <parameter name="javascript" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="header" start="205" end="297" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="header">Returns a properly built HTML header</description>
+      <param description="Setup options to configure the HTML header, with possible keys:" type="array" variable="$setup">"bodyAdditionalCssClasses" =&gt; false // Additional CSS classes for the body element</param>
+    </docblock>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="Css" line="239"/>
+      <comment value="Javascript" line="244"/>
+      <comment value="Mobile viewport" line="249"/>
+    </inline>
+  </method>
+  <method name="footer" start="306" end="349" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="footer">Returns a properly built HTML footer</description>
+      <todo value="Inlined Javascript should be minimized"/>
+    </docblock>
+    <inline>
+      <comment value="Javascript" line="321"/>
+    </inline>
+  </method>
+  <method name="getGoogleAnalyticsCode" start="357" end="367" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns the HTML code for inserting a Google Analytics analytics code"/>
+      <param description="The Google Analytics tracking id to use" type="string" variable="$trackingId"/>
+      <return description="The HTML code for Google Analytics tracking for the given $trackingId" type="string"/>
+    </docblock>
+    <parameter name="trackingId" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getMatomoCode" start="375" end="389" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Returns the HTML code for inserting a Matomo analytics code"/>
+      <param description="The URL of the Matomo server. Must include a trailing backlash." type="string" variable="$serverUrl"/>
+      <param description="The Matomo tracking Id" type="string" variable="$id"/>
+      <return description="The HTML code for Matomo Analytics tracking" type="string"/>
+    </docblock>
+    <parameter name="serverUrl" byreference="false" type="{unknown}"/>
+    <parameter name="id" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="XresponseCode" start="400" end="421" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="responseCode">Sends a response code to the client, and optionally redirects to the specified location.</description>
+      <param description="The code, from one of the available HTML_RESPONSE_CODE_NOT_* consts" type="integer" variable="$code"/>
+      <param description="The Url to redirect" type="string" variable="$location"/>
+      <param description="An optional additional location to redirect the client after the code has been sent" type="string" variable="$location"/>
+    </docblock>
+    <parameter name="code" byreference="false" type="{unknown}"/>
+    <parameter name="location" byreference="false" type="boolean" default="false"/>
+  </method>
+  <method name="Xredirect" start="430" end="434" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="Redirects to the given URL via the specified HTTP response code and ends execution"/>
+      <param description="The code, from one of the available HTML_RESPONSE_CODE_NOT_* consts" type="integer" variable="$code"/>
+      <param description="The Url to redirect" type="string" variable="$location"/>
+      <param description="A location to redirect the client after the code has been sent" type="string" variable="$location"/>
+    </docblock>
+    <parameter name="code" byreference="false" type="{unknown}"/>
+    <parameter name="location" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>

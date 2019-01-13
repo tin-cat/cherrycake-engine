@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Location" namespace="Cherrycake" name="Location" abstract="false" final="false" start="19" end="194">
+  <file path="/var/www/lib/cherrycake/classes" file="Location.class.php" realpath="/var/www/lib/cherrycake/classes/Location.class.php" size="5521" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="463c466366a5caf38c26a7af29f2d22db8630f90" relative="classes/Location.class.php"/>
+  <docblock>
+    <description compact="Location">Class that represents a location</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <member name="data" visibility="public" static="false" line="23">
+    <docblock>
+      <description/>
+      <var description="The data of this location" type="object">
+        <type full="Cherrycake\$data" namespace="Cherrycake" name="$data"/>
+      </var>
+    </docblock>
+  </member>
+  <constructor name="__construct" start="39" end="55" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="__construct">Constructor, allows to create an instance object which automatically fills itself in one of the available forms
+
+Setup keys:
+
+* loadMethod: If specified, it loads the Item using the given method, available methods:
+	- fromGivenLocationIds: Loads the Location for the given countryId, RegionId and CityId keys</description>
+      <param description="Specifications on how to create the Location object" type="array" variable="$setup"/>
+      <return description="Whether the object could be initialized ok or not" type="boolean"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+  </constructor>
+  <method name="loadFromGivenLocationIds" start="68" end="87" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="loadFromGivenLocationIds">Loads this Location using the given countryId, regionId and cityId data keys on the $data array
+countryId and regionId can be overriden if cityId is specified.
+countryId can be overriden if regionId and cityId is specified.
+Takes into account that some cities may no be associated to a region, but only to a country</description>
+      <param description="The location ids" type="array" variable="$data"/>
+      <return description="True on success, false otherwise" type="boolean"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getCountry" start="95" end="108" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getCountry"/>
+      <param description="The country id" type="integer" variable="$countryId"/>
+      <return description="The data about the specified country" type="array"/>
+    </docblock>
+    <parameter name="countryId" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getRegion" start="116" end="129" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getRegion"/>
+      <param description="The region id" type="integer" variable="$regionId"/>
+      <return description="The data about the specified region" type="array"/>
+    </docblock>
+    <parameter name="regionId" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getCity" start="137" end="150" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getCity"/>
+      <param description="The city id" type="integer" variable="$cityId"/>
+      <return description="The data about the specified city" type="array"/>
+    </docblock>
+    <parameter name="cityId" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getName" start="167" end="193" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="getName">Returns a string representation of the location
+
+Setup keys:
+
+* isOnlyCityWhenImportantCity: Whether to show only the city name if it's an important city. Defaults to false.
+* isCity: Whether to include the city name or not. Defaults to true.
+* isRegion: Whether to include the region name or not. Defaults to false.
+* isCountry: Whether to include the country name or not. Defaults to true.</description>
+      <param description="Setup options on how to build the name" type="array" variable="$setup"/>
+      <return description="A string representation of the location" type="string"/>
+    </docblock>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+  </method>
+</class>

@@ -1,0 +1,17 @@
+.UiComponentSlides {
+}
+
+.UiComponentSlides > .slide {
+    position: relative;
+}
+
+.UiComponentSlides > .slide.fullScreen {
+    height: 100vh;
+}
+
+.UiComponentSlides > .slide > .centered {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    <?= $e->Css->buildUnsupportedProperty("transform", "translate(-50%, -50%)"); ?>
+}

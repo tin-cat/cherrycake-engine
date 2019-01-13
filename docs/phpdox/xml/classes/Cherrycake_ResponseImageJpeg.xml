@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\ResponseImageJpeg" namespace="Cherrycake" name="ResponseImageJpeg" abstract="false" final="false" start="19" end="39">
+  <file path="/var/www/lib/cherrycake/classes" file="ResponseImageJpeg.class.php" realpath="/var/www/lib/cherrycake/classes/ResponseImageJpeg.class.php" size="776" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="4c9f1285b7d8c4e5b979476186f5402296ec1715" relative="classes/ResponseImageJpeg.class.php"/>
+  <docblock>
+    <description compact="Response">Class that represents a response to a client. Mostly used by the Output module.</description>
+    <package value="Cherrycake"/>
+    <category value="Classes"/>
+  </docblock>
+  <extends full="Cherrycake\Response" namespace="Cherrycake" name="Response"/>
+  <member name="isProgressive" type="boolean" default="false" visibility="private" static="false" line="23">
+    <docblock>
+      <description/>
+      <var description="$isProgressive Whether the jpeg is progressive or not" type="boolean"/>
+    </docblock>
+  </member>
+  <constructor name="__construct" start="25" end="29" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+  </constructor>
+  <method name="setProgressive" start="31" end="33" abstract="false" final="false" static="false" visibility="public">
+    <parameter name="isProgressive" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="getContentType" start="35" end="38" abstract="false" final="false" static="false" visibility="public"/>
+  <parent full="Cherrycake\Response" namespace="Cherrycake" name="Response">
+    <member name="contentType" visibility="protected" static="false" line="23">
+      <docblock>
+        <description/>
+        <var description="$contentType The content type of the response" type="integer"/>
+      </docblock>
+    </member>
+    <constructor name="__construct" start="45" end="54" abstract="false" final="false" static="false" visibility="public">
+      <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    </constructor>
+    <method name="addHeader" start="60" end="62" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Adds a header to be sent to the client"/>
+        <param description="The header" type="string" variable="$header"/>
+      </docblock>
+      <parameter name="header" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setCode" start="68" end="70" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Sets the code"/>
+        <param description="The code, one of the available RESPONSE_" type="object" variable="$code">
+          <type full="Cherrycake\integet" namespace="Cherrycake" name="integet"/>
+        </param>
+      </docblock>
+      <parameter name="code" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setUrl" start="76" end="78" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Sets the url"/>
+        <param description="The url to redirect to" type="string" variable="$url"/>
+      </docblock>
+      <parameter name="url" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setPayload" start="84" end="86" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Sets the payload"/>
+        <param description="The payload" type="string" variable="$payload"/>
+      </docblock>
+      <parameter name="payload" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="appendPayload" start="92" end="94" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Appends the given payload"/>
+        <param description="The payload to append" type="string" variable="$payload"/>
+      </docblock>
+      <parameter name="payload" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="prependPayload" start="100" end="102" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Prepends the given payload"/>
+        <param description="The payload to prepend" type="string" variable="$payload"/>
+      </docblock>
+      <parameter name="payload" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="emptyPayload" start="107" end="109" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Empties the payload"/>
+      </docblock>
+    </method>
+    <method name="getPayload" start="114" end="116" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description/>
+        <return description="The Payload" type="string"/>
+      </docblock>
+    </method>
+    <method name="getPayloadForClient" start="122" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="This method is intended to be overloaded if other types of Responses need to treat the payload in some way before sending it to the client. For example, generating a JSON string from the variable stored as payload."/>
+        <return description="The Payload as the client expects it" type="string"/>
+      </docblock>
+    </method>
+    <method name="getContentType" start="129" end="131" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description/>
+        <return description="The content type mime type string" type="string"/>
+      </docblock>
+    </method>
+    <method name="send" start="136" end="144" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Sends the response to the client"/>
+      </docblock>
+    </method>
+    <method name="addResponseHeader" start="146" end="167" abstract="false" final="false" static="false" visibility="public"/>
+    <method name="sendHeaders" start="172" end="177" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="Sends the headers to the client"/>
+      </docblock>
+    </method>
+  </parent>
+</class>

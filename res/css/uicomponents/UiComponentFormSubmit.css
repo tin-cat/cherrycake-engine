@@ -1,0 +1,4 @@
+.UiComponentGrid > div > .UiComponentFormSubmit {
+	margin-left: 50%;
+	<?= $e->Css->buildUnsupportedProperty("transform", "translate(-50%, 0)"); ?>
+}

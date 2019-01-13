@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>phpDox - Cherrycake\Modules\Browser</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" media="screen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  </head>
+  <body>
+    <nav class="topnav">
+      <ul>
+        <li>
+          <div class="logo"><span>/**</span>phpDox</div>
+        </li>
+        <li class="separator">
+          <a href="../index.html">Overview</a>
+        </li>
+        <li class="separator">
+          <a href="../namespaces.html">Namespaces</a>
+        </li>
+        <li>
+          <a href="../interfaces.html">Interfaces</a>
+        </li>
+        <li>
+          <a href="../classes.html">Classes</a>
+        </li>
+        <li class="separator">
+          <a href="../source/index.html">Source</a>
+        </li>
+      </ul>
+    </nav>
+    <div id="mainstage">
+      <div class="box">
+        <ul class="breadcrumb">
+          <li>
+            <a href="../index.html">Overview</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html">Classes</a>
+          </li>
+          <li class="separator">
+            <a href="../classes.html#Cherrycake_Modules">Cherrycake\Modules</a>
+          </li>
+          <li class="separator">Browser</li>
+        </ul>
+      </div>
+      <nav class="box">
+        <ul>
+          <li>
+            <a href="#introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#synopsis">Synopsis</a>
+          </li>
+          <li>
+            <a href="#hierarchy">Hierarchy</a>
+          </li>
+          <li>
+            <a href="#constants">Constants</a>
+          </li>
+          <li>
+            <a href="#members">Members</a>
+          </li>
+          <li>
+            <a href="#methods">Methods</a>
+          </li>
+          <li>
+            <a href="../source/modules/Browser/Browser.class.php.html#line21">Source</a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <h1 id="introduction"><small>Cherrycake\Modules\</small>Browser</h1>
+        <h4>Browser</h4>
+        <p>Module that identifies the client's browser<br/>Strongly based on Browser.php by Chris Schuld (http://chrisschuld.com/), 99% of the code by him.</p>
+        <ul>
+          <li>Author: Chris Schuld</li>
+        </ul>
+        <h2 id="synopsis">Synopsis</h2>
+        <div class="synopsis">class Browser
+                extends <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Module</a>
+            {<br/><ul class="none"><li>// constants</li><li>const BROWSER_UNKNOWN = 'unknown';</li><li>const VERSION_UNKNOWN = 'unknown';</li><li>const BROWSER_OPERA = 'Opera';</li><li>const BROWSER_OPERA_MINI = 'Opera Mini';</li><li>const BROWSER_WEBTV = 'WebTV';</li><li>const BROWSER_IE = 'Internet Explorer';</li><li>const BROWSER_POCKET_IE = 'Pocket Internet Explorer';</li><li>const BROWSER_KONQUEROR = 'Konqueror';</li><li>const BROWSER_ICAB = 'iCab';</li><li>const BROWSER_OMNIWEB = 'OmniWeb';</li><li>const BROWSER_FIREBIRD = 'Firebird';</li><li>const BROWSER_FIREFOX = 'Firefox';</li><li>const BROWSER_ICEWEASEL = 'Iceweasel';</li><li>const BROWSER_SHIRETOKO = 'Shiretoko';</li><li>const BROWSER_MOZILLA = 'Mozilla';</li><li>const BROWSER_AMAYA = 'Amaya';</li><li>const BROWSER_LYNX = 'Lynx';</li><li>const BROWSER_SAFARI = 'Safari';</li><li>const BROWSER_IPHONE = 'iPhone';</li><li>const BROWSER_IPOD = 'iPod';</li><li>const BROWSER_IPAD = 'iPad';</li><li>const BROWSER_CHROME = 'Chrome';</li><li>const BROWSER_ANDROID = 'Android';</li><li>const BROWSER_GOOGLEBOT = 'GoogleBot';</li><li>const BROWSER_SLURP = 'Yahoo! Slurp';</li><li>const BROWSER_W3CVALIDATOR = 'W3C Validator';</li><li>const BROWSER_BLACKBERRY = 'BlackBerry';</li><li>const BROWSER_ICECAT = 'IceCat';</li><li>const BROWSER_NOKIA_S60 = 'Nokia S60 OSS Browser';</li><li>const BROWSER_NOKIA = 'Nokia Browser';</li><li>const BROWSER_MSN = 'MSN Browser';</li><li>const BROWSER_MSNBOT = 'MSN Bot';</li><li>const BROWSER_NETSCAPE_NAVIGATOR = 'Netscape Navigator';</li><li>const BROWSER_GALEON = 'Galeon';</li><li>const BROWSER_NETPOSITIVE = 'NetPositive';</li><li>const BROWSER_PHOENIX = 'Phoenix';</li><li>const PLATFORM_UNKNOWN = 'unknown';</li><li>const PLATFORM_WINDOWS = 'Windows';</li><li>const PLATFORM_WINDOWS_CE = 'Windows CE';</li><li>const PLATFORM_APPLE = 'Apple';</li><li>const PLATFORM_LINUX = 'Linux';</li><li>const PLATFORM_OS2 = 'OS/2';</li><li>const PLATFORM_BEOS = 'BeOS';</li><li>const PLATFORM_IPHONE = 'iPhone';</li><li>const PLATFORM_IPOD = 'iPod';</li><li>const PLATFORM_IPAD = 'iPad';</li><li>const PLATFORM_BLACKBERRY = 'BlackBerry';</li><li>const PLATFORM_NOKIA = 'Nokia';</li><li>const PLATFORM_FREEBSD = 'FreeBSD';</li><li>const PLATFORM_OPENBSD = 'OpenBSD';</li><li>const PLATFORM_NETBSD = 'NetBSD';</li><li>const PLATFORM_SUNOS = 'SunOS';</li><li>const PLATFORM_OPENSOLARIS = 'OpenSolaris';</li><li>const PLATFORM_ANDROID = 'Android';</li><li>const OPERATING_SYSTEM_UNKNOWN = 'unknown';</li><li>const ENGINE_WEBKIT = 0;</li><li>const ENGINE_GECKO = 1;</li><li>const ENGINE_PRESTO = 2;</li><li>const ENGINE_OTHERS = 3;</li></ul><ul class="none"><li>// members</li><li>private string <a href="#members">$_agent</a> =
+                        '';
+                    </li><li>private string <a href="#members">$_browser_name</a> =
+                        '';
+                    </li><li>private string <a href="#members">$_version</a> =
+                        '';
+                    </li><li>private string <a href="#members">$_platform</a> =
+                        '';
+                    </li><li>private string <a href="#members">$_os</a> =
+                        '';
+                    </li><li>private boolean <a href="#members">$_is_aol</a> =
+                        false;
+                    </li><li>private boolean <a href="#members">$_is_mobile</a> =
+                        false;
+                    </li><li>private boolean <a href="#members">$_is_robot</a> =
+                        false;
+                    </li><li>private string <a href="#members">$_aol_version</a> =
+                        '';
+                    </li><li>public array <a href="#members">$engines</a> =
+                        ;
+                    </li></ul><ul class="none"><li>// Inherited members from <span title="Cherrycake\Module">Module</span></li><li>protected <span title="Cherrycake\bool">bool</span> <a href="#members">$isConfigFile</a>;
+                        </li><li>protected  <a href="#members">$config</a>;
+                        </li><li>protected  <a href="#members">$dependentCherrycakeModules</a>;
+                        </li><li>protected  <a href="#members">$dependentAppModules</a>;
+                        </li></ul><ul class="none"><li>// methods</li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/Browser.html">Browser</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/init.html">init</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/reset.html">reset</a>()
+                    </li><li>public True <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isBrowser.html">isBrowser</a>()
+                    </li><li>public integer <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getEngine.html">getEngine</a>()
+                    </li><li>public The <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getForEngine.html">getForEngine</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getBrowser.html">getBrowser</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setBrowser.html">setBrowser</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getPlatform.html">getPlatform</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setPlatform.html">setPlatform</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getVersion.html">getVersion</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getMajorVersion.html">getMajorVersion</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setVersion.html">setVersion</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getAolVersion.html">getAolVersion</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setAolVersion.html">setAolVersion</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isAol.html">isAol</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isMobile.html">isMobile</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isRobot.html">isRobot</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setAol.html">setAol</a>()
+                    </li><li>protected void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setMobile.html">setMobile</a>()
+                    </li><li>protected void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setRobot.html">setRobot</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getUserAgent.html">getUserAgent</a>()
+                    </li><li>public void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setUserAgent.html">setUserAgent</a>()
+                    </li><li>public boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isChromeFrame.html">isChromeFrame</a>()
+                    </li><li>public string <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/__toString.html">__toString</a>()
+                    </li><li>protected void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/determine.html">determine</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowsers.html">checkBrowsers</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserBlackBerry.html">checkBrowserBlackBerry</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkForAol.html">checkForAol</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserGoogleBot.html">checkBrowserGoogleBot</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserMSNBot.html">checkBrowserMSNBot</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserW3CValidator.html">checkBrowserW3CValidator</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserSlurp.html">checkBrowserSlurp</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserInternetExplorer.html">checkBrowserInternetExplorer</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserOpera.html">checkBrowserOpera</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserChrome.html">checkBrowserChrome</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserWebTv.html">checkBrowserWebTv</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNetPositive.html">checkBrowserNetPositive</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserGaleon.html">checkBrowserGaleon</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserKonqueror.html">checkBrowserKonqueror</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIcab.html">checkBrowserIcab</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserOmniWeb.html">checkBrowserOmniWeb</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserPhoenix.html">checkBrowserPhoenix</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserFirebird.html">checkBrowserFirebird</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNetscapeNavigator9Plus.html">checkBrowserNetscapeNavigator9Plus</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserShiretoko.html">checkBrowserShiretoko</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIceCat.html">checkBrowserIceCat</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNokia.html">checkBrowserNokia</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserFirefox.html">checkBrowserFirefox</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIceweasel.html">checkBrowserIceweasel</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserMozilla.html">checkBrowserMozilla</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserLynx.html">checkBrowserLynx</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserAmaya.html">checkBrowserAmaya</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserSafari.html">checkBrowserSafari</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPhone.html">checkBrowseriPhone</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPad.html">checkBrowseriPad</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPod.html">checkBrowseriPod</a>()
+                    </li><li>protected boolean <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserAndroid.html">checkBrowserAndroid</a>()
+                    </li><li>protected void <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkPlatform.html">checkPlatform</a>()
+                    </li></ul><ul class="none"><li>// Inherited methods from <span title="Cherrycake\Module">Module</span></li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config</a>()
+                        </li><li>public mixed <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig</a>()
+                        </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies</a>()
+                        </li><li>public static void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions</a>()
+                        </li><li>public void <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript</a>()
+                        </li><li>public boolean <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init</a>()
+                        </li><li>public array <a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct</a>()
+                        </li></ul>
+
+            }<br/></div>
+        <h2 id="hierarchy">Hierarchy</h2>
+        <div class="styled">
+          <h4>Extends</h4>
+          <ul>
+            <li>
+              <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Cherrycake\Module</a>
+            </li>
+          </ul>
+        </div>
+        <h2 id="constants">Constants</h2>
+        <table class="styled">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="BROWSER_UNKNOWN">BROWSER_UNKNOWN</td>
+              <td>'unknown'</td>
+            </tr>
+            <tr>
+              <td id="VERSION_UNKNOWN">VERSION_UNKNOWN</td>
+              <td>'unknown'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_OPERA">BROWSER_OPERA</td>
+              <td>'Opera'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_OPERA_MINI">BROWSER_OPERA_MINI</td>
+              <td>'Opera Mini'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_WEBTV">BROWSER_WEBTV</td>
+              <td>'WebTV'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_IE">BROWSER_IE</td>
+              <td>'Internet Explorer'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_POCKET_IE">BROWSER_POCKET_IE</td>
+              <td>'Pocket Internet Explorer'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_KONQUEROR">BROWSER_KONQUEROR</td>
+              <td>'Konqueror'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_ICAB">BROWSER_ICAB</td>
+              <td>'iCab'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_OMNIWEB">BROWSER_OMNIWEB</td>
+              <td>'OmniWeb'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_FIREBIRD">BROWSER_FIREBIRD</td>
+              <td>'Firebird'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_FIREFOX">BROWSER_FIREFOX</td>
+              <td>'Firefox'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_ICEWEASEL">BROWSER_ICEWEASEL</td>
+              <td>'Iceweasel'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_SHIRETOKO">BROWSER_SHIRETOKO</td>
+              <td>'Shiretoko'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_MOZILLA">BROWSER_MOZILLA</td>
+              <td>'Mozilla'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_AMAYA">BROWSER_AMAYA</td>
+              <td>'Amaya'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_LYNX">BROWSER_LYNX</td>
+              <td>'Lynx'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_SAFARI">BROWSER_SAFARI</td>
+              <td>'Safari'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_IPHONE">BROWSER_IPHONE</td>
+              <td>'iPhone'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_IPOD">BROWSER_IPOD</td>
+              <td>'iPod'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_IPAD">BROWSER_IPAD</td>
+              <td>'iPad'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_CHROME">BROWSER_CHROME</td>
+              <td>'Chrome'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_ANDROID">BROWSER_ANDROID</td>
+              <td>'Android'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_GOOGLEBOT">BROWSER_GOOGLEBOT</td>
+              <td>'GoogleBot'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_SLURP">BROWSER_SLURP</td>
+              <td>'Yahoo! Slurp'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_W3CVALIDATOR">BROWSER_W3CVALIDATOR</td>
+              <td>'W3C Validator'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_BLACKBERRY">BROWSER_BLACKBERRY</td>
+              <td>'BlackBerry'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_ICECAT">BROWSER_ICECAT</td>
+              <td>'IceCat'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_NOKIA_S60">BROWSER_NOKIA_S60</td>
+              <td>'Nokia S60 OSS Browser'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_NOKIA">BROWSER_NOKIA</td>
+              <td>'Nokia Browser'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_MSN">BROWSER_MSN</td>
+              <td>'MSN Browser'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_MSNBOT">BROWSER_MSNBOT</td>
+              <td>'MSN Bot'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_NETSCAPE_NAVIGATOR">BROWSER_NETSCAPE_NAVIGATOR</td>
+              <td>'Netscape Navigator'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_GALEON">BROWSER_GALEON</td>
+              <td>'Galeon'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_NETPOSITIVE">BROWSER_NETPOSITIVE</td>
+              <td>'NetPositive'</td>
+            </tr>
+            <tr>
+              <td id="BROWSER_PHOENIX">BROWSER_PHOENIX</td>
+              <td>'Phoenix'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_UNKNOWN">PLATFORM_UNKNOWN</td>
+              <td>'unknown'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_WINDOWS">PLATFORM_WINDOWS</td>
+              <td>'Windows'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_WINDOWS_CE">PLATFORM_WINDOWS_CE</td>
+              <td>'Windows CE'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_APPLE">PLATFORM_APPLE</td>
+              <td>'Apple'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_LINUX">PLATFORM_LINUX</td>
+              <td>'Linux'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_OS2">PLATFORM_OS2</td>
+              <td>'OS/2'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_BEOS">PLATFORM_BEOS</td>
+              <td>'BeOS'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_IPHONE">PLATFORM_IPHONE</td>
+              <td>'iPhone'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_IPOD">PLATFORM_IPOD</td>
+              <td>'iPod'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_IPAD">PLATFORM_IPAD</td>
+              <td>'iPad'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_BLACKBERRY">PLATFORM_BLACKBERRY</td>
+              <td>'BlackBerry'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_NOKIA">PLATFORM_NOKIA</td>
+              <td>'Nokia'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_FREEBSD">PLATFORM_FREEBSD</td>
+              <td>'FreeBSD'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_OPENBSD">PLATFORM_OPENBSD</td>
+              <td>'OpenBSD'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_NETBSD">PLATFORM_NETBSD</td>
+              <td>'NetBSD'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_SUNOS">PLATFORM_SUNOS</td>
+              <td>'SunOS'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_OPENSOLARIS">PLATFORM_OPENSOLARIS</td>
+              <td>'OpenSolaris'</td>
+            </tr>
+            <tr>
+              <td id="PLATFORM_ANDROID">PLATFORM_ANDROID</td>
+              <td>'Android'</td>
+            </tr>
+            <tr>
+              <td id="OPERATING_SYSTEM_UNKNOWN">OPERATING_SYSTEM_UNKNOWN</td>
+              <td>'unknown'</td>
+            </tr>
+            <tr>
+              <td id="ENGINE_WEBKIT">ENGINE_WEBKIT</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td id="ENGINE_GECKO">ENGINE_GECKO</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td id="ENGINE_PRESTO">ENGINE_PRESTO</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td id="ENGINE_OTHERS">ENGINE_OTHERS</td>
+              <td>3</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="members">Members</h2>
+        <div class="styled members">
+          <h4>private</h4>
+          <ul class="members">
+            <li id="_agent">
+              <strong>$_agent</strong>
+            </li>
+            <li id="_aol_version">
+              <strong>$_aol_version</strong>
+            </li>
+            <li id="_browser_name">
+              <strong>$_browser_name</strong>
+            </li>
+            <li id="_is_aol">
+              <strong>$_is_aol</strong>
+            </li>
+            <li id="_is_mobile">
+              <strong>$_is_mobile</strong>
+            </li>
+            <li id="_is_robot">
+              <strong>$_is_robot</strong>
+            </li>
+            <li id="_os">
+              <strong>$_os</strong>
+            </li>
+            <li id="_platform">
+              <strong>$_platform</strong>
+            </li>
+            <li id="_version">
+              <strong>$_version</strong>
+            </li>
+          </ul>
+          <h4>protected</h4>
+          <ul class="members">
+            <li id="config"><strong>$config</strong>
+                —
+                array</li>
+            <li id="dependentAppModules"><strong>$dependentAppModules</strong>
+                —
+                array</li>
+            <li id="dependentCherrycakeModules"><strong>$dependentCherrycakeModules</strong>
+                —
+                array</li>
+            <li id="isConfigFile"><strong>$isConfigFile</strong>
+                —
+                <a title="Cherrycake\bool" href="../classes/Cherrycake_bool.html">Cherrycake\bool</a></li>
+          </ul>
+          <h4>public</h4>
+          <ul class="members">
+            <li id="engines">
+              <strong>$engines</strong>
+            </li>
+          </ul>
+        </div>
+        <h2 id="methods">Methods</h2>
+        <div class="styled">
+          <h4>protected</h4>
+          <ul>
+            <li id="checkBrowserAmaya"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserAmaya.html">checkBrowserAmaya()</a>
+                — Determine if the browser is Amaya or not (last updated 1.7)</li>
+            <li id="checkBrowserAndroid"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserAndroid.html">checkBrowserAndroid()</a>
+                — Determine if the browser is Android or not (last updated 1.7)</li>
+            <li id="checkBrowserBlackBerry"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserBlackBerry.html">checkBrowserBlackBerry()</a>
+                — Determine if the user is using a BlackBerry (last updated 1.7)</li>
+            <li id="checkBrowserChrome"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserChrome.html">checkBrowserChrome()</a>
+                — Determine if the browser is Chrome or not (last updated 1.7)</li>
+            <li id="checkBrowserFirebird"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserFirebird.html">checkBrowserFirebird()</a>
+                — Determine if the browser is Firebird or not (last updated 1.7)</li>
+            <li id="checkBrowserFirefox"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserFirefox.html">checkBrowserFirefox()</a>
+                — Determine if the browser is Firefox or not (last updated 1.7)</li>
+            <li id="checkBrowserGaleon"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserGaleon.html">checkBrowserGaleon()</a>
+                — Determine if the browser is Galeon or not (last updated 1.7)</li>
+            <li id="checkBrowserGoogleBot"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserGoogleBot.html">checkBrowserGoogleBot()</a>
+                — Determine if the browser is the GoogleBot or not (last updated 1.7)</li>
+            <li id="checkBrowserIcab"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIcab.html">checkBrowserIcab()</a>
+                — Determine if the browser is iCab or not (last updated 1.7)</li>
+            <li id="checkBrowserIceCat"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIceCat.html">checkBrowserIceCat()</a>
+                — Determine if the browser is Ice Cat or not (http://en.wikipedia.org/wiki/GNU_IceCat) (last updated 1.7)</li>
+            <li id="checkBrowserIceweasel"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserIceweasel.html">checkBrowserIceweasel()</a>
+                — Determine if the browser is Firefox or not (last updated 1.7)</li>
+            <li id="checkBrowserInternetExplorer"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserInternetExplorer.html">checkBrowserInternetExplorer()</a>
+                — Determine if the browser is Internet Explorer or not (last updated 1.7)</li>
+            <li id="checkBrowserKonqueror"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserKonqueror.html">checkBrowserKonqueror()</a>
+                — Determine if the browser is Konqueror or not (last updated 1.7)</li>
+            <li id="checkBrowserLynx"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserLynx.html">checkBrowserLynx()</a>
+                — Determine if the browser is Lynx or not (last updated 1.7)</li>
+            <li id="checkBrowserMSNBot"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserMSNBot.html">checkBrowserMSNBot()</a>
+                — Determine if the browser is the MSNBot or not (last updated 1.9)</li>
+            <li id="checkBrowserMozilla"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserMozilla.html">checkBrowserMozilla()</a>
+                — Determine if the browser is Mozilla or not (last updated 1.7)</li>
+            <li id="checkBrowserNetPositive"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNetPositive.html">checkBrowserNetPositive()</a>
+                — Determine if the browser is NetPositive or not (last updated 1.7)</li>
+            <li id="checkBrowserNetscapeNavigator9Plus"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNetscapeNavigator9Plus.html">checkBrowserNetscapeNavigator9Plus()</a>
+                — Determine if the browser is Netscape Navigator 9+ or not (last updated 1.7) NOTE: (http://browser.netscape.com/ - Official support ended on March 1st, 2008)</li>
+            <li id="checkBrowserNokia"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserNokia.html">checkBrowserNokia()</a>
+                — Determine if the browser is Nokia or not (last updated 1.7)</li>
+            <li id="checkBrowserOmniWeb"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserOmniWeb.html">checkBrowserOmniWeb()</a>
+                — Determine if the browser is OmniWeb or not (last updated 1.7)</li>
+            <li id="checkBrowserOpera"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserOpera.html">checkBrowserOpera()</a>
+                — Determine if the browser is Opera or not (last updated 1.7)</li>
+            <li id="checkBrowserPhoenix"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserPhoenix.html">checkBrowserPhoenix()</a>
+                — Determine if the browser is Phoenix or not (last updated 1.7)</li>
+            <li id="checkBrowserSafari"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserSafari.html">checkBrowserSafari()</a>
+                — Determine if the browser is Safari or not (last updated 1.7)</li>
+            <li id="checkBrowserShiretoko"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserShiretoko.html">checkBrowserShiretoko()</a>
+                — Determine if the browser is Shiretoko or not (https://wiki.mozilla.org/Projects/shiretoko) (last updated 1.7)</li>
+            <li id="checkBrowserSlurp"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserSlurp.html">checkBrowserSlurp()</a>
+                — Determine if the browser is the Yahoo! Slurp Robot or not (last updated 1.7)</li>
+            <li id="checkBrowserW3CValidator"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserW3CValidator.html">checkBrowserW3CValidator()</a>
+                — Determine if the browser is the W3C Validator or not (last updated 1.7)</li>
+            <li id="checkBrowserWebTv"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowserWebTv.html">checkBrowserWebTv()</a>
+                — Determine if the browser is WebTv or not (last updated 1.7)</li>
+            <li id="checkBrowseriPad"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPad.html">checkBrowseriPad()</a>
+                — Determine if the browser is iPod or not (last updated 1.7)</li>
+            <li id="checkBrowseriPhone"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPhone.html">checkBrowseriPhone()</a>
+                — Determine if the browser is iPhone or not (last updated 1.7)</li>
+            <li id="checkBrowseriPod"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowseriPod.html">checkBrowseriPod()</a>
+                — Determine if the browser is iPod or not (last updated 1.7)</li>
+            <li id="checkBrowsers"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkBrowsers.html">checkBrowsers()</a>
+                — Protected routine to determine the browser type</li>
+            <li id="checkForAol"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkForAol.html">checkForAol()</a>
+                — Determine if the user is using an AOL User Agent (last updated 1.7)</li>
+            <li id="checkPlatform"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/checkPlatform.html">checkPlatform()</a>
+                — Determine the user's platform (last updated 1.7)</li>
+            <li id="determine"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/determine.html">determine()</a>
+                — Protected routine to calculate and determine what the browser is in use (including platform)</li>
+            <li id="setMobile"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setMobile.html">setMobile()</a>
+                — Set the Browser to be mobile</li>
+            <li id="setRobot"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setRobot.html">setRobot()</a>
+                — Set the Browser to be a robot</li>
+          </ul>
+          <h4>public</h4>
+          <ul>
+            <li id="Browser">
+              <a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/Browser.html">Browser()</a>
+            </li>
+            <li id="__toString"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/__toString.html">__toString()</a>
+                — Returns a formatted string with a summary of the details of the browser.</li>
+            <li id="getAolVersion"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getAolVersion.html">getAolVersion()</a>
+                — The version of AOL.</li>
+            <li id="getBrowser"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getBrowser.html">getBrowser()</a>
+                — The name of the browser.  All return types are from the class constants</li>
+            <li id="getEngine"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getEngine.html">getEngine()</a>
+                — getEngine</li>
+            <li id="getForEngine"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getForEngine.html">getForEngine()</a>
+                — getForEngine</li>
+            <li id="getMajorVersion"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getMajorVersion.html">getMajorVersion()</a>
+                — getMajorVersion</li>
+            <li id="getPlatform"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getPlatform.html">getPlatform()</a>
+                — The name of the platform.  All return types are from the class contants</li>
+            <li id="getUserAgent"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getUserAgent.html">getUserAgent()</a>
+                — Get the user agent value in use to determine the browser</li>
+            <li id="getVersion"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/getVersion.html">getVersion()</a>
+                — The version of the browser.</li>
+            <li id="init"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/init.html">init()</a>
+                — init</li>
+            <li id="isAol"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isAol.html">isAol()</a>
+                — Is the browser from AOL?</li>
+            <li id="isBrowser"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isBrowser.html">isBrowser()</a>
+                — Check to see if the specific browser is valid</li>
+            <li id="isChromeFrame"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isChromeFrame.html">isChromeFrame()</a>
+                — Used to determine if the browser is actually "chromeframe"</li>
+            <li id="isMobile"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isMobile.html">isMobile()</a>
+                — Is the browser from a mobile device?</li>
+            <li id="isRobot"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/isRobot.html">isRobot()</a>
+                — Is the browser from a robot (ex Slurp,GoogleBot)?</li>
+            <li id="reset"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/reset.html">reset()</a>
+                — Reset all properties</li>
+            <li id="setAol"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setAol.html">setAol()</a>
+                — Set the browser to be from AOL</li>
+            <li id="setAolVersion"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setAolVersion.html">setAolVersion()</a>
+                — Set the version of AOL</li>
+            <li id="setBrowser"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setBrowser.html">setBrowser()</a>
+                — Set the name of the browser</li>
+            <li id="setPlatform"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setPlatform.html">setPlatform()</a>
+                — Set the name of the platform</li>
+            <li id="setUserAgent"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setUserAgent.html">setUserAgent()</a>
+                — Set the user agent value (the construction will use the HTTP header value - this will overwrite it)</li>
+            <li id="setVersion"><a title="Cherrycake\Modules\Browser" href="../classes/Cherrycake_Modules_Browser/setVersion.html">setVersion()</a>
+                — Set the version of the browser</li>
+          </ul>
+          <h3>Inherited from <a title="Cherrycake\Module" href="../classes/Cherrycake_Module.html">Cherrycake\Module</a></h3>
+          <h4>public</h4>
+          <ul>
+            <li id="addCssAndJavascript"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/addCssAndJavascript.html">addCssAndJavascript()</a>
+                — addCssAndJavascript</li>
+            <li id="arrayMergeRecursiveDistinct"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/arrayMergeRecursiveDistinct.html">arrayMergeRecursiveDistinct()</a>
+                — arrayMergeRecursiveDistinct</li>
+            <li id="config"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/config.html">config()</a>
+                — config</li>
+            <li id="getConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/getConfig.html">getConfig()</a>
+                — getConfig</li>
+            <li id="init"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/init.html">init()</a>
+                — init</li>
+            <li id="loadConfigFile"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadConfigFile.html">loadConfigFile()</a>
+                — loadConfigFile</li>
+            <li id="loadDependencies"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/loadDependencies.html">loadDependencies()</a>
+                — loadDependencies</li>
+            <li id="mapActions"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/mapActions.html">mapActions()</a>
+                — mapActions</li>
+            <li id="setConfig"><a title="Cherrycake\Module" href="../classes/Cherrycake_Module/setConfig.html">setConfig()</a>
+                — setConfig</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Generated using phpDox 0.9.0 - Copyright (C) 2010 - 2018 by Arne Blankerts</span>
+    </footer>
+  </body>
+</html>

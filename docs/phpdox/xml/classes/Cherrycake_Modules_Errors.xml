@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="Cherrycake\Modules\Errors" namespace="Cherrycake\Modules" name="Errors" abstract="false" final="false" start="48" end="258">
+  <file path="/var/www/lib/cherrycake/modules/Errors" file="Errors.class.php" realpath="/var/www/lib/cherrycake/modules/Errors/Errors.class.php" size="8735" time="2018-09-09T09:36:04+00:00" unixtime="1536485764" sha1="3cf9acf31ab4e83801c8509221738b95c64a030a" relative="modules/Errors/Errors.class.php"/>
+  <docblock>
+    <description compact="Errors">Module to manage application errors in a neat way.
+It takes configuration from the App-layer configuration file.
+Errors will be shown on screen if IS_DEVEL_ENVIRONMENT is set to true or if client's IP is on $underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
+
+Configuration example for patterns.config.php:
+&lt;code&gt;
+$errorsConfig = [
+ "isHtmlOutput" =&gt; true, // Whether to dump HTML formatted errors or not when not using a pattern to show errors. Defaults to true
+	"patternNames" =&gt; [
+		\Cherrycake\Modules\ERROR_SYSTEM =&gt; "errors/error.html",
+		\Cherrycake\Modules\ERROR_APP =&gt; "errors/error.html",
+		\Cherrycake\Modules\ERROR_NOT_FOUND =&gt; "errors/error.html"
+		\Cherrycake\Modules\ERROR_NO_PERMISSION =&gt; "errors/error.html"
+	], // An array of pattern names to user when an error occurs. If a patterns is not specified, a generic error is triggered.
+	"isLogSystemErrors" =&gt; true, // Whether or not to log system errors. Defaults to true
+	"isLogAppErrors" =&gt; true // Whether or not to log app errors.  Defaults to true
+	"isLogNotFoundErrors" =&gt; false // Whether or not to log "Not found" errors. Defaults to false
+	"isLogNoPermissionErrors" =&gt; false // Whether or not to log "No permission errors. Defaults to false
+ "isEmailSystemErrors" =&gt; true, // Whether or not to email system errors. Defaults to true
+ "isEmailAppErrors" =&gt; false, // Whether or not to email app errors. Defaults to false
+ "isEmailNotFoundErrors" =&gt; false, // Whether or not to email "Not found" errors. Defaults to false
+ "isEmailNoPermissionErrors" =&gt; false, // Whether or not to email "No permission" errors. Defaults to false
+ "notificationEmail" =&gt; ADMIN_TECHNICAL_EMAIL // The email address to send the error report. Defaults to ADMIN_TECHNICAL_EMAIL
+];
+&lt;/code&gt;</description>
+    <package value="Cherrycake"/>
+    <category value="Modules"/>
+  </docblock>
+  <extends full="Cherrycake\Module" namespace="Cherrycake" name="Module"/>
+  <member name="config" type="array" default="" visibility="public" static="false" line="52">
+    <docblock>
+      <description/>
+      <var description="$config Default configuration options" type="array"/>
+    </docblock>
+  </member>
+  <member name="dependentCherrycakeModules" type="array" default="" visibility="public" static="false" line="74">
+    <docblock>
+      <description/>
+      <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+    </docblock>
+  </member>
+  <method name="init" start="87" end="93" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="init">Initializes the module and sets the PHP error level</description>
+      <return description="Whether the module has been initted ok" type="boolean"/>
+    </docblock>
+  </method>
+  <method name="trigger" start="108" end="220" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="trigger">To be called when an error is detected.</description>
+      <param description="The error type, one of the available error types. Private errors are meant to not be shown to the user in production state. Public errors are meant to be shown to the user." type="integer" variable="$errorType"/>
+      <param description="Additional setup with the following possible keys:" type="array" variable="$setup">* errorSubType: Additional, optional string code to easily group this type or errors later
+* errorDescription: Additional, optional description of the error
+* errorVariables: A hash array of additional variables relevant to the error.
+* isForceLog: Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
+* isSilent: If set to true, nothing will be outputted. Used for only logging and/or sending email notification of the error</param>
+    </docblock>
+    <parameter name="errorType" byreference="false" type="{unknown}"/>
+    <parameter name="setup" byreference="false" type="boolean" default="false"/>
+    <inline>
+      <comment value="Build error backtrace array" line="114"/>
+    </inline>
+  </method>
+  <method name="emailNotify" start="229" end="257" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="emailNotify">Sends an email to the configured "notificationEmail"</description>
+      <param description="A hash array of data to include in the notification, or a simple string" type="mixed" variable="$data"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+  </method>
+  <parent full="Cherrycake\Module" namespace="Cherrycake" name="Module">
+    <member name="isConfigFile" type="boolean" default="false" visibility="protected" static="false" line="24">
+      <docblock>
+        <description/>
+        <var description="$isConfig Sets whether this module has its own configuration file. Defaults to false." type="object">
+          <type full="Cherrycake\bool" namespace="Cherrycake" name="bool"/>
+        </var>
+      </docblock>
+    </member>
+    <member name="config" visibility="protected" static="false" line="29">
+      <docblock>
+        <description/>
+        <var description="$config Holds the default configuration for this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentCherrycakeModules" visibility="protected" static="false" line="34">
+      <docblock>
+        <description/>
+        <var description="$dependentCherrycakeModules Cherrycake module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <member name="dependentAppModules" visibility="protected" static="false" line="39">
+      <docblock>
+        <description/>
+        <var description="$dependentAppModules App module names that are required by this module" type="array"/>
+      </docblock>
+    </member>
+    <method name="loadConfigFile" start="46" end="52" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadConfigFile">Loads the configuration file for this module, if there's one</description>
+      </docblock>
+    </method>
+    <method name="config" start="61" end="69" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="config">Sets the module configuration</description>
+        <param description="An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module." type="array" variable="$config"/>
+      </docblock>
+      <parameter name="config" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="getConfig" start="79" end="84" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="getConfig">Gets a configuration value</description>
+        <param description="The configuration key" type="string" variable="$key"/>
+        <return description="The value of the specified config key. Returns false if doesn't exists." type="mixed"/>
+      </docblock>
+      <parameter name="key" byreference="false" type="{unknown}"/>
+    </method>
+    <method name="setConfig" start="94" end="101" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="setConfig">Sets a configuration value</description>
+        <param description="The configuration key, or a hash array of keys =&gt; values if multiple keys are to be changed" type="string" variable="$key"/>
+        <param description="The configuration value" type="string" variable="$value"/>
+      </docblock>
+      <parameter name="keyOrKeys" byreference="false" type="{unknown}"/>
+      <parameter name="value" byreference="false" type="boolean" default="false"/>
+    </method>
+    <method name="loadDependencies" start="110" end="124" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="loadDependencies">Loads the dependent modules required by this one</description>
+        <return description="Whether the dependent modules were loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="mapActions" start="131" end="132" abstract="false" final="false" static="true" visibility="public">
+      <docblock>
+        <description compact="mapActions">Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()</description>
+      </docblock>
+    </method>
+    <method name="addCssAndJavascript" start="139" end="140" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="addCssAndJavascript">Adds the Css/Javascript files/code needed by this module to the proper set on Css and Javascript modules.</description>
+      </docblock>
+    </method>
+    <method name="init" start="151" end="158" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="init">Initializes the module, intended to be overloaded.
+Called when the module is loaded.
+Contains any specific initializations for the module, and any required loading of modules and classes dependencies.</description>
+        <return description="Whether the module has been loaded ok" type="boolean"/>
+      </docblock>
+    </method>
+    <method name="arrayMergeRecursiveDistinct" start="172" end="182" abstract="false" final="false" static="false" visibility="public">
+      <docblock>
+        <description compact="arrayMergeRecursiveDistinct">Joins two arrays like PHP function array_merge_recursive_distinct does, but instead it does not adds elements to arrays when keys match: it replaces them.</description>
+        <author value="Daniel &lt;daniel (at) danielsmedegaardbuus (dot) dk&gt;"/>
+        <author value="Gabriel Sobrinho &lt;gabriel (dot) sobrinho (at) gmail (dot) com&gt;"/>
+        <param description="The first array to merge" type="array" variable="$array1"/>
+        <param description="The second array to merge" type="array" variable="$array2"/>
+        <return description="The merged array" type="array"/>
+      </docblock>
+      <parameter name="array1" byreference="true" type="array"/>
+      <parameter name="array2" byreference="true" type="array"/>
+    </method>
+  </parent>
+</class>
