@@ -42,6 +42,7 @@ namespace Cherrycake;
  *  ],
  *  "transitionTime" => 0.25, // The time it takes for css transitions when the panel changes shape
  *  "isMainOpen" => true // Whether the main section should be open by default
+ *  "isAllMainOptionsOpen" => false // Whether all sections should be open by default or not
  * ];
  * </code>
  * 
@@ -71,6 +72,7 @@ class UiComponentPanel extends UiComponent {
         ],
         "transitionTime" => 0.25, // The time it takes for css transitions when the panel changes shape
         "isMainOpen" => true, // Whether the main section should be open by default
+        "isAllMainOptionsOpen" => false, // Whether all sections should be open by default or not
         "iconHamburgerName" => "hamburger",
         "iconHamburgerVariant" => "black"
 	];

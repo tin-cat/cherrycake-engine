@@ -66,6 +66,8 @@
 }
 
 #UiComponentPanel > .top > .topLeft > * {
+    border-top: none;
+    border-bottom: none;
     border-left: solid rgba(0, 0, 0, 0.07) 1px;
     height: 100%;
 }
@@ -89,7 +91,6 @@
 
 #UiComponentPanel > .top .UiComponentButton:hover,
 #UiComponentPanel > .header .UiComponentButton:hover {
-    background: rgba(0, 0, 0, 0.05);
 }
 
 #UiComponentPanel > .main {
@@ -202,6 +203,7 @@
 
 #UiComponentPanel.small > .header > .UiComponentButton.buttonSwitchMain {
     visibility: visible;
+    border: none;
 }
 
 #UiComponentPanel.small > .top {

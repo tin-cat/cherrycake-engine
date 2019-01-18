@@ -41,7 +41,11 @@
 				base.setInactive();
 
 			if (o.isCentered)
-				$(base.el).wrap('<div class="UiComponentCenteringWrapper"></div>');
+				$(base.el).wrap('<div class="UiComponentCenteringWrapper' + (o.isIsolated ? ' isolated' : '') + '"></div>');
+			
+			if (o.isIsolated)
+				if (!o.isCentered)
+					$(base.el).addStyle('isolated');
 
 			$(base.el).on('utap', function() {
 				base.click();
@@ -206,6 +210,7 @@
 		ajaxOnError: false,
 		isNewWindow: false,
 		isCentered: false,
+		isIsolated: false,
 		confirmationMessage: false
 	};
 

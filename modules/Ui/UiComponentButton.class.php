@@ -33,6 +33,7 @@ class UiComponentButton extends UiComponent {
 	protected $isTransparent = false;
 	protected $isInactive = false;
 	protected $isCentered = false;
+	protected $isIsolated = false;
 	protected $confirmationMessage = false;
 	public $onClick;
 
@@ -87,6 +88,7 @@ class UiComponentButton extends UiComponent {
 					isNewWindow: ".($this->isNewWindow ? "true" : "false").",
 					isLoading: ".($this->isLoading ? "true" : "false").",
 					isCentered: ".($this->isCentered ? "true" : "false").",
+					isIsolated: ".($this->isIsolated ? "true" : "false").",
 					confirmationMessage: ".($this->confirmationMessage ? "'".$this->confirmationMessage."'" : "false")."
 				});
 			</script>

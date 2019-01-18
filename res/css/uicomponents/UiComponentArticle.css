@@ -39,9 +39,7 @@
 }
 
 /* Isolated elements have a bigger margin on top and bottom. Some elements also have the margin even if they're inside other elements */
-.UiComponentArticle > *.isolated,
-.UiComponentArticle ul.isolated,
-.UiComponentArticle code.isolated {
+.UiComponentArticle .isolated {
     margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 4 ?>px 0 !important;
 }
 
@@ -196,6 +194,34 @@
 }
 
 
+/* keyboardKey */
+.UiComponentArticle .keyboardKey {
+    position: relative;
+    border: solid 1px;
+    padding: 1px 6px;
+    white-space: nowrap;
+    border-radius: 2px;
+}
+
+.UiComponentArticle .keyboardKey::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: calc(100% - 1px);
+    
+    height: 3px;
+
+    border-left: solid 1px;
+    border-right: solid 1px;
+    border-bottom: solid 1px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+
+/* image */
+
 .UiComponentArticle > .image {
     text-align: center;
 }
@@ -209,9 +235,47 @@
     max-height: 300px;
 }
 
-.UiComponentArticle > .image.isolated {
-    padding-top: 40px;
-    padding-bottom: 40px;
+.UiComponentArticle > .image.framed > img {
+    background: #fff;
+    padding: 40px;
+    width: calc(100% - 80px);
+    border-radius: 10px;
+}
+
+/* images */
+
+.UiComponentArticle > .images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.UiComponentArticle > .images > .image {
+    min-width: 150px;
+}
+
+.UiComponentArticle > .images.twoColumns > .image {
+    flex-basis: 50%;
+}
+
+.UiComponentArticle > .images.threeColumns > .image {
+    flex-basis: 33.33%;
+}
+
+.UiComponentArticle > .images.fourColumns > .image {
+    flex-basis: 25%;
+}
+
+.UiComponentArticle > .images > .image {
+    max-width: 100%;
+}
+
+.UiComponentArticle > .images > .image > img {
+    max-width: 100%;
+}
+
+.UiComponentArticle > .images > .image > .title {
+    text-align: center;
 }
 
 .UiComponentArticle > .file {
@@ -246,13 +310,16 @@
     white-space: pre;
     background: #fff;
     padding: 1.5em 2em;
-    font-family: Monospace;
+    font-family: Inconsolata, Monospace;
     font-weight: normal;
-    font-size: 8.5pt;
     line-height: 1.5em;
     border-radius: 1em;
     box-sizing: border-box;
     overflow: scroll;
+}
+
+.UiComponentArticle code .prompt {
+    opacity: .3;
 }
 
 .UiComponentArticle code u {
