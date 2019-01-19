@@ -37,6 +37,8 @@ const TIMESTAMP_FORMAT_RELATIVE_HUMAN = 2;
 const ORDINAL_GENDER_MALE = 0;
 const ORDINAL_GENDER_FEMALE = 1;
 
+const LOCALE_GEOLOCATION_METHOD_CLOUDFLARE = 0;
+
 /**
  * Locale
  *
@@ -69,6 +71,7 @@ const ORDINAL_GENDER_FEMALE = 1;
  *		"defaultLocale" => "main", // The locale to use if none could have been guessed
  * 		"canonicalLocale" => "main", // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
  * 		"availableLanguages" => [LANGUAGE_ENGLISH, LANGUAGE_SPANISH], // An array of the languages that are available for the APP. The textsTableName should contain at least this languages.
+ * 		"geolocationMethod" => LOCALE_GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_*
  *		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
  *		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored
  * 		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored
@@ -93,6 +96,7 @@ class Locale extends \Cherrycake\Module
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"geolocationMethod" => \Cherrycake\Modules\LOCALE_GEOLOCATION_METHOD_CLOUDFLARE,
 		"textsTableName" => "cherrycake_locale_texts",
 		"textCategoriesTableName" => "cherrycake_locale_textCategories",
 		"textCacheKeyPrefix" => "LocaleText",
@@ -820,5 +824,25 @@ class Locale extends \Cherrycake\Module
 
 		return $r;
 	}
+
+	/**
+	 * This method tries to detect the user's location using the configured geolocationMethod. If contry-only methods like LOCALE_GEOLOCATION_METHOD_CLOUDFLARE are configured, only the country will be set in the returned Location object.
+	 * @return mixed A Location object specifying the user's location, or false if it could not be determined.
+	 */
+	function guessLocation() {
+		switch ($this->getConfig("geolocationMethod")) {
+			case LOCALE_GEOLOCATION_METHOD_CLOUDFLARE:
+				if (!isset($_SERVER["HTTP_CF_IPCOUNTRY"]))
+					return false;
+				$location = new Location;
+				if (!$location->loadCountryFromCode($_SERVER["HTTP_CF_IPCOUNTRY"]))
+					return false;
+				return $location;
+			default:
+				return false;
+		}
+	}
+
+	
 
 }

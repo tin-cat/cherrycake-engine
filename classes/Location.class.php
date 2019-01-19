@@ -67,18 +67,18 @@ class Location {
 	 */
 	function loadFromGivenLocationIds($data) {
 		if ($data["cityId"]) {
-			if (!$this->data["city"] = $this->getCity($data["cityId"]))
+			if (!$this->data["city"] = $this->loadCity($data["cityId"]))
 				return false;
 
 			if ($this->data["city"]["regions_id"]) {
-				if (!$this->data["region"] = $this->getRegion($this->data["city"]["regions_id"]))
+				if (!$this->data["region"] = $this->loadRegion($this->data["city"]["regions_id"]))
 					return false;
 
-				if (!$this->data["country"] = $this->getCountry($this->data["region"]["countries_id"]))
+				if (!$this->data["country"] = $this->loadCountry($this->data["region"]["countries_id"]))
 					return false;
 			}
 			else
-				if (!$this->data["country"] = $this->getCountry($this->data["city"]["countries_id"]))
+				if (!$this->data["country"] = $this->loadCountry($this->data["city"]["countries_id"]))
 					return false;
 
 			return true;
@@ -87,12 +87,45 @@ class Location {
 	}
 
 	/**
-	 * getCountry
+	 * Loads the country that matches the passed $code
+	 * 
+	 * @param string $code The country code in ISO 3166-1 Alpha 2 format
+	 * @return boolean True if the country was found, false otherwise.
+	 */
+	function loadCountryFromCode($code) {
+		if (!$country = $this->loadCountryFromCode($code))
+			return false;
+		$this->data["country"] = $country;
+		return true;
+	}
+
+	/**
+	 * Returns the data from the country specified by the given $countryCode
+	 * @param string $countryCode The country code in ISO 3166-1 Alpha 2 format
+	 * @return array The data about the specified country
+	 */
+	function loadCountryFromCode($countryCode) {
+		global $e;
+		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
+		if (!$result = $e->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_countries where code = ".$e->Database->$databaseProviderName->safeString($countryCode),
+			LOCATION_CACHE_TTL,
+			[
+				"cacheUniqueId" => "locationCountryCode_".$countryCode
+			],
+			LOCATION_CACHE_PROVIDER_NAME
+		))
+			return false;
+		return $result->getRow()->getData();
+	}
+
+	/**
+	 * loadCountry
 	 *
 	 * @param integer $countryId The country id
 	 * @return array The data about the specified country
 	 */
-	function getCountry($countryId) {
+	function loadCountry($countryId) {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
@@ -108,12 +141,12 @@ class Location {
 	}
 
 	/**
-	 * getRegion
+	 * loadRegion
 	 *
 	 * @param integer $regionId The region id
 	 * @return array The data about the specified region
 	 */
-	function getRegion($regionId) {
+	function loadRegion($regionId) {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
@@ -129,12 +162,12 @@ class Location {
 	}
 
 	/**
-	 * getCity
+	 * loadCity
 	 *
 	 * @param integer $cityId The city id
 	 * @return array The data about the specified city
 	 */
-	function getCity($cityId) {
+	function loadCity($cityId) {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
@@ -147,6 +180,27 @@ class Location {
 		))
 			return false;
 		return $result->getRow()->getData();
+	}
+
+	/**
+	 * @return mixed The data about the country on this location
+	 */
+	function getCountry() {
+		return $this->data["country"];
+	}
+
+	/**
+	 * @return mixed The data about the region on this location
+	 */
+	function getRegion() {
+		return $this->data["region"];
+	}
+
+	/**
+	 * @return mixed The data about the city on this location
+	 */
+	function getCity() {
+		return $this->data["city"];
 	}
 
 	/**
