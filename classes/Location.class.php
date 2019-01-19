@@ -108,7 +108,7 @@ class Location {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_countries where code = ".$e->Database->$databaseProviderName->safeString($countryCode),
+			"select * from cherrycake_location_countries where code = '".$e->Database->$databaseProviderName->safeString($countryCode)."'",
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationCountryCode_".$countryCode
