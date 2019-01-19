@@ -93,7 +93,7 @@ class Location {
 	 * @return boolean True if the country was found, false otherwise.
 	 */
 	function loadCountryFromCode($code) {
-		if (!$country = $this->loadCountryFromCode($code))
+		if (!$country = $this->getCountryFromCode($code))
 			return false;
 		$this->data["country"] = $country;
 		return true;
@@ -104,7 +104,7 @@ class Location {
 	 * @param string $countryCode The country code in ISO 3166-1 Alpha 2 format
 	 * @return array The data about the specified country
 	 */
-	function loadCountryFromCode($countryCode) {
+	function getCountryFromCode($countryCode) {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
