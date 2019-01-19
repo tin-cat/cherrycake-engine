@@ -196,17 +196,22 @@ class Errors extends \Cherrycake\Module {
 				}
 				else {
 
-					echo "Error: ".$setup["errorDescription"]." in ".$backtrace_info[0];
+					$e->Output->response->appendPayload(
+						"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0]
+					);
 				}
 			}
 			else {
 				if ($this->getConfig("isHtmlOutput"))
-					echo
+					$e->Output->response->appendPayload(
 						"<div style=\"margin: 10px; padding: 10px; background-color: crimson; border-bottom: solid #720 1px; color: #fff; font-family: Calibri, Sans-serif; font-size: 11pt; -webkit-border-radius: 5px; -border-radius: 5px; -moz-border-radius: 5px;\">".
 							"<b>Error</b> ".
-						"</div>";
+						"</div>"
+					);
 				else
-					echo "Error";
+					$e->Output->response->appendPayload(
+						"Error"
+					);
 
 			}
 		}
