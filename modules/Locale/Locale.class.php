@@ -834,7 +834,7 @@ class Locale extends \Cherrycake\Module
 			case LOCALE_GEOLOCATION_METHOD_CLOUDFLARE:
 				if (!isset($_SERVER["HTTP_CF_IPCOUNTRY"]))
 					return false;
-				$location = new Location;
+				$location = new \Cherrycake\Location;
 				if (!$location->loadCountryFromCode($_SERVER["HTTP_CF_IPCOUNTRY"]))
 					return false;
 				return $location;
