@@ -54,6 +54,27 @@
     margin-bottom: 0;
 }
 
+.UiComponentArticle h1 > .line,
+.UiComponentArticle h2 > .line,
+.UiComponentArticle h3 > .line,
+.UiComponentArticle h4 > .line,
+.UiComponentArticle h5 > .line {
+    display: block;
+}
+
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["small"],
+    "css" => "
+        .UiComponentArticle h1 > .line,
+        .UiComponentArticle h2 > .line,
+        .UiComponentArticle h3 > .line,
+        .UiComponentArticle h4 > .line,
+        .UiComponentArticle h5 > .line {
+            display: inline;
+        }
+    "])
+?>
+
 .UiComponentArticle > h1.step,
 .UiComponentArticle > h2.step,
 .UiComponentArticle > h3.step {

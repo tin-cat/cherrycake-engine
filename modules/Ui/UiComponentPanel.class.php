@@ -41,7 +41,7 @@ namespace Cherrycake;
  *      "linkRequest" => false // If set, the logo will link to this request
  *  ],
  *  "transitionTime" => 0.25, // The time it takes for css transitions when the panel changes shape
- *  "isMainOpen" => true // Whether the main section should be open by default
+ *  "isMainOpen" => true // Whether the main section should be open by default (except if we're in a small screen)
  *  "isAllMainOptionsOpen" => false // Whether all sections should be open by default or not
  * ];
  * </code>
@@ -63,7 +63,7 @@ class UiComponentPanel extends UiComponent {
         "mainWidth" => 230,
         "mainSmallWidth" => 60,
 		"responsiveBreakpoints" => [
-			"smallScreenWidthThreshold" => 500
+			"smallScreenWidthThreshold" => 600
 		],
 		"theme" => false,
 		"logo" => [
@@ -71,7 +71,7 @@ class UiComponentPanel extends UiComponent {
             "smallImageUrl" => "/res/img/smallLogo.svg"
         ],
         "transitionTime" => 0.25, // The time it takes for css transitions when the panel changes shape
-        "isMainOpen" => true, // Whether the main section should be open by default
+        "isMainOpen" => true, // Whether the main section should be open by default (except if we're in a small screen)
         "isAllMainOptionsOpen" => false, // Whether all sections should be open by default or not
         "iconHamburgerName" => "hamburger",
         "iconHamburgerVariant" => "black"

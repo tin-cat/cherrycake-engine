@@ -30,7 +30,7 @@ class UiComponentArticle extends UiComponent {
         "baseGap" => 10,
 		"responsiveBreakpoints" => [
 			"medium" => 980,
-			"small" => 500
+			"small" => 600
 		]
     ];
     
