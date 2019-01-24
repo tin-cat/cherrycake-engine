@@ -288,6 +288,11 @@
 
 .UiComponentArticle > .images > .image {
     min-width: 150px;
+    box-sizing: border-box;
+}
+
+.UiComponentArticle > .images.gap > .image {
+    padding: 20px;
 }
 
 .UiComponentArticle > .images.twoColumns > .image {
