@@ -67,7 +67,8 @@
 a.UiComponentMenuOption:hover,
 a.UiComponentMenuOption.selected {
     text-decoration: none;
-    background: rgba(0, 0, 0, 0.03);
+	background: rgba(0, 0, 0, 0.03);
+	border: none;
 }
 
 a.UiComponentMenuOption:hover > .UiComponentIcon,
