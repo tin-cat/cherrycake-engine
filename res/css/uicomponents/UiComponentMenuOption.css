@@ -47,7 +47,6 @@
 
 .UiComponentMenuOption > .UiComponentIcon {
 	flex-shrink: 0;
-	opacity: .7;
 }
 
 .UiComponentMenuOption > .title {
@@ -69,13 +68,6 @@ a.UiComponentMenuOption.selected {
     text-decoration: none;
 	background: rgba(0, 0, 0, 0.03);
 	border: none;
-}
-
-a.UiComponentMenuOption:hover > .UiComponentIcon,
-a.UiComponentMenuOption.selected > .UiComponentIcon,
-a.UiComponentMenuOption:hover > .letterIcon,
-a.UiComponentMenuOption.selected > .letterIcon {
-	opacity: .8;
 }
 
 a.UiComponentMenuOption:hover > .title,
