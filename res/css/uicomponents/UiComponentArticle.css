@@ -179,6 +179,16 @@
     margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
 }
 
+.UiComponentArticle > ul > li.withIcon:before {
+    display: none;
+}
+
+.UiComponentArticle > ul > li.withIcon > .UiComponentIcon {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 2px;
+}
+
 .UiComponentArticle > ul > li > label {
     display: block;
     font-weight: bold;
@@ -385,7 +395,8 @@
     text-decoration: none;
 }
 
-.UiComponentArticle code.config {
+.UiComponentArticle code.config,
+.UiComponentArticle code.text {
     background: #ffe6aa;
     color: rgba(0, 0, 0, 0.8);
 }
