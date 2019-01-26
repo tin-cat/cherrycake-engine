@@ -156,6 +156,22 @@
     font-weight: bold;
 }
 
+.UiComponentArticle > hr {
+    border: none;
+    border-bottom: solid 1px;
+}
+
+.UiComponentArticle > hr.isolated {
+    margin-top: 80px !important;
+    margin-bottom: 80px !important;
+}
+
+.UiComponentArticle > hr.short {
+    width: 30%;
+    margin-left: 50% !important;
+    transform: translate(-50%, 0);
+}
+
 /* regular list */
 .UiComponentArticle > ul {
     list-style: none;
