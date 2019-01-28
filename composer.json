@@ -1,5 +1,20 @@
 {
+    "name": "tin-cat/cherrycake",
+    "type": "library",
+    "description": "A low level programming framework for developing modular, efficient and secure PHP web applications.",
+    "keywords": ["engine","framework"],
+    "homepage": "https://cherrycake.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lorenzo Herrera",
+            "email": "lorenzo@tin.cat",
+            "homepage": "http://tin.cat",
+            "role": "Developer"
+        }
+    ],
     "require": {
+        "php": "^7.0",
         "mpdf/mpdf": "^7.1",
         "predis/predis": "^1.1",
         "ezyang/htmlpurifier": "^4.10",
