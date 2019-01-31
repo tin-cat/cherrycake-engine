@@ -538,7 +538,7 @@ class Locale extends \Cherrycake\Module
 	 * @return string The formatted date
 	 */
 	function formatDate($dateTimestamp, $setup = false) {
-		return $this->formatTimestamp($dateTimestamp, $setup + [
+		return $this->formatTimestamp($dateTimestamp, (is_array($setup) ? $setup : []) + [
 			"fromTimeZone" => false,
 			"isDay" => true,
 			"isHours" => false

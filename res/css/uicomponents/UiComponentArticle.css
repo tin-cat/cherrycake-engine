@@ -325,10 +325,25 @@
 .UiComponentArticle > .images > .image {
     min-width: 150px;
     box-sizing: border-box;
+    float: left;
+}
+
+.UiComponentArticle > .images > .image > img {
+    float: left;
+}
+
+.UiComponentArticle > .images > a.image {
+    text-decoration: none;
+    border: none;
+}
+
+.UiComponentArticle > .images > a.image:hover {
+    border: none;
+    opacity: .8;
 }
 
 .UiComponentArticle > .images.gap > .image {
-    padding: 20px;
+    padding: 5px;
 }
 
 .UiComponentArticle > .images.twoColumns > .image {
@@ -349,6 +364,7 @@
 
 .UiComponentArticle > .images > .image > img {
     max-width: 100%;
+    border-radius: 10px;
 }
 
 .UiComponentArticle > .images > .image > .title {
