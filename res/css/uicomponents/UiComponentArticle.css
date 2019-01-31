@@ -266,14 +266,24 @@
     border-bottom-right-radius: 2px;
 }
 
+/* video */
+
+.UiComponentArticle > .video {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.UiComponentArticle > .video > iframe {
+    width: 100%;
+    height: 450px;
+    float: left;
+}
 
 /* image */
 
-.UiComponentArticle > .image {
-}
-
 .UiComponentArticle > .image > img {
     width: 100%;
+    border-radius: 10px;
 }
 
 .UiComponentArticle > .image > .title {

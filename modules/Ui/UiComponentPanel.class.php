@@ -280,7 +280,7 @@ class UiComponentPanel extends UiComponent {
         $e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
 			"code" => $code,
             "payload" =>
-                $e->HtmlDocument->header().
+                $e->HtmlDocument->header($setup["htmlDocumentHeaderSetup"]).
                 $this->buildHtml($setup).
                 $e->HtmlDocument->footer()
 		]));
