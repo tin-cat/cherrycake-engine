@@ -150,6 +150,9 @@
 				if (o.isNewWindow)
 					window.open(o.href);
 				else
+				if (o.target)
+					window.open(o.href, o.target);
+				else
 					document.location = o.href;
 			}
 			else
@@ -204,6 +207,7 @@
 		isInactive: false,
 		onClick: false,
 		href: false,
+		target: false,
 		ajaxUrl: false,
 		ajaxData: false,
 		ajaxOnSuccess: false,

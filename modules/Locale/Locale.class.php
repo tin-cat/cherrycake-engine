@@ -441,6 +441,13 @@ class Locale extends \Cherrycake\Module
 	}
 
 	/**
+	 * @return integer The language that is being currently used, one of the LANGUAGE_*
+	 */
+	function getCurrency() {
+		return $this->locale["currency"];
+	}
+
+	/**
 	 * Sets the Timezone to use
 	 * @param integer $timeZone The desired timezone, one of defined in PHP constants as specified in http://php.net/manual/en/timezones.php
 	 */
@@ -786,6 +793,17 @@ class Locale extends \Cherrycake\Module
 			[DECIMAL_MARK_POINT => ".", DECIMAL_MARK_COMMA => ","][$setup["decimalMark"]],
 			$setup["isSeparateThousands"] ? [DECIMAL_MARK_POINT => ",", DECIMAL_MARK_COMMA => "."][$setup["decimalMark"]] : false
 		);
+	}
+
+	function formatCurrency($amount) {
+		switch ($this->getCurrency()) {
+			case CURRENCY_USD:
+				return "USD".$this->formatNumber($amount);
+				break;
+			case CURRENCY_EURO:
+				return $this->formatNumber($amount)."€";
+				break;
+		}
 	}
 
 	/**

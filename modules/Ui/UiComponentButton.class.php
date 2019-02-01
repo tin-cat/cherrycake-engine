@@ -25,6 +25,7 @@ class UiComponentButton extends UiComponent {
 	protected $iconIsLeft = true;
 	protected $iconVariant = "white";
 	protected $href;
+	protected $target = false;
 	protected $ajaxUrl = false;
 	protected $ajaxData = false;
 	protected $ajaxOnSuccess = false;
@@ -81,6 +82,7 @@ class UiComponentButton extends UiComponent {
 					isInactive: ".($this->isInactive ? "true" : "false").",
 					onClick: ".($this->onClick ? $this->onClick : "false").",
 					href: ".($this->href ? "'".$this->href."'" : "false").",
+					target: ".($this->target ? "'".$this->target."'" : "false").",
 					ajaxUrl: ".($this->ajaxUrl ? "'".$this->ajaxUrl."'" : "false").",
 					ajaxData: ".($this->ajaxData ? $this->ajaxData : "false").",
 					ajaxOnSuccess: ".($this->ajaxOnSuccess ? $this->ajaxOnSuccess : "false").",
@@ -93,28 +95,6 @@ class UiComponentButton extends UiComponent {
 				});
 			</script>
 		";
-
-			// json_encode([
-			// 	"style" => $this->style,
-			// 	"additionalCssClasses" => $this->additionalCssClasses,
-			// 	"title" => $this->title,
-			// 	"badge" => $this->badge,
-			// 	"iconName" => $this->iconName,
-			// 	"iconIsLeft" => $this->iconIsLeft,
-			// 	"iconVariant" => $this->iconVariant,
-			// 	"isTransparent" => $this->isTransparent,
-			// 	"isInactive" => $this->isInactive,
-			// 	"onClick" => $this->onClick,
-			// 	"href" => $this->href,
-			// 	"ajaxUrl" => $this->ajaxUrl,
-			// 	"ajaxData" => $this->ajaxData,
-			// 	"ajaxOnSuccess" => $this->ajaxOnSuccess,
-			// 	"ajaxOnError" => $this->ajaxOnError,
-			// 	"isNewWindow" => $this->isNewWindow,
-			// 	"isLoading" => $this->isLoading,
-			// 	"isCentered" => $this->isCentered,
-			// 	"confirmationMessage" => $this->confirmationMessage
-			// ]).
 
 		return $r;
 	}

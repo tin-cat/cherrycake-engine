@@ -173,17 +173,17 @@
 }
 
 /* regular list */
-.UiComponentArticle > ul {
+.UiComponentArticle ul {
     list-style: none;
     padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
 }
 
-.UiComponentArticle > ul > li {
+.UiComponentArticle ul > li {
     position: relative;
     margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
 }
 
-.UiComponentArticle > ul > li:before {
+.UiComponentArticle ul > li:before {
     position: absolute;
     right: 100%;
     top: 0;
@@ -195,17 +195,17 @@
     margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
 }
 
-.UiComponentArticle > ul > li.withIcon:before {
+.UiComponentArticle ul > li.withIcon:before {
     display: none;
 }
 
-.UiComponentArticle > ul > li.withIcon > .UiComponentIcon {
+.UiComponentArticle ul > li.withIcon > .UiComponentIcon {
     position: absolute;
     right: calc(100% + 10px);
     top: 2px;
 }
 
-.UiComponentArticle > ul > li > label {
+.UiComponentArticle ul > li > label {
     display: block;
     font-weight: bold;
 }
@@ -315,19 +315,6 @@
 
 /* images */
 
-.UiComponentArticle > .images {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.UiComponentArticle > .images > .image {
-    min-width: 150px;
-    box-sizing: border-box;
-    float: left;
-}
-
 .UiComponentArticle > .images > .image > img {
     float: left;
 }
@@ -342,22 +329,6 @@
     opacity: .8;
 }
 
-.UiComponentArticle > .images.gap > .image {
-    padding: 5px;
-}
-
-.UiComponentArticle > .images.twoColumns > .image {
-    flex-basis: 50%;
-}
-
-.UiComponentArticle > .images.threeColumns > .image {
-    flex-basis: 33.33%;
-}
-
-.UiComponentArticle > .images.fourColumns > .image {
-    flex-basis: 25%;
-}
-
 .UiComponentArticle > .images > .image {
     max-width: 100%;
 }
@@ -370,6 +341,123 @@
 .UiComponentArticle > .images > .image > .title {
     text-align: center;
 }
+
+/* columns */
+
+.UiComponentArticle > .columns {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.UiComponentArticle > .columns.alignHorizontalLeft {
+    justify-content: flex-start;
+}
+
+.UiComponentArticle > .columns.alignVerticalTop {
+    align-items: flex-start;
+}
+
+.UiComponentArticle > .columns > div,
+.UiComponentArticle > .columns > a {
+    min-width: 150px;
+    box-sizing: border-box;
+    float: left;
+}
+
+.UiComponentArticle > .columns.gap > div,
+.UiComponentArticle > .columns.gap > a {
+    padding: 10px;
+}
+
+.UiComponentArticle > .columns.gapBig > div,
+.UiComponentArticle > .columns.gapBig > a {
+    padding: 20px;
+}
+
+.UiComponentArticle > .columns.gapBigger > div,
+.UiComponentArticle > .columns.gapBigger > a {
+    padding: 30px;
+}
+
+.UiComponentArticle > .columns.gapHuge > div,
+.UiComponentArticle > .columns.gapHuge > a {
+    padding: 40px;
+}
+
+.UiComponentArticle > .columns.twoColumns > div,
+.UiComponentArticle > .columns.twoColumns > a {
+    flex-basis: 50%;
+}
+
+.UiComponentArticle > .columns.twoColumns > div:nth-child(odd),
+.UiComponentArticle > .columns.twoColumns > a:nth-child(odd) {
+    padding-left: 0;
+}
+
+.UiComponentArticle > .columns.twoColumns > div:nth-child(even),
+.UiComponentArticle > .columns.twoColumns > a:nth-child(even) {
+    padding-right: 0;
+}
+
+.UiComponentArticle > .columns.threeColumns > div,
+.UiComponentArticle > .columns.threeColumns > a {
+    flex-basis: 33.33%;
+}
+
+.UiComponentArticle > .columns.threeColumns > div:nth-child(3n+1),
+.UiComponentArticle > .columns.threeColumns > a:nth-child(3n+1) {
+    padding-left: 0;
+}
+
+.UiComponentArticle > .columns.threeColumns > div:nth-child(3n+3),
+.UiComponentArticle > .columns.threeColumns > a:nth-child(3n+3) {
+    padding-right: 0;
+}
+
+.UiComponentArticle > .columns.fourColumns > div,
+.UiComponentArticle > .columns.fourColumns > a {
+    flex-basis: 25%;
+}
+
+.UiComponentArticle > .columns.fourColumns > div:nth-child(4n+1),
+.UiComponentArticle > .columns.fourColumns > a:nth-child(4n+1) {
+    padding-left: 0;
+}
+
+.UiComponentArticle > .columns.fourColumns > div:nth-child(4n+4),
+.UiComponentArticle > .columns.fourColumns > a:nth-child(4n+4) {
+    padding-right: 0;
+}
+
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["small"],
+    "css" => "
+        .UiComponentArticle > .columns.twoColumns > div,
+        .UiComponentArticle > .columns.twoColumns > a {
+            flex-basis: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    "])
+?>
+
+<?= $e->Css->mediaQuery([
+	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["medium"],
+    "css" => "
+        .UiComponentArticle > .columns.threeColumns > div,
+        .UiComponentArticle > .columns.threeColumns > a,
+        .UiComponentArticle > .columns.fourColumns > div,
+        .UiComponentArticle > .columns.fourColumns > a {
+            flex-basis: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+    "])
+?>
+
+/* file */
 
 .UiComponentArticle > .file {
     display: inline-block;
