@@ -1,5 +1,5 @@
 {
-    "name": "cherrycake/engine",
+    "name": "tin-cat/cherrycake",
     "version": "0.2.0-alpha",
     "type": "library",
     "description": "A low level programming framework for developing modular, efficient and secure PHP web applications.",
