@@ -20,6 +20,6 @@
         "phpmailer/phpmailer": "^6.0"
     },
     "suggest": {
-        "mpdf/mpdf": "Provides server-side PDF creation capabilities",
+        "mpdf/mpdf": "Provides server-side PDF creation capabilities"
     }
 }
