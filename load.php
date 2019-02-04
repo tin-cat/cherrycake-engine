@@ -11,7 +11,7 @@
 namespace Cherrycake;
 
 define("LIB_DIR", dirname(__FILE__));
-define("APP_DIR", getcwd());
+define("APP_DIR", realpath(getcwd()."/.."));
 
 require LIB_DIR."/config/Cherrycake.config.php";
 require APP_DIR."/config/Cherrycake.config.php";

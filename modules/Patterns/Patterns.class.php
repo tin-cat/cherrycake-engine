@@ -181,7 +181,7 @@ class Patterns extends \Cherrycake\Module {
 	 * @return string The complete pattern filename
 	 */
 	function getPatternFileName($patternName, $directoryOverride = null) {
-		return (!is_null($directoryOverride) ? $directoryOverride.($directoryOverride != "" ? "/" : "") : $this->getConfig("directory")."/").$patternName;
+		return (!is_null($directoryOverride) ? $directoryOverride.($directoryOverride != "" ? "/" : "") : APP_DIR."/".$this->getConfig("directory")."/").$patternName;
 	}
 
 	/**

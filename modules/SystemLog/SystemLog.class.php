@@ -76,7 +76,7 @@ class SystemLog extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->loadAppModuleClass("SystemLog", "SystemLogEvent");
+		$e->loadCherrycakeModuleClass("SystemLog", "SystemLogEvent");
 
 		return true;
 	}

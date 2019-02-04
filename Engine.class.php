@@ -53,7 +53,7 @@ class Engine {
 
 		if ($setup["additionalAppConfigFiles"])
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
-				require "config/".$additionalAppConfigFile;
+				require APP_DIR."/config/".$additionalAppConfigFile;
 
 		if ($setup["baseCherrycakeModules"])
 			foreach ($setup["baseCherrycakeModules"] as $module)
