@@ -212,17 +212,17 @@
 
 
 /* ordered list */
-.UiComponentArticle > ol {
+.UiComponentArticle ol {
     list-style: none;
     padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
 }
 
-.UiComponentArticle > ol > li {
+.UiComponentArticle ol > li {
     position: relative;
     margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
 }
 
-.UiComponentArticle > ol > li[data-title]:after {
+.UiComponentArticle ol > li[data-title]:after {
     position: absolute;
     content: attr(data-title);
     right: 100%;

@@ -1,17 +1,5 @@
 RewriteEngine On
 
-# Forbidden files and directories
-RewriteRule ^cli.php$ - [R=301,L]
-RewriteRule ^nginx.conf$ - [R=301,L]
-RewriteRule ^LICENSE(.*)$ - [R=301,L]
-RewriteRule ^.htaccess$ - [R=301,L]
-RewriteRule ^.gitignore$ - [R=301,L]
-RewriteRule ^/.git(.*)$ - [R=301,L]
-RewriteRule ^/modules/(.*)$ - [R=301,L]
-RewriteRule ^/patterns/(.*)$ - [R=301,L]
-RewriteRule ^/config/(.*)$ - [R=301,L]
-RewriteRule ^/install/(.*)$ - [R=301,L]
-
 # If requested resource exists as a file or directory, go for it and get rid of other rules
 RewriteCond %{DOCUMENT_ROOT}/$1 -f [OR]
 RewriteCond %{DOCUMENT_ROOT}/$1 -d
