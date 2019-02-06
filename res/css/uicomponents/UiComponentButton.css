@@ -151,3 +151,17 @@
 	background: none;
 	border-radius: 0;
 }
+
+/* UiComponentButtons */
+.UiComponentButtons {
+	display: flex;
+	align-items: flex-start;
+}
+
+.UiComponentButtons.centered {
+	justify-content: center;
+}
+
+.UiComponentButtons > .UiComponentButton {
+	margin: 5px;
+}

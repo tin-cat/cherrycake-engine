@@ -315,10 +315,6 @@
 
 /* images */
 
-.UiComponentArticle > .images > .image > img {
-    float: left;
-}
-
 .UiComponentArticle > .images > a.image {
     text-decoration: none;
     border: none;
@@ -340,6 +336,10 @@
 
 .UiComponentArticle > .images > .image > .title {
     text-align: center;
+}
+
+.UiComponentArticle > .images > .image > .title + .description {
+    margin-top: .5em;
 }
 
 /* columns */
