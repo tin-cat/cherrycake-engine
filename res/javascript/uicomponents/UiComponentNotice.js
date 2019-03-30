@@ -28,7 +28,7 @@
 			}
 
 			if (style)
-				$('> .content', base.el).addClass(style);
+				$('> .content', base.el).addClass('style' + style);
 		}
 
 		base.setContent = function(content) {
@@ -59,7 +59,7 @@
 					duration: o.revealDelay,
 					easing: o.revealEasing,
 					complete: function() {
-						if (disappearDelay || o.defaultDisappearDelay) {
+						if (disappearDelay !== false && (disappearDelay || o.defaultDisappearDelay)) {
 							closeTimeout = setTimeout(function() {
 								base.close();
 							}, (disappearDelay ? disappearDelay : o.defaultDisappearDelay));

@@ -727,18 +727,26 @@ class Item extends BasicObject {
 				break;
 			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_SERIALIZED:
 				$value = $r;
-
-				if (!$value)
+				
+				if (!$value) {
+					$r = false;
 					break;
+				}
 
 				if (!$setup["isHtml"]) {
 					$r = print_r($value, true);
 					break;
 				}
 
-				$table .= "<table class=\"panel\">";
+				$table = "<table class=\"panel\">";
 					while (list($k1, $v1) = each($value)) 
-						$table .= "<tr><td>".$k1."</td><td style=\"text-align: right;\">".$v1."</td></tr>";
+						$table .=
+							"<tr>".
+								"<td>".$k1."</td>".
+								"<td style=\"text-align: right;\">".
+									(is_array($v1) ? print_r($v1, true) : $v1).
+								"</td>".
+							"</tr>";
 				$table .= "</table>";
 				$r = $table;
 				break;

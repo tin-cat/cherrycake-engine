@@ -9,7 +9,7 @@
 namespace Cherrycake;
 
 /**
- * A Ui component to show popups
+ * A Ui component to show a Menu Bar
  * 
  * Configuration example for UiComponentMenuBar.config.php:
  * <code>

@@ -9,7 +9,7 @@
 namespace Cherrycake;
 
 /**
- * A Ui component to admin database tables. Works in conjunction with the TableAdmin module.
+ * A Ui component to admin an Item. Works in conjunction with the TableAdmin module.
  * 
  * @package Cherrycake
  * @category Classes

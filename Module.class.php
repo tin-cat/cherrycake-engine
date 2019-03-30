@@ -16,8 +16,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Modules
  */
-class Module
-{
+class Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

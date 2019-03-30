@@ -58,6 +58,11 @@ function handleError(
 	$errContext = false,
 	$stack = false
 ) {
+	if (IS_CLI) {
+		$message = "Cherrycake error\nType: ".$errNo."\nMessage: ".$errStr."\nFile: ".$errFile."\nLine: ".$errLine."\n";
+		echo $message;
+	}
+	else
 	if (IS_DEVEL_ENVIRONMENT) {
 		$html =
 		"

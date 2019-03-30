@@ -75,10 +75,37 @@ class SystemLog extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		global $e;
-		$e->loadCherrycakeModuleClass("SystemLog", "SystemLogEvent");
-
 		return true;
+	}
+
+	/**
+	 * mapActions
+	 *
+	 * Maps the Actions to which this module must respond
+	 */
+	public static function mapActions() {
+		global $e;
+
+		// Add TableAdmin maps
+        $e->loadCherrycakeModule("TableAdmin");
+
+        $e->TableAdmin->map("systemLog", [
+            "itemsClassName" => "\\Cherrycake\\SystemLogEvents",
+            "fillFromParameters" => [],
+            "columns" => [
+                "id" => ["fieldName" => "id"],
+                "dateAdded" => ["fieldName" => "dateAdded"],
+				"class" => ["fieldName" => "class"],
+				"type" => ["fieldName" => "type"],
+				"subType" => ["fieldName" => "subType"],
+				"ip" => ["fieldName" => "ip"],
+				"httpHost" => ["fieldName" => "httpHost"],
+				"requestUri" => ["fieldName" => "requestUri"],
+				"browserString" => ["fieldName" => "browserString"],
+				"description" => ["fieldName" => "description"],
+				"data" => ["fieldName" => "data"]
+            ]
+        ]);
 	}
 
 	/**

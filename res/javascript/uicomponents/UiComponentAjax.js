@@ -11,9 +11,30 @@ function ajaxQuery(url, setup) {
 		data: setup ? setup['data'] : false,
 		dataType: 'json',
 		error: function(jqXHR, textStatus, errorThrown) {
-			console.log('%cAjax error: ' + textStatus + (errorThrown && errorThrown != textStatus ? ' (' + errorThrown + ')' : ''), 'color: #c15');
-			console.log('%cResponse:\n' + jqXHR.responseText, 'color: #c15');
-			$('#UiComponentNotice').UiComponentNotice('open', ['<?= $e->Ui->uiComponents["UiComponentAjax"]->getConfig("ajaxErrorText") ?>', 'ajaxResponseError']);
+			<?
+				if (IS_DEVEL_ENVIRONMENT) {
+					?>	
+						$('#UiComponentNotice').UiComponentNotice('open', [
+							'<div style="text-align: left;">' + 
+								'<div style="margin: 20px;">' +
+									'<b>Ajax error:</b> ' + textStatus + (errorThrown && errorThrown != textStatus ? ' (' + errorThrown + ')' : '') + ' <b>Status: </b>' + jqXHR.status +  '<br>' + 
+									'<b>Url:</b> ' + url + '<br>' +
+								'</div>' + 
+								'<pre style="background: rgba(255, 255, 255, .9); color: #000; font-size: 7pt; line-height: 1.3em; font-family: Courier; margin: 20px; padding: 20px; height: 50vh; overflow-y: auto;">' + $("<div>").text(jqXHR.responseText).html() + '</pre>' + 
+							'</div>',
+							'AjaxResponseError',
+							false
+						]);
+					<?
+				}
+				else {
+					?>
+						console.log('%cAjax error: ' + textStatus + (errorThrown && errorThrown != textStatus ? ' (' + errorThrown + ')' : ''), 'color: #c15');
+						console.log('%cResponse:\n' + jqXHR.responseText, 'color: #c15');
+						$('#UiComponentNotice').UiComponentNotice('open', ['<?= $e->Ui->uiComponents["UiComponentAjax"]->getConfig("ajaxErrorText") ?>', 'ajaxResponseError']);
+					<?
+				}
+			?>
 		},
 		success: function(data, textStatus, jqHXR) {
 			ajaxResponseTreatMessage(data.code, data.description, data.messageType);

@@ -103,6 +103,7 @@ class UiComponentTableAdmin extends UiComponent {
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
+            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP:
                 return "right";
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATE:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME:
@@ -110,7 +111,6 @@ class UiComponentTableAdmin extends UiComponent {
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TIME:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_BOOLEAN:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP:
             case \Cherrycake\Modules\DATABASE_FIELD_TYPE_COLOR:
                 return "center";
             default:
