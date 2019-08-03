@@ -352,7 +352,8 @@ function handleError(
 	}
 	else {
 		$message = "Type: ".$errNo."; Message: ".$errStr." File: ".$errFile." Line: ".$errLine;
-		mail(ADMIN_TECHNICAL_EMAIL, "[PHP Error] ".$errNo, $errStr);
+		error_log($message);
+		// mail(ADMIN_TECHNICAL_EMAIL, "[PHP Error] ".$errNo, $errStr);
 		header('HTTP/1.1 500 Internal Server Error');
 		header("location: /errors/fatal.html");
 	}
