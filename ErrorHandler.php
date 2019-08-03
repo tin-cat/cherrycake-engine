@@ -223,9 +223,13 @@ function handleError(
 		if ($errFile) {
 			// Check specific error for pattern parsing in order to show later the pattern itself
 			if (
-				strstr($errFile, "patterns.class.php") !== false
-				||
-				strstr($errFile, "eval()'d") !== false
+				(
+					strstr($errFile, "patterns.class.php") !== false
+					||
+					strstr($errFile, "eval()'d") !== false
+				)
+				&&
+				$e->Patterns
 			) {
 				$patternParsingErrorLine = $errLine;
 				global $e;
