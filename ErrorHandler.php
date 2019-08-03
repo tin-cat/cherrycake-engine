@@ -351,7 +351,7 @@ function handleError(
 		echo $html;
 	}
 	else {
-		$message = "Type: ".$errNo."; Message: ".$errStr." File: ".$errFile." Line: ".$errLine;
+		$message = "Cherrycake error Type:".$errNo." Message:".$errStr." File:".$errFile." Line:".$errLine;
 		error_log($message);
 		// mail(ADMIN_TECHNICAL_EMAIL, "[PHP Error] ".$errNo, $errStr);
 		header('HTTP/1.1 500 Internal Server Error');
