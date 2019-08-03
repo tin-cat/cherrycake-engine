@@ -65,7 +65,7 @@ class Errors extends \Cherrycake\Module {
 		"isEmailAppErrors" => false,
 		"isEmailNotFoundErrors" => false,
 		"isEmailNoPermissionErrors" => false,
-		"notificationEmail" => ADMIN_TECHNICAL_EMAIL
+		"notificationEmail" => false
 	];
 
 	/**
