@@ -30,7 +30,7 @@ class Response {
 	/**
 	 * @var integet $code The response code, one of the RESPONSE_* availables
 	 */
-	private $code = RESPONSE_OK;
+	private $code = \Cherrycake\Modules\RESPONSE_OK;
 
 	/**
 	 * @var string $url The url to redirect
