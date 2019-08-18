@@ -223,7 +223,7 @@ class JavascriptMinifier
 							// check for some regex that breaks stuff
 							if ($this->a == '/' && ($this->b == '\'' || $this->b == '"')) {
 								$this->saveRegex();
-								continue;
+								continue 2;
 							}
 
 							echo $this->a;
