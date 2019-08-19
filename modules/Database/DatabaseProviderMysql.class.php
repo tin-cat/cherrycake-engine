@@ -59,7 +59,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 			"stmtBindParamType" => "i"
 		],
 		DATABASE_FIELD_TYPE_IP => [
-			"stmtBindParamType" => "i"
+			"stmtBindParamType" => "s"
 		],
 		DATABASE_FIELD_TYPE_SERIALIZED => [
 			"stmtBindParamType" => "s"
@@ -224,7 +224,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 						$value = date("H:i:s", $parameter["value"]);
 						break;
 					case DATABASE_FIELD_TYPE_IP:
-						$value = ip2long($parameter["value"]);
+						$value = inet_pton($parameter["value"]);
 						break;
 					case DATABASE_FIELD_TYPE_SERIALIZED:
 						$value = json_encode($parameter["value"]);
