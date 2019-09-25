@@ -304,6 +304,9 @@ class Request {
 			$url .= (!$count++ ? "?" : "&")."csrfToken=".$e->Security->getCsrfToken();
 		}
 
+		if ($setup["anchor"])
+			$url .= "#".$setup["anchor"];
+
 		return $url;
 	}
 
