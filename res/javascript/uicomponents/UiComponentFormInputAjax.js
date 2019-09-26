@@ -93,8 +93,8 @@
 				},
 				onSuccess: function(data) {
 					$(button).UiComponentButton('unsetLoading');
-					if (typeof data === 'object' && data !== null)
-						base.setValue(data.values[o.saveAjaxKey]);
+					if (typeof data === 'object' && data.value !== null)
+						base.setValue(data.value);
 					committedValue = base.getValue();
 					base.unsetError();
 					$(input).blur();
