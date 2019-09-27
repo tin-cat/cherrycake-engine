@@ -32,7 +32,7 @@ class JanitorTaskSystemLogPurge extends JanitorTask
 	/**
 	 * @var string $name The name of the task
 	 */
-	protected $name = "SystemLog purge";
+	protected $name = "System log purge";
 
 	/**
 	 * @var string $description The description of the task

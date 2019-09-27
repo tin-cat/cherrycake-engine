@@ -67,8 +67,7 @@ class JanitorLogItem extends \Cherrycake\Item {
 			return $r;
 	}
 
-	function humanizeResultCode($resultCode) {
-		global $e;
-		return $e->Janitor->getJanitorTaskReturnCodeDescription($resultCode);
+	function humanizeResultCode($janitorLogItem) {
+		return \Cherrycake\Modules\Janitor::getJanitorTaskReturnCodeDescription($janitorLogItem->resultCode);
 	}
 }

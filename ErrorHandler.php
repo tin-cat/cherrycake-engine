@@ -277,27 +277,27 @@ function handleError(
 			$count = 0;
 			foreach ($stack as $stackItem) {
 				$html .=
-					"<div class='call'>".
+					"<div class='call'>\n".
 						(++$count)." ".
-						(isset($stackItem["class"]) ? "<span class='class'>".$stackItem["class"]."</span><span class='type'>".$stackItem["type"]."</span>" : "").
-						"<span class='function'>".$stackItem["function"]."</span>";
+						(isset($stackItem["class"]) ? "<span class='class'>".$stackItem["class"]."</span>\n<span class='type'>".$stackItem["type"]."</span>\n" : "").
+						"<span class='function'>".$stackItem["function"]."</span>\n";
 
 					if (isset($stackItem["args"]) && is_array($stackItem["args"])) {
-						$html .= "<span class='args'>(";
+						$html .= "<span class='args'>(\n";
 						while (list($idx, $arg) = each($stackItem["args"]))
 							$html .=
 								"<span class='arg'>".
 									getHtmlDebugForArg($arg).
-								"</span>".
+								"</span>\n".
 								($idx < sizeof($stackItem["args"])-1 ? ", " : "");
-						$html .= ")</span>";
+						$html .= ")</span>\n";
 					}
 
 					$html .=
-						"</span>".
+						"</span>\n".
 						"<br>".
-						(isset($stackItem["line"]) ? "<span class='line'>Line ".number_format($stackItem["line"])."</span> " : "").
-						(isset($stackItem["file"]) ? "<span class='file'>".$stackItem["file"]."</span>" : "");
+						(isset($stackItem["line"]) ? "<span class='line'>Line ".number_format($stackItem["line"])."</span>\n " : "").
+						(isset($stackItem["file"]) ? "<span class='file'>".$stackItem["file"]."</span>\n" : "");
 
 					// Check for specific errors about pattern parsing, as detected above and stored on $patternParsingErrorLine
 					if (
@@ -315,14 +315,14 @@ function handleError(
 						
 						$sourceLines = explode("<br />", highlight_string(file_get_contents($patternFileName), true));
 
-						$highlightedSource = "<div class='source'>";
+						$highlightedSource = "<div class='source'>\n";
 						$lineNumber = 1;
 						foreach ($sourceLines as $line) {
 							if ($lineNumber >= $errLine - 10 && $lineNumber <= $errLine + 10)
-								$highlightedSource .= "<div class='line".($lineNumber == $errLine ? " highlighted" : "")."'><div class='number'>".$lineNumber."</div><div class='code'>".$line."</div></div>";
+								$highlightedSource .= "<div class='line".($lineNumber == $errLine ? " highlighted" : "")."'>\n<div class='number'>".$lineNumber."</div>\n<div class='code'>".$line."</div>\n</div>\n";
 							$lineNumber ++;
 						}
-						$highlightedSource .= "</div>";
+						$highlightedSource .= "</div>\n";
 
 						$html .= $highlightedSource;
 					}

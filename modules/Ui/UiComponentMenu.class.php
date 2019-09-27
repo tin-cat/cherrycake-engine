@@ -9,13 +9,12 @@
 namespace Cherrycake;
 
 /**
- * A Ui component to create simple menus
+ * A Ui component to create menus
  *
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentMenu extends UiComponent
-{
+class UiComponentMenu extends UiComponent {
 	/**
 	 * Adds the Css and Javascript sets that are required to load by HtmlDocument module for this UI component to properly work
 	 */

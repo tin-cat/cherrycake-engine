@@ -165,6 +165,22 @@ class Janitor extends \Cherrycake\Module
 				])
 			])
 		);
+
+		// Add TableAdmin maps
+        $e->loadCherrycakeModule("TableAdmin");
+
+        $e->TableAdmin->map("janitorLog", [
+            "itemsClassName" => "\\Cherrycake\\JanitorLogItems",
+            "fillFromParameters" => [],
+            "columns" => [
+                "id" => ["fieldName" => "id"],
+				"executionDate" => ["fieldName" => "executionDate"],
+				"executionSeconds" => ["fieldName" => "executionSeconds"],
+				"taskName" => ["fieldName" => "taskName"],
+				"resultCode" => ["fieldName" => "resultCode"],
+				"resultDescription" => ["fieldName" => "resultDescription"]
+            ]
+        ]);
 	}
 
 	/**

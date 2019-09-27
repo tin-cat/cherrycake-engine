@@ -9,7 +9,7 @@
 namespace Cherrycake;
 
 /**
- * A Ui component to build a panel. The panel is comprised of three sections:
+ * A Ui component to build a complex panel aimed to compose the entire webpage structure. The panel is comprised of three sections:
  * 
  * . "Top" Is the top horizontal menu bar, where blocks are added as a horizontal list. It acts as a regular top menu bar that usually contains the main options of the site, the icons for notifications, and the login/signup options. It can hold Block objects of the following classes:
  *      . UiComponentBlockOption

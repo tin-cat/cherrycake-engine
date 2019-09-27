@@ -1,0 +1,21 @@
+.UiComponentColumnStructure {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: stretch;
+}
+
+.UiComponentColumnStructure > div {
+	flex-grow: 1;
+	overflow-x: auto;
+}
+
+.UiComponentColumnStructure > div.menu {
+	flex-grow: 0;
+	flex-shrink: 0;
+	width: 250px;
+}
+
+.UiComponentColumnStructure > div.padding {
+	padding: 40px;
+}
