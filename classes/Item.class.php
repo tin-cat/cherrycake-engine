@@ -281,7 +281,7 @@ class Item extends BasicObject {
 	}
 
 	/**
-	 * Inserts a row on the database representing and item
+	 * Inserts a row on the database representing an item
 	 * @param array $data Optional fields data that will override the data stored on the object if specified. Fields must be defined on this->fields
 	 * @return boolean True if insertion went ok, false otherwise
 	 */
@@ -308,7 +308,7 @@ class Item extends BasicObject {
 					case \Cherrycake\Modules\DATABASE_FIELD_DEFAULT_VALUE_DATETIME:
 					case \Cherrycake\Modules\DATABASE_FIELD_DEFAULT_VALUE_TIMESTAMP:
 					case \Cherrycake\Modules\DATABASE_FIELD_DEFAULT_VALUE_TIME:
-						$value = mktime();
+						$value = time();
 						break;
 					case \Cherrycake\Modules\DATABASE_FIELD_DEFAULT_VALUE_YEAR:
 						$value = date("Y");

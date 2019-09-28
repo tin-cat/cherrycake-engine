@@ -68,7 +68,7 @@ class StatsEvent extends Item {
 		global $e;
 		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
 		$this->subType = $data["subType"];
-		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : $e->Locale->convertTimestamp(mktime());
+		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : $e->Locale->convertTimestamp(time());
 		$this->resolution = $this->timeResolution;
 		return parent::loadInline($data);
 	}

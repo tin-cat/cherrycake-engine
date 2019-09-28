@@ -33,7 +33,7 @@ class JanitorLogItem extends \Cherrycake\Item {
 			"title" => "Time spent",
 			"multiplier" => 1000,
 			"decimals" => 2,
-			"postfix" => "ms.",
+			"postfix" => "ms",
 			"humanizeMethodName" => "humanizeExecutionSeconds",
 			"humanizePostMethodName" => "humanizePostExecutionSeconds",
 		],
@@ -59,9 +59,9 @@ class JanitorLogItem extends \Cherrycake\Item {
 		return null;
 	}
 
-	function humanizePostExecutionSeconds($r, $rawValue) {
+	function humanizePostExecutionSeconds($r, $item) {
 		// If the execution time is one second or more, tint it red for warning
-		if ($rawValue >= 1)
+		if ($item->executionSeconds >= 1)
 			return "<span style=\"color: tomato;\">".$r."</span>";
 		else
 			return $r;

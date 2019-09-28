@@ -176,7 +176,7 @@ class Session extends \Cherrycake\Module {
 				],
 				[
 					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
-					"value" => mktime()
+					"value" => time()
 				],
 				[
 					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP,

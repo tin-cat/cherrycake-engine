@@ -248,7 +248,7 @@ class SystemLog extends \Cherrycake\Module {
 			]
 		]);
 
-		return  \Cherrycake\UiComponentTable::build([
+		return \Cherrycake\UiComponentTable::build([
 			"items" => $janitorLogItems,
 			"itemFields" => [
 				"id" => [],

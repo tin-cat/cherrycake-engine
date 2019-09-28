@@ -283,7 +283,7 @@ class Janitor extends \Cherrycake\Module
 		global $e;
 		$r .= "Janitor run\n";
 
-		$baseTimestamp = mktime();
+		$baseTimestamp = time();
 
 		$r .= "Task to be considered: ".($task ? $task : "All")."\n";
 
@@ -307,7 +307,7 @@ class Janitor extends \Cherrycake\Module
 				$microtimeStart = microtime(true);
 				list($resultCode, $resultDescription) = $janitorTask->run($baseTimestamp);
 				$executionSeconds = (microtime(true) - $microtimeStart);
-				$r .= floor($executionSeconds * 1000)." milliseconds Ok. ";
+				$r .= $executionSeconds." seconds Ok. ";
 				$r .= "Logging janitor task: ";
 
 				$databaseProviderName = $this->getConfig("logDatabaseProviderName");
@@ -516,7 +516,7 @@ class Janitor extends \Cherrycake\Module
 			]
 		]);
 
-		return  \Cherrycake\UiComponentTable::build([
+		return \Cherrycake\UiComponentTable::build([
 			"items" => $janitorLogItems,
 			"itemFields" => [
 				"id" => [],

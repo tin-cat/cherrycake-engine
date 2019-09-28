@@ -87,7 +87,7 @@ class LogEvent extends Item {
 		if ($data["timestamp"])
 			$this->timestamp = $data["timestamp"];
 		else
-			$this->timestamp = mktime();
+			$this->timestamp = time();
 		
 		if ($data["additionalData"])
 			$this->additionalData = $data["additionalData"];

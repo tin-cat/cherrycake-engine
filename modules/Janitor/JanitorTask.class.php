@@ -177,7 +177,7 @@ class JanitorTask
 			return true;
 
 		if (!$baseTimestamp)
-			$baseTimestamp = mktime();
+			$baseTimestamp = time();
 
 		if (!$lastExecutionTimestamp = $this->getLastExecutionTimestamp())
 			return true;

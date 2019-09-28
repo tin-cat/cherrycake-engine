@@ -689,7 +689,7 @@ class Locale extends \Cherrycake\Module
 
 			case \Cherrycake\Modules\TIMESTAMP_FORMAT_RELATIVE_HUMAN:
 				// If in the past
-				if ($timestamp < mktime()) {
+				if ($timestamp < time()) {
 
 					// Check is yesterday
 					if (mktime(0, 0, 0, date("n", $timestamp), date("j", $timestamp), date("Y", $timestamp)) == mktime(0, 0, 0, date("n"), date("j")-1, date("Y"))) {
@@ -697,7 +697,7 @@ class Locale extends \Cherrycake\Module
 						break;
 					}
 
-					$minutesAgo = floor((mktime() - $timestamp) / 60);
+					$minutesAgo = floor((time() - $timestamp) / 60);
 
 					if ($minutesAgo < 5) {
 						$r = $this->getFromArray($this->texts["justNow"], $setup["language"]);

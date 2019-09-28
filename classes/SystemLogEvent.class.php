@@ -76,7 +76,7 @@ class SystemLogEvent extends Item {
 		if ($data["dateAdded"])
 			$this->dateAdded = $data["dateAdded"];
 		else
-			$this->dateAdded = mktime();
+			$this->dateAdded = time();
 
 		if ($data["subType"])
 			$this->subType = $data["subType"];
