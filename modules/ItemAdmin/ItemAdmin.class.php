@@ -19,7 +19,7 @@ namespace Cherrycake\Modules;
  */
 class ItemAdmin extends \Cherrycake\Module {
 	protected $isConfigFile = true;
-	
+
     /**
      * @var array $maps Contains the mapped admins
      */
