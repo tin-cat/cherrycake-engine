@@ -31,6 +31,8 @@ namespace Cherrycake\Modules;
  * @category Modules
  */
 class Actions extends \Cherrycake\Module {
+	protected $isConfigFile = true;
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -81,8 +83,6 @@ class Actions extends \Cherrycake\Module {
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
-		$this->isConfigFile = true;
-		
 		if (!parent::init())
 			return false;
 
@@ -112,7 +112,43 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * mapAction
 	 *
-	 * Maps an action for a module (either an App or a Cherrycake module)
+	 * Maps an action for a module (either an App or a Cherrycake module). Should be called within the mapActions method of your module, like this:
+	 * 
+	 * $e->Actions->mapAction(
+	 * 	"TableAdminGetRows",
+	 * 	new \Cherrycake\Action([
+	 * 		"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
+	 * 		"moduleName" => "TableAdmin",
+	 * 		"methodName" => "getRows",
+	 * 		"request" => new \Cherrycake\Request([
+	 * 			"isSecurityCsrf" => true,
+	 * 			"pathComponents" => [
+	 * 				new \Cherrycake\RequestPathComponent([
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"string" => "TableAdmin"
+	 * 				]),
+	 * 				new \Cherrycake\RequestPathComponent([
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
+	 * 					"name" => "mapName",
+	 * 					"securityRules" => [
+	 * 						\Cherrycake\SECURITY_RULE_NOT_EMPTY,
+	 * 						\Cherrycake\SECURITY_RULE_SLUG
+	 * 					]
+	 * 				]),
+	 * 				new \Cherrycake\RequestPathComponent([
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"string" => "getRows"
+	 * 				])
+	 * 			],
+	 * 			"parameters" => [
+	 * 				new \Cherrycake\RequestParameter([
+	 * 					"name" => "additionalFillFromParameters",
+	 * 					"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+	 * 				])
+	 * 			]
+	 * 		])
+	 * 	])
+	 * );
 	 *
 	 * @param $actionName string The action name
 	 * @param $action Action object

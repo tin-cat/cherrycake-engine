@@ -18,10 +18,34 @@ namespace Cherrycake\Modules;
  * @category Modules
  */
 class ItemAdmin extends \Cherrycake\Module {
+	protected $isConfigFile = true;
+	
     /**
      * @var array $maps Contains the mapped admins
      */
     private $maps;
+
+	function init() {
+		if (!parent::init())
+			return false;
+
+		global $e;
+		$itemAdminMappableCherrycakeModuleNames = $this->getConfig("itemAdminMappableCherrycakeModuleNames");
+		if (is_array($itemAdminMappableCherrycakeModuleNames))
+			foreach ($itemAdminMappableCherrycakeModuleNames as $itemAdminMappableCherrycakeModuleName) {
+				$e->includeModuleClass(LIB_DIR."/modules", $itemAdminMappableCherrycakeModuleName);
+				forward_static_call(["\\Cherrycake\\Modules\\".$itemAdminMappableCherrycakeModuleName, "mapItemAdmin"]);
+			}
+		
+		$itemAdminMappableAppModuleNames = $this->getConfig("itemAdminMappableAppModuleNames");
+		if (is_array($itemAdminMappableAppModuleNames))
+			foreach ($itemAdminMappableAppModuleNames as $itemAdminMappableAppModuleName) {
+				$e->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $itemAdminMappableAppModuleName);
+				forward_static_call(["\\".$e->getAppNamespace()."\\Modules\\".$itemAdminMappableAppModuleName, "mapItemAdmin"]);
+			}
+
+		return true;
+	}
 
     /**
      * Maps a new item admin.

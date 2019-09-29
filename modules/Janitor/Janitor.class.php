@@ -51,8 +51,7 @@ const JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH = 5; // The task must be exe
  * @package Cherrycake
  * @category Modules
  */
-class Janitor extends \Cherrycake\Module
-{
+class Janitor extends \Cherrycake\Module {
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
@@ -81,8 +80,7 @@ class Janitor extends \Cherrycake\Module
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init()
-	{
+	function init() {
 		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;
@@ -165,11 +163,17 @@ class Janitor extends \Cherrycake\Module
 				])
 			])
 		);
+	}
 
-		// Add TableAdmin maps
-        $e->loadCherrycakeModule("TableAdmin");
+	/**
+	 * mapTableAdmin
+	 * 
+	 * Maps the TableAdmins which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to TableAdmin::map()
+	 */
+	public static function mapTableAdmin() {
+		global $e;
 
-        $e->TableAdmin->map("janitorLog", [
+		$e->TableAdmin->map("janitorLog", [
             "itemsClassName" => "\\Cherrycake\\JanitorLogItems",
             "fillFromParameters" => [],
             "columns" => [

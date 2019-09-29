@@ -17,6 +17,8 @@ namespace Cherrycake\Modules;
  * @category Modules
  */
 class TableAdmin extends \Cherrycake\Module {
+	protected $isConfigFile = true;
+	
 	/**
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
@@ -28,6 +30,28 @@ class TableAdmin extends \Cherrycake\Module {
      * @var array $maps Contains the mapped admins
      */
     private $maps;
+
+	function init() {
+		if (!parent::init())
+			return false;
+
+		global $e;
+		$tableAdminMappableCherrycakeModuleNames = $this->getConfig("tableAdminMappableCherrycakeModuleNames");
+		if (is_array($tableAdminMappableCherrycakeModuleNames))
+			foreach ($tableAdminMappableCherrycakeModuleNames as $tableAdminMappableCherrycakeModuleName) {
+				$e->includeModuleClass(LIB_DIR."/modules", $tableAdminMappableCherrycakeModuleName);
+				forward_static_call(["\\Cherrycake\\Modules\\".$tableAdminMappableCherrycakeModuleName, "mapTableAdmin"]);
+			}
+		
+		$tableAdminMappableAppModuleNames = $this->getConfig("tableAdminMappableAppModuleNames");
+		if (is_array($tableAdminMappableAppModuleNames))
+			foreach ($tableAdminMappableAppModuleNames as $tableAdminMappableAppModuleName) {
+				$e->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $tableAdminMappableAppModuleName);
+				forward_static_call(["\\".$e->getAppNamespace()."\\Modules\\".$tableAdminMappableAppModuleName, "mapTableAdmin"]);
+			}
+
+		return true;
+	}
 
     public static function mapActions() {
         global $e;
@@ -70,9 +94,8 @@ class TableAdmin extends \Cherrycake\Module {
     }
 
     /**
-     * Maps a new admin. Should be called within the mapActions method of your module, like this:
+     * Maps a new admin. Should be called within the mapTableAdmin method of your module, like this:
      * <code>
-     * $e->loadCherrycakeModule("TableAdmin");
      * $e->TableAdmin->map("published", [
      *  "itemsClassName" => "\\CherrycakeApp\\MyItems",
      * "number" => ["fieldName" => "number"],

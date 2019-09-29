@@ -128,9 +128,25 @@ class Module {
 	/**
 	 * mapActions
 	 *
-	 * Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to self::mapAction()
+	 * Maps the Actions to which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to Actions::mapAction()
 	 */
 	public static function mapActions() {
+	}
+
+	/**
+	 * mapTableAdmin
+	 * 
+	 * Maps the TableAdmins which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to TableAdmin::map()
+	 */
+	public static function mapTableAdmin() {
+	}
+
+	/**
+	 * mapItemAdmin
+	 * 
+	 * Maps the ItemAdmins which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to ItemAdmin::map()
+	 */
+	public static function mapItemAdmin() {
 	}
 
 	/**
