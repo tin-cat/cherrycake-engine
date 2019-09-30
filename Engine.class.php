@@ -22,6 +22,11 @@ class Engine {
 	private $appNamespace;
 
 	/**
+	 * @var EngineCache $cache Holds the bottom-level EngineCache object
+	 */
+	private $cache;
+
+	/**
 	 * @var array $loadedModules Stores the names of all included modules
 	 */
 	private $loadedModules;
@@ -50,6 +55,8 @@ class Engine {
 		require LIB_DIR."/Module.class.php";
 
 		$this->appNamespace = $setup["namespace"];
+
+		$this->cache = new \Cherrycake\EngineCache;
 
 		if ($setup["additionalAppConfigFiles"])
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
@@ -110,9 +117,18 @@ class Engine {
 	 * @param string $modulesDirectory The directory where the specified module is stored
 	 * @param string $methodName the name of the method to check
 	 * @return array The module names that implement the specified method
-	 * @todo This method's return must be cached!
 	 */
 	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
+		$cacheBucket = "AvailableModuleNamesWithMethod";
+		$cacheKey = [
+			$nameSpace,
+			$modulesDirectory,
+			$methodName
+		];
+
+		if ($modulesWithMethod = $this->cache->getFromBucket($cacheBucket, $cacheKey))
+			return $modulesWithMethod;
+	
 		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory))
 			return false;
 		foreach ($moduleNames as $moduleName) {
@@ -123,6 +139,9 @@ class Engine {
 				$modulesWithMethod[] = $moduleName;
 			}
 		}
+
+		$this->cache->setInBucket($cacheBucket, $cacheKey, $modulesWithMethod);
+
 		return $modulesWithMethod;
 	}
 
@@ -326,7 +345,7 @@ class Engine {
 	}
 
 	/**
-	 * Ends the application by dumping the Output buffer to the client
+	 * Ends the application
 	 */
 	function end() {
 		$this->Output->sendResponse();
