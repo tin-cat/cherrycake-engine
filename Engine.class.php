@@ -63,6 +63,91 @@ class Engine {
 		return true;
 	}
 
+	function getAvailableModuleNamesOnDirectory($directory) {
+		if (!$handler = opendir($directory))
+			return false;
+		while (false !== ($file = readdir($handler))) {
+			if ($file == "." || $file == "..")
+				continue;
+			if (is_dir($directory."/".$file))
+				$moduleNames[] = $file;
+		}
+		closedir($handler);
+		return $moduleNames;
+	}
+
+	/**
+	 * @return array All the available Cherrycake module names
+	 */
+	function getAvailableCherrycakeModuleNames() {
+		return $this->getAvailableModuleNamesOnDirectory(LIB_DIR."/modules");
+	}
+
+	/**
+	 * @return array All the available App module names
+	 */
+	function getAvailableAppModuleNames() {
+		return $this->getAvailableModuleNamesOnDirectory(APP_MODULES_DIR);
+	}
+
+	/**
+	 * @param string $methodName the name of the method
+	 * @return array The Cherrycake module names that implement the specified method
+	 */
+	function getAvailableCherrycakeModuleNamesWithMethod($methodName) {
+		return $this->getAvailableModuleNamesWithMethod("Cherrycake\Modules", LIB_DIR."/modules", $methodName);
+	}
+
+	/**
+	 * @param string $methodName the name of the method
+	 * @return array The App module names that implement the specified method
+	 */
+	function getAvailableAppModuleNamesWithMethod($methodName) {
+		return $this->getAvailableModuleNamesWithMethod("CherrycakeApp\Modules", APP_MODULES_DIR, $methodName);
+	}
+	/*
+	 * @param string $nameSpace The namespace to use
+	 * @param string $modulesDirectory The directory where the specified module is stored
+	 * @param string $methodName the name of the method to check
+	 * @return array The module names that implement the specified method
+	 * @todo This method's return must be cached!
+	 */
+	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
+		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory))
+			return false;
+		foreach ($moduleNames as $moduleName) {
+			if (!$this->isModuleExists($modulesDirectory, $moduleName)) {
+				continue;
+			}
+			if ($this->isModuleImplementsMethod($nameSpace, $modulesDirectory, $moduleName, $methodName)) {
+				$modulesWithMethod[] = $moduleName;
+			}
+		}
+		return $modulesWithMethod;
+	}
+
+	/**
+	 * @param string $nameSpace The namespace to use
+	 * @param string $modulesDirectory The directory where the specified module is stored
+	 * @param string $moduleName The name of the module to check
+	 * @param string $methodName the name of the method to check
+	 * @return boolean True if the specified module implements the specified method
+	 */
+	function isModuleImplementsMethod($nameSpace, $modulesDirectory, $moduleName, $methodName) {
+		$this->includeModuleClass($modulesDirectory, $moduleName);
+		return $this->isClassMethodImplemented($nameSpace."\\".$moduleName, $methodName);
+	}
+
+	/**
+	 * @param string $className The name of the class
+	 * @param string $methodname The name of the method
+	 * @return boolean True if the method is implemented on the specified class, false if it isn't.
+	 */
+	function isClassMethodImplemented($className, $methodName) {
+		$reflector = new \ReflectionMethod($className, $methodName);
+		return $reflector->getDeclaringClass()->getName() == $className;
+	}
+
 	/**
 	 * @return string The namespace used by the App
 	 */
@@ -121,6 +206,24 @@ class Engine {
 		return true;
 	}
 
+	/**
+	 * @param string $modulesDirectory Directory where modules are stored
+	 * @param string $moduleName The name of the module whose class must be included
+	 * @return string The file path of the specified module
+	 */
+	function getModuleFilePath($modulesDirectory, $moduleName) {
+		return $modulesDirectory."/".$moduleName."/".$moduleName.".class.php";
+	}
+
+	/**
+	 * @param string $modulesDirectory Directory where modules are stored
+	 * @param string $moduleName The name of the module whose class must be included
+	 * @return boolean Whether the specified module file exists
+	 */
+	function isModuleExists($modulesDirectory, $moduleName) {
+		return file_exists($this->getModuleFilePath($modulesDirectory, $moduleName));
+	}
+
 	/*
 	 * Generic method to include a module class
 	 *
@@ -128,7 +231,7 @@ class Engine {
 	 * @param string $moduleName The name of the module whose class must be included
 	 */
 	function includeModuleClass($modulesDirectory, $moduleName) {
-		include_once($modulesDirectory."/".$moduleName."/".$moduleName.".class.php");
+		include_once($this->getModuleFilePath($modulesDirectory, $moduleName));
 	}
 
 	/**
@@ -167,6 +270,27 @@ class Engine {
 	 */
 	function loadAppModuleClass($moduleName, $className) {
 		include_once(APP_MODULES_DIR."/".$moduleName."/".$className.".class.php");
+	}
+
+	/**
+	 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented.
+	 * 
+	 * @param string $methodName The method name to call
+	 */
+	function callImplementedStaticMethodOnAllAvailableModules($methodName) {
+		$cherrycakeModuleNames = $this->getAvailableCherrycakeModuleNamesWithMethod($methodName);
+		if (is_array($cherrycakeModuleNames))
+			foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
+				$this->includeModuleClass(LIB_DIR."/modules", $cherrycakeModuleName);
+				forward_static_call(["\\Cherrycake\\Modules\\".$cherrycakeModuleName, $methodName]);
+			}
+
+		$appModuleNames = $this->getAvailableAppModuleNamesWithMethod($methodName);
+		if (is_array($appModuleNames))
+			foreach ($appModuleNames as $appModuleName) {
+				$this->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $appModuleName);
+				forward_static_call(["\\".$this->getAppNamespace()."\\Modules\\".$appModuleName, $methodName]);
+			}
 	}
 
 	/**

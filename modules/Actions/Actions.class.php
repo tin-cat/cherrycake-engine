@@ -17,9 +17,6 @@ namespace Cherrycake\Modules;
  * Configuration example for actions.config.php:
  * <code>
  * $actionsConfig = [
- * 	"actionableModules" => [ // The actionable modules, modules that are allowed to be requested via an http query to the engine. A hash array in the form of <primaryAction> => <module name>
- * 		ACTION_DEFAULT => "Home"
- * 	],
  * 	"cache" => [
  * 		"provider" => "huge" // The default cache provider to use
  * 	],
@@ -92,19 +89,7 @@ class Actions extends \Cherrycake\Module {
 		$e->loadCherrycakeModuleClass("Actions", "RequestPathComponent");
 		$e->loadCherrycakeModuleClass("Actions", "RequestParameter");
 
-		$actionableCherrycakeModuleNames = $this->getConfig("actionableCherrycakeModuleNames");
-		if (is_array($actionableCherrycakeModuleNames))
-			foreach ($actionableCherrycakeModuleNames as $actionableCherrycakeModuleName) {
-				$e->includeModuleClass(LIB_DIR."/modules", $actionableCherrycakeModuleName);
-				forward_static_call(["\\Cherrycake\\Modules\\".$actionableCherrycakeModuleName, "mapActions"]);
-			}
-
-		$actionableAppModuleNames = $this->getConfig("actionableAppModuleNames");
-		if (is_array($actionableAppModuleNames))
-			foreach ($actionableAppModuleNames as $actionableAppModuleName) {
-				$e->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $actionableAppModuleName);
-				forward_static_call(["\\".$e->getAppNamespace()."\\Modules\\".$actionableAppModuleName, "mapActions"]);
-			}
+		$e->callImplementedStaticMethodOnAllAvailableModules("mapActions");
 
 		return true;
 	}
@@ -264,21 +249,6 @@ class Actions extends \Cherrycake\Module {
 	 * @return string Debug information about the configured actions
 	 */
 	function debug() {
-		$r = "";
-		if ($actionableCherrycakeModuleNames = $this->getConfig("actionableCherrycakeModuleNames")) {
-			$r .= "<b>Actionable Cherrycake modules</b><ul>";
-			foreach ($actionableCherrycakeModuleNames as $actionableCherrycakeModuleName)
-				$r .= "<li>".$actionableCherrycakeModuleName."</li>";
-			$r .= "</ul>";
-		}
-
-		if ($actionableAppModuleNames = $this->getConfig("actionableAppModuleNames")) {
-			$r .= "<b>Actionable App modules</b><ul>";
-			foreach ($actionableAppModuleNames as $actionableAppModuleName)
-				$r .= "<li>".$actionableAppModuleName."</li>";
-			$r .= "</ul>";
-		}
-
 		if (is_array($this->actions)) {
 			$r .= "<b>Mapped actions</b><br>";
 			while (list($actionName, $action) = each($this->actions))

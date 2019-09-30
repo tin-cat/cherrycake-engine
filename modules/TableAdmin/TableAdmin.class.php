@@ -34,21 +34,9 @@ class TableAdmin extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
-
-		global $e;
-		$tableAdminMappableCherrycakeModuleNames = $this->getConfig("tableAdminMappableCherrycakeModuleNames");
-		if (is_array($tableAdminMappableCherrycakeModuleNames))
-			foreach ($tableAdminMappableCherrycakeModuleNames as $tableAdminMappableCherrycakeModuleName) {
-				$e->includeModuleClass(LIB_DIR."/modules", $tableAdminMappableCherrycakeModuleName);
-				forward_static_call(["\\Cherrycake\\Modules\\".$tableAdminMappableCherrycakeModuleName, "mapTableAdmin"]);
-			}
 		
-		$tableAdminMappableAppModuleNames = $this->getConfig("tableAdminMappableAppModuleNames");
-		if (is_array($tableAdminMappableAppModuleNames))
-			foreach ($tableAdminMappableAppModuleNames as $tableAdminMappableAppModuleName) {
-				$e->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $tableAdminMappableAppModuleName);
-				forward_static_call(["\\".$e->getAppNamespace()."\\Modules\\".$tableAdminMappableAppModuleName, "mapTableAdmin"]);
-			}
+		global $e;
+		$e->callImplementedStaticMethodOnAllAvailableModules("mapTableAdmin");
 
 		return true;
 	}
