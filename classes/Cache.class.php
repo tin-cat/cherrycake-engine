@@ -25,7 +25,7 @@ class Cache {
 	function buildKey($id) {
 		return
 			"Cherrycake_".
-			$_SERVER['HTTP_HOST']."_".
+			APP_NAME."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}
 
@@ -37,7 +37,7 @@ class Cache {
 	function buildKeyForBucket($bucket, $id) {
 		return
 			"Cherrycake_".
-			$_SERVER['HTTP_HOST']."_".
+			APP_NAME."_".
 			$bucket."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}

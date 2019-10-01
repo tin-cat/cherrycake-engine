@@ -22,7 +22,7 @@ class Engine {
 	private $appNamespace;
 
 	/**
-	 * @var EngineCache $cache Holds the bottom-level EngineCache object
+	 * @var Cache $cache Holds the bottom-level Cache object
 	 */
 	private $cache;
 
