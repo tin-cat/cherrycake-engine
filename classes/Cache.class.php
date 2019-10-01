@@ -1,7 +1,7 @@
 <?php
 
 /**
- * EngineCache
+ * Cache
  *
  * @package Movefy
  */
@@ -15,7 +15,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class EngineCache {
+class Cache {
 	private $defaultBucketName = "default";
 
 	/**

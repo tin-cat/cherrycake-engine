@@ -56,7 +56,7 @@ class Engine {
 
 		$this->appNamespace = $setup["namespace"];
 
-		$this->cache = new \Cherrycake\EngineCache;
+		$this->cache = new \Cherrycake\Cache;
 
 		if ($setup["additionalAppConfigFiles"])
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
@@ -293,7 +293,6 @@ class Engine {
 
 	/**
 	 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented.
-	 * 
 	 * @param string $methodName The method name to call
 	 */
 	function callImplementedStaticMethodOnAllAvailableModules($methodName) {
