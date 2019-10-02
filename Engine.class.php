@@ -134,11 +134,8 @@ class Engine {
 		$modulesWithMethod = $this->cache->getFromBucket($cacheBucket, $cacheKey);
 		if (is_array($modulesWithMethod))
 			return $modulesWithMethod;
-
-		echo $modulesDirectory." - ".$methodName."\n";
 	
 		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
-			echo $modulesDirectory." has no modules";
 			$this->cache->setInBucket($cacheBucket, $cacheKey, []);
 			return false;
 		}
