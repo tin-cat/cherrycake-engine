@@ -329,7 +329,7 @@ class Locale extends \Cherrycake\Module
 
 				$sql = "select ";
 				foreach ($availableLanguages as $language)
-					$sql .= $this->getConfig("textsTableName").".text".$language.",";
+					$sql .= $this->getConfig("textsTableName").".text_".$this->getLanguageCode($language).",";
 				reset($availableLanguages);
 				$sql = substr($sql, 0, -1);
 				$sql .= " from ".$this->getConfig("textsTableName").", ".$this->getConfig("textCategoriesTableName");
@@ -366,7 +366,7 @@ class Locale extends \Cherrycake\Module
 			$e->Cache->$cacheProviderName->set($cacheKey, $data, ($setup["forceTextCacheTtl"] ? $setup["forceTextCacheTtl"] : $this->getConfig("textCacheDefaultTtl")));
 		}
 
-		$text = $data["text".($setup["forceLanguage"] ? $setup["forceLanguage"] : $this->getLanguage())];
+		$text = $data["text_".$this->getLanguageCode($setup["forceLanguage"] ? $setup["forceLanguage"] : $this->getLanguage())];
 
 		if ($setup["variables"])
 			while (list($key, $value) = each($setup["variables"])) {
