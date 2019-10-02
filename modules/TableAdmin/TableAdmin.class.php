@@ -17,8 +17,6 @@ namespace Cherrycake\Modules;
  * @category Modules
  */
 class TableAdmin extends \Cherrycake\Module {
-	protected $isConfigFile = true;
-	
 	/**
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
@@ -36,7 +34,7 @@ class TableAdmin extends \Cherrycake\Module {
 			return false;
 		
 		global $e;
-		$e->callImplementedStaticMethodOnAllAvailableModules("mapTableAdmin");
+		$e->callImplementedStaticMethodOnAllAvailableModulesAndLoad("mapTableAdmin");
 
 		return true;
 	}

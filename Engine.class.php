@@ -292,23 +292,42 @@ class Engine {
 	}
 
 	/**
-	 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented.
+	 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules
 	 * @param string $methodName The method name to call
 	 */
-	function callImplementedStaticMethodOnAllAvailableModules($methodName) {
+	function callImplementedStaticMethodOnAllAvailableModulesAndLoad($methodName) {
+		// Call the static method
 		$cherrycakeModuleNames = $this->getAvailableCherrycakeModuleNamesWithMethod($methodName);
-		if (is_array($cherrycakeModuleNames))
+		if (is_array($cherrycakeModuleNames)) {
 			foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
 				$this->includeModuleClass(LIB_DIR."/modules", $cherrycakeModuleName);
 				forward_static_call(["\\Cherrycake\\Modules\\".$cherrycakeModuleName, $methodName]);
 			}
+			reset($cherrycakeModuleNames);
+		}
 
 		$appModuleNames = $this->getAvailableAppModuleNamesWithMethod($methodName);
-		if (is_array($appModuleNames))
+		if (is_array($appModuleNames)) {
 			foreach ($appModuleNames as $appModuleName) {
 				$this->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $appModuleName);
 				forward_static_call(["\\".$this->getAppNamespace()."\\Modules\\".$appModuleName, $methodName]);
 			}
+			reset($appModuleNames);
+		}
+		
+		// Load the modules
+		if (is_array($cherrycakeModuleNames)) {
+			foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
+				$this->loadCherrycakeModule($cherrycakeModuleName);
+			}
+		}
+
+		if (is_array($appModuleNames)) {
+			foreach ($appModuleNames as $appModuleName) {
+				$this->loadAppModule($appModuleName);
+			}
+		}
+
 	}
 
 	/**

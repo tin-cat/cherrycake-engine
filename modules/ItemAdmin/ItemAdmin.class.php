@@ -18,8 +18,6 @@ namespace Cherrycake\Modules;
  * @category Modules
  */
 class ItemAdmin extends \Cherrycake\Module {
-	protected $isConfigFile = true;
-
     /**
      * @var array $maps Contains the mapped admins
      */
@@ -30,9 +28,12 @@ class ItemAdmin extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->callImplementedStaticMethodOnAllAvailableModules("mapItemAdmin");
-
+		$e->callImplementedStaticMethodOnAllAvailableModulesAndLoad("mapItemAdmin");
+		
 		return true;
+	}
+
+	public static function mapActions() {
 	}
 
     /**

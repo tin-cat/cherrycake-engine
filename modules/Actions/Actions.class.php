@@ -89,7 +89,7 @@ class Actions extends \Cherrycake\Module {
 		$e->loadCherrycakeModuleClass("Actions", "RequestPathComponent");
 		$e->loadCherrycakeModuleClass("Actions", "RequestParameter");
 
-		$e->callImplementedStaticMethodOnAllAvailableModules("mapActions");
+		$e->callImplementedStaticMethodOnAllAvailableModulesAndLoad("mapActions");
 
 		return true;
 	}
