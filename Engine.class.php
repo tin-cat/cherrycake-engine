@@ -70,7 +70,12 @@ class Engine {
 		return true;
 	}
 
+	/**
+	 * @param string $directory The directory on which to search for modules
+	 * @return mixed An array of the module names found on the specified directory, or false if none found or the directory couldn't be opened.
+	 */
 	function getAvailableModuleNamesOnDirectory($directory) {
+		$moduleNames = false;
 		if (!$handler = opendir($directory))
 			return false;
 		while (false !== ($file = readdir($handler))) {
@@ -126,11 +131,18 @@ class Engine {
 			$methodName
 		];
 
-		if ($modulesWithMethod = $this->cache->getFromBucket($cacheBucket, $cacheKey))
+		$modulesWithMethod = $this->cache->getFromBucket($cacheBucket, $cacheKey);
+		if (is_array($modulesWithMethod))
 			return $modulesWithMethod;
+
+		echo $modulesDirectory." - ".$methodName."\n";
 	
-		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory))
+		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
+			echo $modulesDirectory." has no modules";
+			$this->cache->setInBucket($cacheBucket, $cacheKey, []);
 			return false;
+		}
+
 		foreach ($moduleNames as $moduleName) {
 			if (!$this->isModuleExists($modulesDirectory, $moduleName)) {
 				continue;
@@ -140,7 +152,7 @@ class Engine {
 			}
 		}
 
-		$this->cache->setInBucket($cacheBucket, $cacheKey, $modulesWithMethod);
+		$this->cache->setInBucket($cacheBucket, $cacheKey, $modulesWithMethod ? $modulesWithMethod : []);
 
 		return $modulesWithMethod;
 	}
