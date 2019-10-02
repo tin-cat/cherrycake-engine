@@ -55,6 +55,7 @@ class Item extends BasicObject {
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
 	 * * type: The type of the field, one of the available \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language (as configured in Locale.config.php key availableLanguages)
 	 * * title: The title of the field, to be used when representing data on modules like UiComponentTableAdmin
 	 * * prefix: The prefix string to add when humanizing the field value
 	 * * postfix: The postfix string to add when humanizing the field value
@@ -283,6 +284,7 @@ class Item extends BasicObject {
 	/**
 	 * Inserts a row on the database representing an item
 	 * @param array $data Optional fields data that will override the data stored on the object if specified. Fields must be defined on this->fields
+	 * For multilanguage fields, a hash array with the syntax [<language code> => <value>, ...] can be passed. If a non-array value is passed the currently detected language will be used
 	 * @return boolean True if insertion went ok, false otherwise
 	 */
 	function insert($data = false) {
@@ -324,11 +326,23 @@ class Item extends BasicObject {
 			}
 			else
 				continue;
-
-			$fieldsData[$fieldName] = [
-				"type" => $fieldData["type"],
-				"value" => $value
-			];
+			
+			if ($fieldData["isMultiLanguage"]) { // If this field is multilanguage
+				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
+					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
+						$fieldsData[$fieldName."_".$e->Locale->getLanguageCode($language)] = $value[$language];
+					}
+				}
+				else { // If we have a value that's not an array, assign it to the currently detected language
+					$fieldsData[$fieldName."_".$e->Locale->getLanguageCode()] = $value;
+				}
+			}
+			else { // If the field is not multilanguage
+				$fieldsData[$fieldName] = [
+					"type" => $fieldData["type"],
+					"value" => $value
+				];
+			}
 
 			$data[$fieldName] = $value;
 		}
@@ -425,6 +439,7 @@ class Item extends BasicObject {
 	/**
 	 * Updates the data on the database for this Item
 	 * @param array $data A hash array of the keys and values to update
+	 * For multilanguage fields, a hash array with the syntax [<language code> => <value>, ...] can be passed. If a non-array value is passed the currently detected language will be used
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function update($data) {
@@ -441,11 +456,40 @@ class Item extends BasicObject {
 		}
 
 		while (list($fieldName, $fieldData) = each($data)) {
-			$this->$fieldName = $fieldData;
-			$fields[$fieldName] = [
-				"type" => $this->fields[$fieldName]["type"],
-				"value" => $fieldData
-			];
+			if ($this->fields[$fieldName]["isMultiLanguage"]) {
+				global $e;
+				if (is_array($fieldData)) {
+					
+					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
+
+						$this->{$fieldName."_".$e->Locale->getLanguageCode($language)} = $fieldData[$language];
+						$fields[$fieldName."_".$e->Locale->getLanguageCode($language)] = [
+							"type" => $this->fields[$fieldName]["type"],
+							"value" => $fieldData[$language]
+						];
+
+					}
+
+				}
+				else {
+
+					$this->$fieldName = $fieldData;
+					$fields[$fieldName."_".$e->Locale->getLanguageCode()] = [
+						"type" => $this->fields[$fieldName]["type"],
+						"value" => $fieldData
+					];
+
+				}
+			}
+			else {
+
+				$this->$fieldName = $fieldData;
+				$fields[$fieldName] = [
+					"type" => $this->fields[$fieldName]["type"],
+					"value" => $fieldData
+				];
+
+			}
 		}
 
 		return $e->Database->{$this->databaseProviderName}->updateByUniqueField(
@@ -533,7 +577,7 @@ class Item extends BasicObject {
 	function getForLanguage($key, $language) {
 		if (!$this->fields || $this->fields[$key]["isMultiLanguage"])
 			return false;
-		$key .= $e->Locale->getLanguage();
+		$key .= "_".$e->Locale->getLanguageCode($language);
 		return $this->$key;
 	}
 
