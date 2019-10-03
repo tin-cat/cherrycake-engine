@@ -242,28 +242,6 @@ class Locale extends \Cherrycake\Module
 	}
 
 	/**
-	 * mapTableAdmin
-	 * 
-	 * Maps the TableAdmins which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to TableAdmin::map()
-	 */
-	public static function mapTableAdmin() {
-		global $e;
-
-		$e->TableAdmin->map("textCategories", [
-            "itemsClassName" => "\\Cherrycake\\JanitorLogItems",
-            "fillFromParameters" => [],
-            "columns" => [
-                "id" => ["fieldName" => "id"],
-				"executionDate" => ["fieldName" => "executionDate"],
-				"executionSeconds" => ["fieldName" => "executionSeconds"],
-				"taskName" => ["fieldName" => "taskName"],
-				"resultCode" => ["fieldName" => "resultCode"],
-				"resultDescription" => ["fieldName" => "resultDescription"]
-            ]
-        ]);
-	}
-
-	/**
 	 * Gets a language's name
 	 * @param integer $language The language
 	 * @param boolean $setup A hash array of setup options, from the following possible keys:

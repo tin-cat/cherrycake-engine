@@ -62,14 +62,13 @@ class UiComponentButton extends UiComponent {
 	function buildHtml($setup = false) {
 		$this->setProperties($setup);
 
-		if (!$this->domId)
-			$this->domId = uniqid();
+		$domId = $this->DomId ? $this->DomId : uniqid();
 
-		$r .= "<div id=\"".$this->domId."\"></div>";
+		$r .= "<div id=\"".$domId."\"></div>";
 
 		$r .= "
 			<script>
-				$('#".$this->domId."').UiComponentButton({
+				$('#".$domId."').UiComponentButton({
 					style: ".($this->style ? "'".$this->style."'" : "false").",
 					additionalCssClasses: ".($this->additionalCssClasses ? "'".$this->additionalCssClasses."'" : "false").",
 					title: ".($this->title ? json_encode($this->title) : "false").",
