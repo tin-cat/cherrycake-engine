@@ -38,7 +38,7 @@ class TextItem extends \Cherrycake\Item {
 			"title" => "Description"
 		],
 		"text" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_TEXT,
 			"title" => "Text",
 			"isMultiLanguage" => true
 		]

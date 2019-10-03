@@ -20,7 +20,7 @@ class UiComponentFormTextAjax extends UiComponent {
 	protected $domId;
 	protected $value;
 	protected $height;
-	protected $maxLength = 255;
+	protected $maxLength = 65535;
 	protected $placeHolder;
 	protected $isDisabled = false;
 	protected $isAutoComplete = true;
