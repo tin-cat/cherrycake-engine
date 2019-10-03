@@ -123,7 +123,7 @@ class TableAdmin extends \Cherrycake\Module {
      * * * representFunction: An anonymous function that will be passed the Item object, the returned value will be shown in the column. This is used even if fieldName is specified. The function might return an HTML string, or an array with the following possible keys:
      * * * * html: The HTML
      * * * * type: The type of the table cell, for example: "image"
-     * * fillFromParameters: A hash array of the parameters that have to passed to the fillFromParameters method on the specified itemsClassName in order to retrieve the items to admin
+     * * fillFromParameters: A hash array of the parameters that have to be passed to the fillFromParameters method on the specified itemsClassName in order to retrieve the items to admin
      * * preCheckCallback: An optional anonymous function that will be called before any operation is done, and that must return true if the operation can continue, or false if it should halt for whatever reason. Usually used to check for a logged user with permissions enough to admin.
      * * additionalFillFromRequestParameters: If this admin admits additional request parameters (for example, for filtering results). Each item on this array is a RequestParameter object with the name of the additional parameter and any option securityRules or filters
      */
