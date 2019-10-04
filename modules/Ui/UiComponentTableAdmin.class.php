@@ -22,7 +22,6 @@ class UiComponentTableAdmin extends UiComponent {
     ];
 
 	function addCssAndJavascript() {
-		parent::addCssAndJavascript();
 		global $e;
 		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentTableAdmin.js");
     }

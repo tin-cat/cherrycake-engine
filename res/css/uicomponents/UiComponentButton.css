@@ -39,6 +39,8 @@
 	width: 14px;
 	height: 14px;
 	background-size: 14px;
+	-webkit-mask-size: 14px;
+	mask-size: 14px;
 }
 
 .UiComponentButton.maxWidth {

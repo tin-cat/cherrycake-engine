@@ -58,7 +58,6 @@ class UiComponentIcons extends UiComponent {
 	 * Adds the Css and Javascript sets that are required to load by HtmlDocument module for this UI component to properly work
 	 */
 	function addCssAndJavascript() {
-		parent::addCssAndJavascript();
 		global $e;
 		$e->Css->addCssToSet($this->getConfig("cssSetName"), $this->generateCss());
 		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentIcons.css");
@@ -80,6 +79,7 @@ class UiComponentIcons extends UiComponent {
 				($this->getConfig("method") == "mask" ?
 					($this->getConfig("defaultIconColor") ? "background-color: ".$this->getConfig("defaultIconColor").";\n" : "").
 					"mask-size: cover;\n".
+					"-webkit-mask-repeat: no-repeat;\n".
 					"mask-repeat: no-repeat;\n".
 					"-webkit-mask-position: center;\n".
 					"mask-position: center;\n"

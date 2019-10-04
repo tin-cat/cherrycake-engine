@@ -244,8 +244,9 @@ class Css extends \Cherrycake\Module {
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if ($e->Ui && $e->Ui->uiComponents)
-			foreach ($e->Ui->uiComponents as $UiComponent)
+			foreach ($e->Ui->uiComponents as $UiComponent) {
 				$UiComponent->addCssAndJavascript();
+			}
 
 		if ($this->GetConfig("isCache")) {
 			$cacheProviderName = $this->GetConfig("cacheProviderName");
