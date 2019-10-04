@@ -32,8 +32,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentIcons extends UiComponent
-{
+class UiComponentIcons extends UiComponent {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */
@@ -80,7 +79,7 @@ class UiComponentIcons extends UiComponent
 			".UiComponentIcon {\n".
 				($this->getConfig("method") == "mask" ?
 					($this->getConfig("defaultIconColor") ? "background-color: ".$this->getConfig("defaultIconColor").";\n" : "").
-					"-webkit-mask-repeat: no-repeat;\n".
+					"mask-size: cover;\n".
 					"mask-repeat: no-repeat;\n".
 					"-webkit-mask-position: center;\n".
 					"mask-position: center;\n"
@@ -110,7 +109,7 @@ class UiComponentIcons extends UiComponent
 		if (!is_dir($this->getConfig("directory")))
 			return false;
 
-		// Load subdirectories that indicate different icon styles (i.e: colors)
+		// Load$directories that indicate different icon styles (i.e: colors)
 		if (!$handler = opendir($this->getConfig("directory"))) {
 			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Can't open directory ".$this->getConfig("directory")]);
 			return false;
@@ -118,12 +117,12 @@ class UiComponentIcons extends UiComponent
 
 		while (false !== ($fileName = readdir($handler)))
 			if ($fileName != "." && $fileName != ".." && is_dir($this->getConfig("directory")."/".$fileName))
-				$subDirectories[] = $fileName;
+				$directories[] = $fileName;
 
-		if (!is_array($subDirectories))
-			$subDirectories[] = "./";
+		// Also add the icons main directory
+		$directories[] = "./";
 
-		foreach ($subDirectories as $styleName)
+		foreach ($directories as $styleName)
 			if ($handler = opendir($this->getConfig("directory")."/".$styleName))
 				while (false !== ($fileName = readdir($handler)))
 					if (strtolower(substr(strrchr($fileName, "."), 1)) == "svg" && substr($fileName, 0, 1) != "." && $fileName != "." && $fileName != "..")
@@ -156,6 +155,9 @@ class UiComponentIcons extends UiComponent
 									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
 									";".
 									" mask-image: url(".$url.")".
+									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
+									";".
+									" mask: url(".$url.")".
 									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
 									";"
 								: "").

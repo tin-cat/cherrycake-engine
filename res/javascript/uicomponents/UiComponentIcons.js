@@ -21,12 +21,12 @@
 			$(base.el).removeClass(from).addClass(to);
 		}
 
-		base.setIcon = function(iconName) {+
+		base.setIcon = function(iconName) {
 			base.clearIcon();
 			$(base.el).addClass('UiComponentIcon ' + iconName);
 		}
 
-		base.setVariant = function(variant) {+
+		base.setVariant = function(variant) {
 			$(base.el).addClass(variant);
 		}
 

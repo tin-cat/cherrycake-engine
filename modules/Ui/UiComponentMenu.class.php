@@ -184,7 +184,7 @@ class UiComponentMenu extends UiComponent {
 	 * @return string The HTML
 	 */
 	function buildOptionHtml($optionSetup, $isSecondLevel = false) {
-		if ($optionSetup["href"] && $optionSetup["key"] != $this->selectedOption)
+		if ($optionSetup["href"])
 			$r .= "<a href=\"".$optionSetup["href"]."\"";
 		else
 			$r .= "<div";
@@ -210,7 +210,7 @@ class UiComponentMenu extends UiComponent {
 			$r .= "<div class=\"title\">".$optionSetup["title"]."</div>";
 
 
-		if ($optionSetup["href"] && $optionSetup["key"] != $this->selectedOption)
+		if ($optionSetup["href"])
 			$r .= "</a>";
 		else
 			$r .= "</div>";

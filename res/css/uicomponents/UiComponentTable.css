@@ -13,7 +13,7 @@ table.UiComponentTable.fullWidth {
 
 table.UiComponentTable th,
 table.UiComponentTable td {
-	padding: 1em;
+	padding: 0.4em 1em;
 }
 
 table.UiComponentTable th.alignLeft,
@@ -31,17 +31,15 @@ table.UiComponentTable td.alignRight {
 	text-align: right;
 }
 
-table.UiComponentTable > thead.title > tr > th {
-	font-weight: bold;
-	text-align: left;
-}
-
 table.UiComponentTable > thead > tr > th {
+	font-weight: normal;
+	text-align: left;
+	opacity: .4;
 	border-bottom: solid rgba(0, 0, 0, 0.1) 1px;
 }
 
-table.UiComponentTable > thead > tr > th {
-	font-weight: normal;
+table.UiComponentTable td {
+	border-bottom: solid rgba(0, 0, 0, 0.05) 1px;
 }
 
 table.UiComponentTable td.image > img {
@@ -49,12 +47,27 @@ table.UiComponentTable td.image > img {
 	border-radius: 5px;
 }
 
-table.UiComponentTable td.buttons {
+table.UiComponentTable td.buttons > .UiComponentButton {
+	display: flex;	
+	opacity: 0;
+	transition: opacity .1s ease-in-out;
+}
+
+table.UiComponentTable td.buttons.alignRight {
+	justify-content: flex-end;
+}
+
+table.UiComponentTable tr:hover td.buttons > .UiComponentButton{
+	opacity: 1;
 }
 
 table.UiComponentTable td.buttons > .UiComponentButton {
-	margin: 0 5px 5px 0;
+	margin: 0 5px 0 0;
 	float: left;
+}
+
+table.UiComponentTable td.buttons.alignRight > .UiComponentButton {
+	margin: 0 0 0 5px;
 }
 
 table.UiComponentTable td.buttons > .UiComponentButton:last-child {
