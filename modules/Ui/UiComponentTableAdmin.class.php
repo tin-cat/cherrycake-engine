@@ -45,8 +45,8 @@ class UiComponentTableAdmin extends UiComponent {
 		
 		$this->treatParameters($setup, [
             "domId" => ["default" => uniqid()],
-            "style" => ["default" => false],
-            "additionalCssClasses" => ["default" => false]
+            "style" => ["default" => $map["style"]],
+            "additionalCssClasses" => ["default" => $map["additionalCssClasses"]]
 		]);
 
         $this->setProperties($setup);
@@ -75,8 +75,8 @@ class UiComponentTableAdmin extends UiComponent {
         
         $e->HtmlDocument->addInlineJavascript("$('#".$setup["domId"]."').UiComponentTableAdmin({
             title: '".$this->title."',
-            style: '".$this->style."',
-            additionalCssClasses: '".$this->additionalCssClasses."',
+            style: '".(is_array($this->style) ? implode(" ", $this->style) : $this->style)."',
+            additionalCssClasses: '".(is_array($this->additionalCssClasses) ? implode(" ", $this->additionalCssClasses) : $this->additionalCssClasses)."',
             mapName: '".$mapName."',
             columns: ".json_encode($columns).",
             ajaxUrls: {

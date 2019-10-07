@@ -79,33 +79,6 @@ class SystemLog extends \Cherrycake\Module {
 	}
 
 	/**
-	 * mapTableAdmin
-	 * 
-	 * Maps the TableAdmins which this module must respond. Should be overloaded by a module class when needed. Intended to contain calls to TableAdmin::map()
-	 */
-	public static function mapTableAdmin() {
-		global $e;
-
-		$e->TableAdmin->map("systemLog", [
-            "itemsClassName" => "\\Cherrycake\\SystemLogEvents",
-            "fillFromParameters" => [],
-            "columns" => [
-                "id" => ["fieldName" => "id"],
-                "dateAdded" => ["fieldName" => "dateAdded"],
-				"class" => ["fieldName" => "class"],
-				"type" => ["fieldName" => "type"],
-				"subType" => ["fieldName" => "subType"],
-				"ip" => ["fieldName" => "ip"],
-				"httpHost" => ["fieldName" => "httpHost"],
-				"requestUri" => ["fieldName" => "requestUri"],
-				"browserString" => ["fieldName" => "browserString"],
-				"description" => ["fieldName" => "description"],
-				"data" => ["fieldName" => "data"]
-            ]
-        ]);
-	}
-
-	/**
 	 * Logs an event
 	 *
 	 * @param SystemLogEvent $systemLogEvent A SystemLogEvent object to log

@@ -163,6 +163,21 @@ class Errors extends \Cherrycake\Module {
 
 		$patternNames = $this->getConfig("patternNames");
 
+		if (IS_CLI) {
+			echo
+				"Error / ".[
+					ERROR_SYSTEM => "System",
+					ERROR_APP => "App",
+					ERROR_NOT_FOUND => "Not found",
+					ERROR_NO_PERMISSION => "No permission"
+				][$errorType]."\n".
+				($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."\n" : null).
+				($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."\n" : null).
+				($setup["errorVariables"] ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
+				"Backtrace:\n".strip_tags(implode($backtrace_info, "\n"))."\n";
+			return;
+		}
+
 		if (isset($patternNames[$errorType])) {
 			$e->loadCherrycakeModule("Patterns");
 			$e->loadCherrycakeModule("HtmlDocument");

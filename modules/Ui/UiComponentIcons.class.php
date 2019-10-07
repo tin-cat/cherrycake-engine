@@ -25,7 +25,8 @@ namespace Cherrycake;
  *      "loadingIcon" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
  *      "isEmbedInline" => true, // Wheter to embed icon VG files on the CSS itself in Base 64 to avoid multiple HTTP calls or not.
  *      "method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible (Doesn't works in march 2017 Firefox)
- *      "defaultIconColor" => "#000" // The icons default color when using "mask" method.
+ *      "defaultIconColor" => "#000", // The icons default color when using the "mask" method.
+ *		"colors" => ["black" => "#000", "grey" => "#888", "white" => "#fff"] // A hash array of additional color styles when using the "mask" method, where each key is the color name, and the value is the color in HTML hex value.
  *  );
  * </code>
  *
@@ -49,7 +50,8 @@ class UiComponentIcons extends UiComponent {
 		"spinningSpeed" => 1, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
 		"loadingIcon" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
 		"method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible
-		"defaultIconColor" => "#000" // The icons default color when using "mask" method.
+		"defaultIconColor" => "#000", // The icons default color when using "mask" method.
+		"colors" => ["black" => "#000", "darkGrey" => "#ccc", "lightGrey" => "#888", "white" => "#fff"] // A hash array of additional color styles when using the "mask" method, where each key is the color name, and the value is the color in HTML hex value.
 	];
 
 	/**
@@ -104,6 +106,15 @@ class UiComponentIcons extends UiComponent {
 						"background-size: ".$e->Css->unit($size, $this->getConfig("sizeUnits")).";\n"
 					: "").
 				"}\n";
+		}
+
+		if ($this->getConfig("method") == "mask" && is_array($this->getConfig("colors"))) {
+			foreach ($this->getConfig("colors") as $styleName => $color) {
+				$r .=
+					".UiComponentIcon.".$styleName." {\n".
+						"background-color: ".$color.";\n".
+					"}\n";
+			}
 		}
 
 		if (!is_dir($this->getConfig("directory")))

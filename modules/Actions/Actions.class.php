@@ -194,7 +194,9 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$this->notFound();
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+				"errorDescription" => "No mapped action found for this request"
+			]);
 			return false;
 		}
 
@@ -203,13 +205,20 @@ class Actions extends \Cherrycake\Module {
 				continue;
 			$this->currentActionName = $actionName;
 			$this->currentAction = $action;
-			if ($action->run() === false)
+			if ($action->run() === false) {
+				$nonproductiveMatchingActions[] = $actionName;
 				continue;
+			}
 			else
 				return;
 		}
 
-		$this->notFound();
+		$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+			"errorDescription" => "No matching actions were productive",
+			"errorVariables" => [
+				"nonproductiveMatchingActions" => $nonproductiveMatchingActions
+			]
+		]);
 	}
 
 	/**
@@ -231,16 +240,6 @@ class Actions extends \Cherrycake\Module {
 
 		if ($requestUri)
 			$this->currentRequestPathComponentStrings = explode("/", $requestUri);
-	}
-
-	/**
-	 * notFound
-	 *
-	 * Reacts to a not found error action
-	 */
-	function notFound() {
-		global $e;
-		$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND);
 	}
 
 	/**

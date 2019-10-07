@@ -13,7 +13,10 @@ table.UiComponentTable.fullWidth {
 
 table.UiComponentTable th,
 table.UiComponentTable td {
-	padding: 0.4em 1em;
+	position: relative;
+	padding: 0.6em 1em;
+	max-width: 400px;
+	vertical-align: top;
 }
 
 table.UiComponentTable th.alignLeft,
@@ -29,6 +32,11 @@ table.UiComponentTable td.alignCenter {
 table.UiComponentTable th.alignRight,
 table.UiComponentTable td.alignRight {
 	text-align: right;
+}
+
+table.UiComponentTable.highlightOnHover tr:hover th,
+table.UiComponentTable.highlightOnHover tr:hover td {
+	background: rgba(0, 0, 0, 0.02);
 }
 
 table.UiComponentTable > thead > tr > th {
@@ -47,31 +55,32 @@ table.UiComponentTable td.image > img {
 	border-radius: 5px;
 }
 
-table.UiComponentTable td.buttons > .UiComponentButton {
+table.UiComponentTable td.buttons {
+	text-align: right;
+}
+
+table.UiComponentTable td.buttons > .reveal {
+	position: absolute;
+	top: 0.6em; right: 1em; /* This should match the padding setting on table.UiComponentTable th, table.UiComponentTable td { ... } above */
 	display: flex;	
 	opacity: 0;
 	transition: opacity .1s ease-in-out;
 }
 
-table.UiComponentTable td.buttons.alignRight {
-	justify-content: flex-end;
+table.UiComponentTable td.buttons > .revealButton {	
+	pointer-events: none;
 }
 
-table.UiComponentTable tr:hover td.buttons > .UiComponentButton{
+table.UiComponentTable tr:hover td.buttons > .reveal {
 	opacity: 1;
 }
 
-table.UiComponentTable td.buttons > .UiComponentButton {
-	margin: 0 5px 0 0;
-	float: left;
-}
-
-table.UiComponentTable td.buttons.alignRight > .UiComponentButton {
+table.UiComponentTable tr:hover td.buttons > .reveal > .UiComponentButton:not(.mergedLeft):not(.mergedRight) {
 	margin: 0 0 0 5px;
 }
 
-table.UiComponentTable td.buttons > .UiComponentButton:last-child {
-	margin-right: 0;
+table.UiComponentTable tr:hover td.buttons > .revealButton {
+	opacity: 0;
 }
 
 table.UiComponentTable.loading {

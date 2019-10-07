@@ -616,6 +616,7 @@ class Item extends BasicObject {
 	 * * iconNameBooleanTrue: The icon name to use as boolean true when representing boolean values with icons. Defaults to "true"
 	 * * iconNameBooleanTrue: The icon name to use as boolean false when representing boolean values with icons. Defaults to "false"
 	 * * iconNameEmpty: The icon name to represent empty values. Defaults to "empty".
+	 * * iconVariantEmpty: The icon variant to represent empty values. Defaults to "grey".
 	 * @param boolean $isHtml Whehter to use HTML to help make the data readable by a human
 	 * @return string The HTML representing 
 	 */
@@ -632,7 +633,8 @@ class Item extends BasicObject {
 			"iconVariant" => ["default" => "black"],
 			"iconNameBooleanTrue" => ["default" => "true"],
 			"iconNameBooleanFalse" => ["default" => "false"],
-			"iconNameEmpty" => ["default" => "empty"]
+			"iconNameEmpty" => ["default" => "empty"],
+			"iconVariantEmpty" => ["default" => "lightGrey"]
 		]);
 
 		$r = $this->{$key};
@@ -651,7 +653,7 @@ class Item extends BasicObject {
 				"<div class=\"".
 					"UiComponentIcon".
 					" ".$setup["iconNameEmpty"].
-					" ".$setup["iconVariant"].
+					" ".$setup["iconVariantEmpty"].
 				"\"></div>";
 			$rBooleanTrue =
 				"<div class=\"".

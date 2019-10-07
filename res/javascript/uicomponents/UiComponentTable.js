@@ -65,6 +65,17 @@
 				else
 					html = row[key];
 				if (row[key]) {
+
+					if (type == 'buttons') {
+						html =
+							'<div class="reveal">' +
+								html +
+							'</div>' +
+							'<div class="UiComponentButton small transparent revealButton">' +
+								'<div class="UiComponentIcon more"></div>' +
+							'</div>';
+					}
+
 					$('<td></td>')
 						.addClass(columnAlignmentsCssClasses[column.align])
 						.addClass(type)

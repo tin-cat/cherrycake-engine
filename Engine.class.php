@@ -358,7 +358,9 @@ class Engine {
 		}
 
 		if ($argc != 2) {
-			echo "Cherrycake CLI\nError: One parameter expected, in the form of a URI.\n";
+			echo
+				"Cherrycake CLI / ".APP_NAME."\n".
+				"Error: One parameter expected in the form of a URI.\n";
 			die;
 		}
 

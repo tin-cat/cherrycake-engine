@@ -80,16 +80,35 @@
 	line-height: 1.3em;
 }
 
-.UiComponentButton.big {
-	padding: 20px 23px;
-}
-
 .UiComponentButton > .UiComponentIcon + .title {
 	margin-left: 10px;
 }
 
 .UiComponentButton > .title + .UiComponentIcon {
 	margin-left: 10px;
+}
+
+/* small */
+.UiComponentButton.small {
+	padding: 10px 10px;
+}
+
+.UiComponentButton.small > .UiComponentIcon + .title {
+	margin-left: 10px;
+}
+
+.UiComponentButton.small > .title + .UiComponentIcon {
+	margin-left: 10px;
+}
+
+.UiComponentButton.small > .UiComponentIcon {
+	
+}
+
+
+/* big */
+.UiComponentButton.big {
+	padding: 20px 23px;
 }
 
 .UiComponentButton.big > .UiComponentIcon + .title {
@@ -105,6 +124,7 @@
 	height: 20px;
 	background-size: 20px;
 }
+
 
 .UiComponentButton > .badge {
 	position: absolute;
@@ -138,6 +158,13 @@
 	margin-top: 0 !important;
 	<?= $e->Css->buildUnsupportedProperty("border-top-left-radius", $e->Css->unit(0)." !important") ?>
 	<?= $e->Css->buildUnsupportedProperty("border-top-right-radius", $e->Css->unit(0)." !important") ?>
+}
+
+/* style mergedRight */
+.UiComponentButton.mergedRight {
+	marginl-right: 0 !important;
+	<?= $e->Css->buildUnsupportedProperty("border-top-right-radius", $e->Css->unit(0)." !important") ?>
+	<?= $e->Css->buildUnsupportedProperty("border-bottom-right-radius", $e->Css->unit(0)." !important") ?>
 }
 
 /* style mergedLeft */
