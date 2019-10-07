@@ -8,6 +8,24 @@
 
 namespace Cherrycake;
 
+const ANSI_NOCOLOR = "\033[0m";
+const ANSI_BLACK = "\033[0;30m";
+const ANSI_RED = "\033[0;31m";
+const ANSI_GREEN = "\033[0;32m";
+const ANSI_ORANGE = "\033[0;33m";
+const ANSI_BLUE = "\033[0;34m";
+const ANSI_PURPLE = "\033[0;35m";
+const ANSI_CYAN = "\033[0;36m";
+const ANSI_LIGHT_GRAY = "\033[0;37m";
+const ANSI_DARK_GRAY = "\033[1;30m";
+const ANSI_LIGHT_RED = "\033[1;31m";
+const ANSI_LIGHT_GREEN = "\033[1;32m";
+const ANSI_YELLOW = "\033[1;33m";
+const ANSI_LIGHT_BLUE = "\033[1;34m";
+const ANSI_LIGHT_PURPLE = "\033[1;35m";
+const ANSI_LIGHT_CYAN = "\033[1;36m";
+const ANSI_WHITE = "\033[1;37m";
+
 /**
  * The main class that loads modules and configurations, and the entry point of the application.
  * Cherrycake uses global variables for configuring modules and global configuration, be sure to set "register_globals" to "off" in php.ini to avoid security issues.
@@ -357,21 +375,76 @@ class Engine {
 			return false;
 		}
 
-		if ($argc != 2) {
-			echo
-				"Cherrycake CLI / ".APP_NAME."\n".
-				"Error: One parameter expected in the form of a URI.\n";
+		if ($argc < 2) {
+			$this->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				"errorDescription" => "No action name specified"
+			]);
 			die;
 		}
 
-		$requestUri = $argv[1];
+		$actionName = $argv[1];
 
-		// If it has get parameters, parse them and put them in $_GET
-		if ($firstInterrogantPosition = strpos($requestUri, "?"))
-			parse_str(substr($requestUri, $firstInterrogantPosition + 1), $_GET);
+		if (!$action = $this->Actions->getAction($actionName)) {
+			$this->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				"errorDescription" => "Unknown action",
+				"errorVariables" => [
+					"actionName" => $actionName
+				]
+			]);
+			die;
+		}
 
-		$this->Actions->run($requestUri);
+		$parameters = $this->parseCommandLineArguments(array_slice($argv, 2));
+
+		// Puts any command line parameters into get variables
+		if ($argc > 2) {
+			$_GET = array_merge($_GET, $parameters);
+		}
+
+		if (!$action->request->retrieveParameterValues()) {
+			die;
+		}
+
+		// // If it has get parameters, parse them and put them in $_GET
+		// if ($firstInterrogantPosition = strpos($requestUri, "?"))
+		// 	parse_str(substr($requestUri, $firstInterrogantPosition + 1), $_GET);
+
+		$action->run();
 	}
+
+	/**
+	 * Method by mbirth@webwriters.de found at https://www.php.net/manual/en/function.getopt.php
+	 * @param array $params The array of parameters to parse, as received by $GLOBALS['argv']. Usually, array_slice($GLOBALS['argv'], 1) will be passed to first remove the first item, which is the executable name
+	 * @param array $noopt An array of parameter names that aren't optional
+	 * @return array A hash array of each found parameter as the key, and its values
+	 */
+	function parseCommandLineArguments($params, $noopt = array()) {
+        $result = array();
+        // could use getopt() here (since PHP 5.3.0), but it doesn't work relyingly
+        reset($params);
+        while (list($tmp, $p) = each($params)) {
+            if ($p{0} == '-') {
+                $pname = substr($p, 1);
+                $value = true;
+                if ($pname{0} == '-') {
+                    // long-opt (--<param>)
+                    $pname = substr($pname, 1);
+                    if (strpos($p, '=') !== false) {
+                        // value specified inline (--<param>=<value>)
+                        list($pname, $value) = explode('=', substr($p, 2), 2);
+                    }
+                }
+                // check if next parameter is a descriptor or a value
+                $nextparm = current($params);
+                if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm{0} != '-') list($tmp, $value) = each($params);
+                $result[$pname] = $value;
+            } else {
+                // param doesn't belong to any option
+                $result[] = $p;
+            }
+        }
+        return $result;
+    }
 
 	/**
 	 * Ends the application
@@ -413,4 +486,4 @@ spl_autoload_register(function ($className) {
 function isUnderMaintenance() {
 	global $underMaintenanceExceptionIps;
 	return IS_UNDER_MAINTENANCE && !in_array($_SERVER["REMOTE_ADDR"], $underMaintenanceExceptionIps);
-}
+}	

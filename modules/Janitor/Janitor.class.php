@@ -255,7 +255,7 @@ class Janitor extends \Cherrycake\Module {
 	 */
 	function run($request) {
 		if (!$this->checkKey($request->key))
-			return;
+			return false;
 
 		$task = $request->task;
 		$isForceRun = $request->isForceRun;
@@ -273,7 +273,7 @@ class Janitor extends \Cherrycake\Module {
 
 		if ($task && !$this->isTask($task)) {
 			$r .= "Specified task does not exists";
-			return;
+			return false;
 		}
 
 		while (list($janitorTaskName, $janitorTask) = each($this->janitorTasks)) {

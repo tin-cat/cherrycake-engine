@@ -165,16 +165,19 @@ class Errors extends \Cherrycake\Module {
 
 		if (IS_CLI) {
 			echo
-				"Error / ".[
-					ERROR_SYSTEM => "System",
-					ERROR_APP => "App",
-					ERROR_NOT_FOUND => "Not found",
-					ERROR_NO_PERMISSION => "No permission"
+				\Cherrycake\ANSI_WHITE.
+				"Cherrycake CLI ".\Cherrycake\ANSI_DARK_GRAY."/ ".\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." ".\Cherrycake\ANSI_DARK_GRAY."/ ".\Cherrycake\ANSI_WHITE.[
+					ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
+					ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
+					ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
+					ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
 				][$errorType]."\n".
-				($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."\n" : null).
-				($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."\n" : null).
-				($setup["errorVariables"] ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
-				"Backtrace:\n".strip_tags(implode($backtrace_info, "\n"))."\n";
+				\Cherrycake\ANSI_NOCOLOR.
+				($setup["errorSubType"] ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$setup["errorSubType"]."\n" : null).
+				($setup["errorDescription"] ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$setup["errorDescription"]."\n" : null).
+				($setup["errorVariables"] ? \Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.print_r($setup["errorVariables"], true)."\n" : null).
+				\Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode($backtrace_info, "\n"))."\n".
+				\Cherrycake\ANSI_NOCOLOR;
 			return;
 		}
 

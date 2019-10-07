@@ -33,11 +33,6 @@ class Request {
 	private $parameterValues;
 
 	/**
-	 * @var boolean $isCliRequest Whether this request is intended to be run via CLI
-	 */
-	private $isCliRequest;
-
-	/**
 	 * @var boolean Whether this Request should perform checks aimed to mitigate CSRF attacks, like adding a per-user unique token to requests and checking it agains the token stored on the user's session, or checking for a matching domain on the request coming from the user's browser against the current domain.
 	 */
 	public $isSecurityCsrf;
@@ -69,7 +64,6 @@ class Request {
 		$this->pathComponents = $setup["pathComponents"];
 		$this->parameters = $setup["parameters"];
 		$this->cacheAdditionalCacheKeys = $setup["cacheAdditionalCacheKeys"];
-		$this->isCliRequest = $setup["isCliRequest"];
 	}
 
 	/*
@@ -81,10 +75,6 @@ class Request {
 	 */
 	function isCurrentRequest() {
 		global $e;
-
-		if (IS_CLI && !$this->isCliRequest()) { // If we're running on CLI, and this request is not for CLI, this cannot be the current request
-			return false;
-		}
 
 		if (!is_array($e->Actions->currentRequestPathComponentStrings)) { // If the current request doesn't has pathComponents
 
@@ -229,13 +219,6 @@ class Request {
 	 */
 	function isSecurityCsrf() {
 		return $this->isSecurityCsrf;
-	}
-
-	/**
-	 * @return boolean Whether this request is intended to be run via CLI
-	 */
-	function isCliRequest() {
-		return $this->isCliRequest;
 	}
 
 	/**
