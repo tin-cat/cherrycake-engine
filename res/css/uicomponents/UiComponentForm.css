@@ -15,7 +15,7 @@
 	padding: 10px;
 }
 
-.UiComponentForm.padding > div {
+.UiComponentForm.padding > div:not(:first-child) {
 	border-top: solid rgba(0, 0, 0, .1) 1px;
 }
 
