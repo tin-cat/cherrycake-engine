@@ -29,7 +29,7 @@ class UiComponentForm extends UiComponent {
 	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
 	 */
 	protected $dependentCherrycakeUiComponents = [
-		"UiComponentGrid",
+		"UiComponentColumnStructure",
 		"UiComponentFormInput",
 		"UiComponentFormUneditable"
 	];
@@ -106,11 +106,16 @@ class UiComponentForm extends UiComponent {
 	 */
 	function buildHtmlForUiComponentFormItem($UiComponentFormItem) {
 		if (is_array($UiComponentFormItem)) {
-			$html .= "<div class=\"UiComponentGrid form ".[1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six"][sizeof($UiComponentFormItem)]."\">";
-			foreach ($UiComponentFormItem as $subUiComponentFormItem)
-				$html .= "<div>".$this->buildHtmlForUiComponentFormItem($subUiComponentFormItem)."</div>";
-			$html .= "</div>";
-			return $html;
+			global $e;
+			return $e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
+				"columns" => call_user_func(function() use ($UiComponentFormItem) {
+					foreach ($UiComponentFormItem as $subUiComponentFormItem)
+						$r[] = [
+							"html" => $this->buildHtmlForUiComponentFormItem($subUiComponentFormItem)
+						];
+					return $r;
+				})
+			]);
 		}
 
 		if (strstr(get_class($UiComponentFormItem), "UiComponentFormSubmit"))

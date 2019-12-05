@@ -1,8 +1,18 @@
 .UiComponentForm {
+	float: left;
+	width: 100%;
 }
 
-.UiComponentForm.padding > div {
+.UiComponentForm.padding > div:not(.UiComponentColumnStructure) {
 	padding: 30px;
+}
+
+.UiComponentForm.padding > div.UiComponentColumnStructure {
+	padding: 20px;
+}
+
+.UiComponentForm.padding > div.UiComponentColumnStructure > div {
+	padding: 10px;
 }
 
 .UiComponentForm.padding > div {
@@ -13,11 +23,11 @@
 	padding-right: 30px;
 }
 
-.UiComponentForm .UiComponentFormInput > .title,
-.UiComponentForm .UiComponentFormText > .title,
-.UiComponentForm .UiComponentFormUneditable > .title,
-.UiComponentForm .UiComponentFormInputAjax > .title {
+.UiComponentForm div > .title {
 	font-weight: bold;
-	margin-bottom: 10px;
-	
+	margin-bottom: 5px;
+}
+
+.UiComponentForm .UiComponentColumnStructure > div {
+	min-width: 200px;
 }

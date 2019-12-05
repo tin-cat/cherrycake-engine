@@ -42,6 +42,8 @@ class UiComponentButtonSwitchAjax extends UiComponentButton {
 
 		$e->loadCherrycakeModule("HtmlDocument");
 
+		$r .= "<div id=\"".$this->domId."\"></div>";
+
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentButtonSwitchAjax({
 				defaultState: ".json_encode($this->defaultState).",
@@ -49,6 +51,6 @@ class UiComponentButtonSwitchAjax extends UiComponentButton {
 			});
 		");
 
-		return parent::buildHtml();
+		return $r;
 	}
 }
