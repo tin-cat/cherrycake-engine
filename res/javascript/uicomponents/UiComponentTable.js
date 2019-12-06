@@ -16,6 +16,8 @@
 		base.init = function() {
 			base.options = o = $.extend({}, $.UiComponentTable.defaults, options);
 			$(base.el).addClass('UiComponentTable');
+			$('<table></table>').appendTo(base.el);
+			base.innerTable = $('> table', base.el);
 			if (o.style)
 				$(base.el).addClass(o.style);
 			if (o.additionalCssClasses)
@@ -24,23 +26,23 @@
 				base.setColumns(o.columns);
 			if (o.title)
 				base.setTitle(o.title);
-			$('<tbody></tbody>').appendTo(base.el);
+			$('<tbody></tbody>').appendTo(base.innerTable);
 		}
 
 		base.setTitle = function(title) {
-			$('> thead.title', base.el).remove();
-			$('<thead class=title><tr><th colspan=' + (Object.keys(o.columns).length) + '>' + title + '</th></tr></thead>').prependTo(base.el);
+			$('> thead.title', base.innerTable).remove();
+			$('<thead class=title><tr><th colspan=' + (Object.keys(o.columns).length) + '>' + title + '</th></tr></thead>').prependTo(base.innerTable);
 		}
 
 		base.setColumns = function(columns) {
-			$('> thead.columns', base.el).remove();
-			$('<thead class=columns><tr></tr></thead>').prependTo(base.el);
+			$('> thead.columns', base.innerTable).remove();
+			$('<thead class=columns><tr></tr></thead>').prependTo(base.innerTable);
 			for (var key in columns) {
 				var column = columns[key];
 				$('<th></th>')
 					.html(column.title)
 					.addClass(columnAlignmentsCssClasses[column.align])
-					.appendTo($('> thead > tr', base.el));
+					.appendTo($('> thead > tr', base.innerTable));
 			}
 		}
 
@@ -52,7 +54,7 @@
         base.addRow = function(idx, row) {
 			var rowElement = $('<tr></tr>')
 				.attr('data-id', row['id'])
-				.appendTo($('> tbody', base.el));
+				.appendTo($('> tbody', base.innerTable));
 			
 			for (var key in o.columns) {
 				var column = o.columns[key];

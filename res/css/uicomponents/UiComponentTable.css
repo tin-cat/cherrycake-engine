@@ -1,89 +1,99 @@
-table.UiComponentTable {
+.UiComponentTable {
+	float: left;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.UiComponentTable > table {
 	border-spacing: 0;
 }
 
-table.UiComponentTable.centered {
+.UiComponentTable.centered {
 	margin-left: 50%;
 	<?= $e->Css->buildUnsupportedProperty("transform", "translate(-50%, 0)"); ?>
 }
 
-table.UiComponentTable.fullWidth {
+.UiComponentTable.fullWidth {
 	width: 100%;
 }
 
-table.UiComponentTable th,
-table.UiComponentTable td {
+.UiComponentTable.fullWidth > table {
+	width: 100%;
+}
+
+.UiComponentTable > table th,
+.UiComponentTable > table td {
 	position: relative;
 	padding: 0.6em 1em;
 	max-width: 400px;
 	vertical-align: top;
 }
 
-table.UiComponentTable th.alignLeft,
-table.UiComponentTable td.alignLeft {
+.UiComponentTable > table th.alignLeft,
+.UiComponentTable > table td.alignLeft {
 	text-align: left;
 }
 
-table.UiComponentTable th.alignCenter,
-table.UiComponentTable td.alignCenter {
+.UiComponentTable > table th.alignCenter,
+.UiComponentTable > table td.alignCenter {
 	text-align: center;
 }
 
-table.UiComponentTable th.alignRight,
-table.UiComponentTable td.alignRight {
+.UiComponentTable > table th.alignRight,
+.UiComponentTable > table td.alignRight {
 	text-align: right;
 }
 
-table.UiComponentTable.highlightOnHover tr:hover th,
-table.UiComponentTable.highlightOnHover tr:hover td {
+.UiComponentTable.highlightOnHover > table tr:hover th,
+.UiComponentTable.highlightOnHover > table tr:hover td {
 	background: rgba(0, 0, 0, 0.02);
 }
 
-table.UiComponentTable > thead > tr > th {
+.UiComponentTable > table > thead > tr > th {
 	font-weight: normal;
 	text-align: left;
 	opacity: .4;
 	border-bottom: solid rgba(0, 0, 0, 0.1) 1px;
 }
 
-table.UiComponentTable td {
+.UiComponentTable > table td {
 	border-bottom: solid rgba(0, 0, 0, 0.05) 1px;
 }
 
-table.UiComponentTable td.image > img {
+.UiComponentTable > table td.image > img {
 	max-height: 5em;
 	border-radius: 5px;
 }
 
-table.UiComponentTable td.buttons {
+.UiComponentTable > table td.buttons {
 	text-align: right;
 }
 
-table.UiComponentTable td.buttons > .reveal {
+.UiComponentTable > table td.buttons > .reveal {
 	position: absolute;
-	top: 0.6em; right: 1em; /* This should match the padding setting on table.UiComponentTable th, table.UiComponentTable td { ... } above */
+	top: 0.6em; right: 1em; /* This should match the padding setting on .UiComponentTable > table th, .UiComponentTable > table td { ... } above */
 	display: flex;	
 	opacity: 0;
 	transition: opacity .1s ease-in-out;
 }
 
-table.UiComponentTable td.buttons > .revealButton {	
+.UiComponentTable > table td.buttons > .revealButton {	
 	pointer-events: none;
 }
 
-table.UiComponentTable tr:hover td.buttons > .reveal {
+.UiComponentTable > table tr:hover td.buttons > .reveal {
 	opacity: 1;
 }
 
-table.UiComponentTable tr:hover td.buttons > .reveal > .UiComponentButton:not(.mergedLeft):not(.mergedRight) {
+.UiComponentTable > table tr:hover td.buttons > .reveal > .UiComponentButton:not(.mergedLeft):not(.mergedRight) {
 	margin: 0 0 0 5px;
 }
 
-table.UiComponentTable tr:hover td.buttons > .revealButton {
+.UiComponentTable > table tr:hover td.buttons > .revealButton {
 	opacity: 0;
 }
 
-table.UiComponentTable.loading {
+.UiComponentTable.loading > table {
 	background-image: repeating-linear-gradient(45deg, transparent 0px, transparent 5px, rgba(250, 121, 121, 0.04) 5px, rgba(0, 0, 0, .04) 10px, transparent 10px);
 	background-repeat: repeat;
 	background-size: 42px 42px;

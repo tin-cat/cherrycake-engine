@@ -4,19 +4,14 @@
 }
 
 .UiComponentForm.padding > div:not(.UiComponentColumnStructure) {
-	padding: 30px;
+	padding: 10px;
 }
 
 .UiComponentForm.padding > div.UiComponentColumnStructure {
-	padding: 20px;
 }
 
 .UiComponentForm.padding > div.UiComponentColumnStructure > div {
 	padding: 10px;
-}
-
-.UiComponentForm.padding > div:not(:first-child) {
-	border-top: solid rgba(0, 0, 0, .1) 1px;
 }
 
 .UiComponentForm.padding > .UiComponentGrid > div:not(:last-child) {

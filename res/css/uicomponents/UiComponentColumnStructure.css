@@ -1,13 +1,19 @@
 .UiComponentColumnStructure {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	justify-content: space-between;
 	align-items: stretch;
 }
 
+.UiComponentColumnStructure.wrap {
+	flex-wrap: wrap;
+}
+
 .UiComponentColumnStructure > div {
+	display: inline-block;
+	float: left;
+	overflow-x: hidden;
 	flex-grow: 1;
-	overflow-x: auto;
 }
 
 .UiComponentColumnStructure.innerGap > div:not(:last-child) {

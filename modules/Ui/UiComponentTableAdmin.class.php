@@ -71,7 +71,7 @@ class UiComponentTableAdmin extends UiComponent {
         }
         reset($map["columns"]);
 
-        $html = "<table id=\"".$this->domId."\"></table>";
+        $html = "<div id=\"".$this->domId."\"></div>";
         
         $e->HtmlDocument->addInlineJavascript("$('#".$setup["domId"]."').UiComponentTableAdmin({
             title: '".$this->title."',

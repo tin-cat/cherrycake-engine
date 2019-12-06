@@ -51,6 +51,7 @@ class UiComponentColumnStructure extends UiComponent {
 				" class=\"".
 					"UiComponentColumnStructure".
                     ($this->style ? " ".(is_array($this->style) ? implode(" ", $this->style) : $this->style) : null).
+					($this->isWrap ? " wrap" : null).
 				"\"".
             ">";
 		

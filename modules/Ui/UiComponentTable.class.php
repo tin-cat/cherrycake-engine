@@ -90,7 +90,7 @@ class UiComponentTable extends UiComponent {
 		$e->loadCherrycakeModule("HtmlDocument");
 
 		// Build HTML table
-		$html = "<table id=\"".$this->domId."\"></table>";
+		$html = "<div id=\"".$this->domId."\"></div>";
 
 		$e->HtmlDocument->addInlineJavascript("$('#".$this->domId."').UiComponentTable(".json_encode($setup).");");
 

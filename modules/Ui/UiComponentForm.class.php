@@ -108,6 +108,7 @@ class UiComponentForm extends UiComponent {
 		if (is_array($UiComponentFormItem)) {
 			global $e;
 			return $e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
+				"isWrap" => true,
 				"columns" => call_user_func(function() use ($UiComponentFormItem) {
 					foreach ($UiComponentFormItem as $subUiComponentFormItem)
 						$r[] = [
