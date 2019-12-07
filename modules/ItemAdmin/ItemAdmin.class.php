@@ -65,7 +65,7 @@ class ItemAdmin extends \Cherrycake\Module {
      * * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object.
      * * * onValid: An anonymous function that will be executed when this field is received and is validated ok, it receives as parameters: The Request object, the Item object, the field name and the received value.
      * * * onInvalid: Same as onValid, but when the field fails validation.
-     * * preCheckCallback: An optional anonymous function that will be called before any operation is done, and that must return true if the operation can continue, or false if it should halt for whatever reason. Usually used to check for a logged user with permissions enough to admin.
+     * * preCheckCallback: An optional anonymous function that will be called before any operation is done, and that must return a Result object to determine if the operation can continue. Usually used to check for a logged user with permissions enough to admin.
      * * onValid: An anonymous function that will be executed when any field is received, is validated ok and no specific onValid function has been set up for that field. It receives as parameters: The Request object, the Item object, the field name and the received value.
      * * onInvalid: Same as onValid, but when the field fails validation. 
      */
@@ -172,8 +172,16 @@ class ItemAdmin extends \Cherrycake\Module {
         ]);
 
         if ($map["preCheckCallback"]) {
-            if (!$map["preCheckCallback"]($request, $item))
-                return false;
+			$preCheckResult = $map["preCheckCallback"]($request, $item);
+            if (!$preCheckResult->isOk) {
+                $ajaxResponse = new \Cherrycake\AjaxResponseJson([
+					"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+					"description" => $preCheckResult->description,
+					"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NOTICE
+				]);
+				$ajaxResponse->output();
+				return true;
+			}
         }
         
         $itemProbe = $map["itemClassName"]::build();
@@ -248,5 +256,6 @@ class ItemAdmin extends \Cherrycake\Module {
             ]);
         
         $ajaxResponse->output();
+		return true;
     }
 }

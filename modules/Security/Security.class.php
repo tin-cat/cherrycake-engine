@@ -170,6 +170,9 @@ class Security extends \Cherrycake\Module
 	 * * description: An array containing the list of errors found when checking the value
 	 */
 	function checkValue($value = NULL, $rules = false, $isFixedRules = true) {
+		if (is_null($value))
+			return new \Cherrycake\ResultOk;
+
 		if (!is_array($rules))
 			$rules = [];
 
@@ -307,15 +310,15 @@ class Security extends \Cherrycake\Module
 	 *
 	 * @return mixed The filtered value
 	 */
-	function filterValue($value = NULL, $filters = false, $isFixedFilters = true) {
+	function filterValue($value = null, $filters = false, $isFixedFilters = true) {
 		if (!is_array($filters))
 			$filters = [];
 
 		if ($isFixedFilters)
 			$filters = array_merge($this->fixedParametersFilters, $filters);
 
-		if (!$filters)
-			return new \Cherrycake\ResultOk;
+		if (!is_array($filters))
+			return $value;
 
 		$isError = false;
 

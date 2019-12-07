@@ -75,6 +75,8 @@ class RequestParameter {
 	 */
 	function getValue() {
 		global $e;
+		if (!$this->isReceived())
+			return null;
 		return $e->Security->filterValue($this->value, $this->filters);
 	}
 

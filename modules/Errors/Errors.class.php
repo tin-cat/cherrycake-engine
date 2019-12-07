@@ -181,6 +181,9 @@ class Errors extends \Cherrycake\Module {
 			return;
 		}
 
+		// If the response being sent is a Json one
+		echo print_r($e->Output->getResponse(), true)."\n"; return;
+
 		if (isset($patternNames[$errorType])) {
 			$e->loadCherrycakeModule("Patterns");
 			$e->loadCherrycakeModule("HtmlDocument");
