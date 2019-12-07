@@ -93,7 +93,7 @@ class RequestParameter {
 	 *
 	 * Checks this parameter's value against its configured security rules (and/or the Security defaulted rules)
 	 *
-	 * @return array Returns an array containing a security report, the same result as Security::checkValue
+	 * @return Result A Result object, like Security::checkValue
 	 */
 	function checkValueSecurity() {
 		global $e;

@@ -201,10 +201,10 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		while (list($actionName, $action) = each($matchingActions)) {
-			if (!$action->request->retrieveParameterValues())
-				continue;
 			$this->currentActionName = $actionName;
 			$this->currentAction = $action;
+			if (!$action->request->retrieveParameterValues())
+				continue;
 			if ($action->run() === false) {
 				$nonproductiveMatchingActions[] = $actionName;
 				continue;
