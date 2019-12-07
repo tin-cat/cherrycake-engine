@@ -36,6 +36,11 @@ class Action {
 	private $methodName;
 
 	/**
+	 * @var string $responseClass The name of the Response class this Action is expected to return
+	 */
+	private $responseClass;
+
+	/**
 	 * @var Request $request The Request that triggers this Action
 	 */
 	public $request;

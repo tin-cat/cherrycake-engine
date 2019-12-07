@@ -64,11 +64,11 @@ function ajaxResponseTreatMessage(code, description, messageType) {
 	}
 	else
 	if (messageType == 2) { // AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP
-		$('#UiComponentPopup').UiComponentPopup('open', [description, 'styleAjaxResponse'+(code == 0 ? 'Success' : (code == 1 ? 'Error' : null)), false, false, true]);
+		$('#UiComponentPopup').UiComponentPopup('open', [{content: description}, 'styleAjaxResponse'+(code == 0 ? 'Success' : (code == 1 ? 'Error' : null)), false, false, true]);
 	}
 	else
 	if (messageType == 3) { // AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
-		$('#UiComponentPopup').UiComponentPopup('open', [description, 'styleAjaxResponse'+(code == 0 ? 'Success' : (code == 1 ? 'Error' : null))]);
+		$('#UiComponentPopup').UiComponentPopup('open', [{content: description}, 'styleAjaxResponse'+(code == 0 ? 'Success' : (code == 1 ? 'Error' : null))]);
 	}
 	else
 	if (messageType == 4) { // AJAXRESPONSEJSON_UI_MESSAGE_TYPE_CONSOLE

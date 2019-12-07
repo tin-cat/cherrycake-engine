@@ -182,60 +182,119 @@ class Errors extends \Cherrycake\Module {
 		}
 
 		// If the response being sent is a Json one
-		echo print_r($e->Actions->currentAction, true)."\n"; return;
+		switch (get_class($e->Actions->currentAction)) {
 
-		if (isset($patternNames[$errorType])) {
-			$e->loadCherrycakeModule("Patterns");
-			$e->loadCherrycakeModule("HtmlDocument");
+			case "Cherrycake\ActionHtml":
+				if (isset($patternNames[$errorType])) {
+					$e->loadCherrycakeModule("Patterns");
+					$e->loadCherrycakeModule("HtmlDocument");
 
-			$e->Patterns->out(
-				$patternNames[$errorType],
-				[
-					"variables" => [
-						"errorType" => $errorType,
-						"errorDescription" => $setup["errorDescription"],
-						"errorVariables" => $setup["errorVariables"],
-						"backtrace" => $backtrace
-					]
-				],
-				[
-					ERROR_SYSTEM => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
-					ERROR_NOT_FOUND => \Cherrycake\Modules\RESPONSE_NOT_FOUND,
-					ERROR_NO_PERMISSION => \Cherrycake\Modules\RESPONSE_NO_PERMISSION
-				][$errorType]
-			);
-		}
-		else {
-			if (IS_DEVEL_ENVIRONMENT) {
-				if ($this->getConfig("isHtmlOutput")) {
-
-					if ($setup["errorVariables"])
-						while (list($key, $value) = each($setup["errorVariables"]))
-							$errorVariables .= "<br><b>".$key."</b>: ".$value;
-
-					trigger_error($setup["errorDescription"].$errorVariables);
+					$e->Patterns->out(
+						$patternNames[$errorType],
+						[
+							"variables" => [
+								"errorType" => $errorType,
+								"errorDescription" => $setup["errorDescription"],
+								"errorVariables" => $setup["errorVariables"],
+								"backtrace" => $backtrace
+							]
+						],
+						[
+							ERROR_SYSTEM => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+							ERROR_NOT_FOUND => \Cherrycake\Modules\RESPONSE_NOT_FOUND,
+							ERROR_NO_PERMISSION => \Cherrycake\Modules\RESPONSE_NO_PERMISSION
+						][$errorType]
+					);
 				}
 				else {
+					if (IS_DEVEL_ENVIRONMENT) {
+						if ($this->getConfig("isHtmlOutput")) {
 
-					$e->Output->response->appendPayload(
-						"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0]
-					);
+							if ($setup["errorVariables"])
+								while (list($key, $value) = each($setup["errorVariables"]))
+									$errorVariables .= "<br><b>".$key."</b>: ".$value;
+
+							trigger_error($setup["errorDescription"].$errorVariables);
+						}
+						else {
+
+							$e->Output->response->appendPayload(
+								"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0]
+							);
+						}
+					}
+					else {
+						if ($this->getConfig("isHtmlOutput"))
+							$e->Output->response->appendPayload(
+								"<div style=\"margin: 10px; padding: 10px; background-color: crimson; border-bottom: solid #720 1px; color: #fff; font-family: Calibri, Sans-serif; font-size: 11pt; -webkit-border-radius: 5px; -border-radius: 5px; -moz-border-radius: 5px;\">".
+									"<b>Error</b> ".
+								"</div>"
+							);
+						else
+							$e->Output->response->appendPayload(
+								"Error"
+							);
+
+					}
 				}
-			}
-			else {
-				if ($this->getConfig("isHtmlOutput"))
-					$e->Output->response->appendPayload(
-						"<div style=\"margin: 10px; padding: 10px; background-color: crimson; border-bottom: solid #720 1px; color: #fff; font-family: Calibri, Sans-serif; font-size: 11pt; -webkit-border-radius: 5px; -border-radius: 5px; -moz-border-radius: 5px;\">".
-							"<b>Error</b> ".
-						"</div>"
-					);
-				else
-					$e->Output->response->appendPayload(
-						"Error"
-					);
+				break;
 
-			}
+			case "Cherrycake\ActionAjax":
+			
+				if (IS_DEVEL_ENVIRONMENT) {
+					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
+						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+						"description" =>
+							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+								ERROR_SYSTEM => "System error",
+								ERROR_APP => "App error",
+								ERROR_NOT_FOUND => "Not found",
+								ERROR_NO_PERMISSION => "No permission"
+							][$errorType]."<br>".
+							($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."<br>" : null).
+							($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."<br>" : null).
+							($setup["errorVariables"] ? "Variables:<br>".print_r($setup["errorVariables"], true)."<br>" : null).
+							"Backtrace:<br>".strip_tags(implode($backtrace_info, "<br>")),
+						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+					]);
+					$ajaxResponse->output();
+				}
+				else {
+					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
+						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+						"description" => "Sorry, we've got an unexpected error",
+						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+					]);
+					$ajaxResponse->output();
+				}
+				break;
+			
+			default:
+				if (IS_DEVEL_ENVIRONMENT) {
+					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
+						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"payload" =>
+							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+								ERROR_SYSTEM => "System error",
+								ERROR_APP => "App error",
+								ERROR_NOT_FOUND => "Not found",
+								ERROR_NO_PERMISSION => "No permission"
+							][$errorType]."\n".
+							($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."\n" : null).
+							($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."\n" : null).
+							($setup["errorVariables"] ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
+							"Backtrace:\n".strip_tags(implode($backtrace_info, "\n"))
+					]));
+				}
+				else {
+					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
+						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"payload" => "Error"
+					]));
+				}
+				break;
 		}
+
 		$e->end();
 		die;
 	}

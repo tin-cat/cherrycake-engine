@@ -139,7 +139,7 @@ class Css extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"css",
-			new \Cherrycake\Action([
+			new \Cherrycake\ActionCss([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 				"moduleName" => "Css",
 				"methodName" => "dump",

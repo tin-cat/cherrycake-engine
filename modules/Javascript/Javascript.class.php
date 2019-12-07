@@ -117,7 +117,7 @@ class Javascript extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"javascript",
-			new \Cherrycake\Action([
+			new \Cherrycake\ActionJavascript([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 				"moduleName" => "Javascript",
 				"methodName" => "dump",

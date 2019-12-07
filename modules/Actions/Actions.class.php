@@ -101,7 +101,7 @@ class Actions extends \Cherrycake\Module {
 	 * 
 	 * $e->Actions->mapAction(
 	 * 	"TableAdminGetRows",
-	 * 	new \Cherrycake\Action([
+	 * 	new \Cherrycake\ActionHtml([
 	 * 		"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 	 * 		"moduleName" => "TableAdmin",
 	 * 		"methodName" => "getRows",

@@ -91,14 +91,14 @@ class Janitor extends \Cherrycake\Module {
 	/**
 	 * mapActions
 	 *
-	 * MAps the Actions to which this module must respond
+	 * Maps the Actions to which this module must respond
 	 */
 	public static function mapActions() {
 		global $e;
 
 		$e->Actions->mapAction(
 			"janitorRun",
-			new \Cherrycake\Action([
+			new \Cherrycake\ActionPlainText([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 				"moduleName" => "Janitor",
 				"methodName" => "run",
@@ -136,7 +136,7 @@ class Janitor extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"janitorStatus",
-			new \Cherrycake\Action([
+			new \Cherrycake\ActionHtml([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 				"moduleName" => "Janitor",
 				"methodName" => "status",

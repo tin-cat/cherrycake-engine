@@ -44,7 +44,7 @@ class TableAdmin extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"TableAdminGetRows",
-			new \Cherrycake\Action([
+			new \Cherrycake\ActionAjax([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
 				"moduleName" => "TableAdmin",
 				"methodName" => "getRows",
