@@ -8,6 +8,15 @@
 
 namespace Cherrycake\Modules;
 
+const FORM_ITEM_TYPE_NUMERIC = 0;
+const FORM_ITEM_TYPE_STRING = 1;
+const FORM_ITEM_TYPE_TEXT = 2;
+const FORM_ITEM_TYPE_BOOLEAN = 3;
+const FORM_ITEM_TYPE_SELECT = 4;
+
+const FORM_ITEM_SELECT_TYPE_RADIOS = 0;
+const FORM_ITEM_SELECT_TYPE_COMBO = 1;
+
 /**
  * ItemAdmin
  *

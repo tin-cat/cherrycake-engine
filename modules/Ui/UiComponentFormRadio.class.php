@@ -19,12 +19,12 @@ class UiComponentFormRadio extends UiComponent {
 	protected $additionalCssClasses;
 	protected $domId;
 	protected $name;
-	protected $value = 1;
+	protected $value;
 	protected $isChecked = false;
-	protected $description;
+	protected $title;
+	protected $subTitle;
 	protected $isDisabled = false;
 	protected $onChange;
-	protected $title;
 
 	/**
 	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
@@ -63,10 +63,10 @@ class UiComponentFormRadio extends UiComponent {
 	 * * additionalCssClasses: The additional css Class name(s)
 	 * * domId: The Dom id for the UiComponentFormInput element
 	 * * title: The title of the form element
+	 * * subTitle: The subTitle of the form element
 	 * * name: The input name
 	 * * value: The default input value. Defaults to 1.
 	 * * isChecked: Whether the checkbox must be checked by default. Defaults to false
-	 * * description: The description text to be placed next to the checkbox, if desired.
 	 * * isDisabled: Whether the input is disabled or not. Defaults to false
 	 * * isAutoFocus: Whether the input must be automatically focused on page load
 	 * * onChange: Javascript code to execute on change event
@@ -123,7 +123,6 @@ class UiComponentFormRadio extends UiComponent {
 				"\"".
 				($this->domId ? " id=\"".$this->domId."\"" : null).
 			">".
-				($this->title ? "<div class=\"title\">".$this->title."</div>" : null).
 				"<input ".
 					"type=\"radio\" ".
 					($this->name ? "name=\"".$this->name."\" " : null).
@@ -133,7 +132,10 @@ class UiComponentFormRadio extends UiComponent {
 					($this->onChange ? "onchange=\"".$this->onChange."\" " : null).
 					($this->isChecked ? "checked " : null).
 				"/>".
-				($this->description ? "<div class=\"description\">".$this->description."</div>" : null).
+				"<div>".
+					($this->title ? "<div class=\"title\">".$this->title."</div>" : null).
+					($this->subTitle ? "<div class=\"subTitle\">".$this->subTitle."</div>" : null).
+				"</div>".
 			"</div>";
 	}
 }

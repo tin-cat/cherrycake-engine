@@ -76,11 +76,10 @@ class UiComponentFormRadios extends UiComponent {
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.
 	 */
 	function buildHtml($setup = false) {
+		global $e;
 		$this->setProperties($setup);
 
 		if ($this->error) {
-			global $e;
-
 			if (!$this->domId)
 				$this->domId = uniqid();
 
@@ -116,17 +115,17 @@ class UiComponentFormRadios extends UiComponent {
 			">".
 			($this->title ? "<div class=\"title\">".$this->title."</div>" : null);
 
-		while (list($key, $description) = each($this->items))
-			$html .=
-				"<div class=\"item\">".
-					"<input ".
-						"type=\"radio\" ".
-						($this->name ? "name=\"".$this->name."\" " : null).
-						"value=\"".htmlspecialchars($key)."\" ".
-						($this->value == $key ? "checked " : null).
-					"/>".
-					($description ? "<div class=\"description\">".$description."</div>" : null).
-				"</div>";
+		while (list($key, $data) = each($this->items)) {
+			if (!is_array($data))
+				$data = ["title" => $data];
+			
+			$html .= $e->Ui->getUiComponent("UiComponentFormRadio")->buildHtml([
+				"name" => $this->name,
+				"value" => $key,
+				"title" => $data["title"],
+				"subTitle" => $data["subTitle"]
+			]);
+		}
 		$html .=
 			"</div>";
 

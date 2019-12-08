@@ -1,14 +1,2 @@
-.UiComponentFormRadios > .item > input {
-	width: 20px;
-	height: 30px;
-	padding: 0;
-	margin: 0;
-	cursor: pointer;
-	float: left;
-}
-
-.UiComponentFormRadios > .item > .description {
-	line-height: 30px;
-	display: inline-block;
-	margin-left: 5px;
+.UiComponentFormRadios {	
 }

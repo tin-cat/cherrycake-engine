@@ -76,6 +76,7 @@ class UiComponentItemAdmin extends UiComponent {
                 ]);
             } else {
                 $buildSetup = [
+					"name" => $fieldName,
                     "title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
                     "value" => $item->$fieldName,
                     "additionalCssClasses" => "fullWidth",
@@ -86,28 +87,65 @@ class UiComponentItemAdmin extends UiComponent {
                     "isMultilanguage" => $itemFieldData["isMultiLanguage"]
                 ];
 
-                switch ($itemFieldData["type"]) {
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
-                        $formItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+				// If we don't have an specific formItem for this field, infer the most appropriate one from its type
+				if (isset($itemFieldData["formItem"])) {
+					$formItem = $itemFieldData["formItem"];
+				} else {
+					switch ($itemFieldData["type"]) {
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
+							$formItem = [
+								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC
+							];
+							break;
+							
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING:
+							$formItem = [
+								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_STRING
+							];
+							break;
+						
+						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TEXT:
+							$formItem = [
+								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT
+							];
+							break;
+					}
+				}
+
+				// Build the appropriate UiComponentForm item based on the $formItem setup
+                switch ($formItem["type"]) {
+                    case \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC:
+                        $uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
                         break;
                         
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING:
-                        $formItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+                    case \Cherrycake\Modules\FORM_ITEM_TYPE_STRING:
+                        $uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
                         break;
                     
-                    case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TEXT:
-                        $formItem = \Cherrycake\UiComponentFormTextAjax::build($buildSetup);
+                    case \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT:
+                        $uiComponentFormItem = \Cherrycake\UiComponentFormTextAjax::build($buildSetup);
                         break;
+					
+					case \Cherrycake\Modules\FORM_ITEM_TYPE_SELECT:
+						$buildSetup["items"] = $formItem["items"];
+						switch ($formItem["selectType"]) {
+							case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_RADIOS:
+								$uiComponentFormItem = \Cherrycake\UiComponentFormRadiosAjax::build($buildSetup);
+								break;
+							case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_COMBO:
+								break;
+						}
+						break;
                 }
             }
 
             if ($fieldData["group"])
-                $items[$fieldData["group"]][$fieldName] = $formItem;
+                $items[$fieldData["group"]][$fieldName] = $uiComponentFormItem;
             else
-                $items[$fieldName] = $formItem;
+                $items[$fieldName] = $uiComponentFormItem;
         }
         reset($map["fields"]);
 
