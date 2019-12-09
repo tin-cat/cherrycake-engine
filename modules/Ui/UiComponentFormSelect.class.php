@@ -21,8 +21,8 @@ class UiComponentFormSelect extends UiComponent {
 	protected $additionalCssClasses;
 	protected $domId;
 	protected $name;
-	protected $options;
-	protected $defaultValue;
+	protected $items;
+	protected $value;
 	protected $isDisabled = false;
 	protected $isAutoFocus;
 	protected $onChange;
@@ -57,9 +57,9 @@ class UiComponentFormSelect extends UiComponent {
 	 * * domId: The Dom id for the UiComponentFormSelect element
 	 * * title: The title of the form element
 	 * * name: The select name
-	 * * options: An array of options with the syntax:
-	 *  - <value> => <The option title>
-	 * * defaultValue: The default value to be selected
+	 * * items: An array of items with the syntax:
+	 *  - <value> => <The item title>
+	 * * value: The default value to be selected
 	 * * isDisabled: Whether the input is disabled or not. Defaults to false
 	 * * isAutoFocus: Whether the input must be automatically focused on page load
 	 * * onChange: Javascript code to execute on change event
@@ -103,11 +103,11 @@ class UiComponentFormSelect extends UiComponent {
 				($this->onChange ? "onchange=\"".$this->onChange."\" " : null).
 			">";
 
-		while (list($value, $title) = each($this->options))
+		while (list($value, $title) = each($this->items))
 			$r .=
 				"<option".
 					" value=\"".$value."\"".
-					($this->defaultValue == $value ? " selected" : "").
+					($this->value == $value ? " selected" : "").
 				">".
 					$title.
 				"</option>";

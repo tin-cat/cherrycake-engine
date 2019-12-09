@@ -126,7 +126,7 @@ class UiComponentFormRadio extends UiComponent {
 				"<input ".
 					"type=\"radio\" ".
 					($this->name ? "name=\"".$this->name."\" " : null).
-					($this->value ? "value=\"".htmlspecialchars($this->value)."\" " : null).
+					($this->value !== false ? "value=\"".htmlspecialchars($this->value)."\" " : null).
 					($this->isDisabled ? "disabled " : null).
 					($this->isAutoFocus ? "autofocus " : null).
 					($this->onChange ? "onchange=\"".$this->onChange."\" " : null).

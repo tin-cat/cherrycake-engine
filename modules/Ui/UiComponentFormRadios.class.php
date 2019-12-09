@@ -123,7 +123,8 @@ class UiComponentFormRadios extends UiComponent {
 				"name" => $this->name,
 				"value" => $key,
 				"title" => $data["title"],
-				"subTitle" => $data["subTitle"]
+				"subTitle" => $data["subTitle"],
+				"isChecked" => $key == $this->value
 			]);
 		}
 		$html .=

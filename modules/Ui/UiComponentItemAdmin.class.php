@@ -54,98 +54,95 @@ class UiComponentItemAdmin extends UiComponent {
 
         $this->setProperties($setup);
 
-        // Build columns
+        // Build the $items array of UiComponentForm items by columns
         while (list($fieldName, $fieldData) = each($map["fields"])) {
-            if (!$item->getFields()[$fieldName])
+
+			// If no fields or metafields are defined for this fieldName, skip it
+            if (!$item->getFields()[$fieldName] && !$item->getMetaFields()[$fieldName])
                 continue;
+			
+			if (!isset($fieldData["isEdit"]))
+				$fieldData["isEdit"] = true;
+
+			// If this field is not editable, use a special uneditable UiComponentForm item instead
+			if (!$fieldData["isEdit"]) {
+
+				$uiComponentFormItem = \Cherrycake\UiComponentFormUneditable::build([
+					"title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
+					"value" =>
+						$fieldData["representFunction"]
+						?
+						$fieldData["representFunction"]($item)
+						:
+						$item->getHumanized($fieldName, ["isHtml" => true, "isEmoji" => true, "isUiComponentIcons" => true])
+				]);
+
+			}
+			// If it's editable, build the proper UiComponentForm item
+			else {
             
-            $itemFieldData = $item->getFields()[$fieldName];
+				// If its a regular, non-meta field
+				if ($itemFieldData = $item->getFields()[$fieldName]) {
 
-            if (!isset($fieldData["isEdit"]))
-                $fieldData["isEdit"] = true;
+					$buildSetup = [
+						"name" => $fieldName,
+						"title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
+						"value" => $item->$fieldName,
+						"additionalCssClasses" => "fullWidth",
+						"saveAjaxUrl" => $e->Actions->getAction("ItemAdminSave".ucfirst($mapName))->request->buildUrl(["parameterValues" => [
+							$map["idRequestParameter"]->name => $id
+						]]),
+						"saveAjaxKey" => $fieldName,
+						"isMultilanguage" => $itemFieldData["isMultiLanguage"]
+					];
 
-            if (!$fieldData["isEdit"]) {
-                $formItem = \Cherrycake\UiComponentFormUneditable::build([
-                    "title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
-                    "value" =>
-                        $fieldData["representFunction"]
-                        ?
-                        $fieldData["representFunction"]($item)
-                        :
-                        $item->getHumanized($fieldName, ["isHtml" => true, "isEmoji" => true, "isUiComponentIcons" => true])
-                ]);
-            } else {
-                $buildSetup = [
-					"name" => $fieldName,
-                    "title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
-                    "value" => $item->$fieldName,
-                    "additionalCssClasses" => "fullWidth",
-                    "saveAjaxUrl" => $e->Actions->getAction("ItemAdminSave".ucfirst($mapName))->request->buildUrl(["parameterValues" => [
-                        $map["idRequestParameter"]->name => $id
-                    ]]),
-                    "saveAjaxKey" => $fieldName,
-                    "isMultilanguage" => $itemFieldData["isMultiLanguage"]
-                ];
-
-				// If we don't have an specific formItem for this field, infer the most appropriate one from its type
-				if (isset($itemFieldData["formItem"])) {
-					$formItem = $itemFieldData["formItem"];
-				} else {
-					switch ($itemFieldData["type"]) {
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
-							$formItem = [
-								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC
-							];
+					// Build the appropriate UiComponentForm item based on the formItem setup
+					switch ($itemFieldData["formItem"]["type"]) {
+						case \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC:
+							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
 							break;
 							
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING:
-							$formItem = [
-								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_STRING
-							];
+						case \Cherrycake\Modules\FORM_ITEM_TYPE_STRING:
+							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
 							break;
 						
-						case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TEXT:
-							$formItem = [
-								"type" => \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT
-							];
+						case \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT:
+							$uiComponentFormItem = \Cherrycake\UiComponentFormTextAjax::build($buildSetup);
+							break;
+						
+						case \Cherrycake\Modules\FORM_ITEM_TYPE_SELECT:
+							switch ($formItem["selectType"]) {
+								case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_RADIOS:
+									$buildSetup["title"] = false;
+									$buildSetup["items"] = $itemFieldData["formItem"]["items"];
+									$uiComponentFormItem = \Cherrycake\UiComponentFormRadiosAjax::build($buildSetup);
+									break;
+								case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_COMBO:
+									foreach ($itemFieldData["formItem"]["items"] as $key => $thisItem)
+										$buildSetup["items"][$key] = $thisItem["title"];
+									$uiComponentFormItem = \Cherrycake\UiComponentFormSelectAjax::build($buildSetup);
+									break;
+							}
 							break;
 					}
 				}
-
-				// Build the appropriate UiComponentForm item based on the $formItem setup
-                switch ($formItem["type"]) {
-                    case \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC:
-                        $uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
-                        break;
-                        
-                    case \Cherrycake\Modules\FORM_ITEM_TYPE_STRING:
-                        $uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
-                        break;
-                    
-                    case \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT:
-                        $uiComponentFormItem = \Cherrycake\UiComponentFormTextAjax::build($buildSetup);
-                        break;
+				// If it's a meta field
+				else if ($itemFieldData = $item->getMetaFields()[$fieldName]) {
 					
-					case \Cherrycake\Modules\FORM_ITEM_TYPE_SELECT:
-						$buildSetup["items"] = $formItem["items"];
-						switch ($formItem["selectType"]) {
-							case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_RADIOS:
-								$uiComponentFormItem = \Cherrycake\UiComponentFormRadiosAjax::build($buildSetup);
-								break;
-							case \Cherrycake\Modules\FORM_ITEM_SELECT_TYPE_COMBO:
-								break;
-						}
-						break;
-                }
-            }
+					switch ($itemFieldData["formItem"]["type"]) {
+						case \Cherrycake\Modules\FORM_ITEM_META_TYPE_LOCATION:
+							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+							break;
+					}
+
+				}
+			}
 
             if ($fieldData["group"])
                 $items[$fieldData["group"]][$fieldName] = $uiComponentFormItem;
             else
                 $items[$fieldName] = $uiComponentFormItem;
+
         }
         reset($map["fields"]);
 

@@ -55,6 +55,12 @@ class Item extends BasicObject {
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
 	 * * type: The type of the field, one of the available \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
+	 * * * type: The type of the form item, one of the available \Cherrycake\Modules\FORM_ITEM_TYPE_*
+	 * * * selectType: For FORM_ITEM_TYPE_SELECT type: The select type: either FORM_ITEM_SELECT_TYPE_RADIOS or FORM_ITEM_SELECT_TYPE_COMBO
+	 * * * items: For FORM_ITEM_TYPE_SELECT type: A hash array of the items for the selection, where each key is the value
+	 * * * * title
+	 * * * * subTitle
 	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language (as configured in Locale.config.php key availableLanguages)
 	 * * title: The title of the field, to be used when representing data on modules like UiComponentTableAdmin
 	 * * prefix: The prefix string to add when humanizing the field value
@@ -70,6 +76,16 @@ class Item extends BasicObject {
 	 * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object. Used for example in ItemAdmin
 	 */
 	protected $fields = false;
+
+	/**
+	 * @var array Hash array specification of the fields for this item type that are not fields on the database, but instead fields that interact with the database in a special way. For example, a "location" meta field might interact with the database by setting the countryId, regionId and cityId non-meta fields. Each key is the field name.
+	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
+	 * * type: The type of the form item, one of the available \Cherrycake\Modules\FORM_ITEM_META_TYPE_*
+	 * * * countryIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the country id
+	 * * * regionIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the region id
+	 * * * cityIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the city id
+	 */
+	protected $metaFields = false;
 
 	/**
 	 * @var string $urlShortCodeCharacters The characters that will be used to generate url short codes
@@ -135,6 +151,13 @@ class Item extends BasicObject {
 	 */
 	function getFields() {
 		return $this->fields;
+	}
+
+	/**
+	 * @return array The meta fields for this Item
+	 */
+	function getMetaFields() {
+		return $this->metaFields;
 	}
 
 	/**

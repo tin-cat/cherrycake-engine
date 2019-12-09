@@ -1,30 +1,27 @@
 (function($){
 
-	$.UiComponentFormRadiosAjax = function(el, options) {
+	$.UiComponentFormSelectAjax = function(el, options) {
 		var base = this, o;
 		base.el = el;
 		base.$el = $(el);
 
-		base.$el.data('UiComponentFormRadiosAjax', base);
+		base.$el.data('UiComponentFormSelectAjax', base);
+
+		var input;
 
 		base.init = function() {
-			base.options = o = $.extend({}, $.UiComponentFormRadiosAjax.defaults, options);
-			$('input[type=radio]', base.el).on('change', function() {
+			base.options = o = $.extend({}, $.UiComponentFormSelectAjax.defaults, options);
+			$('select', base.el).on('change', function() {
 				base.changed();
-			});
-			$('.UiComponentFormRadio', base.el).each(function(idx, item) {
-				$('> div', item).on('click', function() {
-					base.setValue($('input[type=radio]', item).val());
-				});
 			});
 		}
 
 		base.getValue = function() {
-			return $('input[type=radio]:checked', base.el).val();
+			return $('select', base.el).val();
 		}
 
 		base.setValue = function(value) {
-			$('input[type=radio]', base.el).filter('[value='+value+']').prop('checked', true);
+			$('select', base.el).filter('[value='+value+']').prop('selected', true);
 			base.changed();
 		}
 
@@ -82,18 +79,18 @@
 		base.init();
 	}
 
-	$.UiComponentFormRadiosAjax.defaults = {
+	$.UiComponentFormSelectAjax.defaults = {
 		saveOnEnter: true,
 		saveAjaxUrl: false,
 		saveAjaxKey: false,
 		isShakeOnError: true
 	};
 
-	$.fn.UiComponentFormRadiosAjax = function(options, params) {
+	$.fn.UiComponentFormSelectAjax = function(options, params) {
 		return this.each(function(){
-			var me = $(this).data('UiComponentFormRadiosAjax');
+			var me = $(this).data('UiComponentFormSelectAjax');
 			if ((typeof(options)).match('object|undefined'))
-				new $.UiComponentFormRadiosAjax(this, options);
+				new $.UiComponentFormSelectAjax(this, options);
 			else
 				eval('me.'+options)(params);
 		});

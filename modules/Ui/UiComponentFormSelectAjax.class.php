@@ -1,7 +1,7 @@
 <?php
 
 /**
- * UiComponentFormRadiosAjax
+ * UiComponentFormSelectAjax
  *
  * @package Cherrycake
  */
@@ -9,12 +9,12 @@
 namespace Cherrycake;
 
 /**
- * A Ui component for a form radios group that sends the data independently via Ajax
+ * A Ui component for a select that sends the data independently via Ajax
  *
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFormRadiosAjax extends UiComponent {
+class UiComponentFormSelectAjax extends UiComponent {
 	protected $style;
 	protected $additionalCssClasses;
 	protected $domId;
@@ -47,7 +47,7 @@ class UiComponentFormRadiosAjax extends UiComponent {
 	function addCssAndJavascript() {
 		parent::addCssAndJavascript();
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormRadiosAjax.js");
+		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormSelectAjax.js");
 	}
 
 	/**
@@ -63,7 +63,7 @@ class UiComponentFormRadiosAjax extends UiComponent {
 		if (!$this->domId)
 			$this->domId = uniqid();
 		
-		$uiComponentFormRadiosSetup = [
+		$uiComponentFormSelectSetup = [
 			"name" => $this->name,
 			"title" => $this->title,
 			"style" => $this->style,
@@ -73,10 +73,10 @@ class UiComponentFormRadiosAjax extends UiComponent {
 			"value" => $this->value,
 		];
 
-		$r .= $e->Ui->getUiComponent("UiComponentFormRadios")->buildHtml($uiComponentFormRadiosSetup);
+		$r .= $e->Ui->getUiComponent("UiComponentFormSelect")->buildHtml($uiComponentFormSelectSetup);
 
 		$e->HtmlDocument->addInlineJavascript("
-			$('#".$this->domId."').UiComponentFormRadiosAjax({
+			$('#".$this->domId."').UiComponentFormSelectAjax({
 				saveAjaxUrl: '".$this->saveAjaxUrl."',
 				saveAjaxKey: '".$this->saveAjaxKey."'
 			});
