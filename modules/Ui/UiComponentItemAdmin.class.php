@@ -128,10 +128,39 @@ class UiComponentItemAdmin extends UiComponent {
 				}
 				// If it's a meta field
 				else if ($itemFieldData = $item->getMetaFields()[$fieldName]) {
+
+					$buildSetup = [
+						"name" => $fieldName,
+						"title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
+						"value" => $item->$fieldName,
+						"additionalCssClasses" => "fullWidth",
+						"saveAjaxUrl" => $e->Actions->getAction("ItemAdminSave".ucfirst($mapName))->request->buildUrl(["parameterValues" => [
+							$map["idRequestParameter"]->name => $id
+						]]),
+						"saveAjaxKey" => $fieldName,
+						"isMultilanguage" => $itemFieldData["isMultiLanguage"]
+					];
 					
 					switch ($itemFieldData["formItem"]["type"]) {
+						case \Cherrycake\Modules\FORM_ITEM_META_TYPE_MULTILEVEL_SELECT:
+							// Populate the levels array with the appropriate values from the $item for each level
+							foreach ($itemFieldData["formItem"]["levels"] as $levelName => $levelData)
+								$itemFieldData["formItem"]["levels"][$levelName]["value"] = $item->{$levelData["fieldName"]};
+							reset($itemFieldData["formItem"]["levels"]);
+
+							$uiComponentFormItem = \Cherrycake\UiComponentFormMultilevelSelectAjax::build(array_merge($buildSetup, [
+								"levels" => $itemFieldData["formItem"]["levels"]
+							]));
+							break;
 						case \Cherrycake\Modules\FORM_ITEM_META_TYPE_LOCATION:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+							// Populate the levels array with the appropriate values from the $item for each level
+							foreach ($itemFieldData["formItem"]["levels"] as $levelName => $levelData)
+								$itemFieldData["formItem"]["levels"][$levelName]["value"] = $item->{$levelData["fieldName"]};
+							reset($itemFieldData["formItem"]["levels"]);
+
+							$uiComponentFormItem = \Cherrycake\UiComponentFormLocationAjax::build(array_merge($buildSetup, [
+								"levels" => $itemFieldData["formItem"]["levels"]
+							]));
 							break;
 					}
 

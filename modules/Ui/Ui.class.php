@@ -17,8 +17,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Ui extends \Cherrycake\Module
-{
+class Ui extends \Cherrycake\Module {
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
@@ -50,8 +49,7 @@ class Ui extends \Cherrycake\Module
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init()
-	{
+	function init() {
 		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;

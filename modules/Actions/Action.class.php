@@ -10,6 +10,8 @@ namespace Cherrycake;
 
 const ACTION_MODULE_TYPE_CHERRYCAKE = 0;
 const ACTION_MODULE_TYPE_APP = 1;
+const ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT = 2;
+const ACTION_MODULE_TYPE_APP_UICOMPONENT = 3;
 
 /**
  * Action
@@ -21,7 +23,7 @@ const ACTION_MODULE_TYPE_APP = 1;
  */
 class Action {
 	/**
-	 * @var int $moduleType The type of the module that will be called on this action
+	 * @var int $moduleType The type of the module that will be called on this action. Actions can call methods on both Cherrycake and App modules, but also on Cherrycake and App UiComponents
 	 */
 	private $moduleType;
 
@@ -129,11 +131,27 @@ class Action {
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);
+		else
+		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT && $e->Ui)
+			$e->Ui->addCherrycakeUiComponent($this->moduleName);
+		else
+		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->Ui)
+			$e->Ui->addAppUiComponent($this->moduleName);
+
 
 		if (!$this->request->securityCheck())
 			return false;
 
-		eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
+		switch ($this->moduleType) {
+			case ACTION_MODULE_TYPE_CHERRYCAKE:
+			case ACTION_MODULE_TYPE_APP:
+				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
+				break;
+			case ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT:
+			case ACTION_MODULE_TYPE_APP_UICOMPONENT:
+				eval("\$return = \$e->Ui->getUiComponent(\"".$this->moduleName."\")->".$this->methodName."(\$this->request);");
+				break;
+		}
 
 		if ($this->isCache) {
 			// Store the current result into cache

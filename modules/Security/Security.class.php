@@ -27,7 +27,7 @@ const SECURITY_RULE_TYPICAL_ID = 1000; // Same as SECURITY_RULE_NOT_EMPTY + SECU
 const SECURITY_FILTER_XSS = 0; // The value is purified to try to remove XSS attacks
 const SECURITY_FILTER_STRIP_TAGS = 1; // HTML tags are removed from the value
 const SECURITY_FILTER_TRIM = 2; // Spaces at the beggining and at the end of the value are trimmed
-const SECURITY_FILTER_NORMALIZE_AT_USERNAME = 3; // For usernames with the preceding @, it normalizes them removing the preceding @ if found. Also trims and strips tags.
+const SECURITY_FILTER_JSON = 3; // Decodes json data
 
 namespace Cherrycake\Modules;
 
@@ -335,17 +335,16 @@ class Security extends \Cherrycake\Module
 				$value = $this->stripXss($value);
 			}
 			
-			if ($filter == \Cherrycake\SECURITY_FILTER_STRIP_TAGS || $filter == \Cherrycake\SECURITY_FILTER_NORMALIZE_AT_USERNAME) {
+			if ($filter == \Cherrycake\SECURITY_FILTER_STRIP_TAGS) {
 				$value = strip_tags($value);
 			}
 			
-			if ($filter == \Cherrycake\SECURITY_FILTER_TRIM || $filter == \Cherrycake\SECURITY_FILTER_NORMALIZE_AT_USERNAME) {
+			if ($filter == \Cherrycake\SECURITY_FILTER_TRIM) {
 				$value = trim($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_NORMALIZE_AT_USERNAME) {
-				if (substr($value, 0, 1) == "@")
-						$value = substr($value, 1);
+			if ($filter == \Cherrycake\SECURITY_FILTER_JSON) {
+				$value = json_decode($value);
 			}
 		}
 

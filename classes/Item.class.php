@@ -81,9 +81,9 @@ class Item extends BasicObject {
 	 * @var array Hash array specification of the fields for this item type that are not fields on the database, but instead fields that interact with the database in a special way. For example, a "location" meta field might interact with the database by setting the countryId, regionId and cityId non-meta fields. Each key is the field name.
 	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
 	 * * type: The type of the form item, one of the available \Cherrycake\Modules\FORM_ITEM_META_TYPE_*
-	 * * * countryIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the country id
-	 * * * regionIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the region id
-	 * * * cityIdFieldName: For FORM_ITEM_META_TYPE_LOCATION type, the name of the field that holds the city id
+	 * * * countryIdFieldName: For FORM_ITEM_META_TYPE_MULTILEVEL_SELECT type, the name of the field that holds the country id
+	 * * * regionIdFieldName: For FORM_ITEM_META_TYPE_MULTILEVEL_SELECT type, the name of the field that holds the region id
+	 * * * cityIdFieldName: For FORM_ITEM_META_TYPE_MULTILEVEL_SELECT type, the name of the field that holds the city id
 	 */
 	protected $metaFields = false;
 

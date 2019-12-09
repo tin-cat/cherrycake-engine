@@ -97,7 +97,7 @@ class RequestParameter {
 	 */
 	function checkValueSecurity() {
 		global $e;
-		return $e->Security->checkValue($this->getValue(), $this->securityRules);
+		return $e->Security->checkValue($this->value, $this->securityRules);
 	}
 
 	/**

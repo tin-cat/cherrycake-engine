@@ -6,3 +6,7 @@
 	height: 2em;
 	border: solid #ddd 1px;
 }
+
+.UiComponentFormSelect.fullWidth > select {
+	width: 100%;
+}

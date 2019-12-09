@@ -15,10 +15,8 @@ namespace Cherrycake;
  * @category Classes
  */
 class UiComponentColumnStructure extends UiComponent {
-    /**
-	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = false;
+	protected $isWrap = false;
+    protected $isInnerGap = true;
 
 	/**
 	 * AddCssAndJavascriptSetsToHtmlDocument
@@ -52,6 +50,7 @@ class UiComponentColumnStructure extends UiComponent {
 					"UiComponentColumnStructure".
                     ($this->style ? " ".(is_array($this->style) ? implode(" ", $this->style) : $this->style) : null).
 					($this->isWrap ? " wrap" : null).
+					($this->isInnerGap ? " innerGap" : null).
 				"\"".
             ">";
 		

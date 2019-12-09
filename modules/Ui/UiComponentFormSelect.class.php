@@ -98,19 +98,23 @@ class UiComponentFormSelect extends UiComponent {
 					($this->additionalCssClass ? " ".$this->additionalCssClass : null).
 				"\"".
 				($this->domId ? " id=\"".$this->domId."\"" : null).
+				($this->name ? " name=\"".$this->name."\"" : null).
 				($this->isDisabled ? "disabled " : null).
 				($this->isAutoFocus ? "autofocus " : null).
 				($this->onChange ? "onchange=\"".$this->onChange."\" " : null).
 			">";
 
-		while (list($value, $title) = each($this->items))
-			$r .=
-				"<option".
-					" value=\"".$value."\"".
-					($this->value == $value ? " selected" : "").
-				">".
-					$title.
-				"</option>";
+		if (is_array($this->items)) {
+			while (list($value, $title) = each($this->items)) {
+				$r .=
+					"<option".
+						" value=\"".$value."\"".
+						($this->value == $value ? " selected" : "").
+					">".
+						$title.
+					"</option>";
+			}
+		}
 
 		$r .=
 			"</select>".

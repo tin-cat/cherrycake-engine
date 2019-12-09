@@ -487,3 +487,11 @@ function isUnderMaintenance() {
 	global $underMaintenanceExceptionIps;
 	return IS_UNDER_MAINTENANCE && !in_array($_SERVER["REMOTE_ADDR"], $underMaintenanceExceptionIps);
 }	
+
+/**
+ * A helper function that prints out a variable for debugging purposes
+ * @param $var The variable to debug
+ */
+function debug(&$var) {
+	echo "<pre>".print_r($var, true)."</pre>";
+}
