@@ -245,4 +245,22 @@ class Location {
 
 		return $r;
 	}
+
+	/**
+	 * @return array A hash array of all the countries ordered by name, where each key is the country id
+	 */
+	static function getCountries() {
+		global $e;
+		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
+		if (!$result = $e->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_countries order by name desc",
+			LOCATION_CACHE_TTL,
+			[
+				"cacheUniqueId" => "locationCountries"
+			],
+			LOCATION_CACHE_PROVIDER_NAME
+		))
+			return false;
+		return $result->getData();
+	}
 }

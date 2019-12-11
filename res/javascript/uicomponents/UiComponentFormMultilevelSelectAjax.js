@@ -33,13 +33,15 @@
 
 		base.getData = function() {
 			base.setLoading();
-			var request = {};
+			var requestLevels = o.levels;
 			$.each(o.levels, function(levelName) {
-				request[levelName] = base.getValue(levelName);
+				requestLevels[levelName] = {
+					value: base.getValue(levelName)
+				}
 			});
 			ajaxQuery(o.getDataAjaxUrl, {
 				data: {
-					request: JSON.stringify(request)
+					levels: JSON.stringify(requestLevels)
 				},
 				onError: function() {
 					base.unsetLoading();

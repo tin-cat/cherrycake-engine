@@ -25,7 +25,6 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 	protected $actionName; // The action name that will return the Json data to build the selects
 	protected $isWrap = true;
 	protected $isInnerGap = true;
-	
 
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;
@@ -84,7 +83,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 					"isInnerGap" => $this->isInnerGap
 				]).
 			"</div>";
-
+		
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentFormMultilevelSelectAjax({
 				levels: ".json_encode($this->levels).",

@@ -37,7 +37,7 @@ class UiComponentFormLocationAjax extends UiComponentFormMultilevelSelectAjax {
 					],
 					"parameters" => [
 						new \Cherrycake\RequestParameter([
-							"name" => "request",
+							"name" => "levels",
 							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_POST,
 							"securityRules" => [
 								\Cherrycake\SECURITY_RULE_NOT_NULL
@@ -87,9 +87,32 @@ class UiComponentFormLocationAjax extends UiComponentFormMultilevelSelectAjax {
 	}
 
 	function getLocationData($request) {
+		global $e;
+
+		if (!$request->levels) {
+			$ajaxResponse = new \Cherrycake\AjaxResponseJson([
+				"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR
+			]);
+			$ajaxResponse->output();
+			return;
+		}
+
+		foreach ($request->levels as $levelName => $levelData) {
+			switch ($levelName) {
+				case "country":
+					$data = Location::getCountries();
+					break;
+				case "region":
+					break;
+				case "city":
+					break;
+			}
+			$data[$levelName] = $levelData;
+		}
+
 		$ajaxResponse = new \Cherrycake\AjaxResponseJson([
 			"code" => \Cherrycake\AJAXRESPONSEJSON_SUCCESS,
-			"data" => $request->request
+			"data" => $data
 		]);
 		$ajaxResponse->output();
 	}

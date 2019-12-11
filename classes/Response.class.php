@@ -43,13 +43,13 @@ class Response {
 	private $payload = null;
 
 	function __construct($setup = false) {
-		if ($setup["code"])
+		if (isset($setup["code"]))
 			$this->setCode($setup["code"]);
 
-		if ($setup["url"])
+		if (isset($setup["url"]))
 			$this->setUrl($setup["url"]);
 
-		if ($setup["payload"])
+		if (isset($setup["payload"]))
 			$this->setPayload($setup["payload"]);
 	}
 

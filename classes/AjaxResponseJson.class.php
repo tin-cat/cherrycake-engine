@@ -59,19 +59,22 @@ class AjaxResponseJson {
 	 * @param string $setup The configuration for the Ajax response
 	 */
 	function __construct($setup) {
-		$this->code = $setup["code"]; // The response code, one of AJAXRESPONSEJSON_* available consts
-		$this->description = $setup["description"]; // The description of the response code, whether successed or failed. Leave to empty if no notification should be shown.
-		$this->messageType = $setup["messageType"]; // The message type to be shown when a description is specified, one of const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* available consts.
-		$this->redirectUrl = $setup["redirectUrl"]; // The URL to automatically redirect the client to when this response is received by it. Leave to false if no redirection should be done.
-		$this->data = $setup["data"]; // Any additional data to be included on the response. It is used by other classes extended from this in order to provide specific functionalities on how to display results, like AjaxPopupResponseJson or AjaxNoticeResponseJson
+		if (isset($setup["code"]))
+			$this->code = $setup["code"]; // The response code, one of AJAXRESPONSEJSON_* available consts
+		if (isset($setup["description"]))
+			$this->description = $setup["description"]; // The description of the response code, whether successed or failed. Leave to empty if no notification should be shown.
+		if (isset($setup["messageType"]))
+			$this->messageType = $setup["messageType"]; // The message type to be shown when a description is specified, one of const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* available consts.
+		if (isset($setup["redirectUrl"]))
+			$this->redirectUrl = $setup["redirectUrl"]; // The URL to automatically redirect the client to when this response is received by it. Leave to false if no redirection should be done.
+		if (isset($setup["data"]))
+			$this->data = $setup["data"]; // Any additional data to be included on the response. It is used by other classes extended from this in order to provide specific functionalities on how to display results, like AjaxPopupResponseJson or AjaxNoticeResponseJson
 	}
 
 	/**
-	 * output
-	 *
-	 * Outputs the ajax response
+	 * @return Response The response
 	 */
-	function output() {
+	function getResponse() {
 		global $e;
 
 		$r["code"] = $this->code;
@@ -87,8 +90,18 @@ class AjaxResponseJson {
 		if ($this->data)
 			$r["data"] = $this->data;
 
-		$e->Output->setResponse(new \Cherrycake\ResponseApplicationJson([
+		return new \Cherrycake\ResponseApplicationJson([
 			"payload" => $r
-		]));
+		]);
+	}
+
+	/**
+	 * output
+	 *
+	 * Outputs the ajax response
+	 */
+	function output() {
+		global $e;
+		$e->Output->setResponse($this->getResponse());
 	}
 }

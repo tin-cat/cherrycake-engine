@@ -864,7 +864,4 @@ class Locale extends \Cherrycake\Module
 				return false;
 		}
 	}
-
-	
-
 }
