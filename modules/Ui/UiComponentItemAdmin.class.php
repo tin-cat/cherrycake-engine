@@ -86,7 +86,18 @@ class UiComponentItemAdmin extends UiComponent {
 
 					$buildSetup = [
 						"name" => $fieldName,
-						"title" => isset($fieldData["title"]) ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
+						"style" => $itemFieldData["formItem"]["style"],
+						"title" =>
+							(
+								isset($itemFieldData["formItem"]["title"]) ? $itemFieldData["formItem"]["title"] :
+								(
+									isset($fieldData["title"]) ? $fieldData["title"] :
+									(
+										$item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] :
+										false
+									)
+								)
+							),
 						"value" => $item->$fieldName,
 						"additionalCssClasses" => "fullWidth",
 						"saveAjaxUrl" => $e->Actions->getAction("ItemAdminSave".ucfirst($mapName))->request->buildUrl(["parameterValues" => [
@@ -111,7 +122,6 @@ class UiComponentItemAdmin extends UiComponent {
 							break;
 						
 						case \Cherrycake\Modules\FORM_ITEM_TYPE_RADIOS:
-							$buildSetup["title"] = false;
 							$buildSetup["items"] = $itemFieldData["formItem"]["items"];
 							$uiComponentFormItem = \Cherrycake\UiComponentFormRadiosAjax::build($buildSetup);
 							break;
@@ -123,15 +133,12 @@ class UiComponentItemAdmin extends UiComponent {
 							break;
 						
 						case \Cherrycake\Modules\FORM_ITEM_TYPE_DATABASE_QUERY:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormDatabaseQuery::build($buildSetup);
-							break;
-						
-						case \Cherrycake\Modules\FORM_ITEM_TYPE_FOREIGN_TABLE:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormForeignTable::build($buildSetup);
+							$uiComponentFormItem = \Cherrycake\UiComponentFormDatabaseQueryAjax::build($buildSetup);
 							break;
 						
 						case \Cherrycake\Modules\FORM_ITEM_TYPE_COUNTRY:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormCountry::build($buildSetup);
+							$buildSetup["selectionStyle"] = $itemFieldData["formItem"]["selectionStyle"];
+							$uiComponentFormItem = \Cherrycake\UiComponentFormCountryAjax::build($buildSetup);
 							break;
 					}
 				}

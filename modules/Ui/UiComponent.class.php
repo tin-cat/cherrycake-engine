@@ -43,8 +43,7 @@ class UiComponent extends BasicObject {
 	 * Loads the configuration file for this UiComponent, if there's one
 	 */
 	function loadConfigFile() {
-		if ($this->isConfigFile)
-		{
+		if ($this->isConfigFile) {
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
 			$fileName = CONFIG_DIR."/UiComponents/".$className.".config.php";
 			if (!file_exists($fileName))
@@ -64,7 +63,6 @@ class UiComponent extends BasicObject {
 	function config($config) {
 		if (!$config)
 			return;
-
 		if (is_array($this->config))
 			$this->config = array_merge($this->config, $config);
 		else
