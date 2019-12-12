@@ -67,7 +67,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 				$e->Ui->getUiComponent("UiComponentFormSelect")->buildHtml([
 					"name" => $levelName,
 					"title" => $levelData["title"],
-					"style" => $levelData["style"]
+					"style" => $levelData["style"]." fullWidth"
 				])
 			];
 		}

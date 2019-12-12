@@ -58,31 +58,7 @@ class UiComponentFormLocationAjax extends UiComponentFormMultilevelSelectAjax {
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.
 	 */
 	function buildHtml($setup = false) {
-		$this->levels["country"] = array_merge($this->levels["country"], [
-			"tableName" => "cherrycake_location_countries",
-			"idFieldName" => "id",
-			"titleFieldName" => "name",
-			"style" => $this->levels["country"]["style"]." fullWidth"
-		]);
-
-		$this->levels["region"] = array_merge($this->levels["region"], [
-			"tableName" => "cherrycake_location_regions",
-			"idFieldName" => "id",
-			"previousLevelIdFieldName" => "countries_id",
-			"titleFieldName" => "name",
-			"style" => $this->levels["country"]["style"]." fullWidth"
-		]);
-
-		$this->levels["city"] = array_merge($this->levels["city"], [
-			"tableName" => "cherrycake_location_cities",
-			"idFieldName" => "id",
-			"previousLevelIdFieldName" => "regions_id",
-			"titleFieldName" => "name",
-			"style" => $this->levels["country"]["style"]." fullWidth"
-		]);
-
 		$this->actionName = "uiComponentFormLocationAjaxGetLocationData";
-
 		return parent::buildHtml($setup);
 	}
 
@@ -97,17 +73,42 @@ class UiComponentFormLocationAjax extends UiComponentFormMultilevelSelectAjax {
 			return;
 		}
 
-		foreach ($request->levels as $levelName => $levelData) {
+		foreach ($request->levels as $levelName => $levelValue) {
 			switch ($levelName) {
 				case "country":
-					$data = Location::getCountries();
+					$countries = Location::getCountries();
+					foreach ($countries as $country) {
+						$data[$levelName][] = [
+							"id" => $country["id"],
+							"name" => $country["name"]
+						];
+					}
 					break;
 				case "region":
+					if (!$request->levels->country)
+						break;
+					if ($regions = Location::getRegions($request->levels->country)) {
+						foreach ($regions as $region) {
+							$data[$levelName][] = [
+								"id" => $region["id"],
+								"name" => $region["name"]
+							];
+						}
+					}
 					break;
 				case "city":
+					if (!$request->levels->region)
+						break;
+					if ($cities = Location::getCities($request->levels->country, $request->levels->region)) {
+						foreach ($cities as $city) {
+							$data[$levelName][] = [
+								"id" => $city["id"],
+								"name" => $city["name"]
+							];
+						}
+					}
 					break;
 			}
-			$data[$levelName] = $levelData;
 		}
 
 		$ajaxResponse = new \Cherrycake\AjaxResponseJson([

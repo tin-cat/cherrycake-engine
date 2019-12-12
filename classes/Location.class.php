@@ -253,10 +253,95 @@ class Location {
 		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
 		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_countries order by name desc",
+			"select * from cherrycake_location_countries order by name asc",
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationCountries"
+			],
+			LOCATION_CACHE_PROVIDER_NAME
+		))
+			return false;
+		return $result->getData();
+	}
+
+	/**
+	 * @param integer $countryId If set, only regions for this country will be returned
+	 * @return array A hash array of all the regions ordered by name, where each key is the region id
+	 */
+	static function getRegions($countryId = false) {
+		global $e;
+
+		if ($countryId) {
+			$sql = "select * from cherrycake_location_regions where countries_id = ? order by name asc";
+			$fields = [
+				[
+					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"value" => $countryId
+				]
+			];
+		}
+		else {
+			$sql = "select * from cherrycake_location_regions order by name asc";
+			$fields = false;
+		}
+
+		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
+		if (!$result = $e->Database->$databaseProviderName->prepareAndExecuteCache(
+			$sql,
+			$fields,
+			LOCATION_CACHE_TTL,
+			[
+				"cacheUniqueId" => "locationRegions_".$countryId
+			],
+			LOCATION_CACHE_PROVIDER_NAME
+		))
+			return false;
+		return $result->getData();
+	}
+
+	/**
+	 * @param integer $countryId If set, only cities for this country will be returned
+	 * @param integer $regionId If set, only cities for this region will be returned
+	 * @return array A hash array of all the cities ordered by name, where each key is the city id
+	 */
+	static function getCities($countryId = false, $regionId = false) {
+		global $e;
+
+		if ($regionId && $countryId) {
+			$sql = "select * from cherrycake_location_cities where countries_id = ? and regions_id = ? order by name asc";
+			$fields = [
+				[
+					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"value" => $countryId
+				],
+				[
+					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"value" => $regionId
+				]
+			];
+		}
+		else
+		if ($regionId) {
+			$sql = "select * from cherrycake_location_cities where regions_id = ? order by name asc";
+			$fields = [
+				[
+					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"value" => $regionId
+				]
+			];
+		}
+		else {
+			$sql = "select * from cherrycake_location_cities order by name asc";
+			$fields = false;
+		}
+
+		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
+		if (!$result = $e->Database->$databaseProviderName->prepareAndExecuteCache(
+			$sql,
+			$fields,
+			LOCATION_CACHE_TTL,
+			[
+				"cacheUniqueId" => "locationCities_".$regionId
 			],
 			LOCATION_CACHE_PROVIDER_NAME
 		))

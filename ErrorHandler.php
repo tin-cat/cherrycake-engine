@@ -66,12 +66,9 @@ function handleError(
 	for ($i=0; $i<sizeof($backtrace)-1; $i++)
 		$backtrace_info[] =
 			(isset($backtrace[$i]["file"]) ? $backtrace[$i]["file"] : null).
-			":".
-			(isset($backtrace[$i]["line"]) ? "<b>".$backtrace[$i]["line"]."</b>" : null).
-			" Class: ".
-			(isset($backtrace[$i]["class"]) ? "<b>".$backtrace[$i]["class"]."</b>" : null).
-			" Method: ".
-			(isset($backtrace[$i]["function"]) ? "<b>".$backtrace[$i]["function"]."</b>" : null);
+			(isset($backtrace[$i]["line"]) ? ":<b>".$backtrace[$i]["line"]."</b>" : null).
+			(isset($backtrace[$i]["class"]) ? " ".$backtrace[$i]["class"] : null).
+			(isset($backtrace[$i]["function"]) ? "::".$backtrace[$i]["function"] : null);
 
 	if (IS_CLI) {
 		echo
@@ -260,7 +257,7 @@ function handleError(
 		else {
 			$filename = substr($errFile, 0, strpos($errFile, ".php")+4);
 			if (is_readable($filename))
-				$sourceLines = explode("<br />", highlight_string(file_get_contents($filename), true));
+				$sourceLines = file($filename);
 		}
 
 		if (is_array($sourceLines)) {
@@ -413,7 +410,7 @@ function handleError(
 							"Description: ".$errStr."<br>".
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
-							"Backtrace:<br>".strip_tags(implode($backtrace_info, "<br>")),
+							"Backtrace:<br>".implode($backtrace_info, "<br>"),
 						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();

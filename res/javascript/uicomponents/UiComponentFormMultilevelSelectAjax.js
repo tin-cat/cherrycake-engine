@@ -14,31 +14,48 @@
 			base.getData();
 		}
 
+		base.setOnChange = function(levelName) {
+			base.getSelect(levelName).on('change', function() {
+				o.levels[levelName].value = parseInt(base.getSelectValue(levelName));
+				base.getData();
+			});
+		}
+
+		base.unsetOnChange = function(levelName) {
+			base.getSelect(levelName).off('change');
+		}
+
 		base.getSelect = function(levelName) {
 			return $('select[name=' + levelName + ']', base.el);
 		}
 		
-		base.getValue = function(levelName) {
+		base.getSelectValue = function(levelName) {
 			return base.getSelect(levelName).val();
 		}
 
-		base.setSelectOptions = function(levelName, options) {
-			var select = base.getSelect(levelName);
-			$(select).empty();
-			$.each(options, function(value, title) {
-				select.append($("<option></option>")
-					.attr("value", value).text(title));
+		base.setSelectValue = function(levelName, value) {
+			base.getSelect(levelName).val(value);
+		}
+
+		base.setSelectValues = function(levelValues) {
+			$.each(o.levels, function(levelName) {
+				base.setSelectValue(levelName, levelValues[levelName].value);
 			});
 		}
 
-		base.getData = function() {
-			base.setLoading();
-			var requestLevels = o.levels;
+		base.setSelectsToCurrentValues = function() {
 			$.each(o.levels, function(levelName) {
-				requestLevels[levelName] = {
-					value: base.getValue(levelName)
-				}
+				base.setSelectValue(levelName, o.levels[levelName].value);
 			});
+		}
+
+		base.getData = function(onSuccess) {
+			base.setLoading();
+			var requestLevels = {};
+			$.each(o.levels, function(levelName, levelData) {
+				requestLevels[levelName] = o.levels[levelName].value;
+			});
+			console.log(requestLevels);
 			ajaxQuery(o.getDataAjaxUrl, {
 				data: {
 					levels: JSON.stringify(requestLevels)
@@ -53,12 +70,30 @@
 					base.setData(data);
 					base.unsetLoading();
 					base.unsetError();
+					base.setSelectsToCurrentValues();
 				}
 			});
 		}
 
 		base.setData = function(data) {
-			console.log(data);
+			$.each(o.levels, function(levelName) {
+				base.setLevelData(levelName, data[levelName]);
+			});
+		}
+
+		base.setLevelData = function(levelName, levelData) {
+			base.setSelectOptions(levelName, levelData);
+		}
+
+		base.setSelectOptions = function(levelName, options) {
+			var select = base.getSelect(levelName);
+			base.unsetOnChange(levelName);
+			$(select).empty();
+			$.each(options, function(idx, option) {
+				select.append($("<option></option>")
+					.attr("value", option.id).text(option.name));
+			});
+			base.setOnChange(levelName);
 		}
 
 		base.save = function(p) {
