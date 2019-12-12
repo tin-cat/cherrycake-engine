@@ -208,7 +208,7 @@ class Security extends \Cherrycake\Module
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_NOT_EMPTY || $rule == \Cherrycake\SECURITY_RULE_TYPICAL_ID)
+			if ($rule == \Cherrycake\SECURITY_RULE_NOT_EMPTY)
 				if (trim($value) == "") {
 					$isError = true;
 					$description[] = "Parameter is empty";

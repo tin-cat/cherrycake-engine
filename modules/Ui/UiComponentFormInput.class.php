@@ -53,44 +53,6 @@ class UiComponentFormInput extends UiComponent {
 	}
 
 	/**
-	 * Builds an object and returns it
-	 * 
-	 * @param array $setup A hash array with the select specs
-	 * @return UiComponentFormInput The object
-	 */
-	static function build($setup = false) {
-		$UiComponentFormInput = new UiComponentFormInput($setup);
-		return $UiComponentFormInput;
-	}
-
-	/**
-	 * Setup keys:
-	 *
-	 * * type: The type of the input, normally: "text" or "password". Defaults to "text" if not specified
-	 * * style: The additional styles, separated with spaces
-	 * * additionalCssClasses: The additional css Class name(s)
-	 * * domId: The Dom id for the UiComponentFormInput element
-	 * * title: The title of the form element
-	 * * name: The input name
-	 * * value: The default input value
-	 * * size: The size of the input box in characters
-	 * * maxLength: The maximum length in characters this input will hold. Defaults to 255
-	 * * placeHolder: Optional placeholder text
-	 * * isDisabled: Whether the input is disabled or not. Defaults to false
-	 * * isAutoFocus: Whether the input must be automatically focused on page load
-	 * * isAutoComplete: Whether to allow the browser to autocomplete the field based on past user's inputs on the same field
-	 * * onChange: Javascript code to execute on change event
-	 * * isSubmitOnEnter: Whether to submit the form if enter is pushed while focused on this input
-	 *
-	 * @param array $setup A hash array with the setup keys
-	 */
-	function __construct($setup = false) {
-		if (is_array($setup))
-			while (list($key, $value) = each($setup))
-				$this->$key = $value;
-	}
-
-	/**
 	 * Builds the HTML of the input. Any setup keys can be given, which will overwrite the ones (if any) given when constructing the object.
 	 *
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.

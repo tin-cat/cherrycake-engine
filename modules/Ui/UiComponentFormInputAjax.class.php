@@ -91,7 +91,7 @@ class UiComponentFormInputAjax extends UiComponent {
 					"\"".
 					($this->domId ? " id=\"".$this->domId."\"" : null).
 				">".
-				($this->title ? "<div class=\"title\">".$this->title."</div>" : null)
+				($this->title || is_null($this->title)  ? "<div class=\"title\">".$this->title."</div>" : null)
 				:
 				null
 			).

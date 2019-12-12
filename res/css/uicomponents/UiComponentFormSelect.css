@@ -10,3 +10,7 @@
 .UiComponentFormSelect.fullWidth > select {
 	width: 100%;
 }
+
+.UiComponentFormSelect > select:disabled {
+	opacity: .5;
+}

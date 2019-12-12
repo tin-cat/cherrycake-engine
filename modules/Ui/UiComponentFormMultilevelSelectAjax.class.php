@@ -23,11 +23,10 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 	protected $onChange;
 	protected $levels;
 	protected $actionName; // The action name that will return the Json data to build the selects
-	protected $isWrap = true;
+	protected $isWrap = false;
 	protected $isInnerGap = true;
 
 	protected $saveAjaxUrl;
-	protected $saveAjaxKey = false;
 
 	protected $dependentCherrycakeUiComponents = [
 		"UiComponentJquery",
@@ -76,7 +75,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 		$r .=
 			"<div id=\"".$this->domId."\" class=\"UiComponentFormMultilevelSelectAjax\">".
 				$e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
-					"isWrap" => true,
+					"isWrap" => $this->isWrap,
 					"domId" => $this->domId,
 					"columns" => $columns,
 					"isWrap" => $this->isWrap,
@@ -88,8 +87,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 			$('#".$this->domId."').UiComponentFormMultilevelSelectAjax({
 				levels: ".json_encode($this->levels).",
 				getDataAjaxUrl: '".$e->Actions->getAction($this->actionName)->request->buildUrl()."',
-				saveAjaxUrl: '".$this->saveAjaxUrl."',
-				saveAjaxKey: '".$this->saveAjaxKey."'
+				saveAjaxUrl: '".$this->saveAjaxUrl."'
 			});
 		");
 

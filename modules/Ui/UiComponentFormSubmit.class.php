@@ -47,39 +47,6 @@ class UiComponentFormSubmit extends UiComponent {
 	}
 
 	/**
-	 * Builds an object and returns it
-	 * 
-	 * @param array $setup A hash array with the select specs
-	 * @return UiComponentFormInput The object
-	 */
-	static function build($setup = false) {
-		$UiComponentFormSubmit = new UiComponentFormSubmit($setup);
-		return $UiComponentFormSubmit;
-	}
-
-	/**
-	 * Setup keys:
-	 *
-	 * * style: The additional styles, separated with spaces
-	 * * additionalCssClasses: The additional css Class name(s)
-	 * * domId: The Dom id for the UiComponentFormInput element
-	 * * title: The text of the submit button
-	 * * iconName: The name of the icon, if any
-	 * * iconVariant: The variant of the icon
-	 * * iconPosition: (left/right) The position of the icon. Default: left
-	 * * isDisabled: Whether the input is disabled or not. Defaults to false
-	 * * isAutoFocus: Whether the input must be automatically focused on page load
-	 * * onClick: The onclick Javascript.
-	 *
-	 * @param array $setup A hash array with the setup keys
-	 */
-	function __construct($setup = false) {
-		if (is_array($setup))
-			while (list($key, $value) = each($setup))
-				$this->$key = $value;
-	}
-
-	/**
 	 * Sets the onClick for this submit button
 	 * @param string $onClick The onClick javascript
 	 */
@@ -134,6 +101,6 @@ class UiComponentFormSubmit extends UiComponent {
 				"iconPosition" => $this->iconPosition,
 				"onClick" => $this->onClick,
 				"isAddJsControl" => $this->isAddJsControl
-			]);
+			])->buildHtml();
 	}
 }

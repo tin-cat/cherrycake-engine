@@ -53,41 +53,6 @@ class UiComponentFormText extends UiComponent {
 	}
 
 	/**
-	 * Builds an object and returns it
-	 * 
-	 * @param array $setup A hash array with the select specs
-	 * @return UiComponentFormInput The object
-	 */
-	static function build($setup = false) {
-		$UiComponentFormText = new UiComponentFormText($setup);
-		return $UiComponentFormText;
-	}
-
-	/**
-	 * Setup keys:
-	 *
-	 * * domId: The Dom id for the UiComponentFormInput element
-	 * * style: The additional styles, separated with spaces
-	 * * title: The title of the form element
-	 * * name: The input name
-	 * * value: The default input value
-	 * * columns: The number of columns
-	 * * rows: The number of rows
-	 * * placeHolder: Optional placeholder text
-	 * * isDisabled: Whether the input is disabled or not. Defaults to false
-	 * * isAutoFocus: Whether the input must be automatically focused on page load
-	 * * isAutoComplete: Whether to allow the browser to autocomplete the field based on past user's inputs on the same field
-	 * * onChange: Javascript code to execute on change event
-	 *
-	 * @param array $setup A hash array with the setup keys
-	 */
-	function __construct($setup = false) {
-		if (is_array($setup))
-			while (list($key, $value) = each($setup))
-				$this->$key = $value;
-	}
-
-	/**
 	 * Builds the HTML of the input. Any setup keys can be given, which will overwrite the ones (if any) given when constructing the object.
 	 *
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.

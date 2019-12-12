@@ -1,6 +1,7 @@
 .UiComponentFormInput.ajax {
 	display: inline-block;
 	position: relative;
+	width: 100%;
 }
 
 .UiComponentFormInput.ajax > .wrapper {
@@ -10,7 +11,7 @@
 .UiComponentFormInput.ajax input {
 	position: relative;
 	width: 100%;
-	transition: padding .1s ease-in-out;
+	box-sizing: border-box;
 }
 
 .UiComponentFormInput.ajax .UiComponentButton.send {

@@ -17,7 +17,9 @@
 		base.setOnChange = function(levelName) {
 			base.getSelect(levelName).on('change', function() {
 				o.levels[levelName].value = parseInt(base.getSelectValue(levelName));
-				base.getData();
+				base.getData(function() {
+					base.save();
+				});
 			});
 		}
 
@@ -30,17 +32,11 @@
 		}
 		
 		base.getSelectValue = function(levelName) {
-			return base.getSelect(levelName).val();
+			return base.getSelect(levelName).val() ? parseInt(base.getSelect(levelName).val()) : null;
 		}
 
 		base.setSelectValue = function(levelName, value) {
 			base.getSelect(levelName).val(value);
-		}
-
-		base.setSelectValues = function(levelValues) {
-			$.each(o.levels, function(levelName) {
-				base.setSelectValue(levelName, levelValues[levelName].value);
-			});
 		}
 
 		base.setSelectsToCurrentValues = function() {
@@ -55,7 +51,6 @@
 			$.each(o.levels, function(levelName, levelData) {
 				requestLevels[levelName] = o.levels[levelName].value;
 			});
-			console.log(requestLevels);
 			ajaxQuery(o.getDataAjaxUrl, {
 				data: {
 					levels: JSON.stringify(requestLevels)
@@ -71,6 +66,8 @@
 					base.unsetLoading();
 					base.unsetError();
 					base.setSelectsToCurrentValues();
+					if (onSuccess)
+						onSuccess();
 				}
 			});
 		}
@@ -89,17 +86,24 @@
 			var select = base.getSelect(levelName);
 			base.unsetOnChange(levelName);
 			$(select).empty();
-			$.each(options, function(idx, option) {
-				select.append($("<option></option>")
-					.attr("value", option.id).text(option.name));
-			});
+			if (!options) {
+				base.disableSelect(levelName);
+			} else {
+				base.enableSelect(levelName);
+				$.each(options, function(idx, option) {
+					select.append($("<option></option>")
+						.attr("value", option.id).text(option.name));
+				});
+			}
 			base.setOnChange(levelName);
 		}
 
-		base.save = function(p) {
+		base.save = function() {
 			base.setLoading();
 			var data = {};
-			data[o.saveAjaxKey] = base.getValue();
+			$.each(o.levels, function(levelName, levelData) {
+				data[levelData.saveAjaxKey] = base.getSelectValue(levelName);
+			});
 			ajaxQuery(o.saveAjaxUrl, {
 				data: data,
 				onError: function() {
@@ -107,14 +111,11 @@
 					if (o.isShakeOnError)
 						base.shake();
 					base.setError();
-					if (p && p.onError)
-						p.onError();
 				},
 				onSuccess: function(data) {
+					console.log(data);
 					base.unsetLoading();
 					base.unsetError();
-					if (p && p.onSuccess)
-						p.onSuccess();
 				}
 			});
 		}
@@ -141,6 +142,14 @@
 
 		base.unsetLoading = function() {
 			$(base.el).removeClass('loading');
+		}
+
+		base.disableSelect = function(levelName) {
+			base.getSelect(levelName).prop('disabled', true);
+		}
+
+		base.enableSelect = function(levelName) {
+			base.getSelect(levelName).prop('disabled', false);
 		}
 
 		base.init();

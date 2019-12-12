@@ -20,6 +20,7 @@ class UiComponentFormSelect extends UiComponent {
 	protected $style;
 	protected $additionalCssClasses;
 	protected $domId;
+	protected $title;
 	protected $name;
 	protected $items;
 	protected $value;
@@ -36,40 +37,6 @@ class UiComponentFormSelect extends UiComponent {
 		parent::addCssAndJavascript();
 		global $e;
 		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormSelect.css");
-	}
-
-	/**
-	 * Builds an object and returns it
-	 * 
-	 * @param array $setup A hash array with the select specs
-	 * @return UiComponentFormSelect The object
-	 */
-	static function build($setup = false) {
-		$UiComponentFormSelect = new UiComponentFormSelect($setup);
-		return $UiComponentFormSelect;
-	}
-
-	/**
-	 * Setup keys:
-	 *
-	 * * style: The additional styles, separated with spaces
-	 * * additionalCssClass: The additional css Class name(s)
-	 * * domId: The Dom id for the UiComponentFormSelect element
-	 * * title: The title of the form element
-	 * * name: The select name
-	 * * items: An array of items with the syntax:
-	 *  - <value> => <The item title>
-	 * * value: The default value to be selected
-	 * * isDisabled: Whether the input is disabled or not. Defaults to false
-	 * * isAutoFocus: Whether the input must be automatically focused on page load
-	 * * onChange: Javascript code to execute on change event
-	 *
-	 * @param array $setup A hash array with the select specs
-	 */
-	function __construct($setup = false) {
-		if (is_array($setup))
-			while (list($key, $value) = each($setup))
-				$this->$key = $value;
 	}
 
 	/**

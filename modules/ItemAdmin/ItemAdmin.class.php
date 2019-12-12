@@ -12,10 +12,13 @@ const FORM_ITEM_TYPE_NUMERIC = 0;
 const FORM_ITEM_TYPE_STRING = 1;
 const FORM_ITEM_TYPE_TEXT = 2;
 const FORM_ITEM_TYPE_BOOLEAN = 3;
-const FORM_ITEM_TYPE_SELECT = 4;
-
-const FORM_ITEM_SELECT_TYPE_RADIOS = 0;
-const FORM_ITEM_SELECT_TYPE_COMBO = 1;
+const FORM_ITEM_TYPE_RADIOS = 4;
+const FORM_ITEM_TYPE_SELECT = 5;
+const FORM_ITEM_TYPE_DATABASE_QUERY = 6;
+	const FORM_ITEM_TYPE_DATABASE_QUERY_STYLE_RADIOS = 0;
+	const FORM_ITEM_TYPE_DATABASE_QUERY_STYLE_SELECT = 1;
+const FORM_ITEM_TYPE_FOREIGN_TABLE = 7;
+const FORM_ITEM_TYPE_COUNTRY = 8;
 
 const FORM_ITEM_META_TYPE_MULTILEVEL_SELECT = 0;
 const FORM_ITEM_META_TYPE_LOCATION = 1;
@@ -94,9 +97,11 @@ class ItemAdmin extends \Cherrycake\Module {
         
         $parameters[] = $setup["idRequestParameter"];
             
-        while (list($fieldName, $fieldData) = each($setup["fields"])) {
-            if (is_array($itemProbe->fields[$fieldName]))
-                $fieldData = array_merge($itemProbe->fields[$fieldName], is_array($fieldData) ? $fieldData : []);
+        // Prepare the array of parameters for the action to be able to receive data for all Item fields
+		$itemProbeFields = $itemProbe->getFields();
+		while (list($fieldName, $fieldData) = each($itemProbeFields)) {
+			if (is_array($setup["fields"][$fieldName]))
+				$fieldData = array_merge($setup["fields"][$fieldName], is_array($fieldData) ? $fieldData : []);
             $parameters[] = 
                 new \Cherrycake\RequestParameter([
                     "name" => $fieldName,
@@ -201,15 +206,15 @@ class ItemAdmin extends \Cherrycake\Module {
 
         $errorDescriptions = [];
 
-        foreach (array_keys($map["fields"]) as $fieldName) {
+		$itemProbeFields = $itemProbe->getFields();
+        //foreach (array_keys($map["fields"]) as $fieldName) {
+		foreach ($itemProbeFields as $fieldName => $fieldData) {
 
-			if (!isset($request->$fieldName))
+			if (!$request->isParameterReceived($fieldName))
                 continue;
             
-            $fieldData = $map["fields"][$fieldName];
-
-            if (is_array($itemProbe->fields[$fieldName]))
-                $fieldData = array_merge($itemProbe->fields[$fieldName], is_array($fieldData) ? $fieldData : []);
+			if (is_array($map["fields"][$fieldName]))
+				$fieldData = array_merge($map["fields"][$fieldName], is_array($fieldData) ? $fieldData : []);
             
             $isAnyParameterPassed = true;
 

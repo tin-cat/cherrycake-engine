@@ -39,37 +39,7 @@ class UiComponentFormRadios extends UiComponent {
 		global $e;
 		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormRadios.css");
 	}
-
-	/**
-	 * Builds an object and returns it
-	 * 
-	 * @param array $setup A hash array with the select specs
-	 * @return UiComponentFormInput The object
-	 */
-	static function build($setup = false) {
-		$UiComponentFormRadios = new UiComponentFormRadios($setup);
-		return $UiComponentFormRadios;
-	}
-
-	/**
-	 * Setup keys:
-	 *
-	 * * type: The type of the input, normally: "text" or "password". Defaults to "text" if not specified
-	 * * style: The additional styles, separated with spaces
-	 * * additionalCssClasses: The additional css Class name(s)
-	 * * domId: The Dom id for the UiComponentFormInput element
-	 * * title: The title of the form element
-	 * * name: The name of the input
-	 * * value: The key of the defaulted checked option
-	 * * items: A hash array of items where each key is the value and the value is the description of the option
-	 * @param array $setup A hash array with the setup keys
-	 */
-	function __construct($setup = false) {
-		if (is_array($setup))
-			while (list($key, $value) = each($setup))
-				$this->$key = $value;
-	}
-
+	
 	/**
 	 * Builds the HTML of the input. Any setup keys can be given, which will overwrite the ones (if any) given when constructing the object.
 	 *
