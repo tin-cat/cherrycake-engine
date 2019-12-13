@@ -93,7 +93,7 @@
 				},
 				onSuccess: function(data) {
 					$(button).UiComponentButton('unsetLoading');
-					if (typeof data === 'object' && data.value !== null)
+					if (typeof data === 'object' && data.values !== null)
 						base.setValue(data.values[o.saveAjaxKey]);
 					committedValue = base.getValue();
 					base.unsetError();

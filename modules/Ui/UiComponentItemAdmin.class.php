@@ -22,11 +22,12 @@ class UiComponentItemAdmin extends UiComponent {
     
     /**
      * @param string $mapName The name of the TableAdmin map to use. Must've been defined previously by calling TableAdmin::map
-     * @param mixed $id The unique identified of the item to edit.
+     * @param mixed $id The unique identifier of the item to edit.
 	 * @param array $setup A hash array of setup keys for the building of the table, available keys:
      * * title: Optional title for the table.
 	 * * style: The style of the table.
      * * additionalCssClasses: Additional CSS classes for the table admin.
+	 * * fields: If specified, this fields arrangement will be used. If not, the "fields" arrangement specified on the map using ItemAdmin::map will be used
 	 * @return mixed The HTML of the table admin, or false if the specified map doesn't exists.
 	 */
 	function buildHtml($mapName, $id, $setup = false) {
@@ -55,8 +56,13 @@ class UiComponentItemAdmin extends UiComponent {
         $this->setProperties($setup);
 
         // Build the $items array of UiComponentForm items by columns
-        while (list($fieldName, $fieldData) = each($map["fields"])) {
+		$fields = isset($setup["fields"]) ? $setup["fields"] : $map["fields"];
+        while (list($fieldName, $fieldData) = each($fields)) {
 
+			// If the fieldData has been set as false, skip it. Fields with a null fieldData are not skipped.
+			if ($fieldData === false)
+				continue;
+			
 			// If no fields or metafields are defined for this fieldName, skip it
             if (!$item->getFields()[$fieldName] && !$item->getMetaFields()[$fieldName])
                 continue;
@@ -86,6 +92,7 @@ class UiComponentItemAdmin extends UiComponent {
 
 					$buildSetup = [
 						"name" => $fieldName,
+						"domId" => uniqid(),
 						"style" => $itemFieldData["formItem"]["style"],
 						"title" =>
 							(

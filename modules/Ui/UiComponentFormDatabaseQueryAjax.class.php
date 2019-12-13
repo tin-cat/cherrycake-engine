@@ -38,6 +38,9 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 	protected $valueFieldName;
 	protected $titleFieldName;
 
+	protected $saveAjaxUrl;
+	protected $saveAjaxKey = false;
+
 	protected $isConfigFile = true;
 
 	protected $dependentCherrycakeUiComponents = [
@@ -68,18 +71,36 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 
 		if ($result) {
 			while ($row = $result->getRow()) {
-				
+				$this->items[$row->getField($this->valueFieldName)] = $row->getField($this->titleFieldName);
 			}
 		}
 		
 		switch ($this->selectionStyle) {
 			case UICOMPONENTFORMDATABASEQUERY_SELECTION_STYLE_SELECT:
 				return $e->Ui->getUiComponent("UiComponentFormSelectAjax")->buildHtml([
+					"name" => $this->name,
 					"title" => $this->title,
-					"style" => $this->style
+					"style" => $this->style,
+					"additionalCssClasses" => $this->additionalCssClasses,
+					"domId" => $this->domId,
+					"items" => $this->items,
+					"value" => $this->value,
+					"saveAjaxUrl" => $this->saveAjaxUrl,
+					"saveAjaxKey" => $this->saveAjaxKey
 				]);
 				break;
 			case UICOMPONENTFORMDATABASEQUERY_SELECTION_STYLE_RADIOS:
+				return $e->Ui->getUiComponent("UiComponentFormRadiosAjax")->buildHtml([
+					"name" => $this->name,
+					"title" => $this->title,
+					"style" => $this->style,
+					"additionalCssClasses" => $this->additionalCssClasses,
+					"domId" => $this->domId,
+					"items" => $this->items,
+					"value" => $this->value,
+					"saveAjaxUrl" => $this->saveAjaxUrl,
+					"saveAjaxKey" => $this->saveAjaxKey
+				]);
 				break;
 		}
 

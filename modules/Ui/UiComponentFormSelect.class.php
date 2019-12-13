@@ -48,6 +48,7 @@ class UiComponentFormSelect extends UiComponent {
 		if (is_array($setup))
 			while (list($key, $value) = each($setup))
 				$this->$key = $value;
+
 		$r .=
 			"<div ".
 				"class=\"".
@@ -59,12 +60,6 @@ class UiComponentFormSelect extends UiComponent {
 			">".
 			($this->title ? "<div class=\"title\">".$this->title."</div>" : null).
 			"<select ".
-				"class=\"".
-					"UiComponentFormSelect".
-					($this->style ? " ".$this->style : null).
-					($this->additionalCssClass ? " ".$this->additionalCssClass : null).
-				"\"".
-				($this->domId ? " id=\"".$this->domId."\"" : null).
 				($this->name ? " name=\"".$this->name."\"" : null).
 				($this->isDisabled ? "disabled " : null).
 				($this->isAutoFocus ? "autofocus " : null).

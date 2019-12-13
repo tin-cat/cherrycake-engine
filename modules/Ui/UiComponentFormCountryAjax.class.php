@@ -18,6 +18,7 @@ namespace Cherrycake;
  */
 class UiComponentFormCountryAjax extends UiComponent {
 	protected $style;
+	protected $selectionStyle;
 	protected $additionalCssClasses;
 	protected $domId;
 	protected $title;
@@ -26,6 +27,8 @@ class UiComponentFormCountryAjax extends UiComponent {
 	protected $isDisabled = false;
 	protected $isAutoFocus;
 	protected $onChange;
+	protected $saveAjaxUrl;
+	protected $saveAjaxKey = false;
 
 	protected $dependentCherrycakeUiComponents = [
 		"UiComponentFormDatabaseQueryAjax"
@@ -36,6 +39,7 @@ class UiComponentFormCountryAjax extends UiComponent {
 		
 		return $e->Ui->getUiComponent("UiComponentFormDatabaseQueryAjax")->buildHtml([
 			"style" => $this->style,
+			"selectionStyle" => $this->selectionStyle,
 			"additionalCssClasses" => $this->additionalCssClasses,
 			"domId" => $this->domId,
 			"title" => $this->title,
@@ -57,7 +61,9 @@ class UiComponentFormCountryAjax extends UiComponent {
 				"uniqueId" => "UiComponentFormCountryAjax_countries"
 			],
 			"valueFieldName" => "id",
-			"titleFieldName" => "title"
+			"titleFieldName" => "title",
+			"saveAjaxUrl" => $this->saveAjaxUrl,
+			"saveAjaxKey" => $this->saveAjaxKey
 		]);
 	}
 }
