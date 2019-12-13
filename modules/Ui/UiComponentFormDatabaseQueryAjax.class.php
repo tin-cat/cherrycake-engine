@@ -53,7 +53,7 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 	 *
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.
 	 */
-	function buildHtml($setup = false) {
+	function buildHtml($setup = false) {		
 		if (is_array($setup))
 			while (list($key, $value) = each($setup))
 				$this->$key = $value;
@@ -103,6 +103,5 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 				]);
 				break;
 		}
-
 	}
 }

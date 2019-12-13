@@ -38,6 +38,14 @@ class UiComponent extends BasicObject {
 	protected $config;
 
 	/**
+	 * @param array $properties A hash array with the setup keys
+	 */
+	function __construct($properties = false) {
+		parent::__construct($properties);
+		$this->init();
+	}
+
+	/**
 	 * loadConfigFile
 	 *
 	 * Loads the configuration file for this UiComponent, if there's one

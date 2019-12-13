@@ -16,54 +16,23 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFormCountryAjax extends UiComponent {
-	protected $style;
-	protected $selectionStyle;
-	protected $additionalCssClasses;
-	protected $domId;
-	protected $title;
-	protected $name;
-	protected $value;
-	protected $isDisabled = false;
-	protected $isAutoFocus;
-	protected $onChange;
-	protected $saveAjaxUrl;
-	protected $saveAjaxKey = false;
-
-	protected $dependentCherrycakeUiComponents = [
-		"UiComponentFormDatabaseQueryAjax"
-	];
-
+class UiComponentFormCountryAjax extends UiComponentFormDatabaseQueryAjax {
 	function buildHtml($setup = false) {
-		global $e;
-		
-		return $e->Ui->getUiComponent("UiComponentFormDatabaseQueryAjax")->buildHtml([
-			"style" => $this->style,
-			"selectionStyle" => $this->selectionStyle,
-			"additionalCssClasses" => $this->additionalCssClasses,
-			"domId" => $this->domId,
-			"title" => $this->title,
-			"name" => $this->name,
-			"value" => $this->value,
-			"isDisabled" => $this->isDisabled,
-			"isAutofocus" => $this->isAutofocus,
-			"onChange" => $this->onChange,
-			"querySql" => "
-				select
-					id,
-					concat(name, ' (+', phonePrefix, ')') as title
-				from
-					cherrycake_location_countries
-				order by
-					name asc
-			",
-			"queryCacheKeyNamingOptions" => [
-				"uniqueId" => "UiComponentFormCountryAjax_countries"
-			],
-			"valueFieldName" => "id",
-			"titleFieldName" => "title",
-			"saveAjaxUrl" => $this->saveAjaxUrl,
-			"saveAjaxKey" => $this->saveAjaxKey
-		]);
+		$this->setProperties($setup);
+		$this->querySql = "
+			select
+				id,
+				concat(name, ' (+', phonePrefix, ')') as title
+			from
+				cherrycake_location_countries
+			order by
+				name asc
+		";
+		$this->queryCacheKeyNamingOptions = [
+			"uniqueId" => "UiComponentFormCountryAjax_countries"
+		];
+		$this->valueFieldName = "id";
+		$this->titleFieldName = "title";
+		return parent::buildHtml($setup);
 	}
 }

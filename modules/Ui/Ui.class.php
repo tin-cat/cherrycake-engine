@@ -97,7 +97,6 @@ class Ui extends \Cherrycake\Module {
 		if (!isset($this->uiComponents[$UiComponentName])) {
 			$e->loadCherrycakeModuleClass("Ui", $UiComponentName);
 			eval("\$this->uiComponents[\"".$UiComponentName."\"] = new \\Cherrycake\\".$UiComponentName."();");
-			$this->uiComponents[$UiComponentName]->init();
 		}
 	}
 

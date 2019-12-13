@@ -115,6 +115,7 @@ class UiComponentItemAdmin extends UiComponent {
 					];
 
 					// Build the appropriate UiComponentForm item based on the formItem setup
+					unset($uiComponentFormItem);
 					switch ($itemFieldData["formItem"]["type"]) {
 						case \Cherrycake\Modules\FORM_ITEM_TYPE_NUMERIC:
 							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
