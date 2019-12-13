@@ -5,6 +5,7 @@
 
 .UiComponentForm.padding > div:not(.UiComponentColumnStructure) {
 	padding: 10px;
+	box-sizing: border-box;
 }
 
 .UiComponentForm.padding > div.UiComponentColumnStructure {

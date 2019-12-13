@@ -122,6 +122,6 @@ class UiComponentForm extends UiComponent {
 		if (strstr(get_class($UiComponentFormItem), "UiComponentFormSubmit"))
 			$UiComponentFormItem->onClick = "function() { $('#".$this->domId."').UiComponentForm('submit'); }";
 		
-		return "<div>".$UiComponentFormItem."</div>";
+		return $UiComponentFormItem;
 	}
 }

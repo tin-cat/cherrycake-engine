@@ -17,6 +17,8 @@ namespace Cherrycake;
 class UiComponentColumnStructure extends UiComponent {
 	protected $isWrap = false;
     protected $isInnerGap = true;
+	protected $domId;
+	protected $additionalCssClasses;
 
 	/**
 	 * AddCssAndJavascriptSetsToHtmlDocument
@@ -49,9 +51,11 @@ class UiComponentColumnStructure extends UiComponent {
 				" class=\"".
 					"UiComponentColumnStructure".
                     ($this->style ? " ".(is_array($this->style) ? implode(" ", $this->style) : $this->style) : null).
+					($this->additionalCssClasses ? " ".$this->additionalCssClasses : null).
 					($this->isWrap ? " wrap" : null).
 					($this->isInnerGap ? " innerGap" : null).
 				"\"".
+				($this->domId ? " id=\"".$this->domId."\"" : null).
             ">";
 		
 		foreach ($this->columns as $column) {

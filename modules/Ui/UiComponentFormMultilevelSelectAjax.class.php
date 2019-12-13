@@ -73,15 +73,13 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 		reset($this->levels);
 
 		$r .=
-			"<div id=\"".$this->domId."\" class=\"UiComponentFormMultilevelSelectAjax\">".
-				$e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
-					"isWrap" => $this->isWrap,
-					"domId" => $this->domId,
-					"columns" => $columns,
-					"isWrap" => $this->isWrap,
-					"isInnerGap" => $this->isInnerGap
-				]).
-			"</div>";
+			$e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
+				"isWrap" => $this->isWrap,
+				"domId" => $this->domId,
+				"columns" => $columns,
+				"isWrap" => $this->isWrap,
+				"isInnerGap" => $this->isInnerGap
+			]);
 		
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentFormMultilevelSelectAjax({
