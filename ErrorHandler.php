@@ -86,7 +86,7 @@ function handleError(
 	$html = "
 		<style>
 			.errorReport .cherrycakeLogo {
-				width: 45px;
+				width: 35px;
 				height: 45px;
 				background-size: contain;
 				background-repeat: no-repeat;
@@ -95,6 +95,7 @@ function handleError(
 			}
 			.errorReport {
 				text-align: left;
+				margin: 40px;
 			}
 			.errorReport > table.error {
 				font-family: Inconsolata, 'Courier New';
@@ -122,13 +123,14 @@ function handleError(
 				text-align: left;
 			}
 			.errorReport > table.error th.title {
-				font-size: 14pt;
+				font-size: 20pt;
+				font-weight: bold;
 				line-height: 45px;
 			}
 			.errorReport > table.error th .cherrycakeLogo {
 				float: left;
 				vertical-align: middle;
-				margin-right: 8pt;
+				margin-right: 5pt;
 			}
 			.errorReport > table.error td.key {
 				color: #c15;
@@ -284,8 +286,8 @@ function handleError(
 
 	}
 
-	if (is_array($stack)) {
-		$stack = array_reverse($stack);
+	if (is_array($backtrace)) {
+		$backtrace = array_reverse($backtrace);
 		$html .=
 		"
 			<tr>
@@ -293,7 +295,7 @@ function handleError(
 				<td class='stack'>
 		";
 		$count = 0;
-		foreach ($stack as $stackItem) {
+		foreach ($backtrace as $stackItem) {
 			$html .=
 				"<div class='call'>\n".
 					(++$count)." ".

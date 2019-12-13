@@ -91,12 +91,12 @@ class Ui extends \Cherrycake\Module {
 	 *
 	 * @param string $UiComponentName The name of the class of the Cherrycake Ui component to add
 	 */
-	function addCherrycakeUiComponent($UiComponentName) {
+	function addCherrycakeUiComponent($uiComponentName) {
 		global $e;
 
-		if (!isset($this->uiComponents[$UiComponentName])) {
-			$e->loadCherrycakeModuleClass("Ui", $UiComponentName);
-			eval("\$this->uiComponents[\"".$UiComponentName."\"] = new \\Cherrycake\\".$UiComponentName."();");
+		if (!isset($this->uiComponents[$uiComponentName])) {
+			$e->loadCherrycakeModuleClass("Ui", $uiComponentName);
+			eval("\$this->uiComponents[\"".$uiComponentName."\"] = new \\Cherrycake\\".$uiComponentName."();");
 		}
 	}
 
@@ -107,17 +107,39 @@ class Ui extends \Cherrycake\Module {
 	 *
 	 * @param string $UiComponentName The name of the class of the App Ui component to add
 	 */
-	function addAppUiComponent($UiComponentName) {
+	function addAppUiComponent($uiComponentName) {
 		global $e;
 
-		if (!isset($this->uiComponents[$UiComponentName])) {
-			$e->loadAppModuleClass("Ui", $UiComponentName);
-			eval("\$this->uiComponents[\"".$UiComponentName."\"] = new \\".$e->getAppNamespace()."\\".$UiComponentName."();");
-			$this->uiComponents[$UiComponentName]->init();
+		if (!isset($this->uiComponents[$uiComponentName])) {
+			$e->loadAppModuleClass("Ui", $uiComponentName);
+			eval("\$this->uiComponents[\"".$uiComponentName."\"] = new \\".$e->getAppNamespace()."\\".$uiComponentName."();");
+			$this->uiComponents[$uiComponentName]->init();
 		}
 	}
 
-	function getUiComponent($UiComponentName) {
-		return $this->uiComponents[$UiComponentName];
+	/**
+	 * @param string $uiComponentName The name of the UiComponent to check
+	 * @return boolean Whether the specified UiComponent has been loaded or not
+	 */
+	function isUiComponentLoaded($uiComponentName) {
+		return isset($this->uiComponents[$uiComponentName]);
+	}
+
+	/**
+	 * @param string $uiComponentName The name of the UiComponent to get
+	 * @return mixed The UiComponent or false if it wasn't loaded
+	 */
+	function getUiComponent($uiComponentName) {
+		if (!$this->isUiComponentLoaded($uiComponentName)) {
+			global $e;
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				"errorDescription" => "The requested UiComponent was not loaded",
+				"errorVariables" => [
+					"uiComponentName" => $uiComponentName
+				]
+			]);
+			return false;
+		} else
+			return $this->uiComponents[$uiComponentName];
 	}
 }
