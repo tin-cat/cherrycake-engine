@@ -1,3 +1,7 @@
+.UiComponentFormText > .title {
+	margin-bottom: 5px;
+}
+
 .UiComponentFormText textarea {
 	line-height: 2em;
 	padding: 0 0.5em;

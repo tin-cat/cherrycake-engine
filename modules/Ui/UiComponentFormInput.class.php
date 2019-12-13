@@ -99,7 +99,7 @@ class UiComponentFormInput extends UiComponent {
 				$('#".$this->domId."').UiComponentTooltip({
 					isOpenOnInit: true,
 					isCloseWhenOthersOpen: false,
-					style: 'styleSimple styleWarning',
+					style: 'styleWarning',
 					content: ".json_encode(
 						UiComponentTooltip::buildContentItem(
 							UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SIMPLE,

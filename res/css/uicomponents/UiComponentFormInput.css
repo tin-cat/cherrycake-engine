@@ -7,6 +7,10 @@
 	width: 100%;
 }
 
+.UiComponentFormInput > .title {
+	margin-bottom: 5px;
+}
+
 .UiComponentFormInput input {
 	position: relative;
 	line-height: 3em;
