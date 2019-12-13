@@ -237,10 +237,11 @@
 	display: inline-block;
 	margin-right: 8px;
 	vertical-align: middle;
+	background-color: <?= $colorPalette["defaultTextColor"] ?>;
 }
 
-.UiComponentTooltip > .tooltip > .content > .option > .UiComponentIcon.black {
-	opacity: 0.7;
+.UiComponentTooltip > .tooltip > .content > .option:hover > .UiComponentIcon {
+	background-color: #fff;
 }
 
 .UiComponentTooltip > .tooltip > .content > .option > .title {
