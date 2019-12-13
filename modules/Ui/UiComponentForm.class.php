@@ -29,7 +29,7 @@ class UiComponentForm extends UiComponent {
 	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
 	 */
 	protected $dependentCherrycakeUiComponents = [
-		"UiComponentColumnStructure",
+		"UiComponentColumns",
 		"UiComponentFormInput",
 		"UiComponentFormUneditable"
 	];
@@ -107,7 +107,7 @@ class UiComponentForm extends UiComponent {
 	function buildHtmlForUiComponentFormItem($UiComponentFormItem) {
 		if (is_array($UiComponentFormItem)) {
 			global $e;
-			return $e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
+			return $e->Ui->getUiComponent("UiComponentColumns")->buildHtml([
 				"isWrap" => true,
 				"columns" => call_user_func(function() use ($UiComponentFormItem) {
 					foreach ($UiComponentFormItem as $subUiComponentFormItem)

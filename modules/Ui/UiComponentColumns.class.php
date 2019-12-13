@@ -1,7 +1,7 @@
 <?php
 
 /**
- * UiComponentColumnStructure
+ * UiComponentColumns
  *
  * @package Cherrycake
  */
@@ -14,7 +14,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentColumnStructure extends UiComponent {
+class UiComponentColumns extends UiComponent {
 	protected $isWrap = false;
     protected $isInnerGap = true;
 	protected $domId;
@@ -28,14 +28,14 @@ class UiComponentColumnStructure extends UiComponent {
 	function addCssAndJavascript() {
 		parent::addCssAndJavascript();
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentColumnStructure.css");
+		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentColumns.css");
     }
     
     /**
 	 * Builds the HTML of the column structure and returns it.
 	 *
 	 * @param array $setup A hash array of setup keys for building the panel, available keys:
-     * * style: The style name of the UiComponentColumnStructure, or an array of style names
+     * * style: The style name of the UiComponentColumns, or an array of style names
 	 * * columns: An ordered array of columns, where each item has the following available keys;
 	 * * * html: The content
 	 * * * style: The style name of the column, or an array of style names
@@ -49,7 +49,7 @@ class UiComponentColumnStructure extends UiComponent {
         $r .=
             "<div".
 				" class=\"".
-					"UiComponentColumnStructure".
+					"UiComponentColumns".
                     ($this->style ? " ".(is_array($this->style) ? implode(" ", $this->style) : $this->style) : null).
 					($this->additionalCssClasses ? " ".$this->additionalCssClasses : null).
 					($this->isWrap ? " wrap" : null).

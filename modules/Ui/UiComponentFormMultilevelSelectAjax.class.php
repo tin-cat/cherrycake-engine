@@ -34,7 +34,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 		"UiComponentTooltip",
 		"UiComponentFormSelect",
 		"UiComponentAjax",
-		"UiComponentColumnStructure"
+		"UiComponentColumns"
 	];
 
 	/**
@@ -73,7 +73,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 		reset($this->levels);
 
 		$r .=
-			$e->Ui->getUiComponent("UiComponentColumnStructure")->buildHtml([
+			$e->Ui->getUiComponent("UiComponentColumns")->buildHtml([
 				"isWrap" => $this->isWrap,
 				"domId" => $this->domId,
 				"columns" => $columns,

@@ -3,15 +3,15 @@
 	width: 100%;
 }
 
-.UiComponentForm.padding > div:not(.UiComponentColumnStructure) {
+.UiComponentForm.padding > div:not(.UiComponentColumns) {
 	padding: 10px;
 	box-sizing: border-box;
 }
 
-.UiComponentForm.padding > div.UiComponentColumnStructure {
+.UiComponentForm.padding > div.UiComponentColumns {
 }
 
-.UiComponentForm.padding > div.UiComponentColumnStructure > div {
+.UiComponentForm.padding > div.UiComponentColumns > div {
 	padding: 10px;
 }
 
@@ -23,6 +23,6 @@
 	margin-bottom: 5px;
 }
 
-.UiComponentForm .UiComponentColumnStructure > div {
+.UiComponentForm .UiComponentColumns > div {
 	
 }
