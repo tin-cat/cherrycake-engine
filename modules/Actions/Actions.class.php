@@ -55,7 +55,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $actions An array of Actions to be handled by this module
 	 */
-	public $actions;
+	private $actions;
 
 	/**
 	 * @var array $currentRequestPathComponentStrings An array of strings representing the path of the currently made request, built on Actions::buildCurrentRequestPathComponentStringsFromRequestUri
@@ -164,8 +164,16 @@ class Actions extends \Cherrycake\Module {
 	 * @return Action The requested action. False if doesn't exists.
 	*/
 	public function getAction($actionName) {
-		if (!$this->isAction($actionName))
+		if (!$this->isAction($actionName)) {
+			global $e;
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				"errorDescription" => "The requested Action was not defined",
+				"errorVariables" => [
+					"actionName" => $actionName
+				]
+			]);
 			return false;
+		}
 
 		return $this->actions[$actionName];
 	}

@@ -64,7 +64,11 @@ class UiComponentButton extends UiComponent {
 
 		$domId = $this->DomId ? $this->DomId : uniqid();
 
-		$r .= "<div id=\"".$domId."\"></div>";
+		$r .=
+			($this->href ? "<a" : "<div").
+				" id=\"".$domId."\"".
+			">".
+			($this->href ? "</a>" : "</div>");
 
 		$r .= "
 			<script>

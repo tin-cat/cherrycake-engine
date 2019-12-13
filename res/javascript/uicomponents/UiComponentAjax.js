@@ -10,6 +10,8 @@ function ajaxQuery(url, setup) {
 		crossDomain: (setup && 'isCrossDomain' in setup ? setup['isCrossDomain'] : <?= ($e->Ui->uiComponents["UiComponentAjax"]->getConfig("DefaultIsCrossDomain") ? "true" : "false") ?>),
 		data: setup ? setup['data'] : false,
 		dataType: 'json',
+		contentType: false,
+		processData: false,
 		error: function(jqXHR, textStatus, errorThrown) {
 			<?
 				if (IS_DEVEL_ENVIRONMENT) {
