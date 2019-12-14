@@ -381,13 +381,14 @@ class Image {
 		list($sourceWidth, $sourceHeight, $sourceFormat) = $result;
 
 		switch ($sourceFormat){
-			case IMAGETYPE_GIF:
+			case IMG_GIF:
 				$sourceImage = imageCreateFromGif($sourceFileName);
 				break;
-			case IMAGETYPE_PNG:
+			case IMG_PNG:
 				$sourceImage = imageCreateFromPng($sourceFileName);
 				break;
-			case IMAGETYPE_JPEG:
+			case IMG_JPG:
+			case IMG_JPEG:
 				$sourceImage = imagecreateFromJpeg($sourceFileName);
 				break;
 		}
