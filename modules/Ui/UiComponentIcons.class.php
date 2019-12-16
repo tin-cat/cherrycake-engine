@@ -20,9 +20,9 @@ namespace Cherrycake;
  *      "sizes" => [16, 32, 64, 128, 256],  // The icon sizes to generate. Defaults to 16, 32, 64, 128, 256
  *      "sizeUnits" => "px", // The unit on which sizes are specified. Defaults to "px"
  *      "defaultSize" => 16, // The default icon size to use when no size Css class is specified. Defaults to 16
- *      "spinningIcons" => ["loading"] // An array of icon names that must be spinning
- *      "spinningSpeed" => 1, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
- *      "loadingIcon" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
+ *      "spinningIcons" => ["loading", "working"] // An array of icon names that must be spinning
+ *      "spinningSpeed" => 3, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
+ *      "spinningIcons" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
  *      "isEmbedInline" => true, // Wheter to embed icon VG files on the CSS itself in Base 64 to avoid multiple HTTP calls or not.
  *      "method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible (Doesn't works in march 2017 Firefox)
  *      "defaultIconColor" => "#000", // The icons default color when using the "mask" method.
@@ -47,8 +47,8 @@ class UiComponentIcons extends UiComponent {
 		"sizes" => [16, 32, 64, 128, 256],  // The icon sizes to generate
 		"sizeUnits" => "px", // The unit on which sizes are specified
 		"defaultSize" => 16, // The default icon size to use when no size Css class is specified
-		"spinningSpeed" => 1, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
-		"loadingIcon" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
+		"spinningSpeed" => 3, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
+		"spinningIcons" => ["loading", "working"], // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
 		"method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible
 		"defaultIconColor" => "#000", // The icons default color when using "mask" method.
 		"colors" => ["black" => "#000", "darkGrey" => "#ccc", "lightGrey" => "#888", "white" => "#fff"] // A hash array of additional color styles when using the "mask" method, where each key is the color name, and the value is the color in HTML hex value.
@@ -158,18 +158,18 @@ class UiComponentIcons extends UiComponent {
 							".UiComponentIcon".($styleName != "./" ? ".".$styleName : "").".".$iconName." { ".
 								($this->getConfig("method") == "backgroundImage" ?
 									"background-image: url(".$url.")".
-									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
+									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
 									";"
 								: "").
 								($this->getConfig("method") == "mask" ?
 									"-webkit-mask-image: url(".$url.")".
-									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
+									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
 									";".
 									" mask-image: url(".$url.")".
-									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
+									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
 									";".
 									" mask: url(".$url.")".
-									($iconName == $this->getConfig("loadingIcon") ? " !important" : null).
+									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
 									";"
 								: "").
 							" }\n";

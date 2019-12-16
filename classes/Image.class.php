@@ -392,18 +392,26 @@ class Image {
 			return false;
 		}
 
-		list($sourceWidth, $sourceHeight, $sourceFormat) = $result;
+		list($sourceWidth, $sourceHeight, $imageType) = $result;
 
-		switch ($sourceFormat){
-			case IMG_GIF:
-				$sourceImage = imageCreateFromGif($sourceFileName);
+		switch ($imageType){
+			case IMAGETYPE_BMP:
+				$sourceImage = imagecreatefrombmp($sourceFileName);
 				break;
-			case IMG_PNG:
-				$sourceImage = imageCreateFromPng($sourceFileName);
+			case IMAGETYPE_GIF:
+				$sourceImage = imagecreatefromgif($sourceFileName);
 				break;
-			case IMG_JPG:
-			case IMG_JPEG:
-				$sourceImage = imagecreateFromJpeg($sourceFileName);
+			case IMAGETYPE_JPEG:
+				$sourceImage = imagecreatefromjpeg($sourceFileName);
+				break;
+			case IMAGETYPE_PNG:
+				$sourceImage = imagecreatefrompng($sourceFileName);
+				break;
+			case IMAGETYPE_WBMP:
+				$sourceImage = imagecreatefromwbmp($sourceFileName);
+				break;
+			case IMAGETYPE_WEBP:
+				$sourceImage = imagecreatefromwebp($sourceFileName);
 				break;
 		}
 

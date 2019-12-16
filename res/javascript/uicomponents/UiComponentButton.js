@@ -62,18 +62,23 @@
 			$(base.el).attr('title', tooltip);
 		}
 
-		base.setBadge = function(newBadge) {
+		base.setBadge = function(newBadge, style) {
 			$(badge).remove();
-			$(base.el).append('<div class=badge>' + newBadge + '</div>');
+			$(base.el).append('<div class="badge' + (style ? ' ' + style : '') + '">' + newBadge + '</div>');
 			badge = $('> .badge', base.el);
 		}
 
 		base.removeBadge = function() {
-			$(badge).remove();
+			$(badge).fadeOut();
 		}
 
 		base.setLoadingPercent = function(percent) {
-			base.setBadge(percent);
+			if (percent >= 100) {
+				$('> .loadingPercent', base.el).fadeOut();
+				base.removeBadge();
+				return;
+			}
+			base.setBadge(percent, 'centered');
 			if (!$('> .loadingPercent', base.el).length)
 				$(base.el).append('<div class=loadingPercent></div>');
 			$('> .loadingPercent', base.el).css('height', percent + '%');
@@ -119,6 +124,7 @@
 		}
 
 		base.setLoading = function() {
+			base.unsetAll();
 			base.addStyle('loading');
 			if (icon)
 				$(icon).addClass('loading');
@@ -129,6 +135,38 @@
 			if (icon)
 				$(icon).removeClass('loading');
 		}
+
+		base.setUploading = function() {
+			base.unsetAll();
+			base.addStyle('uploading');
+			if (icon)
+				$(icon).addClass('uploading');
+		}
+
+		base.unsetUploading = function() {
+			base.removeStyle('uploading');
+			if (icon)
+				$(icon).removeClass('uploading');
+		}
+
+		base.setWorking = function() {
+			base.unsetAll();
+			base.addStyle('working');
+			if (icon)
+				$(icon).addClass('working');
+		}
+
+		base.unsetWorking = function() {
+			base.removeStyle('working');
+			if (icon)
+				$(icon).removeClass('working');
+		}
+
+		base.unsetAll = function() {
+			base.unsetLoading();
+			base.unsetUploading();
+			base.unsetWorking();
+		};
 
 		base.setInactive = function() {
 			base.addStyle('inactive');

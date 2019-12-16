@@ -140,12 +140,18 @@
 	top: -9px;
 	right: 10px;
 	color: #000;
-	font-size: 9pt;
+	font-size: 8.5pt;
 	line-height: 1em;
 	white-space: nowrap;
 	background: #fff;
-	padding: 2px 4px;
+	padding: 4px 6px;
 	border-radius: 15px;
+}
+
+.UiComponentButton > .badge.centered {
+	right: auto;
+	left: 50%;
+	<?= $e->Css->buildUnsupportedProperty("transform", "translate(-50%, 0)"); ?>
 }
 
 /* style mergedTop */

@@ -19,12 +19,3 @@
 a.UiComponentIcon:hover {
 	opacity: .8;
 }
-
-.UiComponentIcon.loading {
-	animation: loading 5s infinite linear;
-}
-
-@keyframes loading {
-    0% {transform: rotate(0deg); -webkit-transform: rotate(0deg)}
-    100% {transform: rotate(360deg); -webkit-transform: rotate(360deg)}
-}

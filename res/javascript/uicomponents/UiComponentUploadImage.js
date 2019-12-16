@@ -29,14 +29,18 @@
 				onSuccess: function(data) {
 					$(buttonUpload).UiComponentButton('unsetLoadingPercent');
 					$(buttonUpload).UiComponentButton('unsetLoading');
+					$(buttonUpload).UiComponentButton('unsetWorking');
 					base.setImage(data.imageUrl);
 				},
 				onError: function() {
 					$(buttonUpload).UiComponentButton('unsetLoadingPercent');
 					$(buttonUpload).UiComponentButton('unsetLoading');
+					$(buttonUpload).UiComponentButton('unsetWorking');
 				},
 				onProgress: function(percent, position, total) {
 					$(buttonUpload).UiComponentButton('setLoadingPercent', percent);
+					if (percent >= 100)
+						$(buttonUpload).UiComponentButton('setWorking');
 				}
 			});
 		}
