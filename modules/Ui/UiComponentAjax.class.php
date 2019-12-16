@@ -28,8 +28,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentAjax extends UiComponent
-{
+class UiComponentAjax extends UiComponent {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */

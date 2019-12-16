@@ -11,11 +11,21 @@ function ajaxUpload(setup) {
 	}
 	inputElement.addEventListener("change", function() {
 		var formData = new FormData();
-		formData.append("file", inputElement.files[0]);
+		formData.append("file", inputElement.files[0], inputElement.files[0].name);
 		ajaxQuery(
 			setup.ajaxUrl,
 			{
-				data: formData
+				data: formData,
+				timeout: setup.timeout ? setup.timeout : <?= $e->Ui->uiComponents["UiComponentAjaxUpload"]->getConfig("timeout") ?>,
+				onSuccess: function(data) {
+					if (setup.onSuccess)
+						setup.onSuccess(data);
+				},
+				onError: function() {
+					if (setup.onError)
+						setup.onError();
+				},
+				onProgress: setup.onProgress
 			}
 		);
 		if (setup && setup.onFileSelected)

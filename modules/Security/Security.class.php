@@ -78,9 +78,9 @@ class Security extends \Cherrycake\Module
 	];
 
 	/**
-	 * @var array $fixedParameterRules Contains the rules that must be always met when checking parameter values
+	 * @var array $fixedParameterRulesForValues Contains the rules that must be always met when checking parameter values
 	 */
-	var $fixedParameterRules = [
+	var $fixedParameterRulesForValues = [
 		\Cherrycake\SECURITY_RULE_SQL_INJECTION
 	];
 
@@ -179,7 +179,7 @@ class Security extends \Cherrycake\Module
 			$rules = [];
 
 		if ($isFixedRules)
-			$rules = array_merge($this->fixedParameterRules, $rules);
+			$rules = array_merge($this->fixedParameterRulesForValues, $rules);
 
 		if (!$rules)
 			return new \Cherrycake\ResultOk;
@@ -198,7 +198,7 @@ class Security extends \Cherrycake\Module
 			if ($rule == \Cherrycake\SECURITY_RULE_SQL_INJECTION)
 				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
 					$isError = true;
-					$description[] = "is suspicious of SQL injection";
+					$description[] = "Suspicious of SQL injection";
 					$this->autoBanIp();
 					break;
 				}
@@ -285,10 +285,47 @@ class Security extends \Cherrycake\Module
 				if ($isError)
 					$description[] = "Parameter hasn't any of the possible values [".implode("|", $ruleParameter)."]";
 			}
+		}
 
-			if ($value && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE) {
+		if ($isError)
+			return new \Cherrycake\ResultKo([
+				"description" => $description
+			]);
+		else
+			return new \Cherrycake\ResultOk;
+	}
+
+	/**
+	 * Checks the given file received via $_FILE against the given rules
+	 * @param mixed $value The value to check
+	 * @param array $rules A hash array of the check rules to perform, with the same syntax as Security::checkValue
+	 * @return Result A Result object with optionally the following additional payloads:
+	 * * description: An array containing the list of errors found when checking the value
+	 */
+	function checkFile($file = NULL, $rules = false) {
+		if (is_null($file))
+			return new \Cherrycake\ResultOk;
+
+		if (!is_array($rules))
+			$rules = [];
+		
+		if (!$rules)
+			return new \Cherrycake\ResultOk;
+		
+		$isError = false;
+
+		foreach ($rules as $rule) {
+
+			$ruleParameter = false;
+
+			if (is_array($rule)) { 
+				$ruleParameter = $rule[1];
+				$rule = $rule[0];
+			}
+
+			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE) {
 				$result = $this->checkUploadedFile(
-					$value,
+					$file,
 					$ruleParameter
 				);
 				if (!$result->isOk) {
@@ -297,9 +334,9 @@ class Security extends \Cherrycake\Module
 				}
 			}
 
-			if ($value && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE_IMAGE) {
+			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE_IMAGE) {
 				$result = $this->checkUploadedFile(
-					$value,
+					$file,
 					array_merge(
 						[
 							"isRequireImage" => true
@@ -669,8 +706,8 @@ class Security extends \Cherrycake\Module
 	/**
 	 * Checks an uploaded file for security attacks and moves it to a safe place if it is considered secure.
 	 * It moves the file to a safe place, specified by the returned Result property "finalPath".
-	 * When checking uploaded images (isRequireImage or allowedImageTypes has been set), images other than jpg, gif or png are converted to png.
-	 * When uploading compressed image formats like jpg, since this method generates a new image from the uploaded one for security purposes, the final compression is always set to the maximum possible. This will cause compressed images like jpg files to take more disk space in most cases.
+	 * When checking uploaded images (isRequireImage or allowedImageTypes has been set), image types other than jpg, gif or png are converted to png.
+	 * When uploading compressed image formats like jpg, since this method generates a new image from the uploaded one for security purposes, the final compression is always set to the maximum possible setting. This will cause compressed images like jpg files to take more disk space than their originals in most cases.
 	 * @param array $file The file array given by PHP after receiving an uploaded file, received via $_FILES[name of the file]
 	 * @param array $p An array of parameters options, with the following possible keys
 	 * * isRequireImage: Requires the file to be an image. If allowedImageTypes is specified, this is forced to true.
@@ -683,19 +720,43 @@ class Security extends \Cherrycake\Module
 	function checkUploadedFile($file, $p = false) {
 		// An array containing the known image types (documented here: https://www.php.net/manual/en/image.constants.php), where each value is the associated file extension in lowercase, or an array of multiple file extensions if the image type is known to have more than one.
 		$imageTypes = [
-			IMG_BMP => "bmp",
-			IMG_GIF => "gif",
-			IMG_JPG => ["jpg", "jpeg"],
-			IMG_JPEG => ["jpeg", "jpg"],
-			IMG_PNG => "png",
-			IMG_WBMP => "wbmp",
-			IMG_XPM => "xpm",
-			IMG_WEBP => "webp"
+			IMAGETYPE_BMP => "bmp",
+			IMAGETYPE_GIF => "gif",
+			IMAGETYPE_JPEG => ["jpg", "jpeg"],
+			IMAGETYPE_PNG => "png",
+			IMAGETYPE_WBMP => "wbmp",
+			IMAGETYPE_XBM => "xpm",
+			IMAGETYPE_WEBP => "webp",
+			IMAGETYPE_SWF => "swf",
+			IMAGETYPE_PSD => "psd",
+			IMAGETYPE_TIFF_II => ["tif", "tiff"],
+			IMAGETYPE_TIFF_MM => ["tif", "tiff"],
+			IMAGETYPE_JPC => "jpc",
+			IMAGETYPE_JP2 => "jp2",
+			IMAGETYPE_JPX => "jpx",
+			IMAGETYPE_JB2 => "jb2",
+			IMAGETYPE_SWC => "swc",
+			IMAGETYPE_IFF => "iff",
+			IMAGETYPE_ICO => "ico"
 		];
 
-		if (is_uploaded_file($file["tmp_name"])) {
-			$isError = true;
-			$descriptions[] = "Parameter didn't receive an uploaded file";
+		// Check file name
+		$result = $this->checkValue($file["name"], [
+			SECURITY_RULE_SQL_INJECTION
+		]);
+		if (!$result->isOk)
+			return $result;
+
+		if ($this->filterValue($file["name"], [
+			SECURITY_FILTER_XSS
+		]) != $file["name"]) {
+			return new \Cherrycake\ResultKo([
+				"description" => "File name contained was suspicious of XSS attack"
+			]);
+		}
+
+		if (!is_uploaded_file($file["tmp_name"])) {
+			return new \Cherrycake\ResultKo(["description" => "Didn't receive an uploaded file"]);
 		}
 
 		if ($p["allowedImageTypes"])
@@ -704,7 +765,7 @@ class Security extends \Cherrycake\Module
 		// If allowedImageTypes is not specified, but isRequireImage is, generate an allowedImageTypes array with all the image types supported by GD
 		if (!isset($p["allowedImageTypes"]) && $p["isRequireImage"]) {
 			foreach (array_keys($imageTypes) as $imageType) {
-				if (imagetypes() && $imageType)
+				if (imagetypes() & $imageType)
 					$p["allowedImageTypes"][] = $imageType;
 			}
 		}
@@ -714,9 +775,12 @@ class Security extends \Cherrycake\Module
 			foreach ($p["allowedImageTypes"] as $allowedImageType) {
 				$fileExtension = $imageTypes[$allowedImageType];
 				if (is_array($fileExtension))
-					$p["allowedFileExtensions"] = array_merge($p["allowedFileExtensions"], $afileExtension);
+					$p["allowedFileExtensions"] = array_merge(
+						is_array($p["allowedFileExtensions"]) ? $p["allowedFileExtensions"] : [],
+						$fileExtension
+					);
 				else
-					$p["allowedFileExtensions"] = $fileExtension;
+					$p["allowedFileExtensions"][] = $fileExtension;
 			}
 		}
 
@@ -760,34 +824,26 @@ class Security extends \Cherrycake\Module
 			}
 		}
 
-		// Move the file
-		// Determine the finalPath, using a safe generated file name
-		$finalPath = sys_get_temp_dir().sha1_file($file["tmp_name"]);
-
-		// If an image was required, move it to the finalPath using the imagecreatefrom* method for security
+		// If an image was required, re-generate it using the imagecreatefrom* method for security
 		// Images other than jpg, png or gif are converted to png
 		if ($p["isRequireImage"] && $imageType) {
 			switch ($imageType) {
-				case IMG_BMP:
+				case IMAGETYPE_BMP:
 					$image = imagecreatefrombmp($file["tmp_name"]);
 					break;
-				case IMG_GIF:
+				case IMAGETYPE_GIF:
 					$image = imagecreatefromgif($file["tmp_name"]);
 					break;
-				case IMG_JPG:
-				case IMG_JPEG:
+				case IMAGETYPE_JPEG:
 					$image = imagecreatefromjpeg($file["tmp_name"]);
 					break;
-				case IMG_PNG:
+				case IMAGETYPE_PNG:
 					$image = imagecreatefrompng($file["tmp_name"]);
 					break;
-				case IMG_WBMP:
+				case IMAGETYPE_WBMP:
 					$image = imagecreatefromwbmp($file["tmp_name"]);
 					break;
-				case IMG_XPM:
-					$image = imagecreatefromxpm($file["tmp_name"]);
-					break;
-				case IMG_WEBP:
+				case IMAGETYPE_WEBP:
 					$image = imagecreatefromwebp($file["tmp_name"]);
 					break;
 				default:
@@ -798,36 +854,23 @@ class Security extends \Cherrycake\Module
 				return new \Cherrycake\ResultKo(["description" => "Final image could not be created from the uploaded file"]);
 			}
 			switch ($imageType) {
-				case IMG_GIF:
-					$result = imagegif($image, $finalPath);
+				case IMAGETYPE_GIF:
+					$result = imagegif($image, $file["tmp_name"]);
 					break;
-				case IMG_JPG:
-				case IMG_JPEG:
-					$result = imagejpeg($image, $finalPath, 100);
+				case IMAGETYPE_JPEG:
+					$result = imagejpeg($image, $file["tmp_name"], 100);
 					break;
-				case IMG_PNG:
-				case IMG_BMP:
-				case IMG_WBMP:
-				case IMG_XPM:
-				case IMG_WEBP:
-					$result = imagepng($image, $finalPath, -1, -1);
+				case IMAGETYPE_PNG:
+				default:
+					$result = imagepng($image, $file["tmp_name"], -1, -1);
 					break;
 			}
 			if (!$result) {
-				return new \Cherrycake\ResultKo(["description" => "Final image could not be saved"]);
-			}
-			if (unlink($file["tmp_name"])) {
-				return new \Cherrycake\ResultKo(["description" => "Could not delete the original uploaded image after saving the final one"]);
-			}
-		}
-		// If an image wasn't required, move it to the finalPath normally
-		else {
-			if (!move_uploaded_file($file["tmp_name"], $finalPath)) {
-				return new \Cherrycake\ResultKo(["description" => "Could not move the uploaded file to its final path"]);
+				return new \Cherrycake\ResultKo(["description" => "Final image could not be saved to ".$file["tmp_name"]]);
 			}
 		}
 
-		return new \Cherrycake\ResultOk(["finalPath" => $finalPath]);
+		return new \Cherrycake\ResultOk();
 	}
 
 }

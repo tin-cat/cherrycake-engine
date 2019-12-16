@@ -53,6 +53,21 @@ function ajaxQuery(url, setup) {
 			}
 			if (data.redirectUrl)
 				document.location = data.redirectUrl;
+		},
+		xhr: function() {
+			var myXhr = $.ajaxSettings.xhr();
+			if (myXhr.upload && setup.onProgress) {
+				myXhr.upload.addEventListener('progress', function(event) {
+					var percent = 0;
+					var position = event.loaded || event.position;
+					var total = event.total;
+					if (event.lengthComputable) {
+						percent = Math.ceil(position / total * 100);
+					}
+					setup.onProgress(percent, position, total);
+				}, false);
+			}
+			return myXhr;
 		}
 	});
 }

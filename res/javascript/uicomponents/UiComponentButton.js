@@ -68,6 +68,22 @@
 			badge = $('> .badge', base.el);
 		}
 
+		base.removeBadge = function() {
+			$(badge).remove();
+		}
+
+		base.setLoadingPercent = function(percent) {
+			base.setBadge(percent);
+			if (!$('> .loadingPercent', base.el).length)
+				$(base.el).append('<div class=loadingPercent></div>');
+			$('> .loadingPercent', base.el).css('height', percent + '%');
+		}
+
+		base.unsetLoadingPercent = function() {
+			base.removeBadge();
+			$('> .loadingPercent', base.el).remove();
+		}
+
 		base.setIcon = function(iconName, iconVariant = false, isLeft = true) {
 			$(icon).remove()
 

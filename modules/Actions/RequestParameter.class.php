@@ -10,6 +10,7 @@ namespace Cherrycake;
 
 const REQUEST_PARAMETER_TYPE_GET = 0;
 const REQUEST_PARAMETER_TYPE_POST = 1;
+const REQUEST_PARAMETER_TYPE_FILE = 2;
 
 /**
  * RequestParameter
@@ -59,6 +60,10 @@ class RequestParameter {
 				if (isset($_POST[$this->name]))
 					$this->setValue($_POST[$this->name]);
 				break;
+			case REQUEST_PARAMETER_TYPE_FILE:
+				if (isset($_FILES[$this->name]))
+					$this->setValue($_FILES[$this->name]);
+				break;
 		}
 	}
 
@@ -77,7 +82,12 @@ class RequestParameter {
 		global $e;
 		if (!$this->isReceived())
 			return null;
-		return $e->Security->filterValue($this->value, $this->filters);
+		return
+			$this->type == REQUEST_PARAMETER_TYPE_FILE
+			?
+			$this->value
+			:
+			$e->Security->filterValue($this->value, $this->filters);
 	}
 
 	/**
@@ -97,7 +107,12 @@ class RequestParameter {
 	 */
 	function checkValueSecurity() {
 		global $e;
-		return $e->Security->checkValue($this->value, $this->securityRules);
+		return
+			$this->type == REQUEST_PARAMETER_TYPE_FILE
+			?
+			$e->Security->checkFile($this->value, $this->securityRules)
+			:
+			$e->Security->checkValue($this->value, $this->securityRules);
 	}
 
 	/**

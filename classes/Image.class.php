@@ -46,7 +46,7 @@ namespace Cherrycake;
  *
  * @package Cherrycake
  * @category Classes
- * @todo Implement forceWidthAndHeight on createSizeFilesFromFile method
+ * @todo Implement forceWidthAndHeight on buildFromFile method
  */
 class Image {
 	/**
@@ -120,6 +120,21 @@ class Image {
 	 * @return  boolean Whether the Image could be initialized ok or not
 	 */
 	function init() {
+		// Add Hd sizes to the sizes array
+		while (list($sizeName, $sizeSetup) = each($this->sizes)) {
+			if ($sizeSetup["isHd"]) {
+				if ($sizeSetup["width"])
+					$sizeSetup["width"] = $sizeSetup["width"] * 2;
+
+				if ($sizeSetup["height"])
+					$sizeSetup["height"] = $sizeSetup["height"] * 2;
+
+				$hdSizes[$sizeName.".hd"] = $sizeSetup;
+			}
+		}
+		reset($this->sizes);
+		if ($hdSizes)
+			$this->sizes = array_merge($this->sizes, $hdSizes);
 		return true;
 	}
 
@@ -225,6 +240,8 @@ class Image {
 	 * @return string The URL of the image file for the specified $sizeName
 	 */
 	function getUrl($sizeName = false, $isHd = false) {
+		if ($isHd)
+			$sizeName .= ".hd";
 		return
 			"/".
 			$this->getFileDirectory($sizeName).
@@ -233,7 +250,6 @@ class Image {
 			".".
 			($this->sizes[$sizeName] ?
 				$sizeName.
-				($isHd && $this->sizes[$sizeName]["isHd"] ? ".hd" : "").
 				".".
 				$this->sizes[$sizeName]["imageFormat"]
 			:
@@ -344,8 +360,6 @@ class Image {
 	}
 
 	/**
-	 * createSizeFilesFromFile
-	 *
 	 * Creates the image files from the given $sourceFileName as specified by the setup sizes.
 	 * The object must be loaded with the proper configurations in order to work.
 	 *
@@ -353,7 +367,7 @@ class Image {
 	 * @param boolean $isCreateDirectory Whether to create the directory where the files will be stored if it doesn't exists.
 	 * @return boolean True if all files creation has gone ok, false otherwise
 	 */
-	function createSizeFilesFromFile($sourceFileName, $isCreateDirectory = true) {
+	function buildFromFile($sourceFileName, $isCreateDirectory = true) {
 		$isDebug = false;
 
 		if (!$this->sizes) {
@@ -407,23 +421,7 @@ class Image {
 			return false;
 		}
 
-		// Manually add Hd sizes to the sizes array by creating a $finalSizes array with all the sizes
 		while (list($sizeName, $sizeSetup) = each($this->sizes)) {
-			$finalSizes[$sizeName] = $sizeSetup;
-
-			if ($sizeSetup["isHd"]) {
-				if ($sizeSetup["width"])
-					$sizeSetup["width"] = $sizeSetup["width"] * 2;
-
-				if ($sizeSetup["height"])
-					$sizeSetup["height"] = $sizeSetup["height"] * 2;
-
-				$finalSizes[$sizeName.".hd"] = $sizeSetup;
-			}
-		}
-		reset($this->sizes);
-
-		while (list($sizeName, $sizeSetup) = each($finalSizes)) {
 			$finalWidth = false;
 			$finalHeight = false;
 			if($isDebug) echo "Size ".$sizeName." source size: ".$sourceWidth."x".$sourceHeight." ";
@@ -562,7 +560,9 @@ class Image {
 
 			if($isDebug) echo "<br>\n";
 		}
-		reset($finalSizes);
+		reset($this->sizes);
+
+		return true;
 	}
 
 	/**

@@ -20,6 +20,10 @@ class UiComponentUploadImage extends UiComponent {
 	protected $domId;
 	protected $style;
 	protected $additionalCssClasses;
+	protected $ajaxUrl;
+	protected $buttonUploadTitle = false;
+	protected $buttonUploadIconName = "upload";
+	protected $defaultImageUrl;
 
 	/**
 	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
@@ -35,7 +39,7 @@ class UiComponentUploadImage extends UiComponent {
 	function addCssAndJavascript() {
 		parent::addCssAndJavascript();
 		global $e;
-		// $e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentUploadImage.css");
+		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentUploadImage.css");
 		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentUploadImage.js");
 	}
 
@@ -67,13 +71,19 @@ class UiComponentUploadImage extends UiComponent {
 					($this->additionalCssClasses ? " ".(is_array($this->additionalCssClasses) ? implode($this->additionalCssClasses, " ") : $this->additionalCssClasses) : null).
 				"\"".
 			">".
-				$e->Ui->getUiComponent("UiComponentButton")->buildHtml([
-					"additionalCssClasses" => "uploadButton",
-					"title" => "Upload"
-				]).
+				"<div class=\"content\">".
+					$e->Ui->getUiComponent("UiComponentButton")->buildHtml([
+						"additionalCssClasses" => "uploadButton",
+						"iconName" => $this->buttonUploadIconName,
+						"title" => $this->buttonUploadTitle
+					]).
+				"</div>".
 			"</div>";
 
-		$e->HtmlDocument->addInlineJavascript("$('#".$this->domId."').UiComponentUploadImage();");
+		$e->HtmlDocument->addInlineJavascript("$('#".$this->domId."').UiComponentUploadImage(".json_encode([
+			"ajaxUrl" => $this->ajaxUrl,
+			"defaultImageUrl" => $this->defaultImageUrl
+		]).");");
 
 		return $r;
 	}

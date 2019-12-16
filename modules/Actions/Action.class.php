@@ -73,6 +73,11 @@ class Action {
 	private $isSensibleToBruteForceAttacks;
 
 	/**
+	 * @var integer $timeout When set, this action must have this specific timeout.
+	 */
+	private $timeout = false;
+
+	/**
 	 * Request
 	 *
 	 * Constructor factory
@@ -86,6 +91,7 @@ class Action {
 		$this->request = $setup["request"];
 		$this->isCache = $setup["isCache"];
 		$this->isSensibleToBruteForceAttacks = $setup["isSensibleToBruteForceAttacks"];
+		$this->timeout = $setup["timeout"];
 
 		if ($this->isCache) {
 			global $e;
@@ -111,7 +117,7 @@ class Action {
 	 * run
 	 *
 	 * Executes this action by loading the corresponding module and calling the proper method. Manages the cache for this action if needed.
-	 * @return boolean True if the action run went ok, false otherwise.
+	 * @return boolean True if the action was productive, false otherwise.
 	 */
 	function run() {
 		global $e;
@@ -125,6 +131,9 @@ class Action {
 				return $cached[0] == 0 ? false : null;
 			}
 		}
+
+		if ($this->timeout)
+			set_time_limit($this->timeout);
 
 		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE)
 			$e->loadCherrycakeModule($this->moduleName);
@@ -145,10 +154,18 @@ class Action {
 		switch ($this->moduleType) {
 			case ACTION_MODULE_TYPE_CHERRYCAKE:
 			case ACTION_MODULE_TYPE_APP:
+				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
+					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Module method ".$this->moduleName."::".$this->methodName." not found when running Action"]);
+					return true;
+				}
 				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
 				break;
 			case ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT:
 			case ACTION_MODULE_TYPE_APP_UICOMPONENT:
+				if (!method_exists($e->Ui->getUiComponent($this->moduleName), $this->methodName)) {
+					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "UiComponentModule method ".$this->moduleName."::".$this->methodName." not found when running Action"]);
+					return true;
+				}
 				eval("\$return = \$e->Ui->getUiComponent(\"".$this->moduleName."\")->".$this->methodName."(\$this->request);");
 				break;
 		}
