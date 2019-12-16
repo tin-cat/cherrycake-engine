@@ -22,19 +22,19 @@
 		}
 
 		base.selectFile = function() {
-			$(buttonUpload).UiComponentButton('setLoading');
+			$(buttonUpload).UiComponentButton('setUploading');
 			ajaxUpload({
 				accept: 'image/*',
 				ajaxUrl: o.ajaxUrl,
 				onSuccess: function(data) {
 					$(buttonUpload).UiComponentButton('unsetLoadingPercent');
-					$(buttonUpload).UiComponentButton('unsetLoading');
+					$(buttonUpload).UiComponentButton('unsetUploading');
 					$(buttonUpload).UiComponentButton('unsetWorking');
 					base.setImage(data.imageUrl);
 				},
 				onError: function() {
 					$(buttonUpload).UiComponentButton('unsetLoadingPercent');
-					$(buttonUpload).UiComponentButton('unsetLoading');
+					$(buttonUpload).UiComponentButton('unsetUploading');
 					$(buttonUpload).UiComponentButton('unsetWorking');
 				},
 				onProgress: function(percent, position, total) {

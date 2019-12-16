@@ -21,8 +21,9 @@ namespace Cherrycake;
  *      "sizeUnits" => "px", // The unit on which sizes are specified. Defaults to "px"
  *      "defaultSize" => 16, // The default icon size to use when no size Css class is specified. Defaults to 16
  *      "spinningIcons" => ["loading", "working"] // An array of icon names that must be spinning
- *      "spinningSpeed" => 3, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
- *      "spinningIcons" => "loading", // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
+ *      "spinningSpeed" => 3, // The number of seconds a spinning icon takes to do a full turn. Defaults to 3
+ *      "jumpingIcons" => ["uploading"] // An array of icon names that must be jumping
+ *      "jumpingSpeed" => 1, // The number of seconds a jumping icon takes to do a jump. Defaults to 1
  *      "isEmbedInline" => true, // Wheter to embed icon VG files on the CSS itself in Base 64 to avoid multiple HTTP calls or not.
  *      "method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible (Doesn't works in march 2017 Firefox)
  *      "defaultIconColor" => "#000", // The icons default color when using the "mask" method.
@@ -49,6 +50,8 @@ class UiComponentIcons extends UiComponent {
 		"defaultSize" => 16, // The default icon size to use when no size Css class is specified
 		"spinningSpeed" => 3, // The number of seconds a spinning icon takes to do a full turn. Defaults to 1
 		"spinningIcons" => ["loading", "working"], // The name of the icon that will be used as a loading icon, in order to put it at the end of the CSS to overwrite all other icons when applied.
+		"jumpingIcons" => ["uploading"], // An array of icon names that must be jumping
+		"jumpingSpeed" => 1, // The number of seconds a jumping icon takes to do a jump. Defaults to 1
 		"method" => "backgroundImage", // The method to use to build css icons; "backgroundImage" or "mask". "backgroundImage" does not allows for coloring but is more compatible. "mask" allows for coloring via css but is less cross-browser compatible
 		"defaultIconColor" => "#000", // The icons default color when using "mask" method.
 		"colors" => ["black" => "#000", "darkGrey" => "#ccc", "lightGrey" => "#888", "white" => "#fff"] // A hash array of additional color styles when using the "mask" method, where each key is the color name, and the value is the color in HTML hex value.
@@ -141,6 +144,11 @@ class UiComponentIcons extends UiComponent {
 
 		closedir($handler);
 
+		$importantIconNames = array_merge(
+			is_array($this->getConfig("spinningIcons")) ? $this->getConfig("spinningIcons") : [],
+			is_array($this->getConfig("jumpingIcons")) ? $this->getConfig("jumpingIcons") : []
+		);
+
 		if (is_array($styles)) {
 			while (list($styleName, $fileNames) = each($styles)) {
 
@@ -158,18 +166,18 @@ class UiComponentIcons extends UiComponent {
 							".UiComponentIcon".($styleName != "./" ? ".".$styleName : "").".".$iconName." { ".
 								($this->getConfig("method") == "backgroundImage" ?
 									"background-image: url(".$url.")".
-									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
+									(in_array($iconName, $importantIconNames) ? " !important" : null).
 									";"
 								: "").
 								($this->getConfig("method") == "mask" ?
 									"-webkit-mask-image: url(".$url.")".
-									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
+									(in_array($iconName, $importantIconNames) ? " !important" : null).
 									";".
 									" mask-image: url(".$url.")".
-									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
+									(in_array($iconName, $importantIconNames) ? " !important" : null).
 									";".
 									" mask: url(".$url.")".
-									(in_array($iconName, $this->getConfig("spinningIcons")) ? " !important" : null).
+									(in_array($iconName, $importantIconNames) ? " !important" : null).
 									";"
 								: "").
 							" }\n";
@@ -204,6 +212,38 @@ class UiComponentIcons extends UiComponent {
 					"-webkit-animation: spin ".$this->getConfig("spinningSpeed")."s infinite linear;".
 					"-moz-animation: spin ".$this->getConfig("spinningSpeed")."s infinite linear;".
 					"-ms-animation: spin ".$this->getConfig("spinningSpeed")."s infinite linear;".
+				"}\n";
+		}
+
+		if (is_array($this->getConfig("jumpingIcons"))) {
+			$r .=
+				"@-moz-keyframes jumping {".
+					"0% { -moz-transform: translate(0, +2px);}".
+					"50% { -moz-transform: translate(0, -2px);}".
+					"100% { -moz-transform: translate(0, +2px);}".
+				"}\n".
+				"@-webkit-keyframes jumping {".
+					"0% { -webkit-transform: translate(0, +2px);}".
+					"50% { -webkit-transform: translate(0, -2px);}".
+					"100% { -webkit-transform: translate(0, +2px);}".
+				"}\n".
+				"@keyframes jumping {".
+					"0% {transform:translate(0, +2px);}".
+					"50% {transform:translate(0, -2px);}".
+					"100% {transform:translate(0, +2px);}".
+				"}\n";
+
+			foreach ($this->getConfig("jumpingIcons") as $jumpingIconName)
+				$r .=
+					".UiComponentIcon.".$jumpingIconName.",\n";
+
+			$r = substr($r, 0, -2);
+
+			$r .=
+				"{".
+					"-webkit-animation: jumping ".$this->getConfig("jumpingSpeed")."s infinite ease-in-out;".
+					"-moz-animation: jumping ".$this->getConfig("jumpingSpeed")."s infinite ease-in-out;".
+					"-ms-animation: jumping ".$this->getConfig("jumpingSpeed")."s infinite ease-in-out;".
 				"}\n";
 		}
 
