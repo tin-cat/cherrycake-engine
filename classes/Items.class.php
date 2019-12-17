@@ -430,10 +430,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return bool True if the item exists, false if not
 	 */
 	function isExists($key) {
-		if (isset($this->items[$key]))
-			return true;
-		else
-			return false;
+		return isset($this->items[$key]);
 	}
 
 	/**
@@ -442,10 +439,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	function isAny() {
 		if ($this->totalNumberOf > 0)
 			return true;
-		if (sizeof($this->items))
-			return true;
-		else
-			return false;
+		return sizeof($this->items) ? true : false;
 	}
 
 	/*
@@ -482,54 +476,42 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return mixed The found Item, or false if it wasn't found
 	 */
 	function find($key) {
-		if (!$this->isExists($key))
-			return false;
-		return $this->items[$key];
+		return $this->isExists($key) ? $this->items[$key] : false;
 	}
 
 	/**
 	 * @return mixed The Item being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns false.
 	 */
 	function current() {
-		if (!$this->isAny())
-			return false;
-		return current($this->items);
+		return $this->isAny() ? current($this->items) : false;
 	}
 
 	/**
 	 * @return mixed The key of the list element that is being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns null.
 	 */
 	function key() {
-		if (!$this->isAny())
-			return false;
-		return key($this->items);
+		return $this->isAny() ? key($this->items) : false;
 	}
 
 	/**
 	 * @return mixed The Item that's next in the list of Items, and advances the interal Items pointer by one. Returns false if there are no more elements
 	 */
 	function next() {
-		if (!$this->isAny())
-			return false;
-		return next($this->items);
+		return $this->isAny() ? next($this->items) : false;
 	}
 
 	/**
 	 * @return mixed The previous Item in the list of Items, and rewinds the interal Items pointer by one. Returns false if there are no more elements
 	 */
 	function prev() {
-		if (!$this->isAny())
-			return false;
-		return prev($this->items);
+		return $this->isAny() ? prev($this->items) : false;
 	}
 
 	/**
 	 * @return mixed Rewinds the internal Items pointer to the first element and returns it. Returns the first element or false if the list is empty.
 	 */
 	function rewind() {	
-		if (!$this->isAny())
-			return false;
-		return reset($this->items);
+		return $this->isAny() ? reset($this->items) : false;
 	}
 
 	/**
