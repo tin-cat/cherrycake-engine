@@ -329,7 +329,7 @@ class Locale extends \Cherrycake\Module
 
 			$result = $e->Database->$databaseProviderName->query($sql);
 			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_APP, [
+				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 					"errorDescription" => "Requested text code not found",
 					"errorVariables" => ["code" => $code],
 					"isSilent" => true
@@ -488,7 +488,7 @@ class Locale extends \Cherrycake\Module
 
 			$result = $e->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".$e->Database->$databaseProviderName->safeString($timezone));
 			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_APP, [
+				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 					"errorDescription" => "Requested timezone not found",
 					"errorVariables" => ["timezone" => $timezone],
 					"isSilent" => true

@@ -1,6 +1,17 @@
 var ajaxHandler;
 
 function ajaxQuery(url, setup) {
+	if (setup.isFileUpload) {
+		setup.contentType = false;
+		setup.processData = false;
+	}
+
+	if (!'contentType' in setup)
+		setup.contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
+	
+	if (!'processData' in setup)
+		setup.processData = true;
+	
 	ajaxHandler = $.ajax({
 		url: url,
 		type: (setup && 'type' in setup ? setup['type'] : '<?= $e->Ui->uiComponents["UiComponentAjax"]->getConfig("defaultRequestType") ?>'),
@@ -10,8 +21,8 @@ function ajaxQuery(url, setup) {
 		crossDomain: (setup && 'isCrossDomain' in setup ? setup['isCrossDomain'] : <?= ($e->Ui->uiComponents["UiComponentAjax"]->getConfig("DefaultIsCrossDomain") ? "true" : "false") ?>),
 		data: setup ? setup['data'] : false,
 		dataType: 'json',
-		contentType: false,
-		processData: false,
+		contentType: setup.contentType,
+		processData: setup.processData,
 		error: function(jqXHR, textStatus, errorThrown) {
 			<?
 				if (IS_DEVEL_ENVIRONMENT) {

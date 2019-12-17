@@ -491,6 +491,8 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return mixed The Item being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns false.
 	 */
 	function current() {
+		if (!$this->isAny())
+			return false;
 		return current($this->items);
 	}
 
@@ -498,6 +500,8 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return mixed The key of the list element that is being currently pointed by the internal pointer, it does not move the pointer. If the internal pointer points beyond the end of the list, or the list is empty, it returns null.
 	 */
 	function key() {
+		if (!$this->isAny())
+			return false;
 		return key($this->items);
 	}
 
@@ -505,6 +509,8 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return mixed The Item that's next in the list of Items, and advances the interal Items pointer by one. Returns false if there are no more elements
 	 */
 	function next() {
+		if (!$this->isAny())
+			return false;
 		return next($this->items);
 	}
 
@@ -512,13 +518,17 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @return mixed The previous Item in the list of Items, and rewinds the interal Items pointer by one. Returns false if there are no more elements
 	 */
 	function prev() {
+		if (!$this->isAny())
+			return false;
 		return prev($this->items);
 	}
 
 	/**
-	 * @return mixed Rewinds the internal Items pointer to the first element and returns it. Returns false if the list is empty.
+	 * @return mixed Rewinds the internal Items pointer to the first element and returns it. Returns the first element or false if the list is empty.
 	 */
 	function rewind() {	
+		if (!$this->isAny())
+			return false;
 		return reset($this->items);
 	}
 

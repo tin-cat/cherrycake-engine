@@ -147,7 +147,6 @@ class Action {
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->Ui)
 			$e->Ui->addAppUiComponent($this->moduleName);
 
-
 		if (!$this->request->securityCheck())
 			return false;
 

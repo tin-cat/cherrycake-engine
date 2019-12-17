@@ -137,7 +137,7 @@ class Request {
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						$e->Errors->trigger(\Cherrycake\Modules\ERROR_APP, [
+						$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 							"errorDescription" => implode(" / ", $result->description),
 							"errorVariables" => [
 								"pathComponent name" => $pathComponent->name,
@@ -159,7 +159,7 @@ class Request {
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					$e->Errors->trigger(\Cherrycake\Modules\ERROR_APP, [
+					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 						"errorDescription" => implode(" / ", $result->description),
 						"errorVariables" => [
 							"parameter name" => $parameter->name,

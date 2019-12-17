@@ -8,10 +8,10 @@
 
 namespace Cherrycake\Modules;
 
-const ERROR_SYSTEM = 0;
-const ERROR_APP = 1;
-const ERROR_NOT_FOUND = 2;
-const ERROR_NO_PERMISSION = 3;
+const ERROR_SYSTEM = 0; // Errors caused by bad programming
+const ERROR_APP = 1; // Errors caused by bad usering
+const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
+const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
 
 /**
  * Errors

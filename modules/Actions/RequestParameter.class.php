@@ -52,7 +52,7 @@ class RequestParameter {
 	function retrieveValue() {
 		global $e;
 		switch ($this->type) {
-			case REQUEST_PARAMETER_TYPE_GET;
+			case REQUEST_PARAMETER_TYPE_GET:
 				if (isset($_GET[$this->name]))
 					$this->setValue($_GET[$this->name]);
 				break;

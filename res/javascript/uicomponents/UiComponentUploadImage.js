@@ -22,10 +22,12 @@
 		}
 
 		base.selectFile = function() {
-			$(buttonUpload).UiComponentButton('setUploading');
 			ajaxUpload({
 				accept: 'image/*',
 				ajaxUrl: o.ajaxUrl,
+				onFileSelected: function() {
+					$(buttonUpload).UiComponentButton('setUploading');
+				},
 				onSuccess: function(data) {
 					$(buttonUpload).UiComponentButton('unsetLoadingPercent');
 					$(buttonUpload).UiComponentButton('unsetUploading');

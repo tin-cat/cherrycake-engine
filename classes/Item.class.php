@@ -305,7 +305,7 @@ class Item extends BasicObject {
 	}
 
 	/**
-	 * Inserts a row on the database representing an item
+	 * Inserts a row on the database representing an item. This item becomes the created one.
 	 * @param array $data Optional fields data that will override the data stored on the object if specified. Fields must be defined on this->fields
 	 * For multilanguage fields, a hash array with the syntax [<language code> => <value>, ...] can be passed. If a non-array value is passed the currently detected language will be used
 	 * @return boolean True if insertion went ok, false otherwise
@@ -451,7 +451,6 @@ class Item extends BasicObject {
 	 * Creates a new item with the given setup and data. This method can be overriden when implementing specific items when additional tasks need to be done before/after inserting an item into de database, passing additional $setup keys if needed. If not overriden, it simply adds the row on the database.
 	 * Setup keys:
 	 * * data: A hash array of the data for the new item, where each key matches the field name on the database table. Fields must be defined on this->fields
-	 * 
 	 * @param array $setup Hash array of setup options
 	 * @return boolean True if creation went ok, false otherwise
 	 */
