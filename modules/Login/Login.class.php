@@ -11,8 +11,9 @@ namespace Cherrycake\Modules;
 const LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 = 0;
 
 const LOGIN_RESULT_OK = 0;
-const LOGIN_RESULT_FAILED_UNKNOWN_USER = 1;
-const LOGIN_RESULT_FAILED_WRONG_PASSWORD = 2;
+const LOGIN_RESULT_FAILED = 1;
+const LOGIN_RESULT_FAILED_UNKNOWN_USER = 2;
+const LOGIN_RESULT_FAILED_WRONG_PASSWORD = 3;
 
 const LOGOUT_RESULT_OK = 0;
 const LOGOUT_RESULT_FAILED = 1;
@@ -192,11 +193,9 @@ class Login extends \Cherrycake\Module {
 			return LOGIN_RESULT_FAILED_WRONG_PASSWORD;
 		}
 
-		global $e;
-		$e->Session->setSessionData("userId", $user->id);
-
+		if (!$this->logInUserId($user->id))
+			return LOGIN_RESULT_FAILED;
 		$this->loadUser();
-
 		return LOGIN_RESULT_OK;
 	}
 
@@ -208,10 +207,26 @@ class Login extends \Cherrycake\Module {
 	 * @return integer One of the LOGOUT_RESULT_* consts
 	 */
 	function doLogout() {
+		return $this->logoutUser();
+	}
+
+	/**
+	 * Logs in the current client as the specified $userId
+	 * @param integer $userId The user id to log in
+	 * @return bool Whether the session info to log the user could be set or not
+	 */
+	function loginUserId($userId) {
+		global $e;
+		return $e->Session->setSessionData("userId", $userId);
+	}
+
+	/**
+	 * Logs out the current client
+	 */
+	function logoutUser() {
 		global $e;
 		if (!$e->Session->removeSessionData("userId"))
 			return LOGOUT_RESULT_FAILED;
-
 		return LOGOUT_RESULT_OK;
 	}
 

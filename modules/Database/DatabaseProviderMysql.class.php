@@ -227,7 +227,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 						$value = inet_pton($parameter["value"]);
 						break;
 					case DATABASE_FIELD_TYPE_SERIALIZED:
-						$value = json_encode($parameter["value"]);
+						$value = json_encode($parameter["value"], JSON_FORCE_OBJECT);
 						break;
 					case DATABASE_FIELD_TYPE_COLOR:
 						$value = $parameter["value"]->getHex();
