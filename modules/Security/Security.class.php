@@ -56,8 +56,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Security extends \Cherrycake\Module
-{
+class Security extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

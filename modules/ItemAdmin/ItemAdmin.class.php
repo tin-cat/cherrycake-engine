@@ -30,6 +30,13 @@ const FORM_ITEM_META_TYPE_LOCATION = 1;
  * @category Modules
  */
 class ItemAdmin extends \Cherrycake\Module {
+	/**
+	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 */
+	var $dependentCherrycakeModules = [
+		"Validate"
+	];
+
     /**
      * @var array $maps Contains the mapped admins
      */
@@ -74,6 +81,7 @@ class ItemAdmin extends \Cherrycake\Module {
      * * * saveFunction: An anonymous function to save the passed value.
      * * * requestSecurityRules: An array of security rules from the available \Cherrycake\SECURITY_RULE_*, just like the RequestParameter class accepts.
      * * * requestFilters: An array of filter from the available SECURITY_FILTER_*, just like the RequestParameter class accepts.
+	 * * * validations: An array of validations to perform to the value from the available VALIDATE_* from the Validate module.
      * * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object.
      * * * onValid: An anonymous function that will be executed when this field is received and is validated ok, it receives as parameters: The Request object, the Item object, the field name and the received value.
      * * * onInvalid: Same as onValid, but when the field fails validation.
@@ -214,6 +222,16 @@ class ItemAdmin extends \Cherrycake\Module {
 				$fieldData = array_merge($map["fields"][$fieldName], is_array($fieldData) ? $fieldData : []);
             
             $isAnyParameterPassed = true;
+			$isThisFieldAnyErrors = false;
+
+			// If we have validations, perform them
+			if ($fieldData["validations"]) {
+				$result = $e->Validate->isValid($request->$fieldName, $fieldData["validations"]);
+				if (!$result->isOk) {
+					$isThisFieldAnyErrors = true;
+					$errorDescriptions = array_merge($errorDescriptions, $result->descriptions);
+				}
+			}
 
             // If we don't have a validation method, consider it valid
             if (!$fieldData["validationMethod"]) {
@@ -223,8 +241,6 @@ class ItemAdmin extends \Cherrycake\Module {
                 else
                 if ($map["onValid"])
                     $map["onValid"]($request, $item, $fieldName, $request->$fieldName);
-                else
-                    $item->update([$fieldName => $request->$fieldName]);
             }
             else {
                 $result = call_user_func($fieldData["validationMethod"], $request->$fieldName);
@@ -235,8 +251,6 @@ class ItemAdmin extends \Cherrycake\Module {
                     else
                     if ($map["onValid"])
                         $map["onValid"]($request, $item, $fieldName, $request->$fieldName);
-                    else
-                        $item->update([$fieldName => $request->$fieldName]);
     
                     $values[$fieldName] = $request->$fieldName;
                 }
@@ -247,10 +261,15 @@ class ItemAdmin extends \Cherrycake\Module {
                     if ($fieldData["onInvalid"])
                         $fieldData["onInvalid"]($request, $item, $fieldName, $request->$fieldName);
                     
-                    $isAnyErrors = true;
+                    $isThisFieldAnyErrors = true;
                     $errorDescriptions = array_merge($errorDescriptions, $result->descriptions);
                 }
             }
+
+			if ($isThisFieldAnyErrors)
+				$isAnyErrors = true;
+			else
+				$item->update([$fieldName => $request->$fieldName]);
         }
 
         // If none of the possible keys has been passed, stop here and return an Ok response.
@@ -260,8 +279,9 @@ class ItemAdmin extends \Cherrycake\Module {
 		if ($isAnyErrors)
 			$ajaxResponse = new \Cherrycake\AjaxResponseJson([
 				"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
-				"description" => (is_array($errorDescriptions) ? implode("<br>", $errorDescriptions) : false),
-				"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NOTICE
+				"data" => [
+					"description" => (is_array($errorDescriptions) ? implode("<br>", $errorDescriptions) : false)
+				]
             ]);
         else
             $ajaxResponse = new \Cherrycake\AjaxResponseJson([

@@ -12,7 +12,6 @@
 .UiComponentColumns > div {
 	display: inline-block;
 	float: left;
-	overflow-x: hidden;
 	flex-grow: 1;
 }
 

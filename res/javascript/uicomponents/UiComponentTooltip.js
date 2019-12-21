@@ -15,7 +15,7 @@
 			base.options = o = $.extend({}, $.UiComponentTooltip.defaults, options);
 
 			// Remove older tooltip if there is one
-			$('> .UiComponentTootlip', base.el).remove();
+			base.remove();
 
 			// Set base element position to relative
 			$(base.el).css('position', 'relative');
@@ -77,7 +77,18 @@
 			$('> .UiComponentTooltip', base.el).on('click', onclick);
 		}
 
+		/**
+		 * content have the following forms:
+		 * * A string: The passed HTML will be set inside the tooltip, it is up to the HTML to format the contents, add paddings, etc. Commonly receives the results of UiComponentTooltip::buildContentItem
+		 * * An array with one of this keys:
+		 * * * text: The content of the tooltip will contain this text in a formatted fashion, used to pass simple strings to be shown on the tooltip.
+		 */
 		base.setContent = function(content, style) {
+			if (typeof content === 'object' && 'contentItems' in content)
+				content = content.contentItems;
+			else
+				content = '<div class="content">' + content + '</div>';
+
 			if (
 				(o.isTapToPopupOnSmallScreens && $(window).width() < o.maxWindowWidthToConsiderSmallScreen)
 				||
@@ -88,8 +99,9 @@
 				});
 				$('> .UiComponentTooltip > .tooltip > .content', base.el).html('<div class="simple"><div class="UiComponentIcon more white"></div></div>');
 			}
-			else
+			else {
 				$('> .UiComponentTooltip > .tooltip > .content', base.el).html(content);
+			}
 		}
 
 		base.clearContent = function() {
@@ -169,6 +181,10 @@
 		base.doCloseBecauseOtherOpened = function() {
 			if (o.isCloseWhenOthersOpen)
 				base.doClose();
+		}
+
+		base.remove = function() {
+			$('> .UiComponentTootlip', base.el).remove();
 		}
 
 		base.init();

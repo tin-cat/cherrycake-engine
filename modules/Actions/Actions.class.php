@@ -44,7 +44,8 @@ class Actions extends \Cherrycake\Module {
 	var $dependentCherrycakeModules = [
 		"Output",
 		"Errors",
-		"Security"
+		"Security",
+		"Validate" // The Validate module is depending on Actions because sometimes we might need the VALIDATE_* validation methods to be specified into the $fields of Items
 	];
 
 	/**

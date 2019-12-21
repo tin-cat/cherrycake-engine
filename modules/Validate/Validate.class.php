@@ -4,7 +4,10 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
+
+const VALIDATE_USERNAME_INSTAGRAM = 0; // Value must be a valid Instagram username
+const VALIDATE_USERNAME_TWITTER = 1; // Value must be a valid Twitter username
 
 const VALIDATE_EMAIL_METHOD_SIMPLE = 0; // Most simple method of validating an email, just checking its syntax.
 const VALIDATE_EMAIL_METHOD_MAILGUN = 1; // Advanced method using Mailgun third party.
@@ -15,6 +18,8 @@ const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_NUMBER = 1;
 const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_LETTER = 2;
 const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_UPPERCASE_AND_LOWERCASE = 3;
 const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME = 4;
+
+namespace Cherrycake\Modules;
 
 /**
  * Module that validates many kinds of data
@@ -74,6 +79,42 @@ class Validate extends \Cherrycake\Module {
 		"passwordStrengthValidationIsRequireUppercaseAndLowercase" => true,
 		"passwordStrengthValidationIsRequireNotEqualToLogin" => true
 	];
+
+	/**
+	 * @param mixed $value The value to validate
+	 * @param mixed $validations One of the available VALIDATE_* validations to perform, or an array of them
+	 * @return Result Whether all the validations passed, or not. With the following additional payload:
+	 * * description: An array containing the list of validation errors found when checking the value
+	 * @todo Implement correct Instagram and Twitter username validations
+	 */
+	function isValid($value, $validations) {
+		if (!is_array($validations))
+			$validations[] = $validations;
+		
+		foreach ($validations as $validation) {
+			switch ($validation) {
+				case \Cherrycake\VALIDATE_USERNAME_INSTAGRAM:
+					if (!preg_match("/^(@)?([A-Za-z0-9_-])+$/", $value)) {
+						$isError = true;
+						$descriptions[] = "Invalid Instagram username";
+					}
+					break;
+				case \Cherrycake\VALIDATE_USERNAME_TWITTER:
+					if (!preg_match("/^(@)?([A-Za-z0-9_-])+$/", $value)) {
+						$isError = true;
+						$descriptions[] = "Invalid Twitter username";
+					}
+					break;
+			}
+		}
+
+		if ($isError)
+			return new \Cherrycake\ResultKo([
+				"descriptions" => $descriptions
+			]);
+		else
+			return new \Cherrycake\ResultOk;
+	}
 
 	/**
 	 * Validates the given email address

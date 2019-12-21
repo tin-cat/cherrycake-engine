@@ -39,6 +39,9 @@
 				if (!base.isHasChanged())
 					base.hideSaveButton();
 			});
+
+			if (o.defaultTooltip)
+				base.setTooltip(o.defaultTooltip);
 		}
 
 		base.getValue = function() {
@@ -83,11 +86,11 @@
 			data[o.saveAjaxKey] = base.getValue();
 			ajaxQuery(o.saveAjaxUrl, {
 				data: data,
-				onError: function() {
+				onError: function(data) {
 					$(button).UiComponentButton('unsetLoading');
 					if (o.isShakeOnError)
 						base.shake();
-					base.setError();
+					base.setError(data && 'description' in data ? data.description : false);
 					if (p && p.onError)
 						p.onError();
 				},
@@ -104,11 +107,17 @@
 			});
 		}
 
-		base.setError = function() {
+		base.setError = function(description) {
 			$(base.el).addClass('error');
+			if (description)
+				base.setTooltip({
+					style: 'styleWarning',
+					content: description
+				});
 		}
 
 		base.unsetError = function() {
+			base.removeTooltip();
 			$(base.el).removeClass('error');
 		}
 
@@ -120,6 +129,21 @@
 			animationEffectShake(base.el);
 		}
 
+		base.setTooltip = function(data) {
+			data = $.extend({}, {
+				isOpenOnInit: true,
+				isCloseWhenOthersOpen: false,
+				position: 'topCenter',
+				isTapToPopupOnSmallScreens: true
+			}, data);
+			$(base.el).UiComponentTooltip(data);
+		}
+
+		base.removeTooltip = function() {
+			if ($(base.el).data('UiComponentTooltip'))
+				$(base.el).UiComponentTooltip('close');
+		}
+
 		base.init();
 	}
 
@@ -128,7 +152,8 @@
 		saveOnEnter: true,
 		saveAjaxUrl: false,
 		saveAjaxKey: false,
-		isShakeOnError: true
+		isShakeOnError: true,
+		defaultTooltip: false
 	};
 
 	$.fn.UiComponentFormInputAjax = function(options, params) {
