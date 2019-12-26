@@ -263,21 +263,21 @@ class Validate extends \Cherrycake\Module {
 			&&
 			strlen($password) < $this->getConfig("passwordStrengthValidationMinChars")
 		)
-			$resultInfo["weaknesses"][] = VALIDATE_PASSWORD_STRENGTH_WEAKNESS_TOO_SHORT;
+			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_TOO_SHORT;
 
 		if (
 			$this->getConfig("passwordStrengthValidationIsAtLeastOneNumber")
 			&&
 			!preg_match("#[0-9]+#", $password)
 		)
-			$resultInfo["weaknesses"][] = VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_NUMBER;
+			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_NUMBER;
 
 		if (
 			$this->getConfig("passwordStrengthValidationIsAtLeastOneLetter")
 			&&
 			!preg_match("#[a-zA-Z]+#", $password)
 		)
-			$resultInfo["weaknesses"][] = VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_LETTER;
+			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_LETTER;
 
 		if (
 			$this->getConfig("passwordStrengthValidationIsRequireUppercaseAndLowercase")
@@ -288,7 +288,7 @@ class Validate extends \Cherrycake\Module {
 				!preg_match("#[a-z]+#", $password)
 			)
 		)
-			$resultInfo["weaknesses"][] = VALIDATE_PASSWORD_STRENGTH_WEAKNESS_UPPERCASE_AND_LOWERCASE;
+			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_UPPERCASE_AND_LOWERCASE;
 
 		if (
 			$this->getConfig("passwordStrengthValidationIsRequireNotEqualToLogin")
@@ -297,7 +297,7 @@ class Validate extends \Cherrycake\Module {
 			&&
 			strtolower($password) == strtolower($login)
 		)
-			$resultInfo["weaknesses"][] = VALIDATE_PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME;
+			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME;
 
 		if (is_array($resultInfo["weaknesses"]))
 			return new \Cherrycake\ResultKo($resultInfo);

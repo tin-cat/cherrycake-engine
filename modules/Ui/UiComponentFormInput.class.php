@@ -104,11 +104,11 @@ class UiComponentFormInput extends UiComponent {
 						UiComponentTooltip::buildContentItem(
 							UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SIMPLE,
 							[
-								"title" => $this->error
+								"title" => is_array($this->error) ? implode($this->error, "<br>") : $this->error
 							]
 						)
 					).",
-					position: 'rightTop',
+					position: 'rightCenter',
 					isTapToPopupOnSmallScreens: true
 				});
 			");

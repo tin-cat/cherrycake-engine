@@ -92,7 +92,7 @@
 			if (
 				(o.isTapToPopupOnSmallScreens && $(window).width() < o.maxWindowWidthToConsiderSmallScreen)
 				||
-				(o.isTapToPopupWhenMoreThanLines && (content.split("<br>").length - 1) > o.isTapToPopupWhenMoreThanLines)
+				(o.isTapToPopupWhenMoreThanLines && (content.split("<br>").length) > o.isTapToPopupWhenMoreThanLines)
 			) {
 				base.setOnClick(function() {
 					$('#UiComponentNotice').UiComponentNotice('open', [content, style]);
@@ -204,7 +204,7 @@
 		isCloseDelay: <?= ($e->Ui->uiComponents["UiComponentTooltip"]->getConfig("defaultIsCloseDelay") ? "true" : "false") ?>,
 		closeDelay: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("defaultCloseDelay") ?>,
 		isTapToPopupOnSmallScreens: false,
-		isTapToPopupWhenMoreThanLines: 1,
+		isTapToPopupWhenMoreThanLines: 3,
 		maxWindowWidthToConsiderSmallScreen: 640,
 		offsetX: 0,
 		offsetY: 0
