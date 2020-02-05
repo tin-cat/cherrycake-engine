@@ -1,4 +1,8 @@
-# Cherrycake
+```bash
+ _ |_   _  _  _     _  _  |   _ 
+(_ | ) (- |  |  \/ (_ (_| |( (- 
+                /   
+```
 https://cherrycake.io
 
 ### What is Cherrycake?
