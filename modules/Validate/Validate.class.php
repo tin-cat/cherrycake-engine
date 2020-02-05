@@ -27,7 +27,7 @@ namespace Cherrycake\Modules;
  * Configuration example for security.config.php:
  * <code>
  * $validateConfig = [
- * 	"emailValidationMethod" => VALIDATE_EMAIL_METHOD_SIMPLE, // The method to use by default to validate emails, one of the available VALIDATE_EMAIL_METHOD_*
+ * 	"emailValidationMethod" => \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE, // The method to use by default to validate emails, one of the available VALIDATE_EMAIL_METHOD_*
  * 	"emailValidationMailgunConfig" => [ // Configuration data for the Mailgun email validation method
  * 		"endpoint" => "https://api.mailgun.net/v3/address/validate",
  * 		"publicKey" => ""
@@ -64,7 +64,7 @@ class Validate extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"emailValidationMethod" => VALIDATE_EMAIL_METHOD_SIMPLE,
+		"emailValidationMethod" => \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE,
 		"emailValidationMailgunConfig" => [
 			"endpoint" => "https://api.mailgun.net/v3/address/validate",
 			"publicKey" => ""
@@ -126,24 +126,24 @@ class Validate extends \Cherrycake\Module {
 	function email($email, $forceMethod = false, $isFallbackToSimpleMethod = true) {
 		$method = $forceMethod ? $forceMethod : $this->getConfig("emailValidationMethod");
 
-		if ($isFallbackToSimpleMethod && $method > VALIDATE_EMAIL_METHOD_SIMPLE)
-			if ($method == VALIDATE_EMAIL_METHOD_MAILGUN && !$this->getConfig("emailValidationMailgunConfig")["publicKey"])
-				$method = VALIDATE_EMAIL_METHOD_SIMPLE;
+		if ($isFallbackToSimpleMethod && $method > \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE)
+			if ($method == \Cherrycake\VALIDATE_EMAIL_METHOD_MAILGUN && !$this->getConfig("emailValidationMailgunConfig")["publicKey"])
+				$method = \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE;
 			else
-			if ($method == VALIDATE_EMAIL_METHOD_MAILBOXLAYER && !$this->getConfig("emailValidationMailboxLayerConfig")["apiKey"])
-				$method = VALIDATE_EMAIL_METHOD_SIMPLE;
+			if ($method == \Cherrycake\VALIDATE_EMAIL_METHOD_MAILBOXLAYER && !$this->getConfig("emailValidationMailboxLayerConfig")["apiKey"])
+				$method = \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE;
 
 		switch ($method) {
-			case VALIDATE_EMAIL_METHOD_SIMPLE:
+			case \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE:
 				if (filter_var($email, FILTER_VALIDATE_EMAIL))
 					return new \Cherrycake\ResultOk;
 				else
 					return new \Cherrycake\ResultKo;
 				break;
-			case VALIDATE_EMAIL_METHOD_MAILGUN:
+			case \Cherrycake\VALIDATE_EMAIL_METHOD_MAILGUN:
 				return $this->emailValidateWithMailgun($email);
 				break;
-			case VALIDATE_EMAIL_METHOD_MAILBOXLAYER:
+			case \Cherrycake\VALIDATE_EMAIL_METHOD_MAILBOXLAYER:
 				return $this->emailValidateWithMailboxLayer($email);
 				break;
 		}
