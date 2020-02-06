@@ -1,8 +1,6 @@
-```
- _ |_   _  _  _     _  _  |   _ 
-(_ | ) (- |  |  \/ (_ (_| |( (- 
-                /   
-```
+     _ |_   _  _  _     _  _  |   _ 
+    (_ | ) (- |  |  \/ (_ (_| |( (-
+                    /        engine
 https://cherrycake.io
 
 ### What is Cherrycake?
@@ -24,5 +22,3 @@ The aim of Cherrycake is to provide you with a methodology that feels comfortabl
 ### Beta statement
 
 Although Cherrycake is still under heavy development and it's considered to still be in a beta stage, it's functional and it's already running some public web applications without issues. It's still not recommended to use Cherrycake in critical, or data sensitive applications. Instead, you're encouraged to try it to see for yourself whether it meets your security and stability requisites, and to contribute your suggestions or improvements via the official git repositories.
-
-<a href="https://cherrycake.io" title="Powered by Cherrycake"><img src="https://cherrycake.io/powered_by_cherrycake.svg"/></a>
