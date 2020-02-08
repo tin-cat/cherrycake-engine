@@ -49,10 +49,10 @@ class JanitorTaskLogCommit extends JanitorTask
 		// Loads the needed modules
 		$e->loadCherrycakeModule("Log");
 
-		list($result, $resultDescription) = $e->Log->commit();
+		$result = $e->Log->commit();
 		return [
-			$result ? \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
-			$resultDescription
+			$result[0] ? \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+			isset($result[1]) ? $result[1] : false
 		];
 	}
 }

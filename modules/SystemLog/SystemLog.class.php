@@ -152,6 +152,8 @@ class SystemLog extends \Cherrycake\Module {
 	function purge() {
 		global $e;
 
+		$baseTimestamp = time();
+
 		$result = $e->Database->{$this->getConfig("databaseProviderName")}->prepareAndExecute(
 			"select count(*) as numberOf from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 			[
@@ -171,8 +173,8 @@ class SystemLog extends \Cherrycake\Module {
 		$row = $result->getRow();
 		$numberOfLogEntriesToPurge = $row->getField("numberOf");
 
-		if ($numberOfSessionsToPurgeWithoutData > 0) {
-			$result = $e->Database->$databaseProviderName->prepareAndExecute(
+		if ($numberOfLogEntriesToPurge > 0) {
+			$result = $e->Database->{$this->getConfig("databaseProviderName")}->prepareAndExecute(
 				"delete from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 				[
 					[

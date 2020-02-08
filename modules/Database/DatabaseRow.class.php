@@ -64,8 +64,8 @@ class DatabaseRow {
 	 * @param array $data A bidimensional hash array containing the row data
 	 */
 	function setData($data) {
-		while (list($key, $value) = each($data)) {
-			if (is_array($this->setup["timestampFieldNames"])) {
+		foreach ($data as $key => $value) {
+			if (isset($this->setup["timestampFieldNames"]) && is_array($this->setup["timestampFieldNames"])) {
 				if (in_array($key, $this->setup["timestampFieldNames"]))
 					$value = strtotime($value);
 			}

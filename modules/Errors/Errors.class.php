@@ -187,7 +187,7 @@ class Errors extends \Cherrycake\Module {
 					substr(print_r($setup["errorVariables"], true), 8, -3).
 					"\n"
 				: null).
-				\Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n".
+				(IS_DEVEL_ENVIRONMENT ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 				\Cherrycake\ANSI_NOCOLOR;
 			return;
 		}
@@ -238,30 +238,29 @@ class Errors extends \Cherrycake\Module {
 					if (IS_DEVEL_ENVIRONMENT) {
 						if ($this->getConfig("isHtmlOutput")) {
 
-							if ($setup["errorVariables"])
-								while (list($key, $value) = each($setup["errorVariables"]))
+							$errorVariables = "";
+
+							if (isset($setup["errorVariables"]))
+								foreach ($setup["errorVariables"] as $key => $value)
 									$errorVariables .= "<br><b>".$key."</b>: ".$value;
 
 							trigger_error($setup["errorDescription"].$errorVariables);
 						}
 						else {
 
-							$e->Output->response->appendPayload(
-								"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0]
-							);
+							echo
+								"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0];
 						}
 					}
 					else {
 						if ($this->getConfig("isHtmlOutput"))
-							$e->Output->response->appendPayload(
+							echo
 								"<div style=\"margin: 10px; padding: 10px; background-color: crimson; border-bottom: solid #720 1px; color: #fff; font-family: Calibri, Sans-serif; font-size: 11pt; -webkit-border-radius: 5px; -border-radius: 5px; -moz-border-radius: 5px;\">".
 									"<b>Error</b> ".
-								"</div>"
-							);
+								"</div>";
 						else
-							$e->Output->response->appendPayload(
-								"Error"
-							);
+							echo
+								"Error";
 
 					}
 				}

@@ -95,7 +95,7 @@ class Request {
 
 				$isCurrentRequest = true;
 				// Loop in parallel through the current request path components and this request's path components
-				while (list($index, $pathComponent) = each($this->pathComponents)) {
+				foreach ($this->pathComponents as $index => $pathComponent) {
 					if (!isset($e->Actions->currentRequestPathComponentStrings[$index])) {
 						$isCurrentRequest = false;
 						break;

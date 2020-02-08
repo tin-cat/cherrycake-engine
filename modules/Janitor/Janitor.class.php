@@ -239,7 +239,7 @@ class Janitor extends \Cherrycake\Module {
 	 * @param string $key The key to check
 	 * @return bool Whether the key is correct or not
 	 */
-	function checkKey($key) {
+	function checkKey($key) {	
 		if ($this->getConfig("key") === false || $key != $this->getConfig("key")) {
 			global $e;
 			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Wrong Janitor key provided"]);
@@ -263,7 +263,7 @@ class Janitor extends \Cherrycake\Module {
 		$this->loadTasks();
 		
 		global $e;
-		$r .= "Janitor run\n";
+		$r = "Janitor run\n";
 
 		$baseTimestamp = time();
 
@@ -276,7 +276,7 @@ class Janitor extends \Cherrycake\Module {
 			return false;
 		}
 
-		while (list($janitorTaskName, $janitorTask) = each($this->janitorTasks)) {
+		foreach ($this->janitorTasks as $janitorTaskName => $janitorTask) {
 			if ($task && $task != $janitorTaskName)
 				continue;
 
@@ -350,7 +350,7 @@ class Janitor extends \Cherrycake\Module {
 				if (!is_array($resultDescription))
 					$r .= "\t".$resultDescription."\n";
 				else
-					while (list($key, $value) = each($resultDescription))
+					foreach ($resultDescription as $key => $value)
 						$r .= "\t".$key.": ".$value."\n";
 			}
 			else

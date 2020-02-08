@@ -393,26 +393,18 @@ class Engine {
 			die;
 		}
 
-		$parameters = $this->parseCommandLineArguments(array_slice($argv, 2));
-
-		// Puts any command line parameters into get variables
-		if ($argc > 2) {
-			$_GET = array_merge($_GET, $parameters);
-		}
+		// If it has get parameters, parse them and put them in $_GET
+		$_GET = $this->parseCommandLineArguments(array_slice($argv, 2));
 
 		if (!$action->request->retrieveParameterValues()) {
 			die;
 		}
 
-		// // If it has get parameters, parse them and put them in $_GET
-		// if ($firstInterrogantPosition = strpos($requestUri, "?"))
-		// 	parse_str(substr($requestUri, $firstInterrogantPosition + 1), $_GET);
-
 		$action->run();
 	}
 
 	/**
-	 * Method by mbirth@webwriters.de found at https://www.php.net/manual/en/function.getopt.php
+	 * Method by mbirth@webwriters.de found at https://www.php.net/manual/en/function.getopt.php#83414
 	 * @param array $params The array of parameters to parse, as received by $GLOBALS['argv']. Usually, array_slice($GLOBALS['argv'], 1) will be passed to first remove the first item, which is the executable name
 	 * @param array $noopt An array of parameter names that aren't optional
 	 * @return array A hash array of each found parameter as the key, and its values

@@ -290,7 +290,7 @@ class Item extends BasicObject {
 	function clearCache($fieldNames = false) {
 		global $e;
 
-		$fieldNames[] = $this->$idFieldName;
+		$fieldNames[] = $this->idFieldName;
 
 		$isErrors = false;
 		foreach ($fieldNames as $fieldName) {
@@ -313,7 +313,7 @@ class Item extends BasicObject {
 	function insert($data = false) {
 		global $e;
 
-		while (list($fieldName, $fieldData) = each($this->fields)) {
+		foreach ($this->fields as $fieldName => $fieldData) {
 			if ($fieldName == $this->idFieldName)
 				continue;
 			
@@ -350,7 +350,7 @@ class Item extends BasicObject {
 			else
 				continue;
 			
-			if ($fieldData["isMultiLanguage"]) { // If this field is multilanguage
+			if (isset($fieldData["isMultiLanguage"]) && $fieldData["isMultiLanguage"]) { // If this field is multilanguage
 				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
 					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
 						$fieldsData[$fieldName."_".$e->Locale->getLanguageCode($language)] = $value[$language];
@@ -570,7 +570,7 @@ class Item extends BasicObject {
 	 */
 	function __get($key) {
 		// If key is for a database field
-		if ($this->fields && $this->fields[$key]) {
+		if (isset($this->fields) && isset($this->fields[$key])) {
 			// If it's a language dependant field
 			if (isset($this->fields[$key]["isMultiLanguage"])) {
 				global $e;

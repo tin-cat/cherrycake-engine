@@ -57,7 +57,8 @@ class JanitorTask
 		{
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
 			include CONFIG_DIR."/Janitor/".$className.".config.php";
-			$this->config(${$className."Config"});
+			if (isset(${$className."Config"}))
+				$this->config(${$className."Config"});
 		}
 	}
 
