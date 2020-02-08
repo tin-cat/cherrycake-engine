@@ -193,6 +193,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	 */
 	function execute($prepareResult, $parameters, $setup = false) {
 		if (is_array($parameters)) {
+			$types = "";
 			foreach ($parameters as $parameter)
 				$types .= $this->fieldTypes[$parameter["type"]]["stmtBindParamType"];
 			reset($parameters);

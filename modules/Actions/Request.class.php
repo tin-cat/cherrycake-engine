@@ -50,7 +50,7 @@ class Request {
 	 * @param string $with How to populate the created Request object. Leave to false for unpopulated request.
 	 */
 	function __construct($setup = false) {
-		$this->isSecurityCsrf = $setup["isSecurityCsrf"];
+		$this->isSecurityCsrf = isset($setup["isSecurityCsrf"]) ? $setup["isSecurityCsrf"] : false;
 
 		if ($this->isSecurityCsrf()) {
 			global $e;
@@ -61,9 +61,9 @@ class Request {
 			]);
 		}
 
-		$this->pathComponents = $setup["pathComponents"];
-		$this->parameters = $setup["parameters"];
-		$this->cacheAdditionalCacheKeys = $setup["cacheAdditionalCacheKeys"];
+		$this->pathComponents = isset($setup["pathComponents"]) ? $setup["pathComponents"] : false;
+		$this->parameters = isset($setup["parameters"]) ? $setup["parameters"] : false;
+		$this->cacheAdditionalCacheKeys = isset($setup["cacheAdditionalCacheKeys"]) ? $setup["cacheAdditionalCacheKeys"] : false;
 	}
 
 	/*
@@ -266,7 +266,7 @@ class Request {
 			$url = "";
 
 		if (is_array($this->pathComponents)) {
-			while (list($index, $pathComponent) = each($this->pathComponents)) {
+			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
 					case REQUEST_PATH_COMPONENT_TYPE_FIXED:
 						$url .= "/".$pathComponent->string;
@@ -303,7 +303,7 @@ class Request {
 			$url .= (!$count++ ? "?" : "&")."csrfToken=".$e->Security->getCsrfToken();
 		}
 
-		if ($setup["anchor"])
+		if (isset($setup["anchor"]))
 			$url .= "#".$setup["anchor"];
 
 		return $url;

@@ -128,10 +128,14 @@ class Patterns extends \Cherrycake\Module {
 	function parse($patternName, $setup = false) {
 		global $e;
 
-		$patternFile = $this->getPatternFileName($patternName, $setup["directoryOverride"]);
+		$patternFile = $this->getPatternFileName($patternName, isset($setup["directoryOverride"]) ? $setup["directoryOverride"] : null);
 
 		// Check cache
-		if ($cache = $this->getConfig("cache"))
+		if (
+			$cache = $this->getConfig("cache")
+			&&
+			isset($cache["items"])
+		)
 			if ($cachePattern = $cache["items"][$patternName]) {
 				$cacheProviderName = ($cachePattern["cacheProviderName"] ? $cachePattern["cacheProviderName"] : $cache["defaultCacheProviderName"]);
 				$cacheKey = \Cherrycake\Modules\Cache::buildCacheKey([
@@ -142,17 +146,17 @@ class Patterns extends \Cherrycake\Module {
 					return $buffer;
 			}
 
-		if ($setup["noParse"])
+		if (isset($setup["noParse"]))
 			return file_get_contents($patternFile);
 
-		if ($setup["fileToIncludeBeforeParsing"])
+		if (isset($setup["fileToIncludeBeforeParsing"]))
 			if (is_array($setup["fileToIncludeBeforeParsing"]))
 				foreach ($setup["fileToIncludeBeforeParsing"] as $fileToIncludeBeforeParsing)
 					include($fileToIncludeBeforeParsing);
 				else
 					include($setup["fileToIncludeBeforeParsing"]);
 
-		if ($setup["variables"]) {
+		if (isset($setup["variables"])) {
 			while (list($variableName, $variable) = each($setup["variables"]))
 				eval("\$".$variableName." = \$variable;");
 		}
@@ -165,7 +169,7 @@ class Patterns extends \Cherrycake\Module {
 		ob_end_clean();
 
 		// Cache store
-		if ($cachePattern)
+		if (isset($cachePattern))
 			$e->Cache->$cacheProviderName->set($cacheKey, $buffer, $cachePattern["ttl"]);
 
 		return $buffer;

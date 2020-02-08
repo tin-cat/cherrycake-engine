@@ -74,7 +74,8 @@ class Errors extends \Cherrycake\Module {
 	var $dependentCherrycakeModules = [
 		"Output",
 		"SystemLog",
-		"Locale"
+		"Locale",
+		"Email"
 	];
 
 	/**
@@ -114,7 +115,7 @@ class Errors extends \Cherrycake\Module {
 		// Build error backtrace array
 		$backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT & DEBUG_BACKTRACE_IGNORE_ARGS);
 
-		for ($i=0; $i<sizeof($backtrace)-1; $i++)
+		for ($i=0; $i<sizeof($backtrace); $i++)
 			$backtrace_info[] =
 				$backtrace[$i]["file"].
 					":".
@@ -165,8 +166,10 @@ class Errors extends \Cherrycake\Module {
 
 		if (IS_CLI) {
 			echo
-				\Cherrycake\ANSI_WHITE.
-				"Cherrycake CLI ".\Cherrycake\ANSI_DARK_GRAY."/ ".\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." ".\Cherrycake\ANSI_DARK_GRAY."/ ".\Cherrycake\ANSI_WHITE.[
+				\Cherrycake\ANSI_LIGHT_RED."  _ |_   _  ".\Cherrycake\ANSI_LIGHT_RED."_  _     ".\Cherrycake\ANSI_LIGHT_BLUE."_  _  |   _\n".
+				\Cherrycake\ANSI_LIGHT_RED." (_ | ) (- ".\Cherrycake\ANSI_LIGHT_RED."|  |  \/ ".\Cherrycake\ANSI_LIGHT_BLUE."(_ (_| |( (-\n".
+				"                 ".\Cherrycake\ANSI_LIGHT_RED."/           ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
+				\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." ".[
 					ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
 					ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
 					ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
@@ -175,16 +178,37 @@ class Errors extends \Cherrycake\Module {
 				\Cherrycake\ANSI_NOCOLOR.
 				($setup["errorSubType"] ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$setup["errorSubType"]."\n" : null).
 				($setup["errorDescription"] ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$setup["errorDescription"]."\n" : null).
-				($setup["errorVariables"] ? \Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.print_r($setup["errorVariables"], true)."\n" : null).
+				($setup["errorVariables"] ?
+					\Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.
+					substr(print_r($setup["errorVariables"], true), 8, -3).
+					"\n"
+				: null).
 				\Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode($backtrace_info, "\n"))."\n".
 				\Cherrycake\ANSI_NOCOLOR;
 			return;
 		}
 
-		// If the response being sent is a Json one
-		switch (get_class($e->Actions->currentAction)) {
+		// If this error generated before we couldn't get a action
+		if (!$e->Actions->currentAction) {
+			$outputType = "pattern";
+		}
+		else {
+			switch (get_class($e->Actions->currentAction)) {
+				case "Cherrycake\ActionHtml":
+					$outputType = "pattern";
+					break;
+				case "Cherrycake\ActionAjax":
+					$outputType = "ajax";
+					break;
+				default:
+					$outputType = "plain";
+					break;
+			}
+		}
+		
+		switch ($outputType) {
 
-			case "Cherrycake\ActionHtml":
+			case "pattern":
 				if (isset($patternNames[$errorType])) {
 					$e->loadCherrycakeModule("Patterns");
 					$e->loadCherrycakeModule("HtmlDocument");
@@ -239,7 +263,7 @@ class Errors extends \Cherrycake\Module {
 				}
 				break;
 
-			case "Cherrycake\ActionAjax":
+			case "ajax":
 			
 				if (IS_DEVEL_ENVIRONMENT) {
 					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
@@ -269,7 +293,7 @@ class Errors extends \Cherrycake\Module {
 				}
 				break;
 			
-			default:
+			case "plain":
 				if (IS_DEVEL_ENVIRONMENT) {
 					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
 						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
@@ -329,10 +353,12 @@ class Errors extends \Cherrycake\Module {
 		else
 			$message = $data;
 
-		mail(
-			$this->getConfig("notificationEmail"),
+		$e->Email->send(
+			[$this->getConfig("notificationEmail")],
 			"[".$e->getAppNamespace()."] Error",
-			$message
+			[
+				"contentHTML" => $message
+			]
 		);
 	}
 }

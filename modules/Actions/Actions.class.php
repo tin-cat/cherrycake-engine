@@ -165,16 +165,8 @@ class Actions extends \Cherrycake\Module {
 	 * @return Action The requested action. False if doesn't exists.
 	*/
 	public function getAction($actionName) {
-		if (!$this->isAction($actionName)) {
-			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
-				"errorDescription" => "The requested Action was not defined",
-				"errorVariables" => [
-					"actionName" => $actionName
-				]
-			]);
+		if (!$this->isAction($actionName))
 			return false;
-		}
 
 		return $this->actions[$actionName];
 	}
@@ -196,7 +188,7 @@ class Actions extends \Cherrycake\Module {
 		if (is_array($this->actions)) {
 			$this->buildCurrentRequestPathComponentStringsFromRequestUri($requestUri);
 			// Loop through all mapped actions
-			while (list($actionName, $action) = each($this->actions))
+			foreach ($this->actions as $actionName => $action)
 				if ($action->request->isCurrentRequest())
 					$matchingActions[$actionName] = $action;
 			reset($this->actions);
@@ -209,7 +201,7 @@ class Actions extends \Cherrycake\Module {
 			return false;
 		}
 
-		while (list($actionName, $action) = each($matchingActions)) {
+		foreach ($matchingActions as $actionName => $action) {
 			$this->currentActionName = $actionName;
 			$this->currentAction = $action;
 			if (!$action->request->retrieveParameterValues())

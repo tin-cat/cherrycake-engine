@@ -17,7 +17,7 @@ const ANSI_BLUE = "\033[0;34m";
 const ANSI_PURPLE = "\033[0;35m";
 const ANSI_CYAN = "\033[0;36m";
 const ANSI_LIGHT_GRAY = "\033[0;37m";
-const ANSI_DARK_GRAY = "\033[1;30m";
+const ANSI_DARK_GRAY = "\033[1;90m";
 const ANSI_LIGHT_RED = "\033[1;31m";
 const ANSI_LIGHT_GREEN = "\033[1;32m";
 const ANSI_YELLOW = "\033[1;33m";
@@ -383,7 +383,6 @@ class Engine {
 		}
 
 		$actionName = $argv[1];
-
 		if (!$action = $this->Actions->getAction($actionName)) {
 			$this->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 				"errorDescription" => "Unknown action",
@@ -422,11 +421,11 @@ class Engine {
         $result = array();
         // could use getopt() here (since PHP 5.3.0), but it doesn't work relyingly
         reset($params);
-        while (list($tmp, $p) = each($params)) {
-            if ($p{0} == '-') {
+		foreach ($params as $tmp => $p) {
+            if ($p[0] == '-') {
                 $pname = substr($p, 1);
                 $value = true;
-                if ($pname{0} == '-') {
+                if ($pname[0] == '-') {
                     // long-opt (--<param>)
                     $pname = substr($pname, 1);
                     if (strpos($p, '=') !== false) {
@@ -436,7 +435,7 @@ class Engine {
                 }
                 // check if next parameter is a descriptor or a value
                 $nextparm = current($params);
-                if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm{0} != '-') list($tmp, $value) = each($params);
+                if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm[0] != '-') list($tmp, $value) = each($params);
                 $result[$pname] = $value;
             } else {
                 // param doesn't belong to any option
@@ -451,7 +450,6 @@ class Engine {
 	 */
 	function end() {
 		$this->Output->sendResponse();
-
 		if (is_array($this->loadedModules))
 			foreach ($this->loadedModules as $moduleName)
 				$this->$moduleName->end();

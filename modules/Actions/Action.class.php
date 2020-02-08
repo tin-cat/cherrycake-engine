@@ -85,13 +85,13 @@ class Action {
 	 * @param string $setup The configuration for the request
 	 */
 	function __construct($setup) {
-		$this->moduleType = $setup["moduleType"];
-		$this->moduleName = $setup["moduleName"];
-		$this->methodName = $setup["methodName"];
-		$this->request = $setup["request"];
-		$this->isCache = $setup["isCache"];
-		$this->isSensibleToBruteForceAttacks = $setup["isSensibleToBruteForceAttacks"];
-		$this->timeout = $setup["timeout"];
+		$this->moduleType = isset($setup["moduleType"]) ? $setup["moduleType"] : false;
+		$this->moduleName = isset($setup["moduleName"]) ? $setup["moduleName"] : false;
+		$this->methodName = isset($setup["methodName"]) ? $setup["methodName"] : false;
+		$this->request = isset($setup["request"]) ? $setup["request"] : false;
+		$this->isCache = isset($setup["isCache"]) ? $setup["isCache"] : false;
+		$this->isSensibleToBruteForceAttacks = isset($setup["isSensibleToBruteForceAttacks"]) ? $setup["isSensibleToBruteForceAttacks"] : false;
+		$this->timeout = isset($setup["timeout"]) ? $setup["timeout"] : false;
 
 		if ($this->isCache) {
 			global $e;

@@ -300,19 +300,19 @@ class HtmlDocument extends \Cherrycake\Module {
 				$r .= "<meta name=\"apple-mobile-web-app-title\" content=\"".$appleApplicationInfo["name"]."\" />\n";
 
 			if ($appleApplicationInfo["icons"])
-				while (list($size, $src) = each($appleApplicationInfo["icons"]))
+				foreach ($appleApplicationInfo["icons"] as $size => $src)
 					$r .= "<link rel=\"apple-touch-icon\" sizes=\"".$size."\" href=\"".$src."\" />\n";
 		}
 
 		if ($favIcons = $this->getConfig("favIcons")) {
 			if (is_array($favIcons))
-				while (list($size, $src) = each($favIcons))
+				foreach ($favIcons as $size => $src)
 					$r .= "<link rel=\"icon\" type=\"image/png\" href=\"".$src."\" sizes=\"".$size."\" />\n";
 		}
 
 		$r .= "</head>\n";
 
-		$r .= "<body".($setup["bodyAdditionalCssClasses"] ? " class=\"".$setup["bodyAdditionalCssClasses"]."\"" : "").">\n";
+		$r .= "<body".(isset($setup["bodyAdditionalCssClasses"]) ? " class=\"".$setup["bodyAdditionalCssClasses"]."\"" : "").">\n";
 
 		return $r;
 	}
@@ -326,6 +326,8 @@ class HtmlDocument extends \Cherrycake\Module {
 	 */
 	function footer() {
 		global $e;
+
+		$r = "";
 
 		if ($this->getConfig("googleAnalyticsTrackingId") && !IS_DEVEL_ENVIRONMENT)
 			$r .= $this->getGoogleAnalyticsCode($this->getConfig("googleAnalyticsTrackingId"));

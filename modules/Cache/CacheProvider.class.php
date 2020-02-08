@@ -251,7 +251,7 @@ class CacheProvider {
 	 * @param string $key The configuration key
 	 */
 	function getConfig($key) {
-		return $this->config[$key];
+		return isset($this->config[$key]) ? $this->config[$key] : false;
 	}
 
 	/**

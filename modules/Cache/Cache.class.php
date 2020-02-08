@@ -67,7 +67,7 @@ class Cache extends \Cherrycake\Module {
 
 		// Sets up providers
 		if (is_array($providers = $this->getConfig("providers")))
-			while (list($key, $provider) = each($providers))
+			foreach ($providers as $key => $provider)
 				$this->addProvider($key, $provider["providerClassName"], (isset($provider["config"]) ? $provider["config"] : null));
 
 		return true;

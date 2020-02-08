@@ -19,7 +19,7 @@ const EMAIL_SMTP_ENCRYPTION_SSL = 1;
  *
  * Sends emails
  * 
- * Configuration example for htmldocument.config.php:
+ * Configuration example for email.config.php:
  * <code>
  * $emailConfig = [
  *  "method" => "internal", // The method used for sending, either "internal" or "SMTP"

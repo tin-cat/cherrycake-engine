@@ -60,7 +60,7 @@ class DatabaseResultMysql extends DatabaseResult {
 			$this->result = $this->resultHandler->get_result();
 		else
 			$this->result = $this->resultHandler;
-		if ($this->result->num_rows > 0)
+		if (isset($this->result->num_rows) && $this->result->num_rows > 0)
 			$this->setData($this->result->fetch_all(MYSQLI_ASSOC));
 	}
 
@@ -70,7 +70,7 @@ class DatabaseResultMysql extends DatabaseResult {
 	 * Frees the database result.
 	 */
 	function freeResult() {
-		if ($this->result->num_rows > 0)
+		if (isset($this->result->num_rows) && $this->result->num_rows > 0)
 			$this->result->free();
 	}
 

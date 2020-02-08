@@ -93,7 +93,7 @@ class Javascript extends \Cherrycake\Module {
 			return false;
 
 		if ($defaultSets = $this->getConfig("defaultSets"))
-			while (list($setName, $setConfig) = each($defaultSets))
+			foreach ($defaultSets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
 
 		// Adds cherrycake sets
@@ -165,6 +165,7 @@ class Javascript extends \Cherrycake\Module {
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 
+		$parameterSetNames = "";
 		foreach ($setNames as $setName)
 			$parameterSetNames .= $setName."-";
 		$parameterSetNames = substr($parameterSetNames, 0, -1);

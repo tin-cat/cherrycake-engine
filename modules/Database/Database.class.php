@@ -69,7 +69,7 @@ class Database extends \Cherrycake\Module
 
 		// Sets up providers
 		if (is_array($providers = $this->getConfig("providers")))
-			while (list($key, $provider) = each($providers))
+			foreach ($providers as $key => $provider)
 				$this->addProvider($key, $provider["providerClassName"], $provider["config"]);
 
 		return true;
