@@ -224,7 +224,8 @@ class Locale extends \Cherrycake\Module
 		if (!parent::init())
 			return false;
 
-		$domain = $_SERVER["SERVER_NAME"];
+		if (isset($_SERVER["SERVER_NAME"]))
+			$domain = $_SERVER["SERVER_NAME"];
 
 		foreach ($this->getConfig("availableLocales") as $locale) {
 			if ($locale["domains"] && in_array($domain, $locale["domains"])) {

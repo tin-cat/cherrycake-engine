@@ -120,10 +120,14 @@ class Errors extends \Cherrycake\Module {
 				$backtrace[$i]["file"].
 					":".
 					"<b>".$backtrace[$i]["line"]."</b>".
-					" Class: ".
-					"<b>".$backtrace[$i]["class"]."</b>".
-					" Method: ".
-					"<b>".$backtrace[$i]["function"]."</b>";
+					(isset($backtrace[$i]["class"]) ?
+						" Class: ".
+						"<b>".$backtrace[$i]["class"]."</b>"
+					: null).
+					($backtrace[$i]["function"] ?
+						" Method: ".
+						"<b>".$backtrace[$i]["function"]."</b>"
+					: null);
 
 		if (
 			($errorType == ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
@@ -137,9 +141,9 @@ class Errors extends \Cherrycake\Module {
 			$setup["isForceLog"] == true
 		)
 			$e->SystemLog->event(new \Cherrycake\SystemLogEventError([
-				"subType" => $setup["errorSubType"],
-				"description" => $setup["errorDescription"],
-				"data" => $setup["errorVariables"]
+				"subType" => isset($setup["errorSubType"]) ? $setup["errorSubType"] : false,
+				"description" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
+				"data" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false
 			]));
 
 		if (
@@ -154,12 +158,12 @@ class Errors extends \Cherrycake\Module {
 			$setup["isForceEmail"] == true
 		)
 			$this->emailNotify([
-				"errorDescription" => $setup["errorDescription"],
-				"errorVariables" => $setup["errorVariables"],
-				"backtrace" => implode($backtrace_info, "<br>Backtrace: ")
+				"errorDescription" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
+				"errorVariables" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false,
+				"backtrace" => implode("<br>Backtrace: ", $backtrace_info)
 			]);
 
-		if ($setup["isSilent"] && !IS_DEVEL_ENVIRONMENT)
+		if (isset($setup["isSilent"]) && $setup["isSilent"] && !IS_DEVEL_ENVIRONMENT)
 			return;
 
 		$patternNames = $this->getConfig("patternNames");
@@ -176,14 +180,14 @@ class Errors extends \Cherrycake\Module {
 					ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
 				][$errorType]."\n".
 				\Cherrycake\ANSI_NOCOLOR.
-				($setup["errorSubType"] ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$setup["errorSubType"]."\n" : null).
-				($setup["errorDescription"] ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$setup["errorDescription"]."\n" : null).
-				($setup["errorVariables"] ?
+				(isset($setup["errorSubType"]) ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$setup["errorSubType"]."\n" : null).
+				(isset($setup["errorDescription"]) ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$setup["errorDescription"]."\n" : null).
+				(isset($setup["errorVariables"]) ?
 					\Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.
 					substr(print_r($setup["errorVariables"], true), 8, -3).
 					"\n"
 				: null).
-				\Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode($backtrace_info, "\n"))."\n".
+				\Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n".
 				\Cherrycake\ANSI_NOCOLOR;
 			return;
 		}
@@ -333,8 +337,10 @@ class Errors extends \Cherrycake\Module {
 	function emailNotify($data) {
 		global $e;
 
+		$message = "";
+		
 		if (is_array($data)) {
-			while (list($key, $value) = each($data)) {
+			foreach ($data as $key => $value) {
 				if (is_array($value)) {
 					$message .= "<p><b>".$key.":</b><br><ul>";
 					while (list($key2, $value2) = each($value)) {
@@ -354,7 +360,7 @@ class Errors extends \Cherrycake\Module {
 			$message = $data;
 
 		$e->Email->send(
-			[$this->getConfig("notificationEmail")],
+			[[$this->getConfig("notificationEmail")]],
 			"[".$e->getAppNamespace()."] Error",
 			[
 				"contentHTML" => $message

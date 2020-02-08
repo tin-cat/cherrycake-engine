@@ -78,10 +78,10 @@ class Email extends \Cherrycake\Module {
                     $this->phpMailer->Password = $this->getConfig("SMTPPassword");
                 }
             }
-            if ($setup["from"])
+            if (isset($setup["from"]))
                 $this->phpMailer->setFrom($setup["from"][0], $setup["from"][1]);
             foreach ($tos as $to)
-                $this->phpMailer->addAddress($to[0], $to[1]);
+                $this->phpMailer->addAddress($to[0], isset($to[1]) ? $to[1] : false);
             if (is_array($setup["replyTo"]))
                 foreach ($setup["replyTo"] as $replyTo)
                     $this->phpMailer->addReplyTo($replyTo[0], $replyTo[1]);

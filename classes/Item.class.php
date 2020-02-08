@@ -124,7 +124,7 @@ class Item extends BasicObject {
 	 * @param array $setup Specifications on how to create the Item object
 	 */
 	function __construct($setup = false) {
-		if ($setup["loadMethod"])
+		if (isset($setup["loadMethod"]))
 			switch($setup["loadMethod"]) {
 				case "fromDatabaseRow":
 					if (!$this->loadFromDatabaseRow($setup["databaseRow"]))
@@ -572,7 +572,7 @@ class Item extends BasicObject {
 		// If key is for a database field
 		if ($this->fields && $this->fields[$key]) {
 			// If it's a language dependant field
-			if ($this->fields[$key]["isMultiLanguage"]) {
+			if (isset($this->fields[$key]["isMultiLanguage"])) {
 				global $e;
 				$key .= "_".$e->Locale->getLanguageCode();
 			}

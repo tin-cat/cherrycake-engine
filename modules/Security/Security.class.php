@@ -659,9 +659,11 @@ class Security extends \Cherrycake\Module {
 	/**
 	 * getClientIp
 	 *
-	 * @return string The client's IP
+	 * @return mixed The client's IP, or false if it was not available
 	 */
 	function getClientIp() {
+		if (IS_CLI)
+			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
 		else
@@ -671,9 +673,11 @@ class Security extends \Cherrycake\Module {
 	/**
 	 * getClientBrowserString
 	 *
-	 * @return string The client's browserstring
+	 * @return mixed The client's browserstring, or false if it was not available
 	 */
 	function getClientBrowserString() {
+		if (IS_CLI)
+			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}
 

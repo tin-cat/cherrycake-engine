@@ -127,7 +127,7 @@ class Request {
 		// Retrieve parameters coming from path components
 		$isErrors = false;
 		if (is_array($this->pathComponents)) {
-			while (list($index, $pathComponent) = each($this->pathComponents)) {
+			foreach ($this->pathComponents as $index => $pathComponent) {
 				if(
 					$pathComponent->type == REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING
 					||
@@ -190,9 +190,11 @@ class Request {
 	/**
 	 * Gets the value retrieved for a specific parameter for this request. retrieveParameterValues() must be called before.
 	 * @param string $name The name of the parameter to get
-	 * @return mixed The value of the parameter
+	 * @return mixed The value of the parameter, false if it doesn't exists
 	 */
 	function getParameterValue($name) {
+		if (!isset($this->parameterValues[$name]))
+			return false;
 		return $this->parameterValues[$name];
 	}
 

@@ -111,16 +111,16 @@ class Cache extends \Cherrycake\Module {
 		global $e;
 		$key = $e->getAppNamespace();
 
-		if ($cacheKeyNamingOptions["prefix"])
+		if (isset($cacheKeyNamingOptions["prefix"]))
 			$key .= "_".$cacheKeyNamingOptions["prefix"];
 
-		if ($cacheKeyNamingOptions["uniqueId"])
+		if (isset($cacheKeyNamingOptions["uniqueId"]))
 			return $key."_".$cacheKeyNamingOptions["uniqueId"];
 
-		if ($cacheKeyNamingOptions["specificPrefix"])
+		if (isset($cacheKeyNamingOptions["specificPrefix"]))
 			$key .= "_".$cacheKeyNamingOptions["specificPrefix"];
 
-		if ($cacheKeyNamingOptions["hash"])
+		if (isset($cacheKeyNamingOptions["hash"]))
 			return  $key."_".hash("md4", $cacheKeyNamingOptions["hash"]);
 
 		return $key."_".$cacheKeyNamingOptions["key"];

@@ -73,38 +73,38 @@ class SystemLogEvent extends Item {
 		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
 		$this->class = debug_backtrace()[2]["class"];
 
-		if ($data["dateAdded"])
+		if (isset($data["dateAdded"]))
 			$this->dateAdded = $data["dateAdded"];
 		else
 			$this->dateAdded = time();
 
-		if ($data["subType"])
+		if (isset($data["subType"]))
 			$this->subType = $data["subType"];
 
-		if ($data["ip"])
+		if (isset($data["ip"]))
 			$this->ip = $data["ip"];
 		else
 			$this->ip = $this->getClientIp();
 
-		if ($data["httpHost"])
+		if (isset($data["httpHost"]))
 			$this->httpHost = $data["httpHost"];
 		else
 			$this->httpHost = $this->getHttpHost();
 
-		if ($data["requestUri"])
+		if (isset($data["requestUri"]))
 			$this->requestUri = $data["requestUri"];
 		else
 			$this->requestUri = $this->getRequestUri();
 
-		if ($data["browserString"])
+		if (isset($data["browserString"]))
 			$this->browserString = $data["browserString"];
 		else
 			$this->browserString = $this->getClientBrowserString();
 
-		if ($data["description"])
+		if (isset($data["description"]))
 			$this->description = $data["description"];
 
-		if ($data["data"])
+		if (isset($data["data"]))
 			$this->data = $data["data"];
 
 		return parent::loadInline();
@@ -121,9 +121,11 @@ class SystemLogEvent extends Item {
 	}
 
 	/**
-	 * @return string The client's IP
+	 * @return mixed The client's IP, or false if it wasn't available
 	 */
 	function getClientIp() {
+		if (IS_CLI)
+			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
 		else
@@ -131,25 +133,31 @@ class SystemLogEvent extends Item {
 	}
 
 	/**
-	 * @return string The host reported by the server
+	 * @return mixed The host reported by the server, or false if it wasn't available
 	 */
 	function getHttpHost() {
+		if (IS_CLI)
+			return false;
 		return $_SERVER["HTTP_HOST"];
 	}
 
 	/**
-	 * @return string The URI reported by the server
+	 * @return mixed The URI reported by the server, or false if it wasn't available
 	 */
 	function getRequestUri() {
+		if (IS_CLI)
+			return false;
 		return $_SERVER["REQUEST_URI"];
 	}
 
 	/**
 	 * getClientBrowserString
 	 *
-	 * @return string The client's browserstring
+	 * @return mixed The client's browserstring, or false if it wasn't available
 	 */
 	function getClientBrowserString() {
+		if (IS_CLI)
+			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}
 }
