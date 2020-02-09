@@ -280,17 +280,17 @@ class Janitor extends \Cherrycake\Module {
 			if ($task && $task != $janitorTaskName)
 				continue;
 
-			$r .= $janitorTaskName.", ".$janitorTask->getPeriodicityDebugInfo()." ... ";
+			$r .= " . ".$janitorTaskName." [".$janitorTask->getPeriodicityDebugInfo()."] ";
 
 			if ($janitorTask->isToBeExecuted($baseTimestamp) || $isForceRun) {
 				if ($isForceRun)
 					$r .= "Forcing execution. ";
-				$r .= "Executing. ";
+				$r .= "Executing: ";
 				$microtimeStart = microtime(true);
 				list($resultCode, $resultDescription) = $janitorTask->run($baseTimestamp);
 				$executionSeconds = (microtime(true) - $microtimeStart);
-				$r .= $executionSeconds." seconds Ok. ";
-				$r .= "Logging janitor task: ";
+				$r .= number_format($executionSeconds * 1000, 0)."ms. ";
+				$r .= "Logging: ";
 
 				$databaseProviderName = $this->getConfig("logDatabaseProviderName");
 				$result = $e->Database->$databaseProviderName->prepareAndExecute(
@@ -345,18 +345,17 @@ class Janitor extends \Cherrycake\Module {
 					$r .= "Ok. ";
 				}
 
-				$r .= "Return description:\n";
-
-				if (!is_array($resultDescription))
-					$r .= "\t".$resultDescription."\n";
-				else
-					foreach ($resultDescription as $key => $value)
-						$r .= "\t".$key.": ".$value."\n";
+				if ($resultDescription) {
+					$r .= "\n";
+					if (!is_array($resultDescription))
+						$r .= "   ".$resultDescription."\n";
+					else
+						foreach ($resultDescription as $key => $value)
+							$r .= "   ".$key.": ".$value."\n";
+				}
 			}
 			else
-				$r .= "Not to be executed";
-
-			$r .= "\n";
+				$r .= "Not to be executed\n";
 		}
 		reset($this->janitorTasks);
 

@@ -252,7 +252,7 @@ class Javascript extends \Cherrycake\Module {
 			if (!$requestedSet = $this->sets[$requestedSetName])
 				continue;
 
-			if (is_array($requestedSet["files"]))
+			if (isset($requestedSet["files"]))
 				foreach ($requestedSet["files"] as $file) {
 					$javascript .= $e->Patterns->parse(
 						$file,
@@ -263,11 +263,11 @@ class Javascript extends \Cherrycake\Module {
 					)."\n";
 				}
 
-			if ($requestedSet["appendJavascript"])
+			if (isset($requestedSet["appendJavascript"]))
 				$javascript .= $requestedSet["appendJavascript"];
 
 			// Include variablesFile specified files
-			if ($requestedSet["variablesFile"])
+			if (isset($requestedSet["variablesFile"]))
 				if (is_array($requestedSet["variablesFile"]))
 					foreach ($requestedSet["variablesFile"] as $fileName)
 						include($fileName);

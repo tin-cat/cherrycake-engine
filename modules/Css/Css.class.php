@@ -286,24 +286,24 @@ class Css extends \Cherrycake\Module {
 					)."\n";
 				}
 
-			if ($requestedSet["appendCss"])
+			if (isset($requestedSet["appendCss"]))
 				$css .= $requestedSet["appendCss"];
 
 			// Include variablesFile specified files
-			if ($requestedSet["variablesFile"])
+			if (isset($requestedSet["variablesFile"]))
 				if (is_array($requestedSet["variablesFile"]))
 					foreach ($requestedSet["variablesFile"] as $fileName)
 						include($fileName);
 				else
 					include($requestedSet["variablesFile"]);
 
-			if ($requestedSet["isGenerateTextColorsCssHelpers"] && is_array($textColors))
+			if (isset($requestedSet["isGenerateTextColorsCssHelpers"]) && isset($textColors))
 				$css .= $this->generateCssHelperTextColors($textColors);
 
-			if ($requestedSet["isGenerateBackgroundColorsCssHelpers"] && is_array($backgroundColors))
+			if (isset($requestedSet["isGenerateBackgroundColorsCssHelpers"]) && isset($backgroundColors))
 				$css .= $this->generateCssHelperBackgroundColors($backgroundColors);
 
-			if ($requestedSet["isGenerateBackgroundGradientsCssHelpers"] && is_array($gradients))
+			if (isset($requestedSet["isGenerateBackgroundGradientsCssHelpers"]) && isset($gradients))
 				$css .= $this->generateCssHelperBackgroundGradients($gradients);
 		}
 
@@ -552,7 +552,7 @@ class Css extends \Cherrycake\Module {
 	 * @return string The Css
 	 */
 	function mediaQuery($setup) {
-		if ($setup["predefined"]) {
+		if (isset($setup["predefined"])) {
 			switch ($setup["predefined"]) {
 				case CSS_MEDIAQUERY_TABLET:
 					$setup["characteristics"] = [
@@ -603,27 +603,27 @@ class Css extends \Cherrycake\Module {
 			}
 		}
 		else {
-			if ($setup["maxWidthBreakpoint"])
+			if (isset($setup["maxWidthBreakpoint"]))
 				$setup["characteristics"] = [
 					"max-width" => $this->unit($this->getConfig("responsiveWidthBreakpoints")[$setup["maxWidthBreakpoint"]], "px")
 				];
-			if ($setup["minWidthBreakpoint"])
+			if (isset($setup["minWidthBreakpoint"]))
 				$setup["characteristics"] = [
 					"min-width" => $this->unit($this->getConfig("responsiveWidthBreakpoints")[$setup["minWidthBreakpoint"]], "px")
 				];
 
-			if ($setup["maxWidth"])
+			if (isset($setup["maxWidth"]))
 				$setup["characteristics"] = [
 					"max-width" => $this->unit($setup["maxWidth"], "px")
 				];
-			if ($setup["minWidth"])
+			if (isset($setup["minWidth"]))
 				$setup["characteristics"] = [
 					"min-width" => $this->unit($setup["minWidth"], "px")
 				];
 		}
 
-		$r .= "@media only screen";
-		while (list($key, $value) = each($setup["characteristics"]))
+		$r = "@media only screen";
+		foreach ($setup["characteristics"] as $key => $value)
 			$r .= " and (".$key.": ".$value.")";
 		$r .= " { ".$setup["css"]." }\n";
 

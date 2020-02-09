@@ -24,7 +24,7 @@ function ajaxQuery(url, setup) {
 		contentType: setup.contentType,
 		processData: setup.processData,
 		error: function(jqXHR, textStatus, errorThrown) {
-			<?
+			<?php
 				if (IS_DEVEL_ENVIRONMENT) {
 					?>	
 						$('#UiComponentNotice').UiComponentNotice('open', [
@@ -38,14 +38,14 @@ function ajaxQuery(url, setup) {
 							'AjaxResponseError',
 							false
 						]);
-					<?
+					<?php
 				}
 				else {
 					?>
 						console.log('%cAjax error: ' + textStatus + (errorThrown && errorThrown != textStatus ? ' (' + errorThrown + ')' : ''), 'color: #c15');
 						console.log('%cResponse:\n' + jqXHR.responseText, 'color: #c15');
 						$('#UiComponentNotice').UiComponentNotice('open', ['<?= $e->Ui->uiComponents["UiComponentAjax"]->getConfig("ajaxErrorText") ?>', 'ajaxResponseError']);
-					<?
+					<?php
 				}
 			?>
 		},

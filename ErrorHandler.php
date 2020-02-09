@@ -258,6 +258,8 @@ function handleError(
 	";
 
 	if ($errFile) {
+		
+		global $e;
 		// Check specific error for pattern parsing in order to show later the pattern itself
 		if (
 			(
@@ -266,10 +268,9 @@ function handleError(
 				strstr($errFile, "eval()'d") !== false
 			)
 			&&
-			$e->Patterns
+			isset($e->Patterns)
 		) {
 			$patternParsingErrorLine = $errLine;
-			global $e;
 			$errFile = $e->Patterns->getLastTreatedFile();
 			$sourceLines = explode("\n", $e->Patterns->getLastEvaluatedCode());
 		}

@@ -338,22 +338,22 @@ class JanitorTask
 	function getPeriodicityDebugInfo() {
 		switch ($this->getConfig("executionPeriodicity")) {
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL:
-				$description = "Only manual execution allowed.";
+				$description = "Manual";
 				break;
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_ALWAYS:
-				$description = "To be executed each time Janitor is called.";
+				$description = "Every time";
 				break;
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS:
-				$description = "To be executed every ".$this->getConfig("periodicityEachSeconds")." seconds";
+				$description = "Every ".$this->getConfig("periodicityEachSeconds")." seconds";
 				break;
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_MINUTES:
-				$description = "To be executed on ".(!is_array($this->getConfig("periodicityMinutes")) ? "minute ".$this->getConfig("periodicityMinutes") : "minutes ".implode(", ", $this->getConfig("periodicityMinutes")))." of each hour";
+				$description = "Hourly on ".(!is_array($this->getConfig("periodicityMinutes")) ? "minute ".$this->getConfig("periodicityMinutes") : "minutes ".implode(", ", $this->getConfig("periodicityMinutes")));
 				break;
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_HOURS:
-				$description = "To be executed at ".(!is_array($this->getConfig("periodicityHours")) ? "hour ".$this->getConfig("periodicityHours") : "hours ".implode(", ", $this->getConfig("periodicityHours")))." each day";
+				$description = "Daily at ".(!is_array($this->getConfig("periodicityHours")) ? "hour ".$this->getConfig("periodicityHours") : "hours ".implode(", ", $this->getConfig("periodicityHours")));
 				break;
 			case \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH:
-				$description = "To be executed on ".(!is_array($this->getConfig("periodicityDaysOfMonth")) ? "day ".$this->getConfig("periodicityDaysOfMonth") : "days ".implode(", ", $this->getConfig("periodicityDaysOfMonth")))." of each month";
+				$description = "Monthly on ".(!is_array($this->getConfig("periodicityDaysOfMonth")) ? "day ".$this->getConfig("periodicityDaysOfMonth") : "days ".implode(", ", $this->getConfig("periodicityDaysOfMonth")));
 				break;
 		}
 		return $description;
