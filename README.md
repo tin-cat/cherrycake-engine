@@ -1,6 +1,4 @@
-     _ |_   _  _  _     _  _  |   _ 
-    (_ | ) (- |  |  \/ (_ (_| |( (-
-                    /        engine
+# 🧁 Cherrycake engine
 https://cherrycake.io
 
 ### What is Cherrycake?

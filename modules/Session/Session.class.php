@@ -392,7 +392,7 @@ class Session extends \Cherrycake\Module {
 
 		$data = unserialize($row->getField("data"));
 		if (is_array($data)) {
-			while (list($key, $value) = each($data))
+			foreach ($data as $key => $value)
 				$e->Cache->$cacheProviderName->hSet(
 					$this->getSessionCacheKey($sessionId),
 					$key,

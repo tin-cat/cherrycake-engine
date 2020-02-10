@@ -72,9 +72,7 @@ function handleError(
 
 	if (IS_CLI) {
 		echo
-			\Cherrycake\ANSI_LIGHT_RED."  _ |_   _  ".\Cherrycake\ANSI_LIGHT_RED."_  _     ".\Cherrycake\ANSI_LIGHT_BLUE."_  _  |   _\n".
-			\Cherrycake\ANSI_LIGHT_RED." (_ | ) (- ".\Cherrycake\ANSI_LIGHT_RED."|  |  \/ ".\Cherrycake\ANSI_LIGHT_BLUE."(_ (_| |( (-\n".
-			"                 ".\Cherrycake\ANSI_LIGHT_RED."/           ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
+			\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
 			\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".
 			\Cherrycake\ANSI_NOCOLOR.
 			\Cherrycake\ANSI_DARK_GRAY."Message: ".\Cherrycake\ANSI_WHITE.$errStr."\n".
@@ -224,9 +222,7 @@ function handleError(
 		<table class='error' border=0 cellpadding=0 cellspacing=0>
 			<tr><th colspan=2 class='head'>
 				<div class='cherrycakeLogo'>".
-					" _ |_   _  _  _     _  _  |   _\n".
-					"(_ | ) (- |  |  \/ (_ (_| |( (-\n".
-					"                / ".
+					"🧁 Cherrycake".
 				"</div>
 			</th></tr>
 			<tr>

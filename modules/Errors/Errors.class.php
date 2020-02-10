@@ -170,9 +170,7 @@ class Errors extends \Cherrycake\Module {
 
 		if (IS_CLI) {
 			echo
-				\Cherrycake\ANSI_LIGHT_RED."  _ |_   _  ".\Cherrycake\ANSI_LIGHT_RED."_  _     ".\Cherrycake\ANSI_LIGHT_BLUE."_  _  |   _\n".
-				\Cherrycake\ANSI_LIGHT_RED." (_ | ) (- ".\Cherrycake\ANSI_LIGHT_RED."|  |  \/ ".\Cherrycake\ANSI_LIGHT_BLUE."(_ (_| |( (-\n".
-				"                 ".\Cherrycake\ANSI_LIGHT_RED."/           ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
+				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
 				\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." ".[
 					ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
 					ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
@@ -342,7 +340,7 @@ class Errors extends \Cherrycake\Module {
 			foreach ($data as $key => $value) {
 				if (is_array($value)) {
 					$message .= "<p><b>".$key.":</b><br><ul>";
-					while (list($key2, $value2) = each($value)) {
+					foreach ($value as $key2 => $value2) {
 						if (is_array($value2)) {
 							$message .= "<b>".$key2."</b><pre>".print_r($value2, true)."</pre>";
 						}
