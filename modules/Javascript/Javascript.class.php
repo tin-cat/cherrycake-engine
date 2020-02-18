@@ -162,6 +162,9 @@ class Javascript extends \Cherrycake\Module {
 	function getSetUrl($setNames) {
 		global $e;
 
+		if (!$e->Actions->getAction("javascript"))
+			return false;
+
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 
@@ -169,7 +172,7 @@ class Javascript extends \Cherrycake\Module {
 		foreach ($setNames as $setName)
 			$parameterSetNames .= $setName."-";
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
-
+		
 		return $e->Actions->getAction("javascript")->request->buildUrl([
 			"parameterValues" => [
 				"set" => $parameterSetNames,

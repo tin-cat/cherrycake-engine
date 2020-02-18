@@ -102,8 +102,7 @@ class Session extends \Cherrycake\Module {
 					$this->renewSessionCookie($this->sessionId);
 			}
 			else {
-				if (!$this->resetSessionCache($this->sessionId))
-					return false;
+				$this->resetSessionCache($this->sessionId);
 				if (!$this->removeSessionCookie())
 					return false;
 				if (!$this->newSession())

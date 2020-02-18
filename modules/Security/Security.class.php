@@ -483,7 +483,7 @@ class Security extends \Cherrycake\Module {
 	 * @return string The token
 	 */
 	function getCsrfToken() {
-		if ($this->isCsrfTokenInSession())
+		if ($this->isCsrfTokenInSession()) 
 			return $this->getCsrfTokenInSession();
 		$token = $this->generateCsrfToken();
 		$this->setCsrfTokenInSession($token);

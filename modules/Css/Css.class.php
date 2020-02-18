@@ -184,6 +184,9 @@ class Css extends \Cherrycake\Module {
 	function getSetUrl($setNames) {
 		global $e;
 
+		if (!$e->Actions->getAction("css"))
+			return false;
+
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 
@@ -191,7 +194,7 @@ class Css extends \Cherrycake\Module {
 		foreach ($setNames as $setName)
 			$parameterSetNames .= $setName."-";
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
-
+		
 		return $e->Actions->getAction("css")->request->buildUrl([
 			"parameterValues" => [
 				"set" => $parameterSetNames,

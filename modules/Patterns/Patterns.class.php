@@ -157,7 +157,7 @@ class Patterns extends \Cherrycake\Module {
 					include($setup["fileToIncludeBeforeParsing"]);
 
 		if (isset($setup["variables"])) {
-			while (list($variableName, $variable) = each($setup["variables"]))
+			foreach ($setup["variables"] as $variableName => $variable)
 				eval("\$".$variableName." = \$variable;");
 		}
 

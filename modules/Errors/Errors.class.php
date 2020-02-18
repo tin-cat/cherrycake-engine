@@ -138,7 +138,7 @@ class Errors extends \Cherrycake\Module {
 			||
 			($errorType == ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
 			||
-			$setup["isForceLog"] == true
+			isset($setup["isForceLog"]) && $setup["isForceLog"] == true
 		)
 			$e->SystemLog->event(new \Cherrycake\SystemLogEventError([
 				"subType" => isset($setup["errorSubType"]) ? $setup["errorSubType"] : false,
@@ -155,7 +155,7 @@ class Errors extends \Cherrycake\Module {
 			||
 			($errorType == ERROR_NO_PERMISSION && $this->getConfig("isEmailNoPermissionErrors"))
 			||
-			$setup["isForceEmail"] == true
+			isset($setup["isForceEmail"]) && $setup["isForceEmail"] == true
 		)
 			$this->emailNotify([
 				"errorDescription" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
@@ -220,8 +220,8 @@ class Errors extends \Cherrycake\Module {
 						[
 							"variables" => [
 								"errorType" => $errorType,
-								"errorDescription" => $setup["errorDescription"],
-								"errorVariables" => $setup["errorVariables"],
+								"errorDescription" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
+								"errorVariables" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false,
 								"backtrace" => $backtrace
 							]
 						],
