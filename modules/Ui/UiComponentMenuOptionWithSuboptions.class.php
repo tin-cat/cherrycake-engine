@@ -59,29 +59,30 @@ class UiComponentMenuOptionWithSuboptions extends UiComponent {
 
         $this->setProperties($setup);
         
-        if (!$this->domId)
+        if (!isset($this->domId))
             $this->domId = uniqid();
 
         // Go through sub options
+		$subOptionsHtml = "";
         foreach ($this->subOptions as $subOption) {
             if ($subOption->isSelected)
                 $isAnySubOptionSelected = true;
             $subOptionsHtml .= $subOption->buildHtml();
         }                
 
-        $r .=
+        $r =
             "<div".
                 " class=\"".
                     "UiComponentMenuOptionWithSuboptions".
-                    ($isAnySubOptionSelected || $this->isSelected ? " open" : null).
+                    ($isAnySubOptionSelected ?? false || $this->isSelected ?? false ? " open" : null).
                 "\"".
                 " id=\"".$this->domId."\"".
             ">".
                 UiComponentMenuOption::build([
-                    "title" => $this->title,
-                    "iconName" => $this->iconName,
-                    "iconVariant" => $this->iconVariant,
-                    "isSelected" => $isAnySubOptionSelected,
+                    "title" => $this->title ?? false,
+                    "iconName" => $this->iconName ?? false,
+                    "iconVariant" => $this->iconVariant ?? false,
+                    "isSelected" => $isAnySubOptionSelected ?? false,
                     "isDropdownArrow" => true
                 ]).
                 "<div class=\"subOptions\">".

@@ -79,7 +79,7 @@ class UiComponentIcons extends UiComponent {
 	function generateCss() {
 		global $e;
 
-		$r .=
+		$r =
 			".UiComponentIcon {\n".
 				($this->getConfig("method") == "mask" ?
 					($this->getConfig("defaultIconColor") ? "background-color: ".$this->getConfig("defaultIconColor").";\n" : "").
@@ -150,7 +150,7 @@ class UiComponentIcons extends UiComponent {
 		);
 
 		if (is_array($styles)) {
-			while (list($styleName, $fileNames) = each($styles)) {
+			foreach ($styles as $styleName => $fileNames) {
 
 				foreach ($fileNames as $fileName) {
 					$fileNameWithoutExtension = strtolower(strstr($fileName, ".", true));

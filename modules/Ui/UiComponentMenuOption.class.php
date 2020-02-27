@@ -55,17 +55,17 @@ class UiComponentMenuOption extends UiComponent {
 
 		$this->setProperties($setup);
 
-		$r .=
-			($this->href ? "<a href=\"".$this->href."\"".($this->isNewWindow ? " target=\"_newwindow\"" : null) : "<div").
+		$r =
+			($this->href ?? false ? "<a href=\"".$this->href."\"".($this->isNewWindow ?? false ? " target=\"_newwindow\"" : null) : "<div").
 				" class=\"".
 					"UiComponentMenuOption".
-					($this->isSelected ? " selected" : null).
+					($this->isSelected ?? false ? " selected" : null).
 				"\"".
 			">".
-				($this->iconName ? "<div class=\"UiComponentIcon ".$this->iconVariant." ".$this->iconName."\"></div>" : "<div class=\"letterIcon\">".substr($this->title, 0, 1)."</div>").
-				($this->title ? "<div class=\"title\">".$this->title."</div>" : null).
-				($this->isDropdownArrow ? "<div class=\"dropdownArrow\"></div>" : null).
-			($this->href ? "</a>" : "</div>");
+				($this->iconName ?? false ? "<div class=\"UiComponentIcon ".$this->iconVariant." ".$this->iconName."\"></div>" : "<div class=\"letterIcon\">".substr($this->title, 0, 1)."</div>").
+				($this->title ?? false ? "<div class=\"title\">".$this->title."</div>" : null).
+				($this->isDropdownArrow ?? false && $this->isDropdownArrow ? "<div class=\"dropdownArrow\"></div>" : null).
+			($this->href ?? false ? "</a>" : "</div>");
 
 		return $r;
 	}

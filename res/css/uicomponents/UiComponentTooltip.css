@@ -216,7 +216,7 @@
 	display: block;
 	padding: 10px 12px;
 	line-height: 1em;
-	color: <?= $colorPalette["defaultTextColor"] ?>;
+	color: <?= $colorPalette["defaultTextColor"] ?? false ?>;
 }
 
 .UiComponentTooltip > .tooltip > .content > .option:first-child {
@@ -229,7 +229,7 @@
 
 .UiComponentTooltip > .tooltip > .content > .option:hover {
 	text-decoration: none;
-	background: <?= $colorPalette["defaultAccentColor"] ?>;
+	background: <?= $colorPalette["defaultAccentColor"] ?? false ?>;
 	color: #fff;
 }
 
@@ -237,7 +237,7 @@
 	display: inline-block;
 	margin-right: 8px;
 	vertical-align: middle;
-	background-color: <?= $colorPalette["defaultTextColor"] ?>;
+	background-color: <?= $colorPalette["defaultTextColor"] ?? false ?>;
 }
 
 .UiComponentTooltip > .tooltip > .content > .option:hover > .UiComponentIcon {

@@ -190,7 +190,7 @@ class Javascript extends \Cherrycake\Module {
 	 * @param string $fileName The name of the file
 	 */
 	function addFileToSet($setName, $fileName) {
-		if (is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
+		if (!$this->sets[$setName] ?? false && is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
 			return;
 
 		$this->sets[$setName]["files"][] = $fileName;
@@ -251,20 +251,20 @@ class Javascript extends \Cherrycake\Module {
 
 		$javascript = "";
 		foreach($requestedSetNames as $requestedSetName) {
-
 			if (!$requestedSet = $this->sets[$requestedSetName])
 				continue;
 
-			if (isset($requestedSet["files"]))
+			if (isset($requestedSet["files"])) {
 				foreach ($requestedSet["files"] as $file) {
 					$javascript .= $e->Patterns->parse(
 						$file,
 						[
-							"directoryOverride" => $requestedSet["directory"],
-							"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"]
+							"directoryOverride" => $requestedSet["directory"] ?? false,
+							"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
 						]
 					)."\n";
 				}
+			}
 
 			if (isset($requestedSet["appendJavascript"]))
 				$javascript .= $requestedSet["appendJavascript"];

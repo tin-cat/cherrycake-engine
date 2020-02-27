@@ -111,7 +111,7 @@ class UiComponentPanel extends UiComponent {
 	 * @param array $blocks A hash array with one or more Block objects in the form of $key => $block
 	 */
 	function addBlocks($section, $blocks) {
-		while (list($key, $block) = each($blocks))
+		foreach ($blocks as $key => $block)
 			$this->addBlock($section, $key, $block);
 	}
 
@@ -148,7 +148,7 @@ class UiComponentPanel extends UiComponent {
      * @return boolean Whether the specified section has blocks or not
      */
     function isBlocks($section) {
-        return is_array($this->blocks[$section]);
+        return isset($this->blocks[$section]);
     }
     
     /**
@@ -166,7 +166,7 @@ class UiComponentPanel extends UiComponent {
 
 		$this->setProperties($setup);
 
-        $r .=
+        $r =
             "<div".
                 " id=\"UiComponentPanel\"".
 				" class=\"".
@@ -206,9 +206,9 @@ class UiComponentPanel extends UiComponent {
                 $this->buildHtmlSection("topRight").
             "</div>".
             $this->buildHtmlSection("main", [
-                "isAllSelected" => $this->isAllMainOptionsOpen,
-                "optionSelected" => $this->mainOptionSelected,
-                "subOptionSelected" => $this->mainSubOptionSelected
+                "isAllSelected" => $this->isAllMainOptionsOpen ?? null,
+                "optionSelected" => $this->mainOptionSelected ?? null,
+                "subOptionSelected" => $this->mainSubOptionSelected ?? null
             ]).
             "<div class=\"content\">".
                 $setup["content"].
@@ -235,10 +235,10 @@ class UiComponentPanel extends UiComponent {
      * @return string The HTML for the given section of the panel.
      */
     private function buildHtmlSection($section, $setup = false) {
-        $r .= "<div class=\"$section\">";
+        $r = "<div class=\"$section\">";
         if ($this->isBlocks($section)) {
             $blocks = $this->getBlocks($section);
-            while (list($blockName, $uiComponent) = each($blocks)) {
+			foreach ($blocks as $blockName => $uiComponent) {
 
                 // If it's a UiComponentButton, set it to transparent
                 if (get_class($uiComponent) == "Cherrycake\UiComponentButton")
@@ -247,7 +247,7 @@ class UiComponentPanel extends UiComponent {
                 switch (get_class($uiComponent)) {
 
                     case "Cherrycake\UiComponentMenuOption":
-                        $uiComponent->setSelected($setup["optionSelected"] == $blockName || $setup["isAllSelected"]);
+                        $uiComponent->setSelected((isset($setup["optionSelected"]) && $setup["optionSelected"] == $blockName) || (isset($setup["isAllSelected"]) ? $setup["isAllSelected"] : false));
                         break;
 
                     case "Cherrycake\UiComponentMenuOptionWithSuboptions":
@@ -278,9 +278,8 @@ class UiComponentPanel extends UiComponent {
     function setOutputResponse($setup = false) {
         global $e;
         $e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
-			"code" => $code,
             "payload" =>
-                $e->HtmlDocument->header($setup["htmlDocumentHeaderSetup"]).
+                $e->HtmlDocument->header(isset($setup["htmlDocumentHeaderSetup"]) ? $setup["htmlDocumentHeaderSetup"] : false).
                 $this->buildHtml($setup).
                 $e->HtmlDocument->footer()
 		]));

@@ -134,10 +134,10 @@ class UiComponent extends BasicObject {
 	 *
 	 * Gets a configuration value
 	 *
-	 * @param string $key The configuration key
+	 * @param mixed $key The configuration key, null if it doesn't exists
 	 */
 	function getConfig($key) {
-		return $this->config[$key];
+		return $this->config[$key] ?? null;
 	}
 
 	/**

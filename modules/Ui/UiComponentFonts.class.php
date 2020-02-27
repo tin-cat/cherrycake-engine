@@ -86,6 +86,7 @@ class UiComponentFonts extends UiComponent
 		if (!$fonts = $this->getConfig("fonts"))
 			return null;
 
+		$r = "";
 		foreach ($fonts as $font)
 			foreach ($font["variants"] as $variant) {
 				$r .=
@@ -93,7 +94,7 @@ class UiComponentFonts extends UiComponent
 						"font-family: \"".$font["family"]."\";\n".
 						"font-style: ".$variant["style"].";\n".
 						"font-weight: ".$variant["weight"].";\n".
-						"font-display: ".($variant["display"] ? $variant["display"] : "block").";\n";
+						"font-display: ".($variant["display"] ?? false ? $variant["display"] : "block").";\n";
 
 				$r .= "src: ";
 
@@ -109,7 +110,7 @@ class UiComponentFonts extends UiComponent
 						(
 							$this->getConfig("isEmbedFile")
 							?
-							"url(".($variant["isEmbedInline"] ? $e->Css->getFileDataBase64($svgFileName) : $svgFileName).") format('svg'),\n"
+							"url(".($variant["isEmbedInline"] ?? false ? $e->Css->getFileDataBase64($svgFileName) : $svgFileName).") format('svg'),\n"
 							:
 							"url('".$svgFileName."') format('svg'),\n"
 						);
@@ -120,7 +121,7 @@ class UiComponentFonts extends UiComponent
 						(
 							$this->getConfig("isEmbedFile")
 							?
-							"url(".($variant["isEmbedInline"] ? $e->Css->getFileDataBase64($woffFileName) : $woffFileName).") format('woff'),\n"
+							"url(".($variant["isEmbedInline"] ?? false ? $e->Css->getFileDataBase64($woffFileName) : $woffFileName).") format('woff'),\n"
 							:
 							"url('".$woffFileName."') format('woff'),\n"
 						);
@@ -131,7 +132,7 @@ class UiComponentFonts extends UiComponent
 						(
 							$this->getConfig("isEmbedFile")
 							?
-							"url(".($variant["isEmbedInline"] ? $e->Css->getFileDataBase64($ttfFileName) : $ttfFileName).") format('truetype'),\n"
+							"url(".($variant["isEmbedInline"] ?? false ? $e->Css->getFileDataBase64($ttfFileName) : $ttfFileName).") format('truetype'),\n"
 							:
 							"url('".$ttfFileName."') format('truetype'),\n"
 						);

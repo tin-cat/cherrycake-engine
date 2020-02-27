@@ -107,7 +107,7 @@ class Patterns extends \Cherrycake\Module {
 	 * @return boolean True if the Pattern exists and is readable, false otherwise
 	 */
 	function isPatternExists($patternName, $setup = false) {
-		$patternFile = $this->getPatternFileName($patternName, $setup["directoryOverride"]);
+		$patternFile = $this->getPatternFileName($patternName, $setup["directoryOverride"] ?? false);
 		return file_exists($patternFile) && is_readable($patternFile);
 	}
 
@@ -151,10 +151,13 @@ class Patterns extends \Cherrycake\Module {
 
 		if (isset($setup["fileToIncludeBeforeParsing"]))
 			if (is_array($setup["fileToIncludeBeforeParsing"]))
-				foreach ($setup["fileToIncludeBeforeParsing"] as $fileToIncludeBeforeParsing)
+				foreach ($setup["fileToIncludeBeforeParsing"] as $fileToIncludeBeforeParsing) {
 					include($fileToIncludeBeforeParsing);
-				else
-					include($setup["fileToIncludeBeforeParsing"]);
+				}
+				else {
+					if ($setup["fileToIncludeBeforeParsing"] ?? false)
+						include($setup["fileToIncludeBeforeParsing"]);
+				}
 
 		if (isset($setup["variables"])) {
 			foreach ($setup["variables"] as $variableName => $variable)

@@ -82,25 +82,25 @@ class Email extends \Cherrycake\Module {
                 $this->phpMailer->setFrom($setup["from"][0], $setup["from"][1]);
             foreach ($tos as $to)
                 $this->phpMailer->addAddress($to[0], isset($to[1]) ? $to[1] : false);
-            if (is_array($setup["replyTo"]))
+            if (isset($setup["replyTo"]) && is_array($setup["replyTo"]))
                 foreach ($setup["replyTo"] as $replyTo)
                     $this->phpMailer->addReplyTo($replyTo[0], $replyTo[1]);
-            if (is_array($setup["carbonCopy"]))
+            if (isset($setup["carbonCopy"]) && is_array($setup["carbonCopy"]))
                 foreach ($setup["carbonCopy"] as $carbonCopy)
                     $this->phpMailer->addCC($carbonCopy[0], $carbonCopy[1]);
-            if (is_array($setup["blindCarbonCopy"]))
+            if (isset($setup["blindCarbonCopy"]) && is_array($setup["blindCarbonCopy"]))
                 foreach ($setup["blindCarbonCopy"] as $blindCarbonCopy)
                     $this->phpMailer->addBCC($blindCarbonCopy[0], $blindCarbonCopy[1]);
-            if (is_array($setup["attachments"]))
+            if (isset($setup["attachments"]) && is_array($setup["attachments"]))
                 foreach ($setup["attachments"] as $attachment)
                     $this->phpMailer->addAttachment($attachment[0], $attachment[1]);
             
             $this->phpMailer->Subject = $subject;
 
-            if ($setup["contentHTML"]) {
+            if (isset($setup["contentHTML"])) {
                 $this->phpMailer->isHTML(true);
                 $this->phpMailer->Body = $setup["contentHTML"];
-                if (!$setup["contentPlain"])
+                if (!isset($setup["contentPlain"]))
                     $setup["contentPlain"] = strip_tags($setup["contentHTML"]);
                 $this->phpMailer->AltBody = $setup["contentPlain"];
             }

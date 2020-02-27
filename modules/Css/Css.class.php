@@ -212,7 +212,7 @@ class Css extends \Cherrycake\Module {
 	 * @param string $fileName The name of the file
 	 */
 	function addFileToSet($setName, $fileName) {
-		if (is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
+		if (!$this->sets[$setName] ?? false && is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
 			return;
 
 		$this->sets[$setName]["files"][] = $fileName;
@@ -227,7 +227,7 @@ class Css extends \Cherrycake\Module {
 	 * @param string $css The Css
 	 */
 	function addCssToSet($setName, $css) {
-		$this->sets[$setName]["appendCss"] .= $css;
+		$this->sets[$setName]["appendCss"] = $this->sets[$setName]["appendCss"] ?? null.$css;
 	}
 
 	/**
@@ -278,13 +278,13 @@ class Css extends \Cherrycake\Module {
 			if (!$requestedSet = $this->sets[$requestedSetName])
 				continue;
 
-			if (is_array($requestedSet["files"]))
+			if ($requestedSet["files"] ?? false && is_array($requestedSet["files"]))
 				foreach ($requestedSet["files"] as $file) {
 					$css .= $e->Patterns->parse(
 						$file,
 						[
-							"directoryOverride" => $requestedSet["directory"],
-							"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"]
+							"directoryOverride" => $requestedSet["directory"] ?? false,
+							"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
 						]
 					)."\n";
 				}
@@ -479,17 +479,11 @@ class Css extends \Cherrycake\Module {
 		if ($baseParameter == "border-bottom-right-radius")
 			$baseParameterForGecko = "border-radius-bottomright";
 
-		if (!$baseParameterForWebkit)
-			$baseParameterForWebkit = $baseParameter;
-
-		if (!$baseParameterForGecko)
-			$baseParameterForGecko = $baseParameter;
-
-		if (!$baseParameterForPresto)
-			$baseParameterForPresto = $baseParameter;
-
-		if (!$baseParameterForStandardCompliant)
-			$baseParameterForStandardCompliant = $baseParameter;
+		
+		$baseParameterForWebkit = $baseParameter;
+		$baseParameterForGecko = $baseParameter;
+		$baseParameterForPresto = $baseParameter;
+		$baseParameterForStandardCompliant = $baseParameter;
 
 		return
 			"-webkit-".$baseParameterForWebkit.": ".$value.";\n".

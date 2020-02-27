@@ -43,7 +43,7 @@ class BasicObject {
 	 */
 	function setProperties($properties, $isOverwrite = true) {
 		if (is_array($properties))
-			while (list($key, $value) = each($properties))
+			foreach ($properties as $key => $value)
 				if (!is_null($value))
 					if ((isset($this->$key) && $isOverwrite) || !isset($this->$key))
 						$this->$key = $value;
