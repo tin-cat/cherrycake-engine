@@ -117,14 +117,14 @@ class Errors extends \Cherrycake\Module {
 
 		for ($i=0; $i<sizeof($backtrace); $i++)
 			$backtrace_info[] =
-				$backtrace[$i]["file"].
+				(isset($backtrace[$i]["file"]) ? $backtrace[$i]["file"] : "Unknown file").
 					":".
-					"<b>".$backtrace[$i]["line"]."</b>".
+					"<b>".(isset($backtrace[$i]["line"]) ? $backtrace[$i]["line"] : "Unknown line")."</b>".
 					(isset($backtrace[$i]["class"]) ?
 						" Class: ".
 						"<b>".$backtrace[$i]["class"]."</b>"
 					: null).
-					($backtrace[$i]["function"] ?
+					(isset($backtrace[$i]["function"]) ?
 						" Method: ".
 						"<b>".$backtrace[$i]["function"]."</b>"
 					: null);
