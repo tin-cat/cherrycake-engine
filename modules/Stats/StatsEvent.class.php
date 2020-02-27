@@ -125,7 +125,7 @@ class StatsEvent extends Item {
 		}
 		$paramsMktimeLetters = "HisnjY";
 		$paramsValuesWhenFalse = "000111";
-		while (list($index, $paramSetup) = each($paramsSetup))
+		foreach ($paramsSetup as $index => $paramSetup)
 			$params[] = $paramSetup ? date($paramsMktimeLetters[$index], $timestamp) : strval($paramsValuesWhenFalse[$index]);
 		return call_user_func_array("mktime", $params);
 	}

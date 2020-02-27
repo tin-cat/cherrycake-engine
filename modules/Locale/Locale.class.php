@@ -598,10 +598,10 @@ class Locale extends \Cherrycake\Module
 			$setup["isBrief"] = false;
 
 		// Convert the given timestamp to the Locale timezone if fromTimeZone has been specified.
-		if ($setup["fromTimeZone"])
+		if ($setup["fromTimeZone"] ?? false)
 			$timestamp = $this->convertTimestamp($timestamp, $this->getTimeZone(), $setup["fromTimeZone"]);
 
-		if ($setup["format"])
+		if ($setup["format"] ?? false)
 			return date($setup["format"], $timestamp);
 
 		switch ($setup["style"]) {
@@ -664,9 +664,9 @@ class Locale extends \Cherrycake\Module
 							break;
 						case \Cherrycake\Modules\DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
-								$this->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
+								$this->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
 								" ".
-								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"], "ordinalGender" => ORDINAL_GENDER_MALE]).
+								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"] ?? false, "ordinalGender" => ORDINAL_GENDER_MALE]).
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
 									", ".
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
