@@ -227,7 +227,7 @@ class Css extends \Cherrycake\Module {
 	 * @param string $css The Css
 	 */
 	function addCssToSet($setName, $css) {
-		$this->sets[$setName]["appendCss"] = $this->sets[$setName]["appendCss"] ?? null.$css;
+		$this->sets[$setName]["appendCss"] = ($this->sets[$setName]["appendCss"] ?? null).$css;
 	}
 
 	/**
@@ -278,8 +278,14 @@ class Css extends \Cherrycake\Module {
 			if (!$requestedSet = $this->sets[$requestedSetName])
 				continue;
 
-			if ($requestedSet["files"] ?? false && is_array($requestedSet["files"]))
+			if ($requestedSet["files"] ?? false && is_array($requestedSet["files"])) {
+				$parsed = [];
 				foreach ($requestedSet["files"] as $file) {
+					if (in_array($file, $parsed))
+						continue;
+					else
+						$parsed[] = $file;
+					
 					$css .= $e->Patterns->parse(
 						$file,
 						[
@@ -288,6 +294,7 @@ class Css extends \Cherrycake\Module {
 						]
 					)."\n";
 				}
+			}
 
 			if (isset($requestedSet["appendCss"]))
 				$css .= $requestedSet["appendCss"];

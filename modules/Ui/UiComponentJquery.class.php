@@ -35,7 +35,7 @@ class UiComponentJquery extends UiComponent
 	 * @var array $config Holds the default configuration for this UiComponent
 	 */
 	protected $config = [
-		"version" => "3.3.1",
+		"version" => "3.4.1",
 		"isMinified" => true
 	];
 

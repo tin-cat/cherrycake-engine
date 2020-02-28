@@ -155,6 +155,7 @@ class UiComponentIcons extends UiComponent {
 				foreach ($fileNames as $fileName) {
 					$fileNameWithoutExtension = strtolower(strstr($fileName, ".", true));
 					$iconNames = explode("-", $fileNameWithoutExtension);
+
 					foreach ($iconNames as $iconName) {
 						$url =
 							$this->getConfig("isEmbedInline")

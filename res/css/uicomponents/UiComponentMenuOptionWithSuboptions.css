@@ -16,7 +16,7 @@
 }
 
 .UiComponentMenuOptionWithSuboptions:not(.collapsed) > .subOptions > .UiComponentMenuOption {
-    padding-left: 2em;
+    padding-left: 3em;
 }
 
 .UiComponentMenuOptionWithSuboptions.collapsed > .UiComponentMenuOption > .letterIcon {

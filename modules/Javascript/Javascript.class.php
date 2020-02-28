@@ -255,7 +255,13 @@ class Javascript extends \Cherrycake\Module {
 				continue;
 
 			if (isset($requestedSet["files"])) {
+				$parsed = [];
 				foreach ($requestedSet["files"] as $file) {
+					if (in_array($file, $parsed))
+						continue;
+					else
+						$parsed[] = $file;
+					
 					$javascript .= $e->Patterns->parse(
 						$file,
 						[
