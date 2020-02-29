@@ -72,6 +72,10 @@
         .UiComponentArticle h5 > .line {
             display: inline;
         }
+
+		.UiComponentArticle .line + .line {
+			margin-left: .5em;
+		}
     "])
 ?>
 
@@ -281,6 +285,11 @@
 
 /* image */
 
+.UiComponentArticle > .image {
+	position: relative;
+	overflow: hidden;
+}
+
 .UiComponentArticle > .image > img {
     width: 100%;
     border-radius: 10px;
@@ -311,6 +320,10 @@
     padding: 40px;
     width: calc(100% - 80px);
     border-radius: 10px;
+}
+
+.UiComponentArticle > a.image:hover {
+	border-bottom: none;
 }
 
 /* images */
