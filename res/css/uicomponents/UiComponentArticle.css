@@ -287,7 +287,6 @@
 
 .UiComponentArticle > .image {
 	position: relative;
-	overflow: hidden;
 }
 
 .UiComponentArticle > .image > img {
