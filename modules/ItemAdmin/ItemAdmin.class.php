@@ -47,7 +47,7 @@ class ItemAdmin extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->callImplementedStaticMethodOnAllAvailableModulesAndLoad("mapItemAdmin");
+		$e->callMethodOnAllModules("mapItemAdmin");
 		
 		return true;
 	}

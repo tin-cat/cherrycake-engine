@@ -322,7 +322,7 @@ class Engine {
 	 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules
 	 * @param string $methodName The method name to call
 	 */
-	function callImplementedStaticMethodOnAllAvailableModulesAndLoad($methodName) {
+	function callMethodOnAllModules($methodName) {
 		// Call the static method
 		$cherrycakeModuleNames = $this->getAvailableCherrycakeModuleNamesWithMethod($methodName);
 		if (is_array($cherrycakeModuleNames)) {

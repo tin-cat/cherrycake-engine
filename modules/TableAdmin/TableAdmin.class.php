@@ -34,7 +34,7 @@ class TableAdmin extends \Cherrycake\Module {
 			return false;
 		
 		global $e;
-		$e->callImplementedStaticMethodOnAllAvailableModulesAndLoad("mapTableAdmin");
+		$e->callMethodOnAllModules("mapTableAdmin");
 
 		return true;
 	}
