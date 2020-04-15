@@ -87,6 +87,68 @@ class Engine {
 	}
 
 	/**
+	 * Builds a cache key based on the passed string or array of strings
+	 * 
+	 * @param mixed $key A string or an array of strings
+	 * @return string The string cache key
+	 */
+	private function buildCacheKey($key) {
+		return "CherrycakeEngine_".APP_NAME."_".is_array($key) ? implode("_", $key) : $key;
+	}
+
+	/**
+	 * Sets a key into the engine cache.
+	 * 
+	 * @param mixed $key A string or an array of strings
+	 * @param mixed $value The value to store in cache
+	 * @param int $ttl The TTL of the item in cache
+	 * @return boolean True on success, false on failure
+	 */
+	private function cacheStore($key, $value, $ttl = 0) {
+		if (!apcu_store($this->buildCacheKey($key), serialize($value), $ttl))
+			return false;
+		$keys = $this->cacheGetKeys();
+		if (!$keys || !in_array($key, $keys)) {
+			$keys[] = $key;
+			return apcu_store("CherrycakeEngine_".APP_NAME."_CachedKeys", serialize($keys), 0);
+		}
+		return true;
+	}
+
+	/**
+	 * Retrieves a value from the engine cache
+	 * 
+	 * @param mixed $key A string or an array of strings
+	 * @return mixed The value, null if it didn't exist or false in case of failure
+	 */
+	private function cacheFetch($key) {
+		$value = apcu_fetch($this->buildCacheKey($key));
+		if ($value === false)
+			return false;
+		return $value ? unserialize($value) : null;
+	}
+
+	/**
+	 * @return mixed An array of all the key names that have been stored in cache for this App, or false on failure.
+	 */
+	private function cacheGetKeys() {
+		$value = apcu_fetch("CherrycakeEngine_".APP_NAME."_CachedKeys");
+		if ($value === false)
+			return false;
+		return $value === false ? false : unserialize($value);
+	}
+
+	/**
+	 * Clears the entire engine cache
+	 */
+	function clearCache() {
+		$keys = $this->cacheGetKeys();
+		if (is_array($keys))
+			foreach ($keys as $key)
+				apcu_delete($this->buildCacheKey($key));
+	}
+
+	/**
 	 * @param string $directory The directory on which to search for modules
 	 * @return mixed An array of the module names found on the specified directory, or false if none found or the directory couldn't be opened.
 	 */
@@ -140,14 +202,15 @@ class Engine {
 	 * @return array The module names that implement the specified method, o,r false if no modules found
 	 */
 	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
-		$cacheKey = "CherrycakeEngine_".APP_NAME."_AvailableModuleNamesWithMethod_".$nameSpace."_".$modulesDirectory."_".$methodName;
+		$cacheKey = ["AvailableModuleNamesWithMethod", $nameSpace, $modulesDirectory, $methodName];
+		$cacheTtl = IS_DEVEL_ENVIRONMENT ? 3 : 600;
 
-		$modulesWithMethod = apcu_fetch($cacheKey);
+		$modulesWithMethod = $this->cacheFetch($cacheKey);
 		if (is_array($modulesWithMethod))
 			return $modulesWithMethod;
 	
 		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
-			$this->cache->setInBucket($cacheBucket, $cacheKey, []);
+			$this->cacheStore($cacheKey, [], $cacheTtl);
 			return false;
 		}
 
@@ -160,7 +223,7 @@ class Engine {
 			}
 		}
 
-		apcu_store($cacheKey, $modulesWithMethod ?? [], IS_DEVEL_ENVIRONMENT ? 3 : 3600);
+		$this->cacheStore($cacheKey, $modulesWithMethod, $cacheTtl);
 
 		return $modulesWithMethod ?? false;
 	}
@@ -437,6 +500,7 @@ class Engine {
 		if (is_array($this->loadedModules))
 			foreach ($this->loadedModules as $moduleName)
 				$this->$moduleName->end();
+		$this->clearCache();
 		die;
 	}
 }
