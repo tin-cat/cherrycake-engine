@@ -63,4 +63,12 @@ class Output extends \Cherrycake\Module {
 		if ($this->response)
 			$this->response->send();
 	}
+
+	/**
+	 * Performs any tasks needed to end this module.
+	 * Called when the engine ends.
+	 */
+	function end() {
+		$this->sendResponse();
+	}
 }

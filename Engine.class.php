@@ -441,7 +441,6 @@ class Engine {
 	 * Ends the application
 	 */
 	function end() {
-		$this->Output->sendResponse();
 		if (is_array($this->loadedModules))
 			foreach ($this->loadedModules as $moduleName)
 				$this->$moduleName->end();
