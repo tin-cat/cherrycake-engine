@@ -74,8 +74,6 @@ class Engine {
 
 		$this->appNamespace = $setup["namespace"];
 
-		$this->cache = new \Cherrycake\Cache;
-
 		if ($setup["additionalAppConfigFiles"])
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
 				require APP_DIR."/config/".$additionalAppConfigFile;
@@ -139,17 +137,12 @@ class Engine {
 	 * @param string $nameSpace The namespace to use
 	 * @param string $modulesDirectory The directory where the specified module is stored
 	 * @param string $methodName the name of the method to check
-	 * @return array The module names that implement the specified method
+	 * @return array The module names that implement the specified method, o,r false if no modules found
 	 */
 	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
-		$cacheBucket = "AvailableModuleNamesWithMethod";
-		$cacheKey = [
-			$nameSpace,
-			$modulesDirectory,
-			$methodName
-		];
+		$cacheKey = "CherrycakeEngine_".APP_NAME."_AvailableModuleNamesWithMethod_".$nameSpace."_".$modulesDirectory."_".$methodName;
 
-		$modulesWithMethod = $this->cache->getFromBucket($cacheBucket, $cacheKey);
+		$modulesWithMethod = apcu_fetch($cacheKey);
 		if (is_array($modulesWithMethod))
 			return $modulesWithMethod;
 	
@@ -167,9 +160,9 @@ class Engine {
 			}
 		}
 
-		$this->cache->setInBucket($cacheBucket, $cacheKey, $modulesWithMethod ? $modulesWithMethod : []);
+		apcu_store($cacheKey, $modulesWithMethod ?? [], IS_DEVEL_ENVIRONMENT ? 3 : 3600);
 
-		return $modulesWithMethod;
+		return $modulesWithMethod ?? false;
 	}
 
 	/**
@@ -240,7 +233,7 @@ class Engine {
 
 		$this->loadedModules[] = $moduleName;
 
-		$this->includeModuleClass($modulesDirectory, $moduleName);		
+		$this->includeModuleClass($modulesDirectory, $moduleName);
 
 		eval("\$this->".$moduleName." = new \\".$namespace."\\Modules\\".$moduleName."();");
 
@@ -444,7 +437,6 @@ class Engine {
 		if (is_array($this->loadedModules))
 			foreach ($this->loadedModules as $moduleName)
 				$this->$moduleName->end();
-		
 		die;
 	}
 }
