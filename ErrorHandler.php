@@ -102,7 +102,7 @@ function handleError(
 				border: solid #c15 1px;
 				border-top: none;
 				width: 100%;
-				border-radius: 10px;
+				border-radius: 5px;
 			}
 			.errorReport > table.error td {
 				padding: 10pt;
