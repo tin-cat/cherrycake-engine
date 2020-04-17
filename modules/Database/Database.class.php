@@ -40,8 +40,17 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Database extends \Cherrycake\Module
-{
+class Database extends \Cherrycake\Module {
+	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+
+	/**
+	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
+	 */
+	protected $isConfigFileRequired = true;
+
 	/**
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
@@ -58,7 +67,6 @@ class Database extends \Cherrycake\Module
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
-		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;
 

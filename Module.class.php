@@ -23,6 +23,11 @@ class Module {
 	protected $isConfigFile = false;
 
 	/**
+	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
+	 */
+	protected $isConfigFileRequired = false;
+
+	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
 	protected $config;
@@ -47,8 +52,11 @@ class Module {
 			global $e;
 			$className = substr(get_class($this), strrpos(get_class($this), "\\")+1);
 			$fileName = $e->getConfigDir()."/".$className.".config.php";
-			if (!file_exists($fileName))
+			if (!file_exists($fileName)) {
+				if ($this->isConfigFileRequired)
+					trigger_error("Configuration file $fileName required");
 				return;
+			}
 			include $fileName;
 			$this->config(${$className."Config"});
 		}
@@ -69,6 +77,14 @@ class Module {
 			$this->config = $this->arrayMergeRecursiveDistinct($this->config, $config);
 		else
 			$this->config = $config;
+	}
+
+	/**
+	 * @param string $key The configuration key
+	 * @return bool Whether the configuration specified the given configuration key has been set or not
+	 */
+	function isConfig($key) {
+		return isset($this->config[$key]);
 	}
 
 	/**

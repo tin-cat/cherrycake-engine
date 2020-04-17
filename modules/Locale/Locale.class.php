@@ -223,6 +223,9 @@ class Locale extends \Cherrycake\Module
 	function init() {
 		if (!parent::init())
 			return false;
+		
+		if (!$this->isConfig("availableLocales"))
+			return true;
 
 		if (isset($_SERVER["SERVER_NAME"]))
 			$domain = $_SERVER["SERVER_NAME"];

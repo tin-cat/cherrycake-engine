@@ -43,6 +43,16 @@ const CACHE_TTL_LONGEST = CACHE_TTL_1_MONTH;
  */
 class Cache extends \Cherrycake\Module {
 	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+
+	/**
+	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
+	 */
+	protected $isConfigFileRequired = true;
+
+	/**
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
 	var $dependentCherrycakeModules = [
@@ -56,9 +66,7 @@ class Cache extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init()
-	{
-		$this->isConfigFile = true;
+	function init() {
 		if (!parent::init())
 			return false;
 
@@ -82,8 +90,7 @@ class Cache extends \Cherrycake\Module {
 	 * @param string $providerClassName The cache provider class name
 	 * @param array $config The configuration for the cache provider
 	 */
-	function addProvider($key, $providerClassName, $config)
-	{
+	function addProvider($key, $providerClassName, $config) {
 		global $e;
 		$e->loadCherrycakeModuleClass("Cache", $providerClassName);
 		eval("\$this->".$key." = new \\Cherrycake\\Modules\\".$providerClassName."();");

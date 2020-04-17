@@ -41,6 +41,11 @@ namespace Cherrycake\Modules;
  */
 class Patterns extends \Cherrycake\Module {
 	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+	
+	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
@@ -65,21 +70,6 @@ class Patterns extends \Cherrycake\Module {
 	 * @var string $lastTreatedFile The name of the last treated file
 	 */
 	private $lastTreatedFile;
-
-	/**
-	 * init
-	 *
-	 * Initializes the module
-	 *
-	 * @return boolean Whether the module has been initted ok
-	 */
-	function init() {
-		$this->isConfigFile = true;
-		if (!parent::init())
-			return false;
-
-		return true;
-	}
 
 	/**
 	 * out

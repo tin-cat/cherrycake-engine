@@ -47,6 +47,11 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
  */
 class Errors extends \Cherrycake\Module {
 	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+
+	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
@@ -86,7 +91,6 @@ class Errors extends \Cherrycake\Module {
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
-		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;
 

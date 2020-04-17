@@ -80,6 +80,11 @@ const HTML_RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;
  */
 class HtmlDocument extends \Cherrycake\Module {
 	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+	
+	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
@@ -127,7 +132,6 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
-		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;
 

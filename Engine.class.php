@@ -140,11 +140,11 @@ class Engine {
 
 		require ENGINE_DIR."/Module.class.php";
 
-		if ($setup["additionalAppConfigFiles"])
+		if (isset($setup["additionalAppConfigFiles"]))
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
 				require APP_DIR."/config/".$additionalAppConfigFile;
 
-		if ($setup["baseCherrycakeModules"])
+		if (isset($setup["baseCherrycakeModules"]))
 			foreach ($setup["baseCherrycakeModules"] as $module)
 				if (!$this->loadCherrycakeModule($module))
 					return false;
@@ -222,6 +222,8 @@ class Engine {
 	 * @return mixed An array of the module names found on the specified directory, or false if none found or the directory couldn't be opened.
 	 */
 	function getAvailableModuleNamesOnDirectory($directory) {
+		if (!is_dir($directory))
+			return false;
 		$moduleNames = false;
 		if (!$handler = opendir($directory))
 			return false;

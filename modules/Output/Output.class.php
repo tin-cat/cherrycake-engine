@@ -26,18 +26,14 @@ const RESPONSE_REDIRECT_FOUND = 302;
  */
 class Output extends \Cherrycake\Module {
 	/**
+	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
+	 */
+	protected $isConfigFile = true;
+
+	/**
 	 * @var Response $response The Response that will be sent to the client
 	 */
 	private $response = null;
-
-	/**
-	 * Initializes the module
-	 * @return boolean Whether the module has been initted ok
-	 */
-	function init() {
-		$this->isConfigFile = true;
-		return parent::init();
-	}
 
 	/**
 	 * Sets the Response object that will be sent to the client

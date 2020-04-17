@@ -59,7 +59,6 @@ class Stats extends \Cherrycake\Module {
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
-		$this->isConfigFile = true;
 		if (!parent::init())
 			return false;
 
