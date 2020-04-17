@@ -34,7 +34,7 @@ class Actions extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"defaultActionCacheTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL,
+		"defaultActionCacheTtl" => 3600, // We manually specify a number of seconds here instead of a \Cherrycake\Modules\CACHE_TTL_* constant to avoid dependency with the Cache module
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3]
 	];
 

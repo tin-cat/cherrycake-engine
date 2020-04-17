@@ -9,7 +9,7 @@ namespace Cherrycake;
 /**
  * Class that represents a list of SystemLogEvent objects
  *
- * @package CherrycakeApp
+ * @package Cherrycake
  * @category Classes
  */
 class SystemLogEvents extends \Cherrycake\Items {

@@ -193,7 +193,7 @@ class Engine {
 	 * @return array The App module names that implement the specified method
 	 */
 	function getAvailableAppModuleNamesWithMethod($methodName) {
-		return $this->getAvailableModuleNamesWithMethod("CherrycakeApp\Modules", APP_MODULES_DIR, $methodName);
+		return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", APP_MODULES_DIR, $methodName);
 	}
 	/*
 	 * @param string $nameSpace The namespace to use
@@ -276,7 +276,7 @@ class Engine {
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	function loadAppModule($moduleName) {
-		return $this->loadModule(APP_MODULES_DIR, CONFIG_DIR, $moduleName, $this->appNamespace);
+		return $this->loadModule(APP_MODULES_DIR, CONFIG_DIR, $moduleName, $this->getAppNamespace());
 	}
 
 	/**
@@ -494,13 +494,12 @@ class Engine {
     }
 
 	/**
-	 * Ends the application
+	 * Ends the application by calling the end methods of all the loaded modules.
 	 */
 	function end() {
 		if (is_array($this->loadedModules))
 			foreach ($this->loadedModules as $moduleName)
 				$this->$moduleName->end();
-		$this->clearCache();
 		die;
 	}
 }
