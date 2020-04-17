@@ -97,9 +97,9 @@ class Engine {
 	/**
 	 * Initializes the engine
 	 *
-	 * Setup keys:
+	 * @param string $appNamespace The namespace of the app.
+	 * @param array $setup The initial engine configuration information, with the following possible keys
 	 *
-	 * * appNamespace: The App namespace
 	 * * appName: The App name
 	 * * isDevel: Whether the App is in development mode or not
 	 * * isUnderMaintenance: Whether the App is under maintenance or not
@@ -108,14 +108,13 @@ class Engine {
 	 * * appClassesDir: The directory where app classes are stored
 	 * * timezoneName: The system's timezone. All modules, including Database for date/time retrievals/saves will be made taking this timezone into account. The server is expected to run on this timezone. Standard "Etc/UTC" is recommended.
 	 * * timezoneId: The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
-	 * * baseCherrycakeModules: An ordered array of the base Cherrycake module names that has to be always loaded on application start. These must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
+	 * * baseCherrycakeModules: An ordered array of the base Cherrycake module names that has to be always loaded on application start. This list must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
 	 * * additionalAppConfigFiles: An ordered array of any additional App config files to load that are found under the App config directory
 	 *
-	 * @param array $setup The initial engine configuration information.
 	 * @return boolean Whether all the modules have been loaded ok
 	 */
-	function init($setup) {
-		$this->appNamespace = $setup["appNamespace"];
+	function init($appNamespace, $setup = false) {
+		$this->appNamespace = $appNamespace;
 		
 		foreach ([
 			"appName",
@@ -143,11 +142,15 @@ class Engine {
 		if (isset($setup["additionalAppConfigFiles"]))
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
 				require APP_DIR."/config/".$additionalAppConfigFile;
+		
+		if (isset($setup["baseCherrycakeModules"]) && !in_array("Actions", $setup["baseCherrycakeModules"])) {
+			trigger_error("At least the Actions module must be loaded in baseCherrycakeModules");
+			return false;
+		}
 
-		if (isset($setup["baseCherrycakeModules"]))
-			foreach ($setup["baseCherrycakeModules"] as $module)
-				if (!$this->loadCherrycakeModule($module))
-					return false;
+		foreach ($setup["baseCherrycakeModules"] ?? ["Actions"] as $module)
+			if (!$this->loadCherrycakeModule($module))
+				return false;
 
 		return true;
 	}
