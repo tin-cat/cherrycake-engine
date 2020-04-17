@@ -122,7 +122,7 @@ class Css extends \Cherrycake\Module {
 		$this->addSet(
 			"cherrycakemain",
 			[
-				"directory" => LIB_DIR."/res/css/main"
+				"directory" => ENGINE_DIR."/res/css/main"
 			]
 		);
 

@@ -60,6 +60,8 @@ function handleError(
 	$errContext = false,
 	$stack = false
 ) {
+	global $e;
+
 	// Build error backtrace array
 	$backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT & DEBUG_BACKTRACE_IGNORE_ARGS);
 
@@ -73,13 +75,13 @@ function handleError(
 	if (IS_CLI) {
 		echo
 			\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-			\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".
+			\Cherrycake\ANSI_WHITE.$e->getAppName()." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".
 			\Cherrycake\ANSI_NOCOLOR.
 			\Cherrycake\ANSI_DARK_GRAY."Message: ".\Cherrycake\ANSI_WHITE.$errStr."\n".
 			\Cherrycake\ANSI_DARK_GRAY."File: ".\Cherrycake\ANSI_WHITE.$errFile."\n".
 			\Cherrycake\ANSI_DARK_GRAY."Line: ".\Cherrycake\ANSI_WHITE.$errLine."\n".
 			\Cherrycake\ANSI_NOCOLOR.
-			(IS_DEVEL_ENVIRONMENT ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+			($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 
 		exit();
 	}
@@ -255,7 +257,6 @@ function handleError(
 
 	if ($errFile) {
 		
-		global $e;
 		// Check specific error for pattern parsing in order to show later the pattern itself
 		if (
 			(
@@ -403,11 +404,11 @@ function handleError(
 				break;
 
 			case "Cherrycake\ActionAjax":
-				if (IS_DEVEL_ENVIRONMENT) {
+				if ($e->isDevel()) {
 					$ajaxResponseJson = new \Cherrycake\AjaxResponseJson([
 						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
 						"description" =>
-							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
 								E_WARNING => "Warning",
 								E_PARSE => "Parse error",
@@ -443,11 +444,11 @@ function handleError(
 				break;
 			
 			default:
-				if (IS_DEVEL_ENVIRONMENT) {
+				if ($e->isDevel()) {
 					$response = new \Cherrycake\ResponseTextHtml([
 						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
-							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
 								E_WARNING => "Warning",
 								E_PARSE => "Parse error",

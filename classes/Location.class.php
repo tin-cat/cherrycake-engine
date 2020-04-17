@@ -8,6 +8,10 @@
 
 namespace Cherrycake;
 
+const LOCATION_DATABASE_PROVIDER_NAME = "main"; // The name of the DatabaseProvider to use when requesting location data from the Database, as defined in database.config.php
+const LOCATION_CACHE_PROVIDER_NAME = "fast"; // The name of the CacheProvider to use, as defined in cache.config.php
+const LOCATION_CACHE_TTL = 2592000; // TTL For the location data (2592000 = 1 Month)
+
 /**
  * Location
  *

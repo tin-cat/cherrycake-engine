@@ -40,7 +40,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	 * Connects to the cache provider if needed. Intended to be overloaded by a higher level cache system implementation class.
 	 */
 	function connect() {
-		require_once LIB_DIR."/vendor/autoload.php";
+		require_once ENGINE_DIR."/vendor/autoload.php";
 		\Predis\Autoloader::register();
 
 		$this->client = new \Predis\Client(

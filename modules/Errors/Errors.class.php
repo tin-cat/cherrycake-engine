@@ -18,7 +18,7 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
  *
  * Module to manage application errors in a neat way.
  * It takes configuration from the App-layer configuration file.
- * Errors will be shown on screen if IS_DEVEL_ENVIRONMENT is set to true or if client's IP is on $underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
+ * Errors will be shown on screen if isDevel is set to true or if client's IP is on underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
  *
  * Configuration example for patterns.config.php:
  * <code>
@@ -38,7 +38,7 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
  *  "isEmailAppErrors" => false, // Whether or not to email app errors. Defaults to false
  *  "isEmailNotFoundErrors" => false, // Whether or not to email "Not found" errors. Defaults to false
  *  "isEmailNoPermissionErrors" => false, // Whether or not to email "No permission" errors. Defaults to false
- *  "notificationEmail" => ADMIN_TECHNICAL_EMAIL // The email address to send the error report. Defaults to ADMIN_TECHNICAL_EMAIL
+ *  "notificationEmail" => false // The email address to send the error report.
  * ];
  * </code>
  *
@@ -163,7 +163,7 @@ class Errors extends \Cherrycake\Module {
 				"backtrace" => implode("<br>Backtrace: ", $backtrace_info)
 			]);
 
-		if (isset($setup["isSilent"]) && $setup["isSilent"] && !IS_DEVEL_ENVIRONMENT)
+		if (isset($setup["isSilent"]) && $setup["isSilent"] && !$e->isDevel())
 			return;
 
 		$patternNames = $this->getConfig("patternNames");
@@ -171,7 +171,7 @@ class Errors extends \Cherrycake\Module {
 		if (IS_CLI) {
 			echo
 				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-				\Cherrycake\ANSI_WHITE.\Cherrycake\APP_NAME." ".[
+				\Cherrycake\ANSI_WHITE.$e->getAppName()." ".[
 					ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
 					ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
 					ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
@@ -185,7 +185,7 @@ class Errors extends \Cherrycake\Module {
 					substr(print_r($setup["errorVariables"], true), 8, -3).
 					"\n"
 				: null).
-				(IS_DEVEL_ENVIRONMENT ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+				($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 				\Cherrycake\ANSI_NOCOLOR;
 			return;
 		}
@@ -233,7 +233,7 @@ class Errors extends \Cherrycake\Module {
 					);
 				}
 				else {
-					if (IS_DEVEL_ENVIRONMENT) {
+					if ($e->isDevel()) {
 						if ($this->getConfig("isHtmlOutput")) {
 
 							$errorVariables = "";
@@ -266,11 +266,11 @@ class Errors extends \Cherrycake\Module {
 
 			case "ajax":
 			
-				if (IS_DEVEL_ENVIRONMENT) {
+				if ($e->isDevel()) {
 					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
 						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
 						"description" =>
-							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+							"Cherrycake Error / ".$e->getAppName()." / ".[
 								ERROR_SYSTEM => "System error",
 								ERROR_APP => "App error",
 								ERROR_NOT_FOUND => "Not found",
@@ -295,11 +295,11 @@ class Errors extends \Cherrycake\Module {
 				break;
 			
 			case "plain":
-				if (IS_DEVEL_ENVIRONMENT) {
+				if ($e->isDevel()) {
 					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
 						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
-							"Cherrycake Error / ".\Cherrycake\APP_NAME." / ".[
+							"Cherrycake Error / ".$e->getAppName()." / ".[
 								ERROR_SYSTEM => "System error",
 								ERROR_APP => "App error",
 								ERROR_NOT_FOUND => "Not found",

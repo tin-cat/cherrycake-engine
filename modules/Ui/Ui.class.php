@@ -61,14 +61,14 @@ class Ui extends \Cherrycake\Module {
 		$e->Css->addSet(
 			"cherrycakeUiComponents",
 			[
-				"directory" => LIB_DIR."/res/css/uicomponents"
+				"directory" => ENGINE_DIR."/res/css/uicomponents"
 			]
 		);
 
 		$e->Javascript->addSet(
 			"cherrycakeUiComponents",
 			[
-				"directory" => LIB_DIR."/res/javascript/uicomponents"
+				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
 			]
 		);
 

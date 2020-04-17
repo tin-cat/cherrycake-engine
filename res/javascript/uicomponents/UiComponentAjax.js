@@ -25,7 +25,7 @@ function ajaxQuery(url, setup) {
 		processData: setup.processData,
 		error: function(jqXHR, textStatus, errorThrown) {
 			<?php
-				if (IS_DEVEL_ENVIRONMENT) {
+				if ($e->isDevel()) {
 					?>	
 						$('#UiComponentNotice').UiComponentNotice('open', [
 							'<div style="text-align: left;">' + 

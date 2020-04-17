@@ -44,8 +44,9 @@ class Module {
 	 */
 	function loadConfigFile() {
 		if ($this->isConfigFile) {
+			global $e;
 			$className = substr(get_class($this), strrpos(get_class($this), "\\")+1);
-			$fileName = CONFIG_DIR."/".$className.".config.php";
+			$fileName = $e->getConfigDir()."/".$className.".config.php";
 			if (!file_exists($fileName))
 				return;
 			include $fileName;

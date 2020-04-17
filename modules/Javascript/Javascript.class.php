@@ -100,7 +100,7 @@ class Javascript extends \Cherrycake\Module {
 		$this->addSet(
 			"cherrycakemain",
 			[
-				"directory" => LIB_DIR."/res/javascript/main"
+				"directory" => ENGINE_DIR."/res/javascript/main"
 			]
 		);
 

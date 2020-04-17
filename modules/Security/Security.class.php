@@ -687,7 +687,7 @@ class Security extends \Cherrycake\Module {
 	 * @return string The cleaned string
 	 */
 	function clean($string) {
-		require_once LIB_DIR."/vendor/autoload.php";
+		require_once ENGINE_DIR."/vendor/autoload.php";
 		$config = \HTMLPurifier_Config::createDefault();
 
 		$config->set('Core.Encoding', 'UTF-8');

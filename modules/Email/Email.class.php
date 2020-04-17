@@ -57,7 +57,7 @@ class Email extends \Cherrycake\Module {
      */
 	function send($tos, $subject, $setup) {
         set_time_limit(30);
-        require_once LIB_DIR."/vendor/autoload.php";
+        require_once ENGINE_DIR."/vendor/autoload.php";
         $this->phpMailer = new \PHPMailer\PHPMailer\PHPMailer(true);
         try {
             

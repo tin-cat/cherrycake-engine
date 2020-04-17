@@ -52,8 +52,9 @@ class UiComponent extends BasicObject {
 	 */
 	function loadConfigFile() {
 		if ($this->isConfigFile) {
+			global $e;
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-			$fileName = CONFIG_DIR."/UiComponents/".$className.".config.php";
+			$fileName = $e->getConfigDir()."/UiComponents/".$className.".config.php";
 			if (!file_exists($fileName))
 				return;
 			include $fileName;

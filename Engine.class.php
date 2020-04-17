@@ -35,9 +35,54 @@ const ANSI_WHITE = "\033[1;37m";
  */
 class Engine {
 	/**
-	 * @var string $appNamespace Holds the namespace for the specific App, it is set in the Init method
+	 * @var string $appNamespace The namespace of the App
 	 */
 	private $appNamespace;
+
+	/**
+	 * @var string $appName The name of the App
+	 */
+	private $appName = "CherrycakeApp";
+
+	/**
+	 * @var bool $isDevel Whether the App is in development environment or not
+	 */
+	private $isDevel = false;
+
+	/**
+	 * @var bool $isUnderMaintenance Whether the App is under maintenance or not
+	 */
+	private $isUnderMaintenance = false;
+
+	/**
+	 * @var array $underMaintenanceExceptionIps An array of IPs that will be considered as exceptions to the "under maintenance" mode when connecting
+	 */
+	private $underMaintenanceExceptionIps = [];
+
+	/**
+	 * @var string $configDir The App directory where configuration files reside
+	 */
+	private $configDir = "config";
+
+	/**
+	 * @var string $appModulesDir The App directory where app modules reside
+	 */
+	private $appModulesDir = "modules";
+
+	/**
+	 * @var string $appClassesDir The App directory where app classes reside
+	 */
+	private $appClassesDir = "classes";
+
+	/**
+	 * @var string $timeZone The system's timezone. All modules, including Database for date/time retrievals/saves will be made taking this timezone into account. The server is expected to run on this timezone. Standard "Etc/UTC" is recommended.
+	 */
+	private $timezoneName = "Etc/UTC";
+
+	/**
+	 * @var int $timezoneId The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
+	 */
+	private $timezoneId = "532";
 
 	/**
 	 * @var Cache $cache Holds the bottom-level Cache object
@@ -54,7 +99,15 @@ class Engine {
 	 *
 	 * Setup keys:
 	 *
-	 * * namespace: Specifies the App namespace
+	 * * appNamespace: The App namespace
+	 * * appName: The App name
+	 * * isDevel: Whether the App is in development mode or not
+	 * * isUnderMaintenance: Whether the App is under maintenance or not
+	 * * configDir: The directory where configuration files are stored
+	 * * appModulesDir: The directory where app modules are stored
+	 * * appClassesDir: The directory where app classes are stored
+	 * * timezoneName: The system's timezone. All modules, including Database for date/time retrievals/saves will be made taking this timezone into account. The server is expected to run on this timezone. Standard "Etc/UTC" is recommended.
+	 * * timezoneId: The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
 	 * * baseCherrycakeModules: An ordered array of the base Cherrycake module names that has to be always loaded on application start. These must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
 	 * * additionalAppConfigFiles: An ordered array of any additional App config files to load that are found under the App config directory
 	 *
@@ -62,17 +115,30 @@ class Engine {
 	 * @return boolean Whether all the modules have been loaded ok
 	 */
 	function init($setup) {
-		if (\Cherrycake\isUnderMaintenance()) {
+		$this->appNamespace = $setup["appNamespace"];
+		
+		foreach ([
+			"appName",
+			"isDevel",
+			"isUnderMaintenance",
+			"configDir",
+			"appModulesDir",
+			"appClassesDir",
+			"timezoneName",
+			"timezoneId"
+		] as $key)
+			if (isset($setup[$key]))
+				$this->$key = $setup[$key];
+
+		if ($this->isUnderMaintenance()) {
 			header("HTTP/1.1 503 Service Temporarily Unavailable");
 			echo file_get_contents("errors/maintenance.html");
 			die;
 		}
 		
-		date_default_timezone_set(TIMEZONENAME);
+		date_default_timezone_set($this->getTimezoneName());
 
-		require LIB_DIR."/Module.class.php";
-
-		$this->appNamespace = $setup["namespace"];
+		require ENGINE_DIR."/Module.class.php";
 
 		if ($setup["additionalAppConfigFiles"])
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
@@ -93,7 +159,8 @@ class Engine {
 	 * @return string The string cache key
 	 */
 	private function buildCacheKey($key) {
-		return "CherrycakeEngine_".APP_NAME."_".is_array($key) ? implode("_", $key) : $key;
+		global $e;
+		return "CherrycakeEngine_".$e->getAppName()."_".is_array($key) ? implode("_", $key) : $key;
 	}
 
 	/**
@@ -109,8 +176,9 @@ class Engine {
 			return false;
 		$keys = $this->cacheGetKeys();
 		if (!$keys || !in_array($key, $keys)) {
+			global $e;
 			$keys[] = $key;
-			return apcu_store("CherrycakeEngine_".APP_NAME."_CachedKeys", serialize($keys), 0);
+			return apcu_store("CherrycakeEngine_".$e->getAppName()."_CachedKeys", serialize($keys), 0);
 		}
 		return true;
 	}
@@ -132,7 +200,8 @@ class Engine {
 	 * @return mixed An array of all the key names that have been stored in cache for this App, or false on failure.
 	 */
 	private function cacheGetKeys() {
-		$value = apcu_fetch("CherrycakeEngine_".APP_NAME."_CachedKeys");
+		global $e;
+		$value = apcu_fetch("CherrycakeEngine_".$e->getAppName()."_CachedKeys");
 		if ($value === false)
 			return false;
 		return $value === false ? false : unserialize($value);
@@ -170,14 +239,14 @@ class Engine {
 	 * @return array All the available Cherrycake module names
 	 */
 	function getAvailableCherrycakeModuleNames() {
-		return $this->getAvailableModuleNamesOnDirectory(LIB_DIR."/modules");
+		return $this->getAvailableModuleNamesOnDirectory(ENGINE_DIR."/modules");
 	}
 
 	/**
 	 * @return array All the available App module names
 	 */
 	function getAvailableAppModuleNames() {
-		return $this->getAvailableModuleNamesOnDirectory(APP_MODULES_DIR);
+		return $this->getAvailableModuleNamesOnDirectory($this->getAppModulesDir());
 	}
 
 	/**
@@ -185,7 +254,7 @@ class Engine {
 	 * @return array The Cherrycake module names that implement the specified method
 	 */
 	function getAvailableCherrycakeModuleNamesWithMethod($methodName) {
-		return $this->getAvailableModuleNamesWithMethod("Cherrycake\Modules", LIB_DIR."/modules", $methodName);
+		return $this->getAvailableModuleNamesWithMethod("Cherrycake\Modules", ENGINE_DIR."/modules", $methodName);
 	}
 
 	/**
@@ -193,7 +262,7 @@ class Engine {
 	 * @return array The App module names that implement the specified method
 	 */
 	function getAvailableAppModuleNamesWithMethod($methodName) {
-		return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", APP_MODULES_DIR, $methodName);
+		return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", $this->getAppModulesDir(), $methodName);
 	}
 	/*
 	 * @param string $nameSpace The namespace to use
@@ -203,7 +272,7 @@ class Engine {
 	 */
 	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
 		$cacheKey = ["AvailableModuleNamesWithMethod", $nameSpace, $modulesDirectory, $methodName];
-		$cacheTtl = IS_DEVEL_ENVIRONMENT ? 3 : 600;
+		$cacheTtl = $this->isDevel() ? 3 : 600;
 
 		$modulesWithMethod = $this->cacheFetch($cacheKey);
 		if (is_array($modulesWithMethod))
@@ -258,6 +327,63 @@ class Engine {
 	}
 
 	/**
+	 * @return string The name of the App
+	 */
+	function getAppName() {
+		return $this->appName;
+	}
+
+	/**
+	 * @return bool Whether the App is in development mode or not
+	 */
+	function isDevel() {
+		return $this->isDevel;
+	}
+
+	/**
+	 * @return bool Whether the App is in "under maintenance" mode for the current client or not
+	 */
+	function isUnderMaintenance() {
+		global $underMaintenanceExceptionIps;
+		return $this->isUnderMaintenance && !in_array($_SERVER["REMOTE_ADDR"], $this->underMaintenanceExceptionIps);
+	}
+
+	/**
+	 * @return string The App directory where configuration files reside
+	 */
+	function getConfigDir() {
+		return APP_DIR."/".$this->configDir;
+	}
+
+	/**
+	 * @return string The App directory where app modules reside
+	 */
+	function getAppModulesDir() {
+		return APP_DIR."/".$this->appModulesDir;
+	}
+
+	/**
+	 * @return string The App directory where app classes reside
+	 */
+	function getAppClassesDir() {
+		return APP_DIR."/".$this->appClassesDir;
+	}
+
+	/**
+	 * @return string A string that identifies the system timezone
+	 */
+	function getTimezoneName() {
+		return $this->timezoneName;
+	}
+
+	/**
+	 * @return integer The system timezone id matching the one in the cherrycake timezones database table
+	 */
+	function getTimezoneId() {
+		return $this->timezoneId;
+	}
+
+	/**
 	 * Specific method to load a Cherrycake module. Cherrycake modules are classes extending the module class that provide engine-specific functionalities.
 	 *
 	 * @param string $moduleName The name of the module to load
@@ -265,7 +391,7 @@ class Engine {
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	function loadCherrycakeModule($moduleName) {
-		return $this->loadModule(LIB_DIR."/modules", CONFIG_DIR, $moduleName, __NAMESPACE__);
+		return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__);
 	}
 
 	/**
@@ -276,7 +402,7 @@ class Engine {
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	function loadAppModule($moduleName) {
-		return $this->loadModule(APP_MODULES_DIR, CONFIG_DIR, $moduleName, $this->getAppNamespace());
+		return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace());
 	}
 
 	/**
@@ -339,10 +465,10 @@ class Engine {
 	/**
 	 * Loads a Cherrycake-specific class. Cherrycake classes are any other classes that are not modules, nor related to any Cherrycake module.
 	 *
-	 * @param $className The name of the class to load, must be stored in LIB_DIR/[class name].class.php
+	 * @param $className The name of the class to load, must be stored in ENGINE_DIR/[class name].class.php
 	 */
 	function loadCherrycakeClass($className) {
-		include_once(LIB_DIR."/".$className.".class.php");
+		include_once(ENGINE_DIR."/".$className.".class.php");
 	}
 
 	/**
@@ -352,16 +478,16 @@ class Engine {
 	 * @param $className The name of the class
 	 */
 	function loadCherrycakeModuleClass($moduleName, $className) {
-		include_once(LIB_DIR."/modules/".$moduleName."/".$className.".class.php");
+		include_once(ENGINE_DIR."/modules/".$moduleName."/".$className.".class.php");
 	}
 
 	/**
 	 * Loads an app-specific class. App classes are any other classes that are not directly related to a module.
 	 *
-	 * @param string $className The name of the class to load, must be stored in APP_CLASSES_DIR/[class name].class.php
+	 * @param string $className The name of the class to load, must be stored in appClassesDir/[class name].class.php
 	 */
 	function loadAppClass($className) {
-		include_once(APP_CLASSES_DIR."/".$className.".class.php");
+		include_once($this->getAppClassesDir()."/".$className.".class.php");
 	}
 
 	/**
@@ -371,7 +497,7 @@ class Engine {
 	 * @param string $className The name of the class
 	 */
 	function loadAppModuleClass($moduleName, $className) {
-		include_once(APP_MODULES_DIR."/".$moduleName."/".$className.".class.php");
+		include_once($this->getAppModulesDir()."/".$moduleName."/".$className.".class.php");
 	}
 
 	/**
@@ -383,7 +509,7 @@ class Engine {
 		$cherrycakeModuleNames = $this->getAvailableCherrycakeModuleNamesWithMethod($methodName);
 		if (is_array($cherrycakeModuleNames)) {
 			foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
-				$this->includeModuleClass(LIB_DIR."/modules", $cherrycakeModuleName);
+				$this->includeModuleClass(ENGINE_DIR."/modules", $cherrycakeModuleName);
 				forward_static_call(["\\Cherrycake\\Modules\\".$cherrycakeModuleName, $methodName]);
 			}
 			reset($cherrycakeModuleNames);
@@ -392,7 +518,7 @@ class Engine {
 		$appModuleNames = $this->getAvailableAppModuleNamesWithMethod($methodName);
 		if (is_array($appModuleNames)) {
 			foreach ($appModuleNames as $appModuleName) {
-				$this->includeModuleClass(\Cherrycake\APP_MODULES_DIR, $appModuleName);
+				$this->includeModuleClass($this->getAppModulesDir(), $appModuleName);
 				forward_static_call(["\\".$this->getAppNamespace()."\\Modules\\".$appModuleName, $methodName]);
 			}
 			reset($appModuleNames);
@@ -508,6 +634,7 @@ class Engine {
  * Defines an autoloader for requested classes, to allow the automatic inclusion of class files when they're needed. It distinguishes from Cherrycake classes and App classes by checking the namespace
  */
 spl_autoload_register(function ($className) {
+	global $e;
 	$namespace = strstr($className, "\\", true);
 
 	// If autoload for Predis namespace is requested, don't do it. Exception for performance only.
@@ -518,19 +645,11 @@ spl_autoload_register(function ($className) {
 	$fileName = str_replace("\\", "/", substr(strstr($className, "\\"), 1)).".class.php";
 
 	if ($namespace == "Cherrycake")
-		include LIB_DIR."/classes/".$fileName;
+		include ENGINE_DIR."/classes/".$fileName;
 	else
-	if (file_exists(APP_CLASSES_DIR."/".$fileName))
-		include APP_CLASSES_DIR."/".$fileName;
+	if (file_exists($e->getAppClassesDir()."/".$fileName))
+		include $e->getAppClassesDir()."/".$fileName;
 });
-
-/**
- * @return bool Whether the app is currently under maintenance or not. Takes also into account the exception IPs
- */
-function isUnderMaintenance() {
-	global $underMaintenanceExceptionIps;
-	return IS_UNDER_MAINTENANCE && !in_array($_SERVER["REMOTE_ADDR"], $underMaintenanceExceptionIps);
-}	
 
 /**
  * A helper function that prints out a variable for debugging purposes

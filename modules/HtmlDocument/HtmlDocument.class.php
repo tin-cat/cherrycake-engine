@@ -329,10 +329,10 @@ class HtmlDocument extends \Cherrycake\Module {
 
 		$r = "";
 
-		if ($this->getConfig("googleAnalyticsTrackingId") && !IS_DEVEL_ENVIRONMENT)
+		if ($this->getConfig("googleAnalyticsTrackingId") && !$e->isDevel())
 			$r .= $this->getGoogleAnalyticsCode($this->getConfig("googleAnalyticsTrackingId"));
 
-		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !IS_DEVEL_ENVIRONMENT)
+		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !$e->isDevel())
 			$r .= $this->getMatomoCode($this->getConfig("matomoServerUrl"), $this->getConfig("matomoTrackingId"));
 		
 		if ($this->getFooterAdditionalHtml())

@@ -23,9 +23,10 @@ class Cache {
 	 * @return string The cache key
 	 */
 	function buildKey($id) {
+		global $e;
 		return
 			"Cherrycake_".
-			APP_NAME."_".
+			$e->getAppName()."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}
 
@@ -35,9 +36,10 @@ class Cache {
 	 * @return string The cache key
 	 */
 	function buildKeyForBucket($bucket, $id) {
+		global $e;
 		return
 			"Cherrycake_".
-			APP_NAME."_".
+			$e->getAppName()."_".
 			$bucket."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}

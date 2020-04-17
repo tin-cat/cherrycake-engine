@@ -53,10 +53,10 @@ class JanitorTask
 	 * Loads the configuration file for this JanitorTask, if there's one
 	 */
 	function loadConfigFile() {
-		if ($this->isConfigFile)
-		{
+		if ($this->isConfigFile) {
+			global $e;
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-			include CONFIG_DIR."/Janitor/".$className.".config.php";
+			include $e->getConfigDir()."/Janitor/".$className.".config.php";
 			if (isset(${$className."Config"}))
 				$this->config(${$className."Config"});
 		}

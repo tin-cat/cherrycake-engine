@@ -335,7 +335,7 @@ class Locale extends \Cherrycake\Module
 					"errorVariables" => ["code" => $code],
 					"isSilent" => true
 				]);
-				return (IS_DEVEL_ENVIRONMENT ? "Locale text \"".$code."\" not found" : null);
+				return ($e->isDevel() ? "Locale text \"".$code."\" not found" : null);
 			}
 
 			$row = $result->getRow();
@@ -475,7 +475,7 @@ class Locale extends \Cherrycake\Module
 		global $e;
 
 		if (!$timezone)
-			$timezone = \Cherrycake\TIMEZONEID;
+			$timezone = $e->getTimezoneId();
 
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => $this->getConfig("timeZonesCacheKeyPrefix"),
@@ -494,7 +494,7 @@ class Locale extends \Cherrycake\Module
 					"errorVariables" => ["timezone" => $timezone],
 					"isSilent" => true
 				]);
-				return \Cherrycake\TIMEZONENAME;
+				return $e->getTimezoneName();
 			}
 
 			$row = $result->getRow();
@@ -522,8 +522,10 @@ class Locale extends \Cherrycake\Module
 		if (!$timestamp)
 			return false;
 		
-		if (!$fromTimeZone)
-			$fromTimeZone = \Cherrycake\TIMEZONEID;
+		if (!$fromTimeZone) {
+			global $e;
+			$fromTimeZone = $e->getTimezoneId();
+		}
 
 		if (!$toTimeZone)
 			$toTimeZone = $this->getTimeZone();
@@ -570,8 +572,10 @@ class Locale extends \Cherrycake\Module
 	 */
 	function formatTimestamp($timestamp, $setup = false) {
 		// If no fromTimeZone specified for the given timestamp, the engine TIMEZONE is assumed
-		if (!isset($setup["fromTimeZone"]))
-			$setup["fromTimeZone"] = \Cherrycake\TIMEZONEID;
+		if (!isset($setup["fromTimeZone"])) {
+			global $e;
+			$setup["fromTimeZone"] = $e->getTimezoneId();
+		}
 
 		if (!isset($setup["style"]))
 			$setup["style"] = \Cherrycake\Modules\TIMESTAMP_FORMAT_BASIC;
