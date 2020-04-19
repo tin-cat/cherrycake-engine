@@ -52,7 +52,7 @@ class Request {
 	function __construct($setup = false) {
 		$this->isSecurityCsrf = isset($setup["isSecurityCsrf"]) ? $setup["isSecurityCsrf"] : false;
 
-		if ($this->isSecurityCsrf()) {
+		if ($this->isSecurityCsrf()) {			
 			global $e;
 			$setup["parameters"][] = new \Cherrycake\RequestParameter([
 				"name" => "csrfToken",
@@ -390,42 +390,33 @@ class Request {
 	}
 
 	/**
-	 * debug
-	 *
-	 * @return string Debug info about this Request
+	 * @return array Status information
 	 */
-	function debug() {
-		$r = "<ul>";
-
+	function getStatus() {
+		$r["brief"] = "";
 		if (is_array($this->pathComponents)) {
-			$r .= "<li><b>Path components</b>:";
-			foreach ($this->pathComponents as $pathComponent)
-				$r .= $pathComponent->debug();
+			foreach ($this->pathComponents as $pathComponent) {
+				$pathComponentsStatus[] = $pathComponent->getStatus()["brief"];
+				$r["pathComponents"][] = $pathComponent->getStatus();
+			}
 			reset($this->pathComponents);
-			$r .= "</li>";
+			$r["brief"] .= implode("/", $pathComponentsStatus);
 		}
 		else
-			$r .= "<li>No path components</li>";
+			$r["brief"] .= "/";
 
-		if (is_array($this->parameters)) {
-			$r .= "<li><b>Parameters</b>:";
-			foreach ($this->parameters as $parameter)
-				$r .= $parameter->debug();
+		if ($this->parameters) {
+			$r["brief"] .= " ";
+			foreach ($this->parameters as $parameter) {
+				$parametersStatus[] = $parameter->getStatus()["brief"];
+				$r["parameters"][] = $parameter->getStatus();
+			}
+			$r["brief"] .= "(".implode(" ", $parametersStatus).")";
 			reset($this->parameters);
-			$r .= "</li>";
 		}
-		else
-			$r .= "<li>No parameters</li>";
-
-		if (is_array($this->cacheAdditionalCacheKeys)) {
-			$r .= "<li><b>cacheAdditionalCacheKeys:</b><ul>";
-			while (list($key, $value) = each($this->cacheAdditionalCacheKeys))
-				$r .= "<li><b>".$key.":</b> ".$value."</li>";
-			$r .= "</ul></li>";
-			reset($this->cacheAdditionalCacheKeys);
-		}
-
-		$r .= "</ul>";
+		
+		if (is_array($this->cacheAdditionalCacheKeys))
+			$r["cacheAdditionalCacheKeys"] = $this->cacheAdditionalCacheKeys;
 
 		return $r;
 	}

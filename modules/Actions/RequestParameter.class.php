@@ -116,29 +116,22 @@ class RequestParameter {
 	}
 
 	/**
-	 * debug
-	 *
-	 * @return string Debug info about this RequestParameter
+	 * @return array Status information
 	 */
-	function debug() {
-		$r = "<ul>";
-		$r .= "<li><b>Name:</b> ".($this->name ? $this->name : "unnamed")."</li>";
-		$r .= "<li><b>Value:</b> ".($this->value ? $this->value : "none")."</li>";
+	function getStatus() {
+		$r["brief"] = $this->name."=".($this->value ?? "none");
+		$r["name"] = $this->name ?? "unnamed";
+		$r["value"] = $this->value ?? "none";
 		if ($this->securityRules) {
-			$r .= "<li><b>Security rules:</b><ul>";
 			foreach ($this->securityRules as $securityRule)
-				$r .= "<li>".$securityRule."</li>";
-			$r .= "</ul>";
+				$r["securityRules"][] = $securityRule;
 			reset($this->securityRules);
 		}
 		if ($this->filters) {
-			$r .= "<li><b>Filters:</b><ul>";
 			foreach ($this->filters as $filter)
-				$r .= "<li>".$filter."</li>";
-			$r .= "</ul>";
+				$r["filters"][] = $filter;
 			reset($this->filters);
 		}
-		$r .= "</ul>";
 		return $r;
 	}
 }

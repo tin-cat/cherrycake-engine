@@ -72,7 +72,7 @@ function handleError(
 			(isset($backtrace[$i]["class"]) ? " ".$backtrace[$i]["class"] : null).
 			(isset($backtrace[$i]["function"]) ? "::".$backtrace[$i]["function"] : null);
 
-	if (IS_CLI) {
+	if (defined("STDIN")) {
 		echo
 			\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
 			\Cherrycake\ANSI_WHITE.$e->getAppName()." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".

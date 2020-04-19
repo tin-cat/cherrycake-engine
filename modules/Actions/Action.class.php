@@ -202,22 +202,21 @@ class Action {
 	}
 
 	/**
-	 * debug
-	 *
-	 * @return string Debug info about this Action
+	 * @return array Status information
 	 */
-	function debug() {
-		$r = "<ul>";
-		$r .= "<li><b>moduleName:</b> ".$this->moduleName."</li>";
-		$r .= "<li><b>methodName:</b> ".$this->methodName."</li>";
-		$r .= "<li><b>isCache:</b> ".($this->isCache ? "Yes" : "No")."</li>";
+	function getStatus() {
+		$r = [
+			"brief" => $this->moduleName."::".$this->methodName." ".$this->request->getStatus()["brief"],
+			"moduleName" => $this->moduleName,
+			"methodName" => $this->methodName,
+			"isCache" => $this->isCache
+		];
 		if ($this->isCache) {
-			$r .= "<li><b>cacheProviderName:</b> ".$this->cacheProviderName."</li>";
-			$r .= "<li><b>cacheTtl:</b> ".$this->cacheTtl."</li>";
-			$r .= "<li><b>cachePrefix:</b> ".$this->cachePrefix."</li>";
+			$r["cacheProviderName"] = $this->cacheProviderName;
+			$r["cacheTtl"] = $this->cacheTtl;
+			$r["cachePrefix"] = $this->cachePrefix;
 		}
-		$r .= "<li><b>Request:</b> ".$this->request->debug()."</li>";
-		$r .= "</ul>";
+		$r["request"] = $this->request->getStatus();
 		return $r;
 	}
 }

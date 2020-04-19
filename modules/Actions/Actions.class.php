@@ -34,7 +34,7 @@ class Actions extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"defaultActionCacheTtl" => 3600, // We manually specify a number of seconds here instead of a \Cherrycake\Modules\CACHE_TTL_* constant to avoid dependency with the Cache module
+		"defaultActionCacheTtl" => 3600, // We manually specify a number of seconds here instead of a \Cherrycake\CACHE_TTL_* constant to avoid dependency with the Cache module
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3]
 	];
 
@@ -42,10 +42,9 @@ class Actions extends \Cherrycake\Module {
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
 	var $dependentCherrycakeModules = [
-		"Output",
+		"Output",		
 		"Errors",
-		"Security",
-		"Validate" // The Validate module is depending on Actions because sometimes we might need the VALIDATE_* validation methods to be specified into the $fields of Items
+		"Security"
 	];
 
 	/**
@@ -182,6 +181,12 @@ class Actions extends \Cherrycake\Module {
 	function run($requestUri) {
 		global $e;
 
+		if ($e->isDevel() && !is_array($this->actions)) {
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+				"errorDescription" => "No mapped actions"
+			]);
+		}
+
 		// Check the currentRequestPath against all mapped actions
 		$currentAction = false;
 		$matchingActions = false;
@@ -244,15 +249,14 @@ class Actions extends \Cherrycake\Module {
 	}
 
 	/**
-	 * debug
-	 *
-	 * @return string Debug information about the configured actions
+	 * @return array Status information
 	 */
-	function debug() {
+	function getStatus() {
 		if (is_array($this->actions)) {
-			$r .= "<b>Mapped actions</b><br>";
-			while (list($actionName, $action) = each($this->actions))
-				$r .= "<b>Action name:</b> ".$actionName."<ul>".$action->debug()."</ul>";
+			foreach ($this->actions as $actionName => $action) {
+				$r["mappedActions"][$actionName] = $action->getStatus();
+				$r["brief"]["mappedActions"][$actionName] = $action->getStatus()["brief"];
+			}
 			reset($this->actions);
 		}
 

@@ -43,6 +43,13 @@ class Module {
 	protected $dependentAppModules;
 
 	/**
+	 * @return string This module's name
+	 */
+	function getName() {
+		return substr(get_class($this), strrpos(get_class($this), "\\")+1);
+	}
+
+	/**
 	 * loadConfigFile
 	 *
 	 * Loads the configuration file for this module, if there's one
@@ -50,7 +57,7 @@ class Module {
 	function loadConfigFile() {
 		if ($this->isConfigFile) {
 			global $e;
-			$className = substr(get_class($this), strrpos(get_class($this), "\\")+1);
+			$className = $this->getName();
 			$fileName = $e->getConfigDir()."/".$className.".config.php";
 			if (!file_exists($fileName)) {
 				if ($this->isConfigFileRequired)
@@ -131,12 +138,12 @@ class Module {
 
 		if (is_array($this->dependentCherrycakeModules))
 			foreach ($this->dependentCherrycakeModules as $moduleName)
-				if (!$e->loadCherrycakeModule($moduleName))
+				if (!$e->loadCherrycakeModule($moduleName, $this->getName()))
 					return false;
 
 		if (is_array($this->dependentAppModules))
 			foreach ($this->dependentAppModules as $moduleName)
-				if (!$e->loadAppModule($moduleName))
+				if (!$e->loadAppModule($moduleName, $this->getName()))
 					return false;
 
 		return true;

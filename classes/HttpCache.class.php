@@ -30,7 +30,7 @@ class HttpCache
 	public static function Init($lastModifiedTimestamp, $maxAge = false)
 	{
 		if (!$maxAge)
-			$maxAge = \Cherrycake\Modules\CACHE_TTL_LONGEST;
+			$maxAge = \Cherrycake\CACHE_TTL_LONGEST;
 
 		if (self::IsModifiedSince($lastModifiedTimestamp))
 			self::SetLastModifiedHeader($lastModifiedTimestamp, $maxAge);

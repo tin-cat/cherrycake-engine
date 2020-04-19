@@ -32,7 +32,7 @@ namespace Cherrycake\Modules;
  * $SessionConfig = [
  * "cachePrefix" => "Session", // The cache prefix to use when storing sessions into cache
  * "sessionCacheProviderName" => "huge", // The name of the cache provider to use to store sessions and the counter of created sessions. Must support CacheProviderInterfaceHash
- * "sessionCacheTtl" => \Cherrycake\Modules\CACHE_TTL_SHORT, // The TTL of cached sessions. Should be small because if a session is removed from the database and the user keeps accessing the site with that session, his session will be accepted because it's still in cache.
+ * "sessionCacheTtl" => \Cherrycake\CACHE_TTL_SHORT, // The TTL of cached sessions. Should be small because if a session is removed from the database and the user keeps accessing the site with that session, his session will be accepted because it's still in cache.
  * "sessionDatabaseProviderName" => "main", // The name of the DatabaseProvider to use for storing sessions
  * "sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
  * "cookieName" => "cherrycake", // The name of the cookie. Recommended to be set at the config file level.
@@ -57,7 +57,7 @@ class Session extends \Cherrycake\Module {
 	var $config = [
 		"cachePrefix" => "Session", // The cache prefix to use when storing sessions into cache
 		"sessionCacheProviderName" => "huge", // The name of the cache provider to use to store sessions and the counter of created sessions
-		"sessionCacheTtl" => \Cherrycake\Modules\CACHE_TTL_SHORT, // The TTL of cached sessions.
+		"sessionCacheTtl" => \Cherrycake\CACHE_TTL_SHORT, // The TTL of cached sessions.
 		"sessionDatabaseProviderName" => "main", // The name of the DatabaseProvider to use for storing sessions
 		"sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
 		"cookieName" => "cherrycake", // The name of the cookie. Recommended to be set at the config file level.
@@ -92,8 +92,10 @@ class Session extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
+
+		global $e;
 		
-		if (IS_CLI)
+		if ($e->isCli())
 			return true;
 
 		if ($this->loadSessionCookie()) {
@@ -234,7 +236,7 @@ class Session extends \Cherrycake\Module {
 	function sendSessionCookie($sessionId) {
 		global $e;
 
-		if (IS_CLI)
+		if ($e->isCli())
 			return false;
 
 		if(!setcookie(
@@ -277,7 +279,7 @@ class Session extends \Cherrycake\Module {
 	function removeSessionCookie() {
 		global $e;
 
-		if (IS_CLI)
+		if ($e->isCli())
 			return false;
 
 		if(!setcookie(
@@ -410,7 +412,7 @@ class Session extends \Cherrycake\Module {
 	function isSessionData($key) {
 		global $e;
 
-		if (IS_CLI)
+		if ($e->isCli())
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
@@ -429,7 +431,7 @@ class Session extends \Cherrycake\Module {
 	function getSessionData($key) {
 		global $e;
 
-		if (IS_CLI)
+		if ($e->isCli())
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
@@ -449,7 +451,7 @@ class Session extends \Cherrycake\Module {
 	function setSessionData($key, $value) {
 		global $e;
 
-		if (IS_CLI)
+		if ($e->isCli())
 			return false;
 
 		if (!$this->isSession()) {

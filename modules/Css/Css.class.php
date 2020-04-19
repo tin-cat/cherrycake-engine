@@ -34,8 +34,8 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
  * $cssConfig = [
  * 	"defaultDirectory" => "res/css", // The default directory where CSS files in each CSS set will be searched
  *  "cachePrefix" => "Css", // The prefix to use for storing CSS on the cache
- * 	"cacheTtl" => \Cherrycake\Modules\CACHE_TTL_LONGEST, // The cache TTL for CSS sets
- * 	"cacheProviderName" => "fast", // The cache provider for CSS sets
+ * 	"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The cache TTL for CSS sets
+ * 	"cacheProviderName" => "engine", // The cache provider for CSS sets
  * 	"lastModifiedTimestamp" => 1, // The last modified timestamp of CSS, to handle caches and http cache
  *  "isCache" => false, // Whether to use cache or not
  *  "isHttpCache" => false, // Whether to send HTTP Cache headers or not
@@ -82,11 +82,11 @@ class Css extends \Cherrycake\Module {
 	 */
 	var $config = [
 		"cachePrefix" => "Css",
-		"cacheTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL,
+		"cacheTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"lastModifiedTimestamp" => 1,
 		"isCache" => false,
 		"isHttpCache" => false,
-		"httpCacheMaxAge" => \Cherrycake\Modules\CACHE_TTL_LONGEST,
+		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
 		"isMinify" => true
 	];
 

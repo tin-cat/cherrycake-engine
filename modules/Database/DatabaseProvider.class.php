@@ -48,7 +48,7 @@ class DatabaseProvider {
 	 */
 	protected $config = [
 		"cacheKeyPrefix" => "Database",
-		"cacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL
+		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
 	];
 
 	/**
@@ -171,11 +171,11 @@ class DatabaseProvider {
 	 * <code>
 	 * $result = $e->Database->main->QueryCache(
 	 * 	"select * from stuff order by rand() limit 3", // The query
-	 * 	\Cherrycake\Modules\CACHE_TTL_MINIMAL, // The TTL
+	 * 	\Cherrycake\CACHE_TTL_MINIMAL, // The TTL
 	 * 	[ // A key naming options array
 	 * 		"cacheSpecificPrefix" => "TestQuery"
 	 * 	],
-	 * 	"fast" // A name of a cache provider that overrides the one configured in database.config.php
+	 * 	"engine" // A name of a cache provider that overrides the one configured in database.config.php
 	 * );
 	 * </code>
 	 *

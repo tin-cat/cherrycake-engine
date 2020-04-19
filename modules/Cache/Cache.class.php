@@ -8,30 +8,6 @@
 
 namespace Cherrycake\Modules;
 
-const CACHE_TTL_1_MINUTE = 60;
-const CACHE_TTL_5_MINUTES = 300;
-const CACHE_TTL_10_MINUTES = 600;
-const CACHE_TTL_30_MINUTES = 1800;
-const CACHE_TTL_1_HOUR = 3600;
-const CACHE_TTL_2_HOURS = 7200;
-const CACHE_TTL_6_HOURS = 21600;
-const CACHE_TTL_12_HOURS = 43200;
-const CACHE_TTL_1_DAY = 86400;
-const CACHE_TTL_2_DAYS = 172800;
-const CACHE_TTL_3_DAYS = 259200;
-const CACHE_TTL_5_DAYS = 432000;
-const CACHE_TTL_1_WEEK = 604800;
-const CACHE_TTL_2_WEEKS = 1209600;
-const CACHE_TTL_1_MONTH = 2592000;
-
-const CACHE_TTL_MINIMAL = 10;
-const CACHE_TTL_CRITICAL = CACHE_TTL_1_MINUTE;
-const CACHE_TTL_SHORT = CACHE_TTL_5_MINUTES;
-const CACHE_TTL_NORMAL = CACHE_TTL_1_HOUR;
-const CACHE_TTL_UNCRITICAL = CACHE_TTL_1_DAY;
-const CACHE_TTL_LONG = CACHE_TTL_1_WEEK;
-const CACHE_TTL_LONGEST = CACHE_TTL_1_MONTH;
-
 /**
  * Cache
  *
@@ -50,14 +26,7 @@ class Cache extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
-	protected $isConfigFileRequired = true;
-
-	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
-	 */
-	var $dependentCherrycakeModules = [
-		"Errors"
-	];
+	protected $isConfigFileRequired = false;
 
 	/**
 	 * init
@@ -69,6 +38,21 @@ class Cache extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
+		
+		global $e;
+		
+		// Check that the "engine" cache provider has not been defined previously
+		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
+			$e->loadCherrycakeModule("Errors");
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				"errorDescription" => "The \"engine\" cache provider name is reserved"
+			]);
+		}
+		
+		// Setup the engine cache
+		$this->config["providers"]["engine"] = [
+			"providerClassName" => "CacheProviderApcu"
+		];
 
 		global $e;
 		$e->loadCherrycakeModuleClass("Cache", "CacheProvider");

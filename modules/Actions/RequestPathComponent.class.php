@@ -126,33 +126,26 @@ class RequestPathComponent {
 	}
 
 	/**
-	 * debug
-	 *
-	 * @return string Debug info about this RequestPathComponent
+	 * @return array Status information
 	 */
-	function debug() {
-		$r = "<ul>";
-		$r .= "<li><b>Name:</b> ".($this->name ? $this->name : "unnamed")."</li>";
-		$r .= "<ul>";
-		$r .= "<li><b>Value:</b> ".$this->getValue()."</li>";
-		$r .= "<li><b>Type:</b> ".$this->getTypeName()."</li>";
+	function getStatus() {
+		$r["brief"] = ($this->type == REQUEST_PATH_COMPONENT_TYPE_FIXED ? $this->string : "[".$this->getTypeName()."]");
+		$r["name"] = $this->name ?? "unnamed";
+		$r["value"] = $this->getValue();
+		$r["type"] = $this->getTypeName();
+		
 		if ($this->string)
-			$r .= "<li><b>String:</b> ".$this->string."</li>";
+			$r["string"] = $this->string;
 		if ($this->securityRules) {
-			$r .= "<li><b>Security rules:</b><ul>";
 			foreach ($this->securityRules as $securityRule)
-				$r .= "<li>".$securityRule."</li>";
-			$r .= "</ul>";
+				$r["securityRules"][] = $securityRule;
 			reset($this->securityRules);
 		}
 		if ($this->filters) {
-			$r .= "<li><b>Filters:</b><ul>";
 			foreach ($this->filters as $filter)
-				$r .= "<li>".$filter."</li>";
-			$r .= "</ul>";
+				$r["filters"][] = $filter;
 			reset($this->filters);
 		}
-		$r .= "</ul></ul>";
 		return $r;
 	}
 }

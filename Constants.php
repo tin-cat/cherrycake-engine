@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Cherrycake systemwide constants
+ *
+ * @package Cherrycake
+ */
+
+namespace Cherrycake;
+
+/* Cache */
+
+const CACHE_TTL_1_MINUTE = 60;
+const CACHE_TTL_5_MINUTES = 300;
+const CACHE_TTL_10_MINUTES = 600;
+const CACHE_TTL_30_MINUTES = 1800;
+const CACHE_TTL_1_HOUR = 3600;
+const CACHE_TTL_2_HOURS = 7200;
+const CACHE_TTL_6_HOURS = 21600;
+const CACHE_TTL_12_HOURS = 43200;
+const CACHE_TTL_1_DAY = 86400;
+const CACHE_TTL_2_DAYS = 172800;
+const CACHE_TTL_3_DAYS = 259200;
+const CACHE_TTL_5_DAYS = 432000;
+const CACHE_TTL_1_WEEK = 604800;
+const CACHE_TTL_2_WEEKS = 1209600;
+const CACHE_TTL_1_MONTH = 2592000;
+
+const CACHE_TTL_MINIMAL = 10;
+const CACHE_TTL_CRITICAL = CACHE_TTL_1_MINUTE;
+const CACHE_TTL_SHORT = CACHE_TTL_5_MINUTES;
+const CACHE_TTL_NORMAL = CACHE_TTL_1_HOUR;
+const CACHE_TTL_UNCRITICAL = CACHE_TTL_1_DAY;
+const CACHE_TTL_LONG = CACHE_TTL_1_WEEK;
+const CACHE_TTL_LONGEST = CACHE_TTL_1_MONTH;
+
+/* Validate */
+
+const VALIDATE_USERNAME_INSTAGRAM = 0; // Value must be a valid Instagram username
+const VALIDATE_USERNAME_TWITTER = 1; // Value must be a valid Twitter username
+
+const VALIDATE_EMAIL_METHOD_SIMPLE = 0; // Most simple method of validating an email, just checking its syntax.
+const VALIDATE_EMAIL_METHOD_MAILGUN = 1; // Advanced method using Mailgun third party.
+const VALIDATE_EMAIL_METHOD_MAILBOXLAYER = 2; // Advanced method using Mailboxlayer third party.
+
+const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_TOO_SHORT = 0;
+const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_NUMBER = 1;
+const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_AT_LEAST_ONE_LETTER = 2;
+const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_UPPERCASE_AND_LOWERCASE = 3;
+const VALIDATE_PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME = 4;

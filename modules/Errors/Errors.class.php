@@ -77,10 +77,7 @@ class Errors extends \Cherrycake\Module {
 	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
 	 */
 	var $dependentCherrycakeModules = [
-		"Output",
-		"SystemLog",
-		"Locale",
-		"Email"
+		"Output"
 	];
 
 	/**
@@ -134,6 +131,8 @@ class Errors extends \Cherrycake\Module {
 					: null);
 
 		if (
+			$e->isModuleLoaded("SystemLog")
+			&&			
 			($errorType == ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
 			||
 			($errorType == ERROR_APP && $this->getConfig("isLogAppErrors"))
@@ -172,7 +171,7 @@ class Errors extends \Cherrycake\Module {
 
 		$patternNames = $this->getConfig("patternNames");
 
-		if (IS_CLI) {
+		if ($e->isCli()) {
 			echo
 				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
 				\Cherrycake\ANSI_WHITE.$e->getAppName()." ".[
@@ -360,6 +359,7 @@ class Errors extends \Cherrycake\Module {
 		else
 			$message = $data;
 
+		$e->loadCherrycakeModule("Email");
 		$e->Email->send(
 			[[$this->getConfig("notificationEmail")]],
 			"[".$e->getAppNamespace()."] Error",

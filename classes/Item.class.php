@@ -35,12 +35,12 @@ class Item extends BasicObject {
 	/**
 	 * @var string The name of the cache provider to use.
 	 */
-	protected $cacheProviderName = "fast";
+	protected $cacheProviderName = "engine";
 
 	/**
 	 * @var integer The TTL for the cache storage.
 	 */
-	protected $cacheTtl = \Cherrycake\Modules\CACHE_TTL_NORMAL;
+	protected $cacheTtl = \Cherrycake\CACHE_TTL_NORMAL;
 
 	/**
 	 * @var string The string to use as the key for this Item in the cache, the value of the idFieldName will be appended.

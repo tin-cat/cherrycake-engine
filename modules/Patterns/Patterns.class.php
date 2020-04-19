@@ -25,10 +25,10 @@ namespace Cherrycake\Modules;
  * $patternsConfig = [
  * 	"directory" => "patterns", // The directory where patterns reside
  * 	"cache" => [
- * 		"cacheProviderName" => "fast", // The default cache provider to use for cached patterns when no specific per-pattern cache provider is specified
+ * 		"cacheProviderName" => "engine", // The default cache provider to use for cached patterns when no specific per-pattern cache provider is specified
  * 		"items" => [
  * 			"home/cacheddemo.html" => [  // A pattern to cache
- * 				"ttl" => \Cherrycake\Modules\CACHE_TTL_MINIMAL, // The TTL
+ * 				"ttl" => \Cherrycake\CACHE_TTL_MINIMAL, // The TTL
  *				"cacheProviderName" => "huge" // A cache provider to use for this pattern that overrides the default one specified above
  * 			]
  * 		]

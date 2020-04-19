@@ -124,7 +124,8 @@ class SystemLogEvent extends Item {
 	 * @return mixed The client's IP, or false if it wasn't available
 	 */
 	function getClientIp() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -136,7 +137,8 @@ class SystemLogEvent extends Item {
 	 * @return mixed The host reported by the server, or false if it wasn't available
 	 */
 	function getHttpHost() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		return $_SERVER["HTTP_HOST"];
 	}
@@ -145,7 +147,8 @@ class SystemLogEvent extends Item {
 	 * @return mixed The URI reported by the server, or false if it wasn't available
 	 */
 	function getRequestUri() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		return $_SERVER["REQUEST_URI"];
 	}
@@ -156,7 +159,8 @@ class SystemLogEvent extends Item {
 	 * @return mixed The client's browserstring, or false if it wasn't available
 	 */
 	function getClientBrowserString() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}

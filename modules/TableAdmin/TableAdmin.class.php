@@ -48,7 +48,6 @@ class TableAdmin extends \Cherrycake\Module {
 				"moduleName" => "TableAdmin",
 				"methodName" => "getRows",
 				"request" => new \Cherrycake\Request([
-                    "isSecurityCsrf" => true,
 					"pathComponents" => [
 						new \Cherrycake\RequestPathComponent([
 							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,

@@ -75,14 +75,14 @@ const LOCALE_GEOLOCATION_METHOD_CLOUDFLARE = 0;
  *		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
  *		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored
  * 		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored
- *		"textCacheProviderName" => "fast", // The name of the cache provider that will be used to cache localized multilingual texts
+ *		"textCacheProviderName" => "engine", // The name of the cache provider that will be used to cache localized multilingual texts
  *		"textCacheKeyPrefix" => "LocaleText", // The prefix of the keys when storing texts into cache
- *		"textCacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
+ *		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
  *		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
  *		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored
- *		"timeZonesCacheProviderName" => "fast", // The name of the cache provider that will be user to cache timezones
+ *		"timeZonesCacheProviderName" => "engine", // The name of the cache provider that will be user to cache timezones
  *		"timeZonesCacheKeyPrefix" => "LocaleTimeZone", // The prefix of the keys when storing timezones into cache
- *		"timeZonesCacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
+ *		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
  * 	]
  * ];
  * </code>
@@ -105,10 +105,10 @@ class Locale extends \Cherrycake\Module
 		"textsTableName" => "cherrycake_locale_texts",
 		"textCategoriesTableName" => "cherrycake_locale_textCategories",
 		"textCacheKeyPrefix" => "LocaleText",
-		"textCacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL,
+		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"timeZonesTableName" => "cherrycake_location_timezones",
 		"timeZonesCacheKeyPrefix" => "LocaleTimeZone",
-		"timeZonesCacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL
+		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
 	];
 
 	/**

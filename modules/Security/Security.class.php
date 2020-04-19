@@ -47,8 +47,8 @@ namespace Cherrycake\Modules;
  * 		"1.1.1.1"
  * 	],
  *	"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
- * 	"autoBannedIpsCacheProviderName" => "fast", // The name of the CacheProvider used to store banned Ips
- * 	"autoBannedIpsCacheTtl" => \Cherrycake\Modules\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
+ * 	"autoBannedIpsCacheProviderName" => "engine", // The name of the CacheProvider used to store banned Ips
+ * 	"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
  *	"autoBannedIpsThreshold" => 10 // The number hack intrusions detected from the same Ip to consider it banned
  * ];
  * </code>
@@ -68,8 +68,8 @@ class Security extends \Cherrycake\Module {
 	var $config = [
 		"isCheckMaliciousBadBrowsers" => true,
 		"isAutoBannedIps" => true,
-		"autoBannedIpsCacheProviderName" => "fast",
-		"autoBannedIpsCacheTtl" => \Cherrycake\Modules\CACHE_TTL_12_HOURS,
+		"autoBannedIpsCacheProviderName" => "engine",
+		"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS,
 		"autoBannedIpsThreshold" => 10
 	];
 
@@ -667,7 +667,8 @@ class Security extends \Cherrycake\Module {
 	 * @return mixed The client's IP, or false if it was not available
 	 */
 	function getClientIp() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -681,7 +682,8 @@ class Security extends \Cherrycake\Module {
 	 * @return mixed The client's browserstring, or false if it was not available
 	 */
 	function getClientBrowserString() {
-		if (IS_CLI)
+		global $e;
+		if ($e->isCli())
 			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}

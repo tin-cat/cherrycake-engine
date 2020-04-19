@@ -24,8 +24,8 @@ namespace Cherrycake\Modules;
  * <code>
  * $javascriptConfig = [
  * 	"defaultDirectory" => "res/js", // The default directory where Javascript files in each Javascript set will be searched
- * 	"cacheTtl" => \Cherrycake\Modules\CACHE_TTL_LONGEST, // The cache TTL for JS sets
- * 	"cacheProviderName" => "fast", // The cache provider for JS sets
+ * 	"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The cache TTL for JS sets
+ * 	"cacheProviderName" => "engine", // The cache provider for JS sets
  * 	"lastModifiedTimestamp" => 1, // The last modified timestamp of JS, to handle caches and http cache
  *  "isCache" => false, // Whether to use cache or not
  *  "isHttpCache" => false, // Whether to send HTTP Cache headers or not
@@ -61,11 +61,11 @@ class Javascript extends \Cherrycake\Module {
 	 */
 	var $config = [
 		"cachePrefix" => "Javascript",
-		"cacheTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL,
+		"cacheTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"lastModifiedTimestamp" => 1,
 		"isCache" => false,
 		"isHttpCache" => false,
-		"httpCacheMaxAge" => \Cherrycake\Modules\CACHE_TTL_LONGEST,
+		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
 		"isMinify" => true
 	];
 

@@ -47,7 +47,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	/**
 	 * @var integer The cache ttl to use on the fillFromParameters method
 	 */
-	protected $cacheTtl = \Cherrycake\Modules\CACHE_TTL_NORMAL;
+	protected $cacheTtl = \Cherrycake\CACHE_TTL_NORMAL;
 
 	/**
 	 * @var string The name of the cache provider to use on the fillFromParameters method
