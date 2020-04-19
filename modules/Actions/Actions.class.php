@@ -182,7 +182,7 @@ class Actions extends \Cherrycake\Module {
 		global $e;
 
 		if ($e->isDevel() && !is_array($this->actions)) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 				"errorDescription" => "No mapped actions"
 			]);
 		}

@@ -230,6 +230,7 @@ class Errors extends \Cherrycake\Module {
 						],
 						[
 							ERROR_SYSTEM => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+							ERROR_APP => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
 							ERROR_NOT_FOUND => \Cherrycake\Modules\RESPONSE_NOT_FOUND,
 							ERROR_NO_PERMISSION => \Cherrycake\Modules\RESPONSE_NO_PERMISSION
 						][$errorType]
@@ -245,7 +246,15 @@ class Errors extends \Cherrycake\Module {
 								foreach ($setup["errorVariables"] as $key => $value)
 									$errorVariables .= "<br><b>".$key."</b>: ".$value;
 
-							trigger_error($setup["errorDescription"].$errorVariables);
+							trigger_error(
+								$setup["errorDescription"].$errorVariables,
+								[
+									ERROR_SYSTEM => E_USER_ERROR,
+									ERROR_APP => E_USER_ERROR,
+									ERROR_NOT_FOUND => E_USER_ERROR,
+									ERROR_NO_PERMISSION => E_USER_ERROR
+								][$errorType]
+							);
 						}
 						else {
 
@@ -322,6 +331,7 @@ class Errors extends \Cherrycake\Module {
 				}
 				break;
 		}
+
 
 		$e->end();
 		die;

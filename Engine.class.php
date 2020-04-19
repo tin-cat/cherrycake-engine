@@ -122,7 +122,7 @@ class Engine {
 	 * * appName: The App name
 	 * * isDevel: Whether the App is in development mode or not
 	 * * isUnderMaintenance: Whether the App is under maintenance or not
-	 * * isCli: Whether the engine is running as cli or not. When not specified it will autodetect.
+	 * * isCli: Whether the engine is running as cli or not. When not specified, it will autodetect.
 	 * * configDir: The directory where configuration files are stored
 	 * * appModulesDir: The directory where app modules are stored
 	 * * appClassesDir: The directory where app classes are stored

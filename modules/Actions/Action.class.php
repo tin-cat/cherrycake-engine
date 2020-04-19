@@ -154,7 +154,7 @@ class Action {
 			case ACTION_MODULE_TYPE_CHERRYCAKE:
 			case ACTION_MODULE_TYPE_APP:
 				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
-					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Module method ".$this->moduleName."::".$this->methodName." not found when running Action"]);
+					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
 					return true;
 				}
 				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
@@ -162,7 +162,7 @@ class Action {
 			case ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT:
 			case ACTION_MODULE_TYPE_APP_UICOMPONENT:
 				if (!method_exists($e->Ui->getUiComponent($this->moduleName), $this->methodName)) {
-					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "UiComponentModule method ".$this->moduleName."::".$this->methodName." not found when running Action"]);
+					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "UiComponentModule mapped method ".$this->moduleName."::".$this->methodName." not found"]);
 					return true;
 				}
 				eval("\$return = \$e->Ui->getUiComponent(\"".$this->moduleName."\")->".$this->methodName."(\$this->request);");
