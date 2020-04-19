@@ -631,7 +631,12 @@ class Engine {
         return $result;
 	}
 	
-
+	/**
+	 * Returns information about the engine and its current status, including the loaded modules, the mapped actions and some benchmarks.
+	 * Note that some information on the return array will be missing if the isDevel option has not been activated when initializing the engine.
+	 * 
+	 * @return array A hash array with the information
+	 */
 	function getStatus() {
 		$r = [
 			"appNamespace" => $this->getAppNamespace(),
@@ -679,6 +684,10 @@ class Engine {
 		return $r;
 	}
 
+	/**
+	 * Returns a human-readable version of the status information provided by the getStatus method.
+	 * @return array A hash array with the status information in a human readable format
+	 */
 	function getStatusHumanReadable() {
 		$status = $this->getStatus();
 		foreach ($status as $key => $value) {
@@ -717,6 +726,10 @@ class Engine {
 		return $r;
 	}
 
+	/**
+	 * Returns an HTML version of the status in a human readable format.
+	 * @return string The HTML code
+	 */
 	function getStatusHtml() {
 		return print_pretty($this->getStatusHumanReadable(), true);
 	}
