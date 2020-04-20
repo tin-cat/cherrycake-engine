@@ -14,7 +14,7 @@ namespace Cherrycake;
  */
 class UiComponentMenuOptionWithSuboptions extends UiComponent {
 
-    protected $dependentCherrycakeUiComponents = [
+    protected $dependentCoreUiComponents = [
         "UiComponentJquery",
         "UiComponentMenuOption"
     ];

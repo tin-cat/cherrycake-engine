@@ -26,7 +26,7 @@ class UiComponentFormRadiosAjax extends UiComponent {
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentJquery",
 		"UiComponentJqueryEventUe",
 		"UiComponentTooltip",

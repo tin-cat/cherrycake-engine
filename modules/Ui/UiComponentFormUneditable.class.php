@@ -19,7 +19,7 @@ class UiComponentFormUneditable extends UiComponent {
 	protected $style;
 	protected $title;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
         "UiComponentFormInput",
 		"UiComponentTooltip"
     ];

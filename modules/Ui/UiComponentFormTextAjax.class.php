@@ -36,7 +36,7 @@ class UiComponentFormTextAjax extends UiComponent {
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
         "UiComponentFormText",
         "UiComponentFormInputAjax"
 	];

@@ -23,9 +23,9 @@ class UiComponentFormRadios extends UiComponent {
 	protected $value;
 
 	/**
-	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentTooltip"
 	];
 

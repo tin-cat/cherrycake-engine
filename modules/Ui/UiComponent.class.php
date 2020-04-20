@@ -18,9 +18,9 @@ namespace Cherrycake;
  */
 class UiComponent extends BasicObject {
 	/**
-	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCherrycakeUiComponents;
+	protected $dependentCoreUiComponents;
 
 	/**
 	 * @var array $dependentAppUiComponents App UiComponent names that are required by this module
@@ -95,10 +95,10 @@ class UiComponent extends BasicObject {
 
 		// Default configuration
 		if (!isset($this->config["cssSetName"]))
-			$this->config["cssSetName"] = "cherrycakeUiComponents";
+			$this->config["cssSetName"] = "CoreUiComponents";
 
 		if (!isset($this->config["javascriptSetName"]))
-			$this->config["javascriptSetName"] = "cherrycakeUiComponents";
+			$this->config["javascriptSetName"] = "CoreUiComponents";
 
 		$this->AddCssAndJavascriptSetsToHtmlDocument();
 
@@ -115,10 +115,10 @@ class UiComponent extends BasicObject {
 	function loadDependencies() {
 		global $e;
 
-		if (is_array($this->dependentCherrycakeUiComponents)) {
-			foreach ($this->dependentCherrycakeUiComponents as $UiComponentName)
-				$e->Ui->addCherrycakeUiComponent($UiComponentName);
-			reset($this->dependentCherrycakeUiComponents);
+		if (is_array($this->dependentCoreUiComponents)) {
+			foreach ($this->dependentCoreUiComponents as $UiComponentName)
+				$e->Ui->addCoreUiComponent($UiComponentName);
+			reset($this->dependentCoreUiComponents);
 		}
 
 		if (is_array($this->dependentAppUiComponents)) {
@@ -187,10 +187,10 @@ class UiComponent extends BasicObject {
 	function addCssAndJavascript() {
 		global $e;
 
-		if (is_array($this->dependentCherrycakeUiComponents)) {
-			foreach ($this->dependentCherrycakeUiComponents as $UiComponentName)
+		if (is_array($this->dependentCoreUiComponents)) {
+			foreach ($this->dependentCoreUiComponents as $UiComponentName)
 				$e->Ui->uiComponents[$UiComponentName]->addCssAndJavascript();
-			reset($this->dependentCherrycakeUiComponents);
+			reset($this->dependentCoreUiComponents);
 		}
 
 		if (is_array($this->dependentAppUiComponents)) {

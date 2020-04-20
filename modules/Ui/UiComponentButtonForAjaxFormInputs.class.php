@@ -32,7 +32,7 @@ class UiComponentButtonForAjaxFormInputs extends UiComponentButton {
      */
     protected $onSomeErrorsAjaxUrl;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentButton"
     ];
     

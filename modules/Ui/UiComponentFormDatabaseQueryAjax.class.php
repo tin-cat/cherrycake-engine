@@ -43,7 +43,7 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 
 	protected $isConfigFile = true;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentFormSelectAjax",
 		"UiComponentFormRadiosAjax"
 	];

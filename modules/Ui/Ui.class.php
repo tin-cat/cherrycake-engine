@@ -28,9 +28,9 @@ class Ui extends \Cherrycake\Module {
 	 */
 	protected $config = [
 		"cssSetName" => "UiComponents", // The name of the Css set (as configured in css.config.php) to which each UiComponent required Css files and Css content will be added, except for those UiComponent classes using their own Css set.
-		"cherrycakeCssSetName" => "cherrycakeUiComponents", // The name of the Css set (as configured in css.config.php) to which each Cherrycake UiComponent required Css files and Css content will be added
+		"cherrycakeCssSetName" => "CoreUiComponents", // The name of the Css set (as configured in css.config.php) to which each Cherrycake UiComponent required Css files and Css content will be added
 		"javascriptSetName" => "UiComponents", // The name of the Javascript set (as configured in javascript.config.php) to which each UiComponent required Javascript files and Javascript content will be added, except for those UiComponent classes using their own Javascript set.
-		"cherrycakeJavascriptSetName" => "cherrycakeUiComponents" // The name of the Javascript set (as configured in javascript.config.php) to which each Cherrycake UiComponent required Javascript files and Javascript content will be added, except for those UiComponent classes using their own Javascript set.
+		"cherrycakeJavascriptSetName" => "CoreUiComponents" // The name of the Javascript set (as configured in javascript.config.php) to which each Cherrycake UiComponent required Javascript files and Javascript content will be added, except for those UiComponent classes using their own Javascript set.
 	];
 
 	/**
@@ -63,23 +63,23 @@ class Ui extends \Cherrycake\Module {
 
 		// Adds cherrycake Css and Javascript sets for UiComponents
 		$e->Css->addSet(
-			"cherrycakeUiComponents",
+			"CoreUiComponents",
 			[
 				"directory" => ENGINE_DIR."/res/css/uicomponents"
 			]
 		);
 
 		$e->Javascript->addSet(
-			"cherrycakeUiComponents",
+			"CoreUiComponents",
 			[
 				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
 			]
 		);
 
 		// Sets up Ui components
-		if (is_array($cherrycakeUiComponents = $this->getConfig("cherrycakeUiComponents")))
-			foreach($cherrycakeUiComponents as $cherrycakeUiComponent)
-				$this->addCherrycakeUiComponent($cherrycakeUiComponent);
+		if (is_array($CoreUiComponents = $this->getConfig("CoreUiComponents")))
+			foreach($CoreUiComponents as $CoreUiComponent)
+				$this->addCoreUiComponent($CoreUiComponent);
 
 		if (is_array($appUiComponents = $this->getConfig("appUiComponents")))
 			foreach($appUiComponents as $appUiComponent)
@@ -89,13 +89,13 @@ class Ui extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addCherrycakeUiComponent
+	 * addCoreUiComponent
 	 *
 	 * Adds a Cherrycake Ui component.
 	 *
 	 * @param string $UiComponentName The name of the class of the Cherrycake Ui component to add
 	 */
-	function addCherrycakeUiComponent($uiComponentName) {
+	function addCoreUiComponent($uiComponentName) {
 		global $e;
 
 		if (!isset($this->uiComponents[$uiComponentName])) {

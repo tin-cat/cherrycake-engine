@@ -13,7 +13,7 @@ namespace Cherrycake;
  * @category Classes
  */
 class UiComponentMenuOption extends UiComponent {
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
         "UiComponentIcons"
 	];
 	

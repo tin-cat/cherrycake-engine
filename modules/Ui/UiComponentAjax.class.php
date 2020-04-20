@@ -47,9 +47,9 @@ class UiComponentAjax extends UiComponent {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentJquery",
 		"UiComponentPopup"
 	];

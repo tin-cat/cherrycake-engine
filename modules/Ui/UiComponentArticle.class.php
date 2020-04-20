@@ -34,7 +34,7 @@ class UiComponentArticle extends UiComponent {
 		]
     ];
     
-    protected $dependentCherrycakeUiComponents = [
+    protected $dependentCoreUiComponents = [
 		"UiComponentMenuBar"
 	];
 

@@ -28,7 +28,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 
 	protected $saveAjaxUrl;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentJquery",
 		"UiComponentJqueryEventUe",
 		"UiComponentTooltip",

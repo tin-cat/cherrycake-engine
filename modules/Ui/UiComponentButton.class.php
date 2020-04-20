@@ -38,7 +38,7 @@ class UiComponentButton extends UiComponent {
 	protected $confirmationMessage = false;
 	public $onClick;
 
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
 		"UiComponentJqueryEventUe"
 	];
 

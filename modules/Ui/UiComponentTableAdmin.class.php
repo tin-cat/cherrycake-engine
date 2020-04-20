@@ -14,7 +14,7 @@ namespace Cherrycake;
  * @category Classes
  */
 class UiComponentTableAdmin extends UiComponent {
-	protected $dependentCherrycakeUiComponents = [
+	protected $dependentCoreUiComponents = [
         "UiComponentAjax",
         "UiComponentTable",
         "UiComponentButton",

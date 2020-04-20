@@ -142,7 +142,7 @@ class Action {
 			$e->loadAppModule($this->moduleName);
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT && $e->Ui)
-			$e->Ui->addCherrycakeUiComponent($this->moduleName);
+			$e->Ui->addCoreUiComponent($this->moduleName);
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->Ui)
 			$e->Ui->addAppUiComponent($this->moduleName);
