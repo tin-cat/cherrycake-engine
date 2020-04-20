@@ -87,7 +87,7 @@ class UiComponentTable extends UiComponent {
 		]);
 		$this->setProperties($setup);
 
-		$e->loadCherrycakeModule("HtmlDocument");
+		$e->loadCoreModule("HtmlDocument");
 
 		// Build HTML table
 		$html = "<div id=\"".$this->domId."\"></div>";

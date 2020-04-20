@@ -68,7 +68,7 @@ class JanitorTaskJanitorPurge extends JanitorTask
 		global $e;
 
 		// Loads the needed modules
-		$e->loadCherrycakeModule("Janitor");
+		$e->loadCoreModule("Janitor");
 
 		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
 

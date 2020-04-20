@@ -43,7 +43,7 @@ class Cache extends \Cherrycake\Module {
 		
 		// Check that the "engine" cache provider has not been defined previously
 		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
-			$e->loadCherrycakeModule("Errors");
+			$e->loadCoreModule("Errors");
 			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
 				"errorDescription" => "The \"engine\" cache provider name is reserved"
 			]);
@@ -55,7 +55,7 @@ class Cache extends \Cherrycake\Module {
 		];
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Cache", "CacheProvider");
+		$e->loadCoreModuleClass("Cache", "CacheProvider");
 
 		// Sets up providers
 		if (is_array($providers = $this->getConfig("providers")))
@@ -76,7 +76,7 @@ class Cache extends \Cherrycake\Module {
 	 */
 	function addProvider($key, $providerClassName, $config) {
 		global $e;
-		$e->loadCherrycakeModuleClass("Cache", $providerClassName);
+		$e->loadCoreModuleClass("Cache", $providerClassName);
 		eval("\$this->".$key." = new \\Cherrycake\\Modules\\".$providerClassName."();");
 		$this->$key->config($config);
 	}

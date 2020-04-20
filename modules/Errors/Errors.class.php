@@ -74,9 +74,9 @@ class Errors extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Output"
 	];
 
@@ -215,8 +215,8 @@ class Errors extends \Cherrycake\Module {
 
 			case "pattern":
 				if (isset($patternNames[$errorType])) {
-					$e->loadCherrycakeModule("Patterns");
-					$e->loadCherrycakeModule("HtmlDocument");
+					$e->loadCoreModule("Patterns");
+					$e->loadCoreModule("HtmlDocument");
 
 					$e->Patterns->out(
 						$patternNames[$errorType],
@@ -369,7 +369,7 @@ class Errors extends \Cherrycake\Module {
 		else
 			$message = $data;
 
-		$e->loadCherrycakeModule("Email");
+		$e->loadCoreModule("Email");
 		$e->Email->send(
 			[[$this->getConfig("notificationEmail")]],
 			"[".$e->getAppNamespace()."] Error",

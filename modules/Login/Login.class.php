@@ -51,9 +51,9 @@ class Login extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Errors",
 		"Cache",
 		"Database",
@@ -77,7 +77,7 @@ class Login extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Login", "LoginUser");
+		$e->loadCoreModuleClass("Login", "LoginUser");
 
 		if ($this->getConfig("isLoadUserOnInit") && $e->Session->isSession() && $e->Session->getSessionData("userId"))
 			return $this->loadUser();

@@ -87,7 +87,7 @@ class DatabaseProvider {
 	 */
 	function init() {
 		global $e;
-		$e->loadCherrycakeModuleClass("Database", $this->resultClassName);
+		$e->loadCoreModuleClass("Database", $this->resultClassName);
 
 		return true;
 	}

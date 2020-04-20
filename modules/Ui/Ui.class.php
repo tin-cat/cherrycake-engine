@@ -34,9 +34,9 @@ class Ui extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Errors",
 		"Css",
 		"Javascript"
@@ -59,7 +59,7 @@ class Ui extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Ui", "UiComponent");
+		$e->loadCoreModuleClass("Ui", "UiComponent");
 
 		// Adds cherrycake Css and Javascript sets for UiComponents
 		$e->Css->addSet(
@@ -99,7 +99,7 @@ class Ui extends \Cherrycake\Module {
 		global $e;
 
 		if (!isset($this->uiComponents[$uiComponentName])) {
-			$e->loadCherrycakeModuleClass("Ui", $uiComponentName);
+			$e->loadCoreModuleClass("Ui", $uiComponentName);
 			eval("\$this->uiComponents[\"".$uiComponentName."\"] = new \\Cherrycake\\".$uiComponentName."();");
 		}
 	}

@@ -41,7 +41,7 @@ class UiComponentFormTextAjax extends UiComponent {
         "UiComponentFormInputAjax"
 	];
 
-	protected $dependentCherrycakeModules = [
+	protected $dependentCoreModules = [
 		"HtmlDocument",
 		"Security"
 	];

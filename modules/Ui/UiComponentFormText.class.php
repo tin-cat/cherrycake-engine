@@ -93,7 +93,7 @@ class UiComponentFormText extends UiComponent {
 		if ($this->error) {
 			global $e;
 
-			$e->loadCherrycakeModule("HtmlDocument");
+			$e->loadCoreModule("HtmlDocument");
 
 			$e->HtmlDocument->addInlineJavascript("
 				$('#".$this->domId."').UiComponentTooltip({

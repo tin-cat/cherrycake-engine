@@ -34,7 +34,7 @@ class UiComponentFormRadiosAjax extends UiComponent {
 		"UiComponentAjax"
 	];
 
-	protected $dependentCherrycakeModules = [
+	protected $dependentCoreModules = [
 		"HtmlDocument",
 		"Security"
 	];

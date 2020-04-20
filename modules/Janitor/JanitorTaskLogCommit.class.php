@@ -47,7 +47,7 @@ class JanitorTaskLogCommit extends JanitorTask
 		global $e;
 
 		// Loads the needed modules
-		$e->loadCherrycakeModule("Log");
+		$e->loadCoreModule("Log");
 
 		$result = $e->Log->commit();
 		return [

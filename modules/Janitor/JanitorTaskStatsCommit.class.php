@@ -44,7 +44,7 @@ class JanitorTaskStatsCommit extends JanitorTask {
 		global $e;
 
 		// Loads the needed modules
-		$e->loadCherrycakeModule("Stats");
+		$e->loadCoreModule("Stats");
 
 		list($result, $resultDescription) = $e->Stats->commit();
 		return [

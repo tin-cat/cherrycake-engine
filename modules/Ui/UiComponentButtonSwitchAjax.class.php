@@ -40,7 +40,7 @@ class UiComponentButtonSwitchAjax extends UiComponentButton {
 		if (!$this->domId)
 			$this->domId = uniqid();
 
-		$e->loadCherrycakeModule("HtmlDocument");
+		$e->loadCoreModule("HtmlDocument");
 
 		$r .= "<div id=\"".$this->domId."\"></div>";
 

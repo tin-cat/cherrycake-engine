@@ -71,7 +71,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 		global $e;
 
 		// Loads the needed modules
-		$e->loadCherrycakeModule("Session");
+		$e->loadCoreModule("Session");
 
 		$databaseProviderName = $e->Session->getConfig("sessionDatabaseProviderName");
 

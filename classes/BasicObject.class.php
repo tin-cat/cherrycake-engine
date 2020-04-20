@@ -62,7 +62,7 @@ class BasicObject {
 			if (!isset($parameters[$parameterName])) {
 				if ($parameterSetup["isRequired"]) {
 					global $e;
-					$e->loadCherrycakeModule("Errors");
+					$e->loadCoreModule("Errors");
 					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Parameter \"".$parameterName."\" is required when calling ".debug_backtrace()[1]["class"]."::".debug_backtrace()[1]["function"]]);
 				}
 				if (isset($parameterSetup["default"]))

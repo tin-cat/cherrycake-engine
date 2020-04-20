@@ -31,9 +31,9 @@ const FORM_ITEM_META_TYPE_LOCATION = 1;
  */
 class ItemAdmin extends \Cherrycake\Module {
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Validate"
 	];
 
@@ -62,7 +62,7 @@ class ItemAdmin extends \Cherrycake\Module {
      * 
      * Should be called within the mapActions method of your module, like this:
      * <code>
-     * $e->loadCherrycakeModule("ItemAdmin");
+     * $e->loadCoreModule("ItemAdmin");
      * $e->ItemAdmin->map("mymap", [
      * ]);
      * </code>

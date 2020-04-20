@@ -39,9 +39,9 @@ class Actions extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Output",		
 		"Errors",
 		"Security"
@@ -84,10 +84,10 @@ class Actions extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Actions", "Action");
-		$e->loadCherrycakeModuleClass("Actions", "Request");
-		$e->loadCherrycakeModuleClass("Actions", "RequestPathComponent");
-		$e->loadCherrycakeModuleClass("Actions", "RequestParameter");
+		$e->loadCoreModuleClass("Actions", "Action");
+		$e->loadCoreModuleClass("Actions", "Request");
+		$e->loadCoreModuleClass("Actions", "RequestPathComponent");
+		$e->loadCoreModuleClass("Actions", "RequestParameter");
 
 		$e->callMethodOnAllModules("mapActions");
 
@@ -97,7 +97,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * mapAction
 	 *
-	 * Maps an action for a module (either an App or a Cherrycake module). Should be called within the mapActions method of your module, like this:
+	 * Maps an action for a module (either an App or a Core module). Should be called within the mapActions method of your module, like this:
 	 * 
 	 * $e->Actions->mapAction(
 	 * 	"TableAdminGetRows",

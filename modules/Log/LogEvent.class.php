@@ -78,7 +78,7 @@ class LogEvent extends Item {
 		else
 		if ($this->isUseCurrentLoggedUserId) {
 			global $e;
-			$e->loadCherrycakeModule("Login");
+			$e->loadCoreModule("Login");
 			if ($e->Login && $e->Login->isLogged()) {
 				$this->user_id = $e->Login->user->id;
 			}

@@ -93,7 +93,7 @@ class UiComponentFormInput extends UiComponent {
 			if (!$this->domId)
 				$this->domId = uniqid();
 
-			$e->loadCherrycakeModule("HtmlDocument");
+			$e->loadCoreModule("HtmlDocument");
 
 			$e->HtmlDocument->addInlineJavascript("
 				$('#".$this->domId."').UiComponentTooltip({

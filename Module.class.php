@@ -33,9 +33,9 @@ class Module {
 	protected $config;
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	protected $dependentCherrycakeModules;
+	protected $dependentCoreModules;
 
 	/**
 	 * @var array $dependentAppModules App module names that are required by this module
@@ -136,9 +136,9 @@ class Module {
 	function loadDependencies() {
 		global $e;
 
-		if (is_array($this->dependentCherrycakeModules))
-			foreach ($this->dependentCherrycakeModules as $moduleName)
-				if (!$e->loadCherrycakeModule($moduleName, $this->getName()))
+		if (is_array($this->dependentCoreModules))
+			foreach ($this->dependentCoreModules as $moduleName)
+				if (!$e->loadCoreModule($moduleName, $this->getName()))
 					return false;
 
 		if (is_array($this->dependentAppModules))

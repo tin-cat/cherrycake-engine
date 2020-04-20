@@ -74,9 +74,9 @@ class Security extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Cache"
@@ -500,7 +500,7 @@ class Security extends \Cherrycake\Module {
 	 */
 	function isCsrfTokenInSession() {
 		global $e;
-		$e->loadCherrycakeModule("Session");
+		$e->loadCoreModule("Session");
 		return isset($e->Session->csrfToken);
 	}
 
@@ -509,7 +509,7 @@ class Security extends \Cherrycake\Module {
 	 */
 	function getCsrfTokenInSession() {
 		global $e;
-		$e->loadCherrycakeModule("Session");
+		$e->loadCoreModule("Session");
 		return $e->Session->csrfToken;
 	}
 
@@ -519,7 +519,7 @@ class Security extends \Cherrycake\Module {
 	 */
 	function setCsrfTokenInSession($token) {
 		global $e;
-		$e->loadCherrycakeModule("Session");
+		$e->loadCoreModule("Session");
 		$e->Session->csrfToken = $token;
 		return true;
 	}

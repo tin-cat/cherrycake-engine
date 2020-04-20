@@ -66,9 +66,9 @@ class Janitor extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Errors",
 		"Database"
 	];
@@ -179,7 +179,7 @@ class Janitor extends \Cherrycake\Module {
 			return;
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Janitor", "JanitorTask");
+		$e->loadCoreModuleClass("Janitor", "JanitorTask");
 
 		// Sets up Janitor tasks
 		if (is_array($cherrycakeJanitorTasks = $this->getConfig("cherrycakeJanitorTasks")))
@@ -202,7 +202,7 @@ class Janitor extends \Cherrycake\Module {
 		global $e;
 
 		if (!isset($this->janitorTasks[$janitorTaskName])) {
-			$e->loadCherrycakeModuleClass("Janitor", $janitorTaskName);
+			$e->loadCoreModuleClass("Janitor", $janitorTaskName);
 			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\Cherrycake\\".$janitorTaskName."();");
 			$this->janitorTasks[$janitorTaskName]->init();
 		}

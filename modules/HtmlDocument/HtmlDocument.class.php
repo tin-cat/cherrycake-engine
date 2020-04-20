@@ -117,9 +117,9 @@ class HtmlDocument extends \Cherrycake\Module {
 	private $footerAdditionalHtml = false;
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module, to be dumped on the header method
+	 * @var array $dependentCoreModules Core module names that are required by this module, to be dumped on the header method
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Css",
 		"Javascript"
 	];

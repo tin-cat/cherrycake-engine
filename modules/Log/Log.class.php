@@ -44,9 +44,9 @@ class Log extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCherrycakeModules Cherrycake module names that are required by this module
+	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCherrycakeModules = [
+	var $dependentCoreModules = [
 		"Errors",
 		"Database",
 		"Cache"
@@ -64,7 +64,7 @@ class Log extends \Cherrycake\Module {
 			return false;
 
 		global $e;
-		$e->loadCherrycakeModuleClass("Log", "LogEvent");
+		$e->loadCoreModuleClass("Log", "LogEvent");
 
 		return true;
 	}

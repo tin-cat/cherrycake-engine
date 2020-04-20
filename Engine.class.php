@@ -128,7 +128,7 @@ class Engine {
 	 * * appClassesDir: The directory where app classes are stored
 	 * * timezoneName: The system's timezone. All modules, including Database for date/time retrievals/saves will be made taking this timezone into account. The server is expected to run on this timezone. Standard "Etc/UTC" is recommended.
 	 * * timezoneId: The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
-	 * * baseCherrycakeModules: An ordered array of the base Cherrycake module names that has to be always loaded on application start. This list must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
+	 * * baseCoreModules: An ordered array of the base Core module names that has to be always loaded on application start. This list must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
 	 * * additionalAppConfigFiles: An ordered array of any additional App config files to load that are found under the App config directory
 	 *
 	 * @return boolean Whether all the modules have been loaded ok
@@ -175,13 +175,13 @@ class Engine {
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
 				require APP_DIR."/config/".$additionalAppConfigFile;
 		
-		if (isset($setup["baseCherrycakeModules"]) && !in_array("Actions", $setup["baseCherrycakeModules"])) {
-			trigger_error("At least the Actions module must be loaded in baseCherrycakeModules");
+		if (isset($setup["baseCoreModules"]) && !in_array("Actions", $setup["baseCoreModules"])) {
+			trigger_error("At least the Actions module must be loaded in baseCoreModules");
 			return false;
 		}
 
-		foreach ($setup["baseCherrycakeModules"] ?? ["Actions"] as $module)
-			if (!$this->loadCherrycakeModule($module, false))
+		foreach ($setup["baseCoreModules"] ?? ["Actions"] as $module)
+			if (!$this->loadCoreModule($module, false))
 				return false;
 
 		return true;
@@ -208,9 +208,9 @@ class Engine {
 	}
 
 	/**
-	 * @return array All the available Cherrycake module names
+	 * @return array All the available Core module names
 	 */
-	function getAvailableCherrycakeModuleNames() {
+	function getAvailableCoreModuleNames() {
 		return $this->getAvailableModuleNamesOnDirectory(ENGINE_DIR."/modules");
 	}
 
@@ -223,9 +223,9 @@ class Engine {
 
 	/**
 	 * @param string $methodName the name of the method
-	 * @return array The Cherrycake module names that implement the specified method
+	 * @return array The Core module names that implement the specified method
 	 */
-	function getAvailableCherrycakeModuleNamesWithMethod($methodName) {
+	function getAvailableCoreModuleNamesWithMethod($methodName) {
 		return $this->getAvailableModuleNamesWithMethod("Cherrycake\Modules", ENGINE_DIR."/modules", $methodName);
 	}
 
@@ -364,15 +364,15 @@ class Engine {
 	}
 
 	/**
-	 * Specific method to load a Cherrycake module. Cherrycake modules are classes extending the module class that provide engine-specific functionalities.
+	 * Specific method to load a Core module. Core modules are classes extending the module class that provide engine-specific functionalities.
 	 *
 	 * @param string $moduleName The name of the module to load
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
 	 *
 	 * @return boolean Whether the module has been loaded ok
 	 */
-	function loadCherrycakeModule($moduleName, $requiredByNoduleName = null) {
-		return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__, $requiredByNoduleName);
+	function loadCoreModule($moduleName, $requiredByModuleName = null) {
+		return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__, $requiredByModuleName);
 	}
 
 	/**
@@ -383,8 +383,8 @@ class Engine {
 	 *
 	 * @return boolean Whether the module has been loaded ok
 	 */
-	function loadAppModule($moduleName, $requiredByNoduleName = false) {
-		return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace(), $requiredByNoduleName);
+	function loadAppModule($moduleName, $requiredByModuleName = false) {
+		return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace(), $requiredByModuleName);
 	}
 
 	/**
@@ -475,7 +475,7 @@ class Engine {
 	}
 
 	/**
-	 * Loads a Cherrycake-specific class. Cherrycake classes are any other classes that are not modules, nor related to any Cherrycake module.
+	 * Loads a Cherrycake-specific class. Cherrycake classes are any other classes that are not modules, nor related to any Core module.
 	 *
 	 * @param $className The name of the class to load, must be stored in ENGINE_DIR/[class name].class.php
 	 */
@@ -484,12 +484,12 @@ class Engine {
 	}
 
 	/**
-	 * Loads a cherrycake-specific class. Cherrycake module classes are any other classes that are not modules, but related to a Cherrycake module.
+	 * Loads a cherrycake-specific class. Core module classes are any other classes that are not modules, but related to a Core module.
 	 *
 	 * @param $moduleName The name of the module to which the class belongs
 	 * @param $className The name of the class
 	 */
-	function loadCherrycakeModuleClass($moduleName, $className) {
+	function loadCoreModuleClass($moduleName, $className) {
 		include_once(ENGINE_DIR."/modules/".$moduleName."/".$className.".class.php");
 	}
 
@@ -518,7 +518,7 @@ class Engine {
 	 */
 	function callMethodOnAllModules($methodName) {
 		// Call the static method
-		$cherrycakeModuleNames = $this->getAvailableCherrycakeModuleNamesWithMethod($methodName);
+		$cherrycakeModuleNames = $this->getAvailableCoreModuleNamesWithMethod($methodName);
 		if (is_array($cherrycakeModuleNames)) {
 			foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
 				$this->includeModuleClass(ENGINE_DIR."/modules", $cherrycakeModuleName);
@@ -539,7 +539,7 @@ class Engine {
 		// Load the modules
 		// if (is_array($cherrycakeModuleNames)) {
 		// 	foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
-		// 		$this->loadCherrycakeModule($cherrycakeModuleName);
+		// 		$this->loadCoreModule($cherrycakeModuleName);
 		// 	}
 		// }
 

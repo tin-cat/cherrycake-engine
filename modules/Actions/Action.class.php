@@ -136,7 +136,7 @@ class Action {
 			set_time_limit($this->timeout);
 
 		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE)
-			$e->loadCherrycakeModule($this->moduleName);
+			$e->loadCoreModule($this->moduleName);
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);

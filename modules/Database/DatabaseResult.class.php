@@ -55,7 +55,7 @@ class DatabaseResult {
 	function init($resultHandler = false, $setup = false) {
 		global $e;
 		$this->setup = $setup;
-		$e->loadCherrycakeModuleClass("Database", $this->rowClassName);
+		$e->loadCoreModuleClass("Database", $this->rowClassName);
 	}
 
 	/**
