@@ -128,7 +128,8 @@ class Engine {
 	 * * appClassesDir: The directory where app classes are stored
 	 * * timezoneName: The system's timezone. All modules, including Database for date/time retrievals/saves will be made taking this timezone into account. The server is expected to run on this timezone. Standard "Etc/UTC" is recommended.
 	 * * timezoneId: The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
-	 * * baseCoreModules: An ordered array of the base Core module names that has to be always loaded on application start. This list must include an "actions" modules that will later determine the action to take based on the received query, thus loading the additional required modules to do so.
+	 * * baseCoreModules: An ordered array of the base Core module names that has to be always loaded on application start. Defaults to ["Actions"]. This list should include the Actions module to provide some kind of functionality to the app, since otherwise it wouldn't be answering any requests and will be completely unusable, except if you're experimenting with different ways of using the Cherrycake engine.
+	 * * baseAppModules: An ordered array of the base App module names that has to be always loaded on application start.
 	 * * additionalAppConfigFiles: An ordered array of any additional App config files to load that are found under the App config directory
 	 *
 	 * @return boolean Whether all the modules have been loaded ok
@@ -174,15 +175,16 @@ class Engine {
 		if (isset($setup["additionalAppConfigFiles"]))
 			foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)
 				require APP_DIR."/config/".$additionalAppConfigFile;
-		
-		if (isset($setup["baseCoreModules"]) && !in_array("Actions", $setup["baseCoreModules"])) {
-			trigger_error("At least the Actions module must be loaded in baseCoreModules");
-			return false;
-		}
 
 		foreach ($setup["baseCoreModules"] ?? ["Actions"] as $module)
 			if (!$this->loadCoreModule($module, false))
 				return false;
+		
+		if (isset($setup["baseAppModules"])) {
+			foreach ($setup["baseAppModules"] as $module)
+				if (!$this->loadAppModule($module, false))
+					return false;
+		}
 
 		return true;
 	}
@@ -247,9 +249,8 @@ class Engine {
 		$cacheKey = [$nameSpace, $modulesDirectory, $methodName];
 		$cacheTtl = $this->isDevel() ? 3 : 600;
 
-		$modulesWithMethod = $this->cache->getFromBucket($cacheBucketName, $cacheKey);
-		if (is_array($modulesWithMethod))
-			return $modulesWithMethod;
+		if ($this->cache->isKeyExistsInBucket($cacheBucketName, $cacheKey))
+			return $this->cache->getFromBucket($cacheBucketName, $cacheKey);
 	
 		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
 			$this->cache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
@@ -364,7 +365,7 @@ class Engine {
 	}
 
 	/**
-	 * Specific method to load a Core module. Core modules are classes extending the module class that provide engine-specific functionalities.
+	 * Loads a Core module. Core modules are classes extending the module class that provide engine-specific functionalities.
 	 *
 	 * @param string $moduleName The name of the module to load
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
@@ -376,7 +377,7 @@ class Engine {
 	}
 
 	/**
-	 * Specific method to load an application-specific module. App modules are classes extending the module class that provide app-specific functionalities.
+	 * Loads an App module. App modules are classes extending the module class that provide app-specific functionalities.
 	 *
 	 * @param string $moduleName The name of the module to load
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.

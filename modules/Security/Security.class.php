@@ -719,7 +719,7 @@ class Security extends \Cherrycake\Module {
 	 * When checking uploaded images (isRequireImage or allowedImageTypes has been set), image types other than jpg, gif or png are converted to png.
 	 * When uploading compressed image formats like jpg, since this method generates a new image from the uploaded one for security purposes, the final compression is always set to the maximum possible setting. This will cause compressed images like jpg files to take more disk space than their originals in most cases.
 	 * @param array $file The file array given by PHP after receiving an uploaded file, received via $_FILES[name of the file]
-	 * @param array $p An array of parameters options, with the following possible keys
+	 * @param array $setup An array of parameters options, with the following possible keys
 	 * * isRequireImage: Requires the file to be an image. If allowedImageTypes is specified, this is forced to true.
 	 * * allowedFileExtensions: If value is specified with an array of axtensions, only those file extensions are allowed. For example: ["pdf", "rtf"]. If allowedImageTypes is specified and this is not, file estensions matching the specific allowedImageTypes will be required automatically.
 	 * * allowedImageTypes: If value is specified with an array of IMG_?, only those image types are allowed (https://www.php.net/manual/en/image.constants.php). If not specified, all image types supported by GD are accepted.
@@ -727,7 +727,7 @@ class Security extends \Cherrycake\Module {
 	 * * description: A description of what went wrong
 	 * * finalPath: The complete path where the file was moved if it was considered safe
 	 */
-	function checkUploadedFile($file, $p = false) {
+	function checkUploadedFile($file, $setup = false) {
 		// An array containing the known image types (documented here: https://www.php.net/manual/en/image.constants.php), where each value is the associated file extension in lowercase, or an array of multiple file extensions if the image type is known to have more than one.
 		$imageTypes = [
 			IMAGETYPE_BMP => "bmp",
@@ -769,28 +769,28 @@ class Security extends \Cherrycake\Module {
 			return new \Cherrycake\ResultKo(["description" => "Didn't receive an uploaded file"]);
 		}
 
-		if ($p["allowedImageTypes"])
-			$p["isRequireImage"] = true;
+		if ($setup["allowedImageTypes"])
+			$setup["isRequireImage"] = true;
 		
 		// If allowedImageTypes is not specified, but isRequireImage is, generate an allowedImageTypes array with all the image types supported by GD
-		if (!isset($p["allowedImageTypes"]) && $p["isRequireImage"]) {
+		if (!isset($setup["allowedImageTypes"]) && $setup["isRequireImage"]) {
 			foreach (array_keys($imageTypes) as $imageType) {
 				if (imagetypes() & $imageType)
-					$p["allowedImageTypes"][] = $imageType;
+					$setup["allowedImageTypes"][] = $imageType;
 			}
 		}
 
 		// If allowedImageTypes are specified, but allowedFileExtension are not, generated the corresponding allowedFileExtension array
-		if ($p["allowedImageTypes"] && !isset($p["allowedFileExtensions"])) {
-			foreach ($p["allowedImageTypes"] as $allowedImageType) {
+		if ($setup["allowedImageTypes"] && !isset($setup["allowedFileExtensions"])) {
+			foreach ($setup["allowedImageTypes"] as $allowedImageType) {
 				$fileExtension = $imageTypes[$allowedImageType];
 				if (is_array($fileExtension))
-					$p["allowedFileExtensions"] = array_merge(
-						is_array($p["allowedFileExtensions"]) ? $p["allowedFileExtensions"] : [],
+					$setup["allowedFileExtensions"] = array_merge(
+						is_array($setup["allowedFileExtensions"]) ? $setup["allowedFileExtensions"] : [],
 						$fileExtension
 					);
 				else
-					$p["allowedFileExtensions"][] = $fileExtension;
+					$setup["allowedFileExtensions"][] = $fileExtension;
 			}
 		}
 
@@ -812,7 +812,7 @@ class Security extends \Cherrycake\Module {
 		}
 
 		// Check if the uploaded file is an image
-		if ($p["isRequireImage"]) {
+		if ($setup["isRequireImage"]) {
 			$imageSizeResult = getimagesize($file["tmp_name"]);
 			$imageType = $imageSizeResult[2];
 			if (!$imageSizeResult) {
@@ -820,23 +820,23 @@ class Security extends \Cherrycake\Module {
 			}
 			else {
 				// Check if the uploaded file is in one of the allowed image types
-				if (!in_array($imageType, $p["allowedImageTypes"])) {
+				if (!in_array($imageType, $setup["allowedImageTypes"])) {
 					return new \Cherrycake\ResultKo(["description" => "Received uploaded file is not in one of the allowed image types"]);
 				}
 			}
 		}
 
 		// Check if the uploaded file has one of the allowed file extensions
-		if ($p["allowedFileExtensions"]) {
+		if ($setup["allowedFileExtensions"]) {
 			$fileExtension = strtolower(substr($file["name"], strrpos($file["name"], '.') + 1));
-			if (!in_array($fileExtension, $p["allowedFileExtensions"])) {
+			if (!in_array($fileExtension, $setup["allowedFileExtensions"])) {
 				return new \Cherrycake\ResultKo(["description" => "Received uploaded file hasn't any of the allowed extensions"]);
 			}
 		}
 
 		// If an image was required, re-generate it using the imagecreatefrom* method for security
 		// Images other than jpg, png or gif are converted to png
-		if ($p["isRequireImage"] && $imageType) {
+		if ($setup["isRequireImage"] && $imageType) {
 			switch ($imageType) {
 				case IMAGETYPE_BMP:
 					$image = imagecreatefrombmp($file["tmp_name"]);

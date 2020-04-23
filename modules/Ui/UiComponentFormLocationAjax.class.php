@@ -25,7 +25,7 @@ class UiComponentFormLocationAjax extends UiComponentFormMultilevelSelectAjax {
 		$e->Actions->mapAction(
 			"uiComponentFormLocationAjaxGetLocationData",
 			new \Cherrycake\ActionAjax([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE_UICOMPONENT,
 				"moduleName" => "UiComponentFormLocationAjax",
 				"methodName" => "getLocationData",
 				"request" => new \Cherrycake\Request([

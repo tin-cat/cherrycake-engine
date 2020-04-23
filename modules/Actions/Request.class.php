@@ -348,7 +348,7 @@ class Request {
 			reset($this->pathComponents);
 		}
 		else
-			$key .= "_";
+			$key = "_";
 
 		if (is_array($this->parameters)) {
 			foreach ($this->parameters as $parameter) {

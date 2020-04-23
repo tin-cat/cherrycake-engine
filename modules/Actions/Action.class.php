@@ -8,9 +8,9 @@
 
 namespace Cherrycake;
 
-const ACTION_MODULE_TYPE_CHERRYCAKE = 0;
+const ACTION_MODULE_TYPE_CORE = 0;
 const ACTION_MODULE_TYPE_APP = 1;
-const ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT = 2;
+const ACTION_MODULE_TYPE_CORE_UICOMPONENT = 2;
 const ACTION_MODULE_TYPE_APP_UICOMPONENT = 3;
 
 /**
@@ -23,7 +23,7 @@ const ACTION_MODULE_TYPE_APP_UICOMPONENT = 3;
  */
 class Action {
 	/**
-	 * @var int $moduleType The type of the module that will be called on this action. Actions can call methods on both Cherrycake and App modules, but also on Cherrycake and App UiComponents
+	 * @var int $moduleType The type of the module that will be called on this action. Actions can call methods on both Code and App modules, but also on Core and App UiComponents
 	 */
 	private $moduleType;
 
@@ -53,22 +53,22 @@ class Action {
 	private $isCache;
 
 	/**
-	 * @var string $cacheProviderName The name of the cache provider to use when caching this action, defaults to the defaultActionCacheProviderName config key for the Actions module
+	 * @var string $cacheProviderName The name of the cache provider to use when caching this action, defaults to the defaultCacheProviderName config key for the Actions module
 	 */
 	private $cacheProviderName;
 
 	/**
-	 * @var string $cachePefix The cache prefix to use when caching this action, defaults to the defaultActionCachePrefix config key for the Actions module
+	 * @var string $cachePefix The cache prefix to use when caching this action, defaults to the defaultCachePrefix config key for the Actions module
 	 */
 	private $cachePrefix;
 
 	/**
-	 * @var int $cacheTtl The TTL to use when caching this action, defaults to the defaultActionCacheTtl config key for the Actions module
+	 * @var int $cacheTtl The TTL to use when caching this action, defaults to the defaultCacheTtl config key for the Actions module
 	 */
 	private $cacheTtl;
 
 	/**
-	 * @var bool $isSensibleToBruteForceAttacks Whether this action is sensible to brute force attacks or not. For example, an action that checks a given password and returns false if the password is incorrect. In such case, this request will sleep for some time when the password were wrong in order to discourage crackers.
+	 * @var bool $isSensibleToBruteForceAttacks Whether this action is sensible to brute force attacks or not. For example, an action that checks a given password and returns false if the password is incorrect. In such case, this request will sleep for some time when the password is wrong in order to discourage crackers.
 	 */
 	private $isSensibleToBruteForceAttacks;
 
@@ -99,17 +99,17 @@ class Action {
 			if (isset($setup["cacheProviderName"]))
 				$this->cacheProviderName = $setup["cacheProviderName"];
 			else
-				$this->cacheProviderName = $e->Actions->getConfig("defaultActionCacheProviderName");
+				$this->cacheProviderName = $e->Actions->getConfig("defaultCacheProviderName");
 
 			if (isset($setup["cacheTtl"]))
 				$this->cacheTtl = $setup["cacheTtl"];
 			else
-				$this->cacheTtl = $e->Actions->getConfig("defaultActionCacheTtl");
+				$this->cacheTtl = $e->Actions->getConfig("defaultCacheTtl");
 
 			if (isset($setup["cachePrefix"]))
 				$this->cachePrefix = $setup["cachePrefix"];
 			else
-				$this->cachePrefix = $e->Actions->getConfig("defaultActionCachePrefix");
+				$this->cachePrefix = $e->Actions->getConfig("defaultCachePrefix");
 		}
 	}
 
@@ -135,13 +135,13 @@ class Action {
 		if ($this->timeout)
 			set_time_limit($this->timeout);
 
-		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE)
+		if ($this->moduleType == ACTION_MODULE_TYPE_CORE)
 			$e->loadCoreModule($this->moduleName);
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);
 		else
-		if ($this->moduleType == ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT && $e->Ui)
+		if ($this->moduleType == ACTION_MODULE_TYPE_CORE_UICOMPONENT && $e->Ui)
 			$e->Ui->addCoreUiComponent($this->moduleName);
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->Ui)
@@ -151,7 +151,7 @@ class Action {
 			return false;
 
 		switch ($this->moduleType) {
-			case ACTION_MODULE_TYPE_CHERRYCAKE:
+			case ACTION_MODULE_TYPE_CORE:
 			case ACTION_MODULE_TYPE_APP:
 				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
 					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
@@ -159,7 +159,7 @@ class Action {
 				}
 				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
 				break;
-			case ACTION_MODULE_TYPE_CHERRYCAKE_UICOMPONENT:
+			case ACTION_MODULE_TYPE_CORE_UICOMPONENT:
 			case ACTION_MODULE_TYPE_APP_UICOMPONENT:
 				if (!method_exists($e->Ui->getUiComponent($this->moduleName), $this->methodName)) {
 					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "UiComponentModule mapped method ".$this->moduleName."::".$this->methodName." not found"]);

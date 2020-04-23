@@ -119,7 +119,7 @@ class ItemAdmin extends \Cherrycake\Module {
         $e->Actions->mapAction(
 			"ItemAdminSave".ucfirst($name),
 			new \Cherrycake\ActionAjax([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "ItemAdmin",
 				"methodName" => "save",
 				"request" => new \Cherrycake\Request([

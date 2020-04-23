@@ -103,7 +103,7 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorRun",
 			new \Cherrycake\ActionPlainText([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Janitor",
 				"methodName" => "run",
 				"request" => new \Cherrycake\Request([
@@ -141,7 +141,7 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorStatus",
 			new \Cherrycake\ActionHtml([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CHERRYCAKE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Janitor",
 				"methodName" => "status",
 				"request" => new \Cherrycake\Request([
