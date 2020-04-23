@@ -77,7 +77,7 @@ class Ui extends \Cherrycake\Module {
 		);
 
 		// Sets up Ui components
-		if (is_array($CoreUiComponents = $this->getConfig("CoreUiComponents")))
+		if (is_array($CoreUiComponents = $this->getConfig("coreUiComponents")))
 			foreach($CoreUiComponents as $CoreUiComponent)
 				$this->addCoreUiComponent($CoreUiComponent);
 

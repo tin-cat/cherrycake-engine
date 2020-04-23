@@ -110,7 +110,7 @@ class Patterns extends \Cherrycake\Module {
 		if (
 			isset($this->getConfig("cachedPatterns")[$patternName])
 			||
-			$setup["isCache"]
+			($setup["isCache"] ?? false)
 		)
 			if (
 				isset($this->getConfig("cachedPatterns")[$patternName])
@@ -155,7 +155,7 @@ class Patterns extends \Cherrycake\Module {
 		if (
 			isset($this->getConfig("cachedPatterns")[$patternName])
 			||
-			$setup["isCache"]
+			($setup["isCache"] ?? false)
 		)
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
