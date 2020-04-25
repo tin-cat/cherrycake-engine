@@ -338,7 +338,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	 * @param string $listName The name of the hashed list
 	 * @return array An array containing all the keys on the specified list. An empty array if the list was empty, or false if the list didn't exists.
 	 */
-	function hgetKeys($listName) {
+	function hGetKeys($listName) {
 		$this->RequireConnection();
 		return $this->client->hgetkeys($listName);
 	}
