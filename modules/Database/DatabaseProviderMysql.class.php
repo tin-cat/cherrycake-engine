@@ -147,7 +147,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		}
 
 		$result = $this->createDatabaseResultObject();
-		$result->init($resultHandler, $setup);
+		$result->init($resultHandler, $setup);		
 		return $result;
 	}
 

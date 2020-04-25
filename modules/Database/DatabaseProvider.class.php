@@ -48,7 +48,8 @@ class DatabaseProvider {
 	 */
 	protected $config = [
 		"cacheKeyPrefix" => "Database",
-		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
+		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
+		"cacheProviderName" => "engine"
 	];
 
 	/**
