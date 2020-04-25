@@ -28,10 +28,10 @@ class Patterns extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"directory" => "patterns",
-		"defaultCacheProviderName" => "engine",
-		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // De default TTL to use.
-		"defaultCachePrefix" => "Patterns"
+		"directory" => "patterns", // The directory where patterns are stored
+		"defaultCacheProviderName" => "engine", // The default cache provider name to use for cached patterns.
+		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use for cached patterns.
+		"defaultCachePrefix" => "Patterns" // The default prefix to use for cached patterns.
 	];
 
 	/**
@@ -108,7 +108,7 @@ class Patterns extends \Cherrycake\Module {
 
 		// Check cache
 		if (
-			isset($this->getConfig("cachedPatterns")[$patternName])
+			(isset($this->getConfig("cachedPatterns")[$patternName]) && !isset($setup["isCache"]))
 			||
 			($setup["isCache"] ?? false)
 		)
@@ -153,7 +153,7 @@ class Patterns extends \Cherrycake\Module {
 
 		// Cache store
 		if (
-			isset($this->getConfig("cachedPatterns")[$patternName])
+			(isset($this->getConfig("cachedPatterns")[$patternName]) && !isset($setup["isCache"]))
 			||
 			($setup["isCache"] ?? false)
 		)
