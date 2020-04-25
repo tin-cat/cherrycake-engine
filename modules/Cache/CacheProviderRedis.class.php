@@ -91,7 +91,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	 * @param string $key The identifier key
 	 * @param mixed $value The value
 	 * @param integer $ttl The TTL (Time To Live) of the stored value in seconds since now
-	 * @return bool Wether the value has been correctly stored. False otherwise
+	 * @return bool Whether the value has been correctly stored. False otherwise
 	 */
 	function set($key, $value, $ttl = false) {
 		$this->RequireConnection();
@@ -186,7 +186,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	}
 
 	/**
-	 * Puts a value into the end of a queue
+	 * Appends a value to the end of a queue.
 	 * @param string $queueName The name of the queue
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
@@ -197,7 +197,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	}
 
 	/**
-	 * Puts a value into the beggining of a queue
+	 * Prepends a value to the beginning of a queue.
 	 * @param string $queueName The name of the queue
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
@@ -274,11 +274,11 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	}
 
 	/**
-	 * Adds an item with the given key with the given value to the given listName
+	 * Adds an object to a list
 	 * @param string $listName The name of the hashed list
 	 * @param string $key The key
 	 * @param mixed $value The value
-	 * @return integer 1 if the key wasn't on the hash list and it was added. 0 if the key already existed and it was updated.
+	 * @return integer True if the key wasn't on the hash list and it was added. False if the key already existed and it was updated.
 	 */
 	function hSet($listName, $key, $value) {
 		$this->RequireConnection();
@@ -286,10 +286,10 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	}
 
 	/**
-	 * Retrieves the stored value at the given key from the given listName
+	 * Retrieves an object from a list
 	 * @param string $listName The name of the hashed list
 	 * @param string $key The key
-	 * @return mixed The stored value
+	 * @return mixed The stored value, or null if it doesn't exists.
 	 */
 	function hGet($listName, $key) {
 		$this->RequireConnection();
