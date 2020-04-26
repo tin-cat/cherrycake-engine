@@ -188,13 +188,13 @@ class Action {
 	}
 
 	/**
-	 * resetCache
+	 * clearCache
 	 *
 	 * If this action was meant to be cached, it removes it from the cache.
 	 *
 	 * @param array $parameterValues An optional hash array containing the values for the variable path components, parameters and additionalCacheKeys involved in this action's Request. If not specified, the current parameter values will be used.
 	 */
-	function resetCache($parameterValues = false) {
+	function clearCache($parameterValues = false) {
 		if (!$this->isCache)
 			return;
 

@@ -18,12 +18,12 @@ namespace Cherrycake;
  */
 class Request {
 	/**
-	 * @var array $pathComponents An Array of RequestPathComponent objects defining the components of this request, in the same order on which they're expected
+	 * @var array $pathComponents An array of RequestPathComponent objects defining the components of this request, in the same order on which they're expected
 	 */
 	public $pathComponents;
 
 	/**
-	 * @var array $parameters An Array of RequestParameter objects of parameters that might be received by this request
+	 * @var array $parameters An array of RequestParameter objects of parameters that might be received by this request
 	 */
 	public $parameters;
 
@@ -38,7 +38,7 @@ class Request {
 	public $isSecurityCsrf;
 
 	/**
-	 * @var array $additionalCacheKeys A two-dimensional array containing additional cache keys to make this request's cached contents different depending on the values of those keys
+	 * @var array $additionalCacheKeys A hash array containing additional cache keys to make this request's cached contents different depending on the values of those keys
 	 */
 	private $additionalCacheKeys;
 
