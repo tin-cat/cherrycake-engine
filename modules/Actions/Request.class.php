@@ -40,7 +40,7 @@ class Request {
 	/**
 	 * @var array $additionalCacheKeys A two-dimensional array containing additional cache keys to make this request's cached contents different depending on the values of those keys
 	 */
-	private $cacheAdditionalCacheKeys;
+	private $additionalCacheKeys;
 
 	/**
 	 * Request
@@ -63,7 +63,7 @@ class Request {
 
 		$this->pathComponents = isset($setup["pathComponents"]) ? $setup["pathComponents"] : false;
 		$this->parameters = isset($setup["parameters"]) ? $setup["parameters"] : false;
-		$this->cacheAdditionalCacheKeys = isset($setup["cacheAdditionalCacheKeys"]) ? $setup["cacheAdditionalCacheKeys"] : false;
+		$this->additionalCacheKeys = isset($setup["additionalCacheKeys"]) ? $setup["additionalCacheKeys"] : false;
 	}
 
 	/*
@@ -227,8 +227,8 @@ class Request {
 	 * Returns a URL that represents a call to this request, including the given path components and parameter values
 	 *
 	 * @param array $setup An option setup two-dimensional array containing:
-	 * * parameterValues: An optional two-dimensional array containing values for the parameters related to this request, including url path parameters and get/post parameters (not additionalCacheKeys, since they're not represented on the Url itself).
-	 * * isIncludeUrlParameters: Set to true to also include the URL parameters (doesn't refers to pathComponents, which are always included when needed). The passed parameterValues will be used, or the current request's parameters if no parameterValues are specified. Defaults to true.
+	 * * parameterValues: An optional hash array containing the values for the variable path components and for the GET parameters, if any. (not additionalCacheKeys, since they're not represented on the Url itself).
+	 * * isIncludeUrlParameters: Includes the GET parameters in the URL. The passed parameterValues will be used, or the current request's parameters if no parameterValues are specified. Defaults to true.
 	 * * isAbsolute: Whether to generate an absolute url containing additionally http(s):// and the domain of the App. Defaults to false
 	 * * isHttps: Whether to generate an https url or not, with the following possible values:
 	 *  - true: Use https://
@@ -361,15 +361,15 @@ class Request {
 			reset($this->parameters);
 		}
 
-		if (is_array($this->cacheAdditionalCacheKeys)) {
-			while (list($additionalCacheKey, $value) = each($this->cacheAdditionalCacheKeys)) {
+		if (is_array($this->additionalCacheKeys)) {
+			while (list($additionalCacheKey, $value) = each($this->additionalCacheKeys)) {
 				if (isset($parameterValues))
 					$key .= "_".$additionalCacheKey."=".$parameterValues[$key];
 				else
 					$key .= "_".$additionalCacheKey."=".$value;
 
 			}
-			reset($this->cacheAdditionalCacheKeys);
+			reset($this->additionalCacheKeys);
 		}
 
 		$key = substr($key, 1);
@@ -415,8 +415,8 @@ class Request {
 			reset($this->parameters);
 		}
 		
-		if (is_array($this->cacheAdditionalCacheKeys))
-			$r["cacheAdditionalCacheKeys"] = $this->cacheAdditionalCacheKeys;
+		if (is_array($this->additionalCacheKeys))
+			$r["additionalCacheKeys"] = $this->additionalCacheKeys;
 
 		return $r;
 	}

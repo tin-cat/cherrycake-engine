@@ -192,7 +192,7 @@ class Action {
 	 *
 	 * If this action was meant to be cached, it removes it from the cache.
 	 *
-	 * @param array $parameterValues An optional two-dimensional array containing values for all the parameters related to the Request on this Action, including url path parameters, get/post parameters and additionalCacheKeys. If not specified, the current retrieved values will be used
+	 * @param array $parameterValues An optional hash array containing the values for the variable path components, parameters and additionalCacheKeys involved in this action's Request. If not specified, the current parameter values will be used.
 	 */
 	function resetCache($parameterValues = false) {
 		if (!$this->isCache)
