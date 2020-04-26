@@ -54,6 +54,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface 
 	 * Deletes a value from the APCu cache.
 	 *
 	 * @param string $key The identifier key for the object to be deleted
+	 * @return bool True if the object existed and was deleted. False if id didn't exist, or couldn't be deleted.
 	 */
 	function delete($key) {
 		return apcu_delete($key);

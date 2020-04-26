@@ -133,7 +133,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	 *
 	 * Performs a query to MySQL.
 	 *
-	 * @param string $sql The SQL sentence to query to the database.
+	 * @param string $sql The SQL query string
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 * @return DatabaseResultMysql A provider-specific DatabaseResultMysql object if the query has been executed correctly, false otherwise.
 	 */
@@ -154,13 +154,13 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	/**
 	 * prepare
 	 *
-	 * Prepares a query to be done to the dabase using prepared queries methodology.
+	 * Prepares a query so it can be later executed as a prepared query with the DatabaseProvider::execute method.
 	 *
-	 * @param string $sql The SQL sentence to prepare to be queried to the database.
+	 * @param string $sql The SQL statement to prepare to be queried to the database, where all the variables are replaced by question marks.
 	 *
 	 * @return array A hash array with the following keys:
-	 *  - sql: The passed sql query
-	 *  - statement: A provider-specific statement object if the query has been executed correctly, false otherwise.
+	 *  - sql: The passed sql statement
+	 *  - statement: A provider-specific statement object if the query has been prepared correctly, false otherwise.
 	 */
 	function prepare($sql) {;
 		$this->requireConnection();

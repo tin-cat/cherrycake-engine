@@ -152,9 +152,9 @@ class DatabaseProvider {
 	/**
 	 * query
 	 *
-	 * Performs a query to the database. Intended to be overloaded by a higher level implementation class.
+	 * .Performs a query to the database Intended to be overloaded by a higher level implementation class.
 	 *
-	 * @param string $sql The SQL sentence to query to the database.
+	 * @param string $sql The SQL query string
 	 * @param array $setup Optional array with additional options. See DatabaseResult::$setup for available options
 	 * @return DatabaseResult A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise.
 	 */
@@ -164,8 +164,8 @@ class DatabaseProvider {
 	/**
 	 * queryCache
 	 *
-	 * Performs a query to the database with Cache capabilities.
-	 * If the query results are stored in the cache, it retrieves it. If not in cache, it performs the query and stores the results in cache.
+	 * Performs a query to the database implementing a caching mechanism.
+	 * If the query results are stored in the cache, it retrieves them. If not in cache, it performs the query and stores the results in cache.
 	 * Stores results in cache in the form of a tridimensional arrays, storing the DatabaseResult->data variable.
 	 *
 	 *  Example:
@@ -180,11 +180,11 @@ class DatabaseProvider {
 	 * );
 	 * </code>
 	 *
-	 * @param string $sql The SQL sentence to query to the database.
-	 * @param string $cacheTtl The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used
+	 * @param string $sql The SQL statement.
+	 * @param string $cacheTtl The TTL for the cache results. If not specified, the Database configuration key cacheDefaultTtl is used.
 	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey
 	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
-	 * @param boolean $isStoreInCacheWhenNoResults Whether to store results in the cache when the query returned no rows or not
+	 * @param boolean $isStoreInCacheWhenNoResults Whether to store results in the cache when the query returned no rows or not.
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 * @return DatabaseResult A provider-specific DatabaseResult class if the query has been executed or retrieved from the cache correctly, false otherwise.
 	 */
@@ -210,6 +210,19 @@ class DatabaseProvider {
 			}
 			return $result;
 		}
+	}
+
+	/**
+	 * Clears the cache for the query identified by the given cacheKeyNamingOptions
+	 * @param $cacheKeyNamingOptions The cache key naming configuration keys as specified in \Cherrycake\Modules\Cache::buildCacheKey
+	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
+	 * @return boolean Whether the cache could be cleared succesfully or not
+	 */
+	function clearCacheQuery($cacheKeyNamingOptions, $overrideCacheProviderName = false) {
+		global $e;
+		$cacheKey = $this->buildQueryCacheKey(false, $cacheKeyNamingOptions);
+		$cacheProviderName = ($overrideCacheProviderName ? $overrideCacheProviderName : $this->getConfig("cacheProviderName"));
+		return $e->Cache->$cacheProviderName->delete($cacheKey);
 	}
 
 	/**
@@ -407,10 +420,10 @@ class DatabaseProvider {
 
 	/**
 	 * Deletes a single row in the database identified by the given $idFieldName and $idFieldValue. More complex deletes should be done by the app by calling other methods on this class like prepareAndExecute
-	 * @param  [type] $tableName    [description]
-	 * @param  [type] $idFieldName  [description]
-	 * @param  [type] $idFieldValue [description]
-	 * @return [type]               [description]
+	 * @param string $tableName The table name
+	 * @param string $idFieldName The name of the field that uniquely identified the row to be updated
+	 * @param mixed $idFieldValue The field value for the row to be update
+	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function deleteByUniqueField($tableName, $idFieldName, $idFieldValue) {
 		$query = "delete from ".$tableName." where ".$idFieldName." = ?;";

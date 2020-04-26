@@ -123,11 +123,11 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	 * Deletes a value from the cache.
 	 *
 	 * @param string $key The identifier key for the object to be deleted
-	 * @return bool True if the object could be deleted. False otherwise
+	 * @return bool True if the object existed and was deleted. False if id didn't exist, or couldn't be deleted.
 	 */
 	function delete($key) {
 		$this->RequireConnection();
-		return $this->client->del($key);
+		return $this->client->del($key) > 0;
 	}
 
 	/**
