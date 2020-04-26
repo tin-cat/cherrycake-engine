@@ -180,14 +180,14 @@ class Patterns extends \Cherrycake\Module {
 	}
 
 	/**
-	 * wipeCache
+	 * clearCache
 	 *
 	 * Deletes a cached pattern from the cache
 	 *
 	 * @param string $patternName The pattern name
 	 * @param string $directoryOverride When specified, the pattern is taken from this directory instead of the default configured directory.
 	 */
-	function wipeCache($patternName, $directoryOverride = false) {
+	function clearCache($patternName, $directoryOverride = false) {
 		if ($cache = $this->getConfig("cache"))
 			if ($cachePattern = $cache["items"][$patternName]) {
 				global $e;
