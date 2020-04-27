@@ -50,8 +50,8 @@ class DatabaseRow {
 		if (!$fields)
 			return $this->data;
 
-		while (list($key, $value) = each($this->data))
-			$data[$key] = $fields[$key]["type"] ? $this->treatFieldData($this->data[$key], $fields[$key]["type"]) : $value;
+		foreach ($this->data as $key => $value)
+			$data[$key] = $fields[$key]["type"] ?? false ? $this->treatFieldData($this->data[$key], $fields[$key]["type"]) : $value;
 		reset($this->data);
 		return $data;
 	}

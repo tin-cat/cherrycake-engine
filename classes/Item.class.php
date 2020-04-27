@@ -108,6 +108,11 @@ class Item extends BasicObject {
 	protected $itemData;
 
 	/**
+	 * @var array An array containing the field names that have been changed during the life of this object
+	 */
+	private $changedFields = false;
+
+	/**
 	 * __construct
 	 *
 	 * Constructor, allows to create an instance object which automatically fills itself using one of the available load methods
@@ -132,8 +137,8 @@ class Item extends BasicObject {
 					break;
 
 				case "fromId":
-					if (!$this->loadFromId($setup["id"], $setup["idFieldName"], $setup["loadFromIdMethod"]))
-						throw new \Exception("Couldn't load ".get_called_class()." Item from id ".$setup["id"].($setup["idFieldName"] ? " with idFieldName ".$setup["idFieldName"] : null));
+					if (!$this->loadFromId($setup["id"], $setup["idFieldName"] ?? false, $setup["loadFromIdMethod"] ?? false))
+						throw new \Exception("Couldn't load ".get_called_class()." Item from id ".$setup["id"].($setup["idFieldName"] ?? false ? " with idFieldName ".$setup["idFieldName"] : null));
 					break;
 
 				case "fromData":
@@ -460,11 +465,11 @@ class Item extends BasicObject {
 
 	/**
 	 * Updates the data on the database for this Item
-	 * @param array $data A hash array of the keys and values to update
-	 * For multilanguage fields, a hash array with the syntax [<language code> => <value>, ...] can be passed. If a non-array value is passed the currently detected language will be used
+	 * @param array An optional hash array where each key is the field name to update, and each value the new data to store on that field for this item. If not passed or left to false, the current data stored in the object is used. Default: false.
+	 * * For multilanguage fields, a hash array where the keys are language codes and the values are the value in that language can be passed. If a non-array value is passed the currently detected language will be used.	
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function update($data) {
+	function update($data = false) {
 		global $e;
 
 		if (!$this->idFieldName) {
@@ -477,8 +482,14 @@ class Item extends BasicObject {
 			return false;
 		}
 
-		while (list($fieldName, $fieldData) = each($data)) {
-			if ($this->fields[$fieldName]["isMultiLanguage"]) {
+		if (!$data && $this->changedFields) {
+			foreach (array_keys($this->changedFields) as $key)
+				$data[$key] = $this->$key;
+			reset($this->changedFields);
+		}
+
+		foreach ($data as $fieldName => $fieldData) {
+			if ($this->fields[$fieldName]["isMultiLanguage"] ?? false) {
 				global $e;
 				if (is_array($fieldData)) {
 					
@@ -523,7 +534,7 @@ class Item extends BasicObject {
 	}
 
 	/**
-	 * Deletes the data on the database representing this unique item, as per the current $idFieldName value
+	 * Deletes this item from the database.
 	 * @return boolean True on success, false on failure
 	 */
 	function delete() {
@@ -853,7 +864,10 @@ class Item extends BasicObject {
 			return;
 		}
 
-		$this->itemData[$key] = $value;
+		if ($this->itemData[$key] !== $value) {
+			$this->itemData[$key] = $value;
+			$this->changedFields[$key] = true;
+		}
 	}
 
 	/**
