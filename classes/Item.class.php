@@ -86,7 +86,6 @@ class Item extends BasicObject {
 	 * * * * fieldName: The name of the field on the table that stores this level value
 	 */
 	protected $metaFields = false;
-	protected $metaFields = false;
 
 	/**
 	 * @var string $urlShortCodeCharacters The characters that will be used to generate url short codes
@@ -566,7 +565,7 @@ class Item extends BasicObject {
 	 * If the key is for a database field that is language dependant as specified by $this->fields, the proper language data according to the current Locale language will be returned
 	 * If the key is for a timezone dependant field as specified by $this->fields, the proper timezone adjusted timestamp will be returned according to the current Locale timezone
 	 * 
-	 * @param string $key The key of the data to get
+	 * @param string $key The key of the data to get, matches the database field name.
 	 * @return mixed The data. Null if data with the given key is not set.
 	 */
 	function __get($key) {
