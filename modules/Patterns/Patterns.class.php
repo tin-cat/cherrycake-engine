@@ -182,7 +182,7 @@ class Patterns extends \Cherrycake\Module {
 	/**
 	 * clearCache
 	 *
-	 * Deletes a cached pattern from the cache
+	 * Removes a pattern from cache
 	 *
 	 * @param string $patternName The pattern name
 	 * @param string $directoryOverride When specified, the pattern is taken from this directory instead of the default configured directory.
