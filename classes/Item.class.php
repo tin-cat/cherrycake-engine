@@ -38,12 +38,12 @@ class Item extends BasicObject {
 	protected $cacheProviderName = "engine";
 
 	/**
-	 * @var integer The TTL for the cache storage.
+	 * @var integer The TTL to use when caching data for this Item.
 	 */
 	protected $cacheTtl = \Cherrycake\CACHE_TTL_NORMAL;
 
 	/**
-	 * @var string The string to use as the key for this Item in the cache, the value of the idFieldName will be appended.
+	 * @var string The string to use as the key prefix for this Item in the cache, the value of the idFieldName will be appended.
 	 */
 	protected $cacheSpecificPrefix;
 
@@ -289,7 +289,7 @@ class Item extends BasicObject {
 	 *
 	 * Removes this Item from the cache. Can be overloaded if more additional things have to be cleared from cache in relation to the Item.
 	 *
-	 * @param array $fieldNames An array of field names that have been used to query items by index, so those queries will be cleared from cache. idFieldName and other fields commonily used by this object are automatically added to this array and cleared from cache.
+	 * @param array $fieldNames An optional array of field names that have been used to query items by index, so those queries will be cleared from cache. idFieldName and other field names commonly used by this object are automatically added to this array and cleared from cache.
 	 * @return boolean True on success, false on failure
 	 */
 	function clearCache($fieldNames = false) {
@@ -301,9 +301,9 @@ class Item extends BasicObject {
 		foreach ($fieldNames as $fieldName) {
 			if (!$e->Cache->{$this->cacheProviderName}->delete($e->Cache->buildCacheKey([
 				"prefix" => $this->cacheSpecificPrefix,
-				"uniqueId" => $fieldName."=".$this->{$this->fieldName}
+				"uniqueId" => $fieldName."=".$this->{$fieldName}
 			])))
-			$isErrors = true;
+				$isErrors = true;
 		}
 
 		return $isErrors;
