@@ -439,16 +439,17 @@ class Security extends \Cherrycake\Module {
 			if ($origin) {
 				if ($parsedOrigin = parse_url($origin)) {
 					if (strcmp($parsedOrigin["host"], $_SERVER["SERVER_NAME"]) !== 0) {
-						$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
-							"subType" => "Csrf",
-							"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
-							"data" => [
-									"HTTP_ORIGIN" => $_SERVER["HTTP_ORIGIN"],
-									"HTTP_REFERER" => $_SERVER["HTTP_REFERER"],
-									"parsedOrigin Host" => $parsedOrigin["host"],
-									"SERVER_NAME" => $_SERVER["SERVER_NAME"]
-								]
-						]));
+						if ($e->isModuleLoaded("SystemLog"))
+							$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+								"subType" => "Csrf",
+								"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
+								"data" => [
+										"HTTP_ORIGIN" => $_SERVER["HTTP_ORIGIN"],
+										"HTTP_REFERER" => $_SERVER["HTTP_REFERER"],
+										"parsedOrigin Host" => $parsedOrigin["host"],
+										"SERVER_NAME" => $_SERVER["SERVER_NAME"]
+									]
+							]));
 						return false;
 					}
 				}

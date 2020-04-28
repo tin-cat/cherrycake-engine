@@ -107,7 +107,7 @@ class UiComponentTooltip extends UiComponent
 			return $contents;
 
 		// Order the options
-		while (list($name, $setup) = each($contents)) {
+		foreach ($contents as $name => $setup) {
 			$setup["name"] = $name;
 			$contentsOrdered[$setup["order"]] = $setup;
 		}
@@ -115,7 +115,7 @@ class UiComponentTooltip extends UiComponent
 		ksort($contentsOrdered);
 
 		foreach($contentsOrdered as $item)
-			$r .= UiComponentTooltip::buildContentItem($item["type"], $item["setup"]);
+			$r = UiComponentTooltip::buildContentItem($item["type"], $item["setup"]);
 
 		return $r;
 	}
@@ -132,11 +132,11 @@ class UiComponentTooltip extends UiComponent
 	static function buildContentItem($type, $setup) {
 		switch ($type) {
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SEPARATOR:
-				$r .= "<hr".($setup["additionalCssClass"] ? " class=\"".$setup["additionalCssClass"]."\"" : "").">";
+				$r = "<hr".($setup["additionalCssClass"] ? " class=\"".$setup["additionalCssClass"]."\"" : "").">";
 				break;
 
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_CONTENT:
-				$r .=
+				$r =
 					"<div".
 						" class=\"".
 							"content".
@@ -148,33 +148,33 @@ class UiComponentTooltip extends UiComponent
 				break;
 
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SIMPLE:
-				$r .=
+				$r =
 					"<div".
 						" class=\"".
 							"simple".
-							($setup["additionalCssClass"] ? " ".$setup["additionalCssClass"] : "").
+							($setup["additionalCssClass"] ?? false ? " ".$setup["additionalCssClass"] : "").
 						"\"".
 					">".
-						($setup["iconName"] ? "<div class=\"UiComponentIcon ".$setup["iconName"].($setup["iconVariant"] ? " ".$setup["iconVariant"] : "")."\"></div>" : "").
-						($setup["title"] ? "<div class=\"title\">".$setup["title"]."</div>" : "").
+						($setup["iconName"] ?? false ? "<div class=\"UiComponentIcon ".$setup["iconName"].($setup["iconVariant"] ?? false ? " ".$setup["iconVariant"] : "")."\"></div>" : "").
+						($setup["title"] ?? false ? "<div class=\"title\">".$setup["title"]."</div>" : "").
 					"</div>";
 				break;
 
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_OPTION:
-				if ($setup["nonHoverIconVariant"])
+				if ($setup["nonHoverIconVariant"] ?? false)
 					$setup["iconVariant"] = $setup["nonHoverIconVariant"];
 
-				$r .=
+				$r =
 					"<a".
 						" class=\"".
 							"option".
 						"\"".
-						($setup["href"] && !$setup["onClick"] ? " href=\"".$setup["href"]."\"" : "").
-						($setup["onClick"] ? " onclick=\"".$setup["onClick"]."\"" : "").
-						($setup["onHoverIconVariant"] ? " onmouseenter=\"$('> .UiComponentIcon', this).removeClass('".$setup["nonHoverIconVariant"]."').addClass('".$setup["onHoverIconVariant"]."');\"" : "").
-						($setup["nonHoverIconVariant"] ? " onmouseleave=\"$('> .UiComponentIcon', this).removeClass('".$setup["onHoverIconVariant"]."').addClass('".$setup["nonHoverIconVariant"]."');\"" : "").
+						($setup["href"] ?? false && !($setup["onClick"] ?? false) ? " href=\"".$setup["href"]."\"" : "").
+						($setup["onClick"] ?? false ? " onclick=\"".$setup["onClick"]."\"" : "").
+						($setup["onHoverIconVariant"] ?? false ? " onmouseenter=\"$('> .UiComponentIcon', this).removeClass('".$setup["nonHoverIconVariant"]."').addClass('".$setup["onHoverIconVariant"]."');\"" : "").
+						($setup["nonHoverIconVariant"] ?? false ? " onmouseleave=\"$('> .UiComponentIcon', this).removeClass('".$setup["onHoverIconVariant"]."').addClass('".$setup["nonHoverIconVariant"]."');\"" : "").
 					">".
-						($setup["iconName"] ? "<div class=\"UiComponentIcon ".$setup["iconName"].($setup["iconVariant"] ? " ".$setup["iconVariant"] : "")."\"></div>" : "").
+						($setup["iconName"] ?? false ? "<div class=\"UiComponentIcon ".$setup["iconName"].($setup["iconVariant"] ?? false ? " ".$setup["iconVariant"] : "")."\"></div>" : "").
 						"<div class=\"title\">".$setup["title"]."</div>".
 					"</a>";
 				break;

@@ -235,14 +235,14 @@ class Engine {
 	 * @param string $methodName the name of the method
 	 * @return array The App module names that implement the specified method
 	 */
-	function getAvailableAppModuleNamesWithMethod($methodName) {
+	function getAvailableAppModuleNamesWithMethod($methodName) {		
 		return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", $this->getAppModulesDir(), $methodName);
 	}
 	/*
 	 * @param string $nameSpace The namespace to use
 	 * @param string $modulesDirectory The directory where the specified module is stored
 	 * @param string $methodName the name of the method to check
-	 * @return array The module names that implement the specified method, o,r false if no modules found
+	 * @return array The module names that imeplement the specified method, o,r false if no modules found
 	 */
 	function getAvailableModuleNamesWithMethod($nameSpace, $modulesDirectory, $methodName) {
 		$cacheBucketName = "AvailableModuleNamesWithMethod";

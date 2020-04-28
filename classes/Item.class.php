@@ -864,7 +864,7 @@ class Item extends BasicObject {
 			return;
 		}
 
-		if ($this->itemData[$key] !== $value) {
+		if (!isset($this->itemData[$key]) || $this->itemData[$key] !== $value) {
 			$this->itemData[$key] = $value;
 			$this->changedFields[$key] = true;
 		}

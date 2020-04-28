@@ -347,12 +347,12 @@ class Locale extends \Cherrycake\Module
 			$data = $row->getData();
 
 			// Store in cache
-			$e->Cache->$cacheProviderName->set($cacheKey, $data, ($setup["forceTextCacheTtl"] ? $setup["forceTextCacheTtl"] : $this->getConfig("textCacheDefaultTtl")));
+			$e->Cache->$cacheProviderName->set($cacheKey, $data, ($setup["forceTextCacheTtl"] ?? false ? $setup["forceTextCacheTtl"] : $this->getConfig("textCacheDefaultTtl")));
 		}
 
-		$text = $data["text_".$this->getLanguageCode($setup["forceLanguage"] ? $setup["forceLanguage"] : $this->getLanguage())];
+		$text = $data["text_".$this->getLanguageCode($setup["forceLanguage"] ?? false ? $setup["forceLanguage"] : $this->getLanguage())];
 
-		if ($setup["variables"])
+		if ($setup["variables"] ?? false)
 			while (list($key, $value) = each($setup["variables"])) {
 				$valueReplacement =
 					is_array($value)

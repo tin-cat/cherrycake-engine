@@ -63,7 +63,7 @@ class UiComponentFormInput extends UiComponent {
 		if (!$this->domId)
 			$this->domId = uniqid();
 
-		$r .= "<div id=\"".$this->domId."\"></div>";
+		$r = "<div id=\"".$this->domId."\"></div>";
 		$r .= "
 			<script>
 				$('#".$this->domId."').UiComponentFormInput(".json_encode([

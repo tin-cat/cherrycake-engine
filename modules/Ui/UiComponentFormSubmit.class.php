@@ -24,6 +24,7 @@ class UiComponentFormSubmit extends UiComponent {
 	protected $iconVariant;
 	protected $iconPosition;
 	protected $isAutoFocus;
+	protected $error;
 	public $onClick;
 	public $isAddJsControl;
 

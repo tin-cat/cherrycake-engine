@@ -20,6 +20,7 @@ class UiComponentForm extends UiComponent {
 	protected $domId;
 	protected $style;
 	protected $additionalCssClasses;
+	protected $title;
 	protected $request;
 	protected $method = "post";
 	protected $url;
@@ -73,6 +74,8 @@ class UiComponentForm extends UiComponent {
 		// If a Request has been specified, set the proper url and parameters
 		if ($this->request)
 			$this->url = $this->request->buildUrl(["isIncludeUrlParameters" => false]);
+
+		$htmlContent = "";
 		
 		if ($this->title)
 			$htmlContent .= "<div class=\"title\">".$this->title."</div>";
@@ -81,9 +84,9 @@ class UiComponentForm extends UiComponent {
 			$htmlContent .= $this->buildHtmlForUiComponentFormItem($UiComponentFormItem);
 		
 		if ($this->url && $this->method)
-			$r .= "<form ".($this->domId ? " id=\"".$this->domId."\"" : null).">".$htmlContent."</form>";
+			$r = "<form ".($this->domId ? " id=\"".$this->domId."\"" : null).">".$htmlContent."</form>";
 		else
-			$r .= "<div ".($this->domId ? " id=\"".$this->domId."\"" : null).">".$htmlContent."</div>";
+			$r = "<div ".($this->domId ? " id=\"".$this->domId."\"" : null).">".$htmlContent."</div>";
 
 		$r .= "
 			<script>

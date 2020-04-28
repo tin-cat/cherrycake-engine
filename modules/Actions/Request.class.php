@@ -287,10 +287,10 @@ class Request {
 		else
 			$url .= "/";
 
-		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {
-			$count = 0;
+		$count = 0;
+		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {			
 			foreach ($this->parameters as $parameter) {
-				if ($setup["parameterValues"]) {
+				if ($setup["parameterValues"] ?? false) {
 					if ($setup["parameterValues"][$parameter->name])
 						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$setup["parameterValues"][$parameter->name];
 				}
@@ -302,7 +302,7 @@ class Request {
 
 		if ($this->isSecurityCsrf()) {
 			global $e;
-			$url .= (!$count++ ? "?" : "&")."csrfToken=".$e->Security->getCsrfToken();
+			$url .= ($count > 0 ? "&" : "?")."csrfToken=".$e->Security->getCsrfToken();
 		}
 
 		if (isset($setup["anchor"]))

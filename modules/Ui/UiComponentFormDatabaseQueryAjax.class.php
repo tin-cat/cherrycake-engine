@@ -45,7 +45,7 @@ class UiComponentFormDatabaseQueryAjax extends UiComponent {
 
 	protected $config = [
 		"cacheProviderName" => "engine",
-		"cacheDefaultTtl" => \Cherrycake\Modules\CACHE_TTL_NORMAL
+		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
 	];
 
 	protected $dependentCoreUiComponents = [

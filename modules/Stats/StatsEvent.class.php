@@ -67,7 +67,7 @@ class StatsEvent extends Item {
 	function loadInline($data = false) {
 		global $e;
 		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
-		$this->subType = $data["subType"];
+		$this->subType = $data["subType"] ?? false;
 		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : $e->Locale->convertTimestamp(time());
 		$this->resolution = $this->timeResolution;
 		return parent::loadInline($data);
