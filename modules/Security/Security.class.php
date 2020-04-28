@@ -34,24 +34,8 @@ const SECURITY_FILTER_JSON = 3; // Decodes json data
 namespace Cherrycake\Modules;
 
 /**
- * Security
- *
  * Provides security measures.
  * Csrf features require the Session module.
- *
- * Configuration example for security.config.php:
- * <code>
- * $securityConfig = [
- * 	"isCheckMaliciousBadBrowsers" => true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true
- * 	"permanentlyBannedIps" => [ // An array of banned IPs that must be blocked from accessing the application
- * 		"1.1.1.1"
- * 	],
- *	"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
- * 	"autoBannedIpsCacheProviderName" => "engine", // The name of the CacheProvider used to store banned Ips
- * 	"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
- *	"autoBannedIpsThreshold" => 10 // The number hack intrusions detected from the same Ip to consider it banned
- * ];
- * </code>
  *
  * @package Cherrycake
  * @category Modules
@@ -66,11 +50,13 @@ class Security extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"isCheckMaliciousBadBrowsers" => true,
-		"isAutoBannedIps" => true,
-		"autoBannedIpsCacheProviderName" => "engine",
-		"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS,
-		"autoBannedIpsThreshold" => 10
+		"isCheckMaliciousBadBrowsers" => true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true
+		"permanentlyBannedIps" => [], // An array of banned IPs that must be blocked from accessing the application
+		"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
+		"autoBannedIpsCacheProviderName" => "engine", // The name of the CacheProvider used to store banned Ips
+		"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
+		"autoBannedIpsThreshold" => 10, // The number hack intrusions detected from the same Ip to consider it banned
+		"isRequestServerNameCheck" => false // Whether to check or not that the header reported origin host matches the server reported host when checking requests for CSRF attacks. This will add additional protection against CSRF attacks, but might not work in some server environments, specially development server environments.
 	];
 
 	/**
@@ -428,29 +414,31 @@ class Security extends \Cherrycake\Module {
 	 */
 	function checkRequest($request) {
 		global $e;
-
+		
 		if ($request->isSecurityCsrf()) {
 			// Check host
-			if ($_SERVER["HTTP_ORIGIN"])
-				$origin = $_SERVER["HTTP_ORIGIN"];
-			else
-			if ($_SERVER["HTTP_REFERER"])
-				$origin = $_SERVER["HTTP_REFERER"];
-			if ($origin) {
-				if ($parsedOrigin = parse_url($origin)) {
-					if (strcmp($parsedOrigin["host"], $_SERVER["SERVER_NAME"]) !== 0) {
-						if ($e->isModuleLoaded("SystemLog"))
-							$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
-								"subType" => "Csrf",
-								"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
-								"data" => [
+			if ($this->getConfig("isRequestServerNameCheck")) {
+				if ($_SERVER["HTTP_ORIGIN"])
+					$origin = $_SERVER["HTTP_ORIGIN"];
+				else
+				if ($_SERVER["HTTP_REFERER"])
+					$origin = $_SERVER["HTTP_REFERER"];
+				if ($origin) {
+					if ($parsedOrigin = parse_url($origin)) {
+						if (strcmp($parsedOrigin["host"], $_SERVER["SERVER_NAME"]) !== 0) {
+							if ($e->isModuleLoaded("SystemLog"))
+								$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+									"subType" => "Csrf",
+									"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
+									"data" => [
 										"HTTP_ORIGIN" => $_SERVER["HTTP_ORIGIN"],
 										"HTTP_REFERER" => $_SERVER["HTTP_REFERER"],
 										"parsedOrigin Host" => $parsedOrigin["host"],
 										"SERVER_NAME" => $_SERVER["SERVER_NAME"]
 									]
-							]));
-						return false;
+								]));
+							return false;
+						}
 					}
 				}
 			}

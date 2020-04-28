@@ -85,10 +85,9 @@ class Request {
 
 		}
 		else { // Else the current request has pathComponents
-
-			if (!is_array($this->pathComponents)) // If this request doesn't have pathComponents, this is not the current Request
+			if (!is_array($this->pathComponents)) { // If this request doesn't have pathComponents, this is not the current Request
 				return false;
-			else { // Else this request has pathComponents, further analysis must be done
+			} else { // Else this request has pathComponents, further analysis must be done
 
 				if (sizeof($this->pathComponents) != sizeof($e->Actions->currentRequestPathComponentStrings)) // If the number of this Request's pathComponents is different than the number of the current request's pathComponents, this is not the current Request
 					return false;

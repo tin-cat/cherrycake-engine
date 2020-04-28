@@ -181,9 +181,10 @@ class Actions extends \Cherrycake\Module {
 		if (is_array($this->actions)) {
 			$this->buildCurrentRequestPathComponentStringsFromRequestUri($requestUri);
 			// Loop through all mapped actions
-			foreach ($this->actions as $actionName => $action)
+			foreach ($this->actions as $actionName => $action) {
 				if ($action->request->isCurrentRequest())
 					$matchingActions[$actionName] = $action;
+			}
 			reset($this->actions);
 		}
 
