@@ -104,9 +104,11 @@ class Locale extends \Cherrycake\Module
 		"geolocationMethod" => \Cherrycake\Modules\LOCALE_GEOLOCATION_METHOD_CLOUDFLARE,
 		"textsTableName" => "cherrycake_locale_texts",
 		"textCategoriesTableName" => "cherrycake_locale_textCategories",
+		"textCacheProviderName" => "engine",
 		"textCacheKeyPrefix" => "LocaleText",
 		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"timeZonesTableName" => "cherrycake_location_timezones",
+		"timeZonesCacheProviderName" => "engine",
 		"timeZonesCacheKeyPrefix" => "LocaleTimeZone",
 		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
 	];
