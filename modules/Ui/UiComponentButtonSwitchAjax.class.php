@@ -19,6 +19,7 @@ namespace Cherrycake;
 class UiComponentButtonSwitchAjax extends UiComponentButton {
 	protected $defaultState;
 	protected $states;
+	protected $domId;
 
 	function addCssAndJavascript() {
 		parent::addCssAndJavascript();
@@ -42,7 +43,7 @@ class UiComponentButtonSwitchAjax extends UiComponentButton {
 
 		$e->loadCoreModule("HtmlDocument");
 
-		$r .= "<div id=\"".$this->domId."\"></div>";
+		$r = "<div id=\"".$this->domId."\"></div>";
 
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentButtonSwitchAjax({

@@ -290,7 +290,7 @@ class Request {
 		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {			
 			foreach ($this->parameters as $parameter) {
 				if ($setup["parameterValues"] ?? false) {
-					if ($setup["parameterValues"][$parameter->name])
+					if ($setup["parameterValues"][$parameter->name] ?? false)
 						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$setup["parameterValues"][$parameter->name];
 				}
 				else

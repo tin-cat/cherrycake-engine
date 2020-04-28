@@ -115,7 +115,7 @@ class UiComponentTooltip extends UiComponent
 		ksort($contentsOrdered);
 
 		foreach($contentsOrdered as $item)
-			$r = UiComponentTooltip::buildContentItem($item["type"], $item["setup"]);
+			$r = UiComponentTooltip::buildContentItem($item["type"] ?? false, $item["setup"] ?? false);
 
 		return $r;
 	}
@@ -132,7 +132,7 @@ class UiComponentTooltip extends UiComponent
 	static function buildContentItem($type, $setup) {
 		switch ($type) {
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SEPARATOR:
-				$r = "<hr".($setup["additionalCssClass"] ? " class=\"".$setup["additionalCssClass"]."\"" : "").">";
+				$r = "<hr".($setup["additionalCssClass"] ?? false ? " class=\"".$setup["additionalCssClass"]."\"" : "").">";
 				break;
 
 			case UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_CONTENT:
@@ -140,7 +140,7 @@ class UiComponentTooltip extends UiComponent
 					"<div".
 						" class=\"".
 							"content".
-							($setup["additionalCssClass"] ? " ".$setup["additionalCssClass"] : "").
+							($setup["additionalCssClass"] ?? false ? " ".$setup["additionalCssClass"] : "").
 						"\"".
 					">".
 						$setup["content"].

@@ -58,9 +58,9 @@ class BasicObject {
 		if (!is_array($setup))
 			return;
 
-		while (list($parameterName, $parameterSetup) = each($setup)) {
+		foreach ($setup as $parameterName => $parameterSetup) {
 			if (!isset($parameters[$parameterName])) {
-				if ($parameterSetup["isRequired"]) {
+				if ($parameterSetup["isRequired"] ?? false) {
 					global $e;
 					$e->loadCoreModule("Errors");
 					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Parameter \"".$parameterName."\" is required when calling ".debug_backtrace()[1]["class"]."::".debug_backtrace()[1]["function"]]);
@@ -70,14 +70,15 @@ class BasicObject {
 			}
 
 			if (isset($parameterSetup["addArrayKeysIfNotExist"])) {
-				if (!$parameters[$parameterName] && !is_array($parameters[$parameterName]))
+				if (isset($parameters[$parameterName]) && !is_array($parameters[$parameterName]))
 					$parameters[$parameterName] = [];
-				$parameters[$parameterName] = array_replace($parameters[$parameterName], $parameterSetup["addArrayKeysIfNotExist"]);
+				if (isset($parameters[$parameterName]))
+					$parameters[$parameterName] = array_replace($parameters[$parameterName], $parameterSetup["addArrayKeysIfNotExist"]);
 			}
 
 			if (isset($parameterSetup["addArrayValuesIfNotExist"])) {
 				foreach ($parameterSetup["addArrayValuesIfNotExist"] as $addArrayValueIfNotExist)
-					if (is_array($parameters[$parameterName])) {
+					if (isset($parameters[$parameterName]) && is_array($parameters[$parameterName])) {
 						if (!in_array($addArrayValueIfNotExist, $parameters[$parameterName]))
 							$parameters[$parameterName][] = $addArrayValueIfNotExist;
 					}

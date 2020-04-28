@@ -121,12 +121,12 @@ class Image {
 	 */
 	function init() {
 		// Add Hd sizes to the sizes array
-		while (list($sizeName, $sizeSetup) = each($this->sizes)) {
-			if ($sizeSetup["isHd"]) {
-				if ($sizeSetup["width"])
+		foreach ($this->sizes as $sizeName => $sizeSetup) {
+			if ($sizeSetup["isHd"] ?? false) {
+				if ($sizeSetup["width"] ?? false)
 					$sizeSetup["width"] = $sizeSetup["width"] * 2;
 
-				if ($sizeSetup["height"])
+				if ($sizeSetup["height"] ?? false)
 					$sizeSetup["height"] = $sizeSetup["height"] * 2;
 
 				$hdSizes[$sizeName.".hd"] = $sizeSetup;
@@ -213,7 +213,7 @@ class Image {
 	static function buildDeepSubdirectoryName($id, $depth = 3) {
 		if (!$depth)
 			return null;
-		$r .= substr($id, strlen($id)-1, 1);
+		$r = substr($id, strlen($id)-1, 1);
 		for($i=2; $i<=$depth; $i++)
 			$r .= "/".(strlen($id) < $i ? "0" : substr($id, strlen($id)-$i, 1));
 		return $r;

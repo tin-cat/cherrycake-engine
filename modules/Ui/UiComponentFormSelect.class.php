@@ -49,7 +49,7 @@ class UiComponentFormSelect extends UiComponent {
 			while (list($key, $value) = each($setup))
 				$this->$key = $value;
 
-		$r .=
+		$r =
 			"<div ".
 				"class=\"".
 					"UiComponentFormSelect".
@@ -67,7 +67,7 @@ class UiComponentFormSelect extends UiComponent {
 			">";
 
 		if (is_array($this->items)) {
-			while (list($value, $title) = each($this->items)) {
+			foreach ($this->items as $value => $title) {
 				$r .=
 					"<option".
 						" value=\"".$value."\"".

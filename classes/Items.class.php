@@ -77,11 +77,19 @@ abstract class Items extends BasicObject implements \Iterator {
 		if (!$setup)
 			return true;
 
-		if ($setup["itemClassName"])
+		if ($setup["itemClassName"] ?? false)
 			$this->itemClassName = $setup["itemClassName"];
 
 		// Try to guess different type of shortcut calls to the constructor
-		if (!$setup["itemClassName"] && !$setup["itemLoadMethod"] && !$setup["p"] && $setup["fillMethod"] != "fromParameters") {
+		if (
+			!($setup["itemClassName"] ?? false)
+			&&
+			!($setup["itemLoadMethod"] ?? false)
+			&&
+			!($setup["p"] ?? false)
+			&&
+			$setup["fillMethod"] ?? false != "fromParameters"
+		) {
 			$setup["fillMethod"] = "fromArray";
 			$setup["items"] = $setup;
 		}
@@ -133,7 +141,7 @@ abstract class Items extends BasicObject implements \Iterator {
 		if (!$setup["databaseResult"]->isAny())
 			return true;
 
-		if ($setup["items"])
+		if ($setup["items"] ?? false)
 			$this->items = $setup["items"];
 		else {
 			switch ($setup["itemLoadMethod"]) {
@@ -207,7 +215,7 @@ abstract class Items extends BasicObject implements \Iterator {
 			"limit" => ["default" => false],
 			"order" => ["default" => false],
 			"orders" => ["addArrayKeysIfNotExist" => [
-				"random" => "rand(".($p["orderRandomSeed"] ? $p["orderRandomSeed"] : "").")"
+				"random" => "rand(".($p["orderRandomSeed"] ?? false ? $p["orderRandomSeed"] : "").")"
 			]],
 			"orderRandomSeed" => ["default" => false],
 			"isPaging" => ["default" => false],
@@ -221,7 +229,7 @@ abstract class Items extends BasicObject implements \Iterator {
 		]);
 
 		// Build the cacheKeyNamingOptions if needed
-		if (!$p["isForceNoCache"] && $this->isCache && !$p["cacheKeyNamingOptions"])
+		if (!($p["isForceNoCache"] ?? false) && $this->isCache && !($p["cacheKeyNamingOptions"] ?? false))
 			$p["cacheKeyNamingOptions"] = $this->buildCacheKeyNamingOptions($p);
 
 		// Build $wheres and $fields based on the passed wheres
@@ -254,11 +262,11 @@ abstract class Items extends BasicObject implements \Iterator {
 
 			if (is_array($p["order"])) {
 				foreach ($p["order"] as $orderItem) {
-					if (array_key_exists($orderItem, $p["orders"])) {
+					if (array_key_exists($orderItem, $p["orders"] ?? [])) {
 						$orderSql .= $p["orders"][$orderItem].", ";
 					}
 				}
-				if ($orderSql)
+				if ($orderSql ?? false)
 					$sql .= " order by ".substr($orderSql, 0, -2);
 			}
 
@@ -439,7 +447,10 @@ abstract class Items extends BasicObject implements \Iterator {
 	function isAny() {
 		if ($this->totalNumberOf > 0)
 			return true;
-		return sizeof($this->items) ? true : false;
+		if (is_array($this->items))
+			return sizeof($this->items) > 0;
+		else
+			return false;
 	}
 
 	/*
@@ -528,7 +539,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	function filter($function) {
 		if (!$this->isAny())
 			return;
-		while (list($index, $item) = each($this->items))
+		foreach ($this->items as $index => $item)
 			if (!$function($index, $item))
 				$this->remove($index);
 	}

@@ -353,7 +353,7 @@ class Locale extends \Cherrycake\Module
 		$text = $data["text_".$this->getLanguageCode($setup["forceLanguage"] ?? false ? $setup["forceLanguage"] : $this->getLanguage())];
 
 		if ($setup["variables"] ?? false)
-			while (list($key, $value) = each($setup["variables"])) {
+			foreach ($setup["variables"] as $key => $value) {
 				$valueReplacement =
 					is_array($value)
 					?
@@ -767,7 +767,7 @@ class Locale extends \Cherrycake\Module
 				}
 
 				// Other cases: Future timestamps, and timestamps not handled by the humanizer above
-				$monthNames = $this->getFromArray($this->texts["monthsLong"], $setup["language"]);
+				$monthNames = $this->getFromArray($this->texts["monthsLong"], $setup["language"] ?? false);
 				$r =
 					$monthNames[date("n", $timestamp)-1].
 					" ".

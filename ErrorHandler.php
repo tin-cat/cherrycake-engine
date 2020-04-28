@@ -428,7 +428,7 @@ function handleError(
 							"Description: ".$errStr."<br>".
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
-							"Backtrace:<br>".implode($backtrace_info, "<br>"),
+							"Backtrace:<br>".implode("<br>", $backtrace_info),
 						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();

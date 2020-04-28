@@ -344,9 +344,10 @@ class Color {
 	 * Returns the hexadecimmal value as a string, suitable for HTML and CSS
 	 * By Sverri: http://snipplr.com/view/39498/rgb2hex
 	 *
+	 * @param bool $shorten Whether to return a shortened version when possible or not.
 	 * @return string The hexadecimal value
 	 */
-	function getHex() {
+	function getHex($shorten = false) {
 		$out = "";
 		if ($shorten && ($this->r + $this->g + $this->b) % 17 !== 0)
 			$shorten = false;
@@ -359,7 +360,7 @@ class Color {
 			else
 				$out .= ($c < 16) ? ("0".$hex) : $hex;
 		}
-		return $uppercase ? strtoupper($out) : $out;
+		return $out;
 	}
 
 	/**

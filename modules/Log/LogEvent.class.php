@@ -67,13 +67,13 @@ class LogEvent extends Item {
 		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
 		$this->subType = $data["subType"];
 
-		if ($data["ip"])
+		if ($data["ip"] ?? false)
 			$this->ip = $data["ip"];
 		else
 		if ($this->isUseCurrentClientIp)
 			$this->ip = $this->getClientIp();
 
-		if ($data["userId"])
+		if ($data["userId"] ?? false)
 			$this->user_id = $data["userId"];
 		else
 		if ($this->isUseCurrentLoggedUserId) {
@@ -84,12 +84,12 @@ class LogEvent extends Item {
 			}
 		}
 
-		if ($data["timestamp"])
+		if ($data["timestamp"] ?? false)
 			$this->timestamp = $data["timestamp"];
 		else
 			$this->timestamp = time();
 		
-		if ($data["additionalData"])
+		if ($data["additionalData"] ?? false)
 			$this->additionalData = $data["additionalData"];
 
 		return parent::loadInline($data);
