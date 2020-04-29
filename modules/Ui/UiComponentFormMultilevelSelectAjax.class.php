@@ -72,7 +72,7 @@ class UiComponentFormMultilevelSelectAjax extends UiComponent {
 		}
 		reset($this->levels);
 
-		$r .=
+		$r =
 			$e->Ui->getUiComponent("UiComponentColumns")->buildHtml([
 				"isWrap" => $this->isWrap,
 				"domId" => $this->domId,

@@ -236,7 +236,7 @@ abstract class Items extends BasicObject implements \Iterator {
 		if (is_array($p["wheres"]))
 			foreach ($p["wheres"] as $where) {
 				$wheres[] = $where["sqlPart"];
-				if (is_array($where["values"]))
+				if (isset($where["values"]))
 					foreach ($where["values"] as $value)
 						$fields[] = $value;
 			}

@@ -73,7 +73,7 @@ class UiComponentFormSelectAjax extends UiComponent {
 			"value" => $this->value,
 		];
 
-		$r .= $e->Ui->getUiComponent("UiComponentFormSelect")->buildHtml($uiComponentFormSelectSetup);
+		$r = $e->Ui->getUiComponent("UiComponentFormSelect")->buildHtml($uiComponentFormSelectSetup);
 
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentFormSelectAjax({

@@ -26,6 +26,7 @@ class UiComponentFormInputAjax extends UiComponent {
 	protected $placeHolder;
 	protected $isCentered = false;
 	protected $isDisabled = false;
+	protected $isAutoFocus = false;
 	protected $isAutoComplete = true;
 	protected $isAutocapitalize = false;
 	protected $isAutocorrect = false;

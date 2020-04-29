@@ -147,7 +147,7 @@ class UiComponentMenu extends UiComponent {
 		if (!isset($setup["elementType"]))
 			$setup["elementType"] = "nav";
 
-		$r .= "<".$setup["elementType"].
+		$r = "<".$setup["elementType"].
 				" class=\"".
 					"UiComponentMenu".
 					($this->style ? " ".$this->style : "").
@@ -156,7 +156,7 @@ class UiComponentMenu extends UiComponent {
 
 		// Order the options
 		$autoOrder = 0;
-		while (list($key, $optionSetup) = each($this->options)) {
+		foreach ($this->options as $key => $optionSetup) {
 			if ($order = $optionSetup["order"]) {
 				$autoOrder = $optionSetup["order"];
 			}
@@ -169,8 +169,8 @@ class UiComponentMenu extends UiComponent {
 		}
 
 		ksort($orderedOptions);
-
-		while (list(, $optionSetup) = each($orderedOptions))
+		
+		foreach ($orderedOptions as $optionSetup)
 			$r .= $this->buildOptionHtml($optionSetup);
 
 		$r .= "</".$setup["elementType"].">";
@@ -185,41 +185,41 @@ class UiComponentMenu extends UiComponent {
 	 */
 	function buildOptionHtml($optionSetup, $isSecondLevel = false) {
 		if ($optionSetup["href"])
-			$r .= "<a href=\"".$optionSetup["href"]."\"";
+			$r = "<a href=\"".$optionSetup["href"]."\"";
 		else
-			$r .= "<div";
+			$r = "<div";
 
 		$r .= " class=\"".
 				"option".
-				($optionSetup["additionalCssClass"] ? " ".$optionSetup["additionalCssClass"] : "").
+				($optionSetup["additionalCssClass"] ?? false ? " ".$optionSetup["additionalCssClass"] : "").
 				($optionSetup["key"] == $this->selectedOption || ($isSecondLevel && $this->selectedSecondLevelOption == $optionSetup["key"]) ? " selected" : "").
 			"\"";
 
-		if ($optionSetup["domId"])
+		if ($optionSetup["domId"] ?? false)
 			$r .= " id=\"".$optionSetup["domId"]."\"";
 
-		if ($optionSetup["onClick"])
+		if ($optionSetup["onClick"] ?? false)
 			$r .= " onclick=\"".$optionSetup["onClick"]."\"";
 
 		$r .= ">";
 
-		if ($optionSetup["iconName"])
+		if ($optionSetup["iconName"] ?? false)
 			$r .= "<div class=\"UiComponentIcon ".$optionSetup["iconName"].($optionSetup["iconVariant"] ? " ".$optionSetup["iconVariant"] : "")."\"></div>";
 
-		if ($optionSetup["title"])
+		if ($optionSetup["title"] ?? false)
 			$r .= "<div class=\"title\">".$optionSetup["title"]."</div>";
 
 
-		if ($optionSetup["href"])
+		if ($optionSetup["href"] ?? false)
 			$r .= "</a>";
 		else
 			$r .= "</div>";
 
-		if ($optionSetup["secondLevelOptions"]) {
+		if ($optionSetup["secondLevelOptions"] ?? false) {
 			$r .= "<div class=\"secondLevelOptions\">";
 
 			// Order the options
-			while (list($secondLevelKey, $secondLevelOptionSetup) = each($optionSetup["secondLevelOptions"])) {
+			foreach ($optionSetup["secondLevelOptions"] as $secondLevelKey => $secondLevelOptionSetup) {
 				$secondLevelOptionSetup["key"] = $secondLevelKey;
 				$secondLevelOrderedOptions[$secondLevelOptionSetup["order"]] = $secondLevelOptionSetup;
 			}

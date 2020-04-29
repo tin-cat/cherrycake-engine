@@ -46,7 +46,7 @@ class UiComponentFormSelect extends UiComponent {
 	 */
 	function buildHtml($setup = false) {
 		if (is_array($setup))
-			while (list($key, $value) = each($setup))
+			foreach ($setup as $key => $value)
 				$this->$key = $value;
 
 		$r =

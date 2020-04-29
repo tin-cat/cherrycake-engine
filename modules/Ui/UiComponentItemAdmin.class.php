@@ -57,14 +57,18 @@ class UiComponentItemAdmin extends UiComponent {
 
         // Build the $items array of UiComponentForm items by columns
 		$fields = isset($setup["fields"]) ? $setup["fields"] : $map["fields"];
-        while (list($fieldName, $fieldData) = each($fields)) {
+		foreach ($fields as $fieldName => $fieldData) {
 
 			// If the fieldData has been set as false, skip it. Fields with a null fieldData are not skipped.
 			if ($fieldData === false)
 				continue;
 			
 			// If no fields or metafields are defined for this fieldName, skip it
-            if (!$item->getFields()[$fieldName] && !$item->getMetaFields()[$fieldName])
+            if (
+				!($item->getFields()[$fieldName] ?? false)
+				&&
+				!($item->getMetaFields()[$fieldName] ?? false)
+			)
                 continue;
 			
 			if (!isset($fieldData["isEdit"]))
@@ -88,12 +92,12 @@ class UiComponentItemAdmin extends UiComponent {
 			else {
             
 				// If its a regular, non-meta field
-				if ($itemFieldData = $item->getFields()[$fieldName]) {
+				if ($itemFieldData = $item->getFields()[$fieldName] ?? false) {
 
 					$buildSetup = [
 						"name" => $fieldName,
 						"domId" => uniqid(),
-						"style" => $itemFieldData["formItem"]["style"],
+						"style" => $itemFieldData["formItem"]["style"] ?? false,
 						"title" =>
 							(
 								isset($itemFieldData["formItem"]["title"]) ? $itemFieldData["formItem"]["title"] :
@@ -111,7 +115,7 @@ class UiComponentItemAdmin extends UiComponent {
 							$map["idRequestParameter"]->name => $id
 						]]),
 						"saveAjaxKey" => $fieldName,
-						"isMultilanguage" => $itemFieldData["isMultiLanguage"]
+						"isMultilanguage" => $itemFieldData["isMultiLanguage"] ?? false
 					];
 
 					// Build the appropriate UiComponentForm item based on the formItem setup
@@ -155,14 +159,14 @@ class UiComponentItemAdmin extends UiComponent {
 
 					$buildSetup = [
 						"name" => $fieldName,
-						"title" => $fieldData["title"] ? $fieldData["title"] : ($item->getFields()[$fieldName]["title"] ? $item->getFields()[$fieldName]["title"] : false),
+						"title" => $fieldData["title"] ?? false ?: ($item->getFields()[$fieldName]["title"] ?? false ?: false),
 						"value" => $item->$fieldName,
 						"additionalCssClasses" => "fullWidth",
 						"saveAjaxUrl" => $e->Actions->getAction("ItemAdminSave".ucfirst($mapName))->request->buildUrl(["parameterValues" => [
 							$map["idRequestParameter"]->name => $id
 						]]),
 						"saveAjaxKey" => $fieldName,
-						"isMultilanguage" => $itemFieldData["isMultiLanguage"]
+						"isMultilanguage" => $itemFieldData["isMultiLanguage"] ?? false
 					];
 					
 					switch ($itemFieldData["formItem"]["type"]) {
@@ -194,7 +198,7 @@ class UiComponentItemAdmin extends UiComponent {
 				}
 			}
 
-            if ($fieldData["group"])
+            if ($fieldData["group"]  ?? false)
                 $items[$fieldData["group"]][$fieldName] = $uiComponentFormItem;
             else
                 $items[$fieldName] = $uiComponentFormItem;

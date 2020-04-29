@@ -23,6 +23,7 @@ class UiComponentFormTextAjax extends UiComponent {
 	protected $maxLength = 65535;
 	protected $placeHolder;
 	protected $isDisabled = false;
+	protected $isAutoFocus = false;
 	protected $isAutoComplete = true;
 	protected $isAutocapitalize = false;
 	protected $isAutocorrect = false;

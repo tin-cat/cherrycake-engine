@@ -114,8 +114,9 @@ class UiComponentTooltip extends UiComponent
 
 		ksort($contentsOrdered);
 
+		$r = "";
 		foreach($contentsOrdered as $item)
-			$r = UiComponentTooltip::buildContentItem($item["type"] ?? false, $item["setup"] ?? false);
+			$r .= UiComponentTooltip::buildContentItem($item["type"] ?? false, $item["setup"] ?? false);
 
 		return $r;
 	}

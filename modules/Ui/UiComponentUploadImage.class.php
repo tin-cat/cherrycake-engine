@@ -62,7 +62,7 @@ class UiComponentUploadImage extends UiComponent {
 
 		global $e;
 
-		$r .=
+		$r =
             "<div".
                 " id=\"".$this->domId."\"".
 				" class=\"".

@@ -257,7 +257,7 @@ class Locale extends \Cherrycake\Module
 	function getLanguageName($language, $setup = false) {
 		if (!isset($this->languageNames[$language]))
 			return false;
-		return $this->languageNames[$language][$setup["forceLanguage"] ? $setup["forceLanguage"] : $this->getLanguage()];
+		return $this->languageNames[$language][$setup["forceLanguage"] ?? false ?: $this->getLanguage()];
 	}
 
 	/**

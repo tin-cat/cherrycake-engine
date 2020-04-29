@@ -97,22 +97,22 @@ class ItemAdmin extends \Cherrycake\Module {
         $itemProbe = $setup["itemClassName"]::build();
 
         // Build the parameters array
-        if (is_array($setup["additionalRequestParameters"]))
+        if (isset($setup["additionalRequestParameters"]))
             $parameters = $setup["additionalRequestParameters"];
         
         $parameters[] = $setup["idRequestParameter"];
             
         // Prepare the array of parameters for the action to be able to receive data for all Item fields
 		$itemProbeFields = $itemProbe->getFields();
-		while (list($fieldName, $fieldData) = each($itemProbeFields)) {
-			if (is_array($setup["fields"][$fieldName]))
+        foreach ($itemProbeFields as $fieldName => $fieldData) {
+			if (isset($setup["fields"][$fieldName]))
 				$fieldData = array_merge($setup["fields"][$fieldName], is_array($fieldData) ? $fieldData : []);
             $parameters[] = 
                 new \Cherrycake\RequestParameter([
                     "name" => $fieldName,
                     "type" => \Cherrycake\REQUEST_PARAMETER_TYPE_POST,
-                    "securityRules" => $fieldData["requestSecurityRules"] ? $fieldData["requestSecurityRules"] : [\Cherrycake\SECURITY_RULE_SQL_INJECTION],
-                    "filters" => $fieldData["requestFilters"]
+                    "securityRules" => $fieldData["requestSecurityRules"] ?? false ?: [\Cherrycake\SECURITY_RULE_SQL_INJECTION],
+                    "filters" => $fieldData["requestFilters"] ?? false
                 ]);
         }
 

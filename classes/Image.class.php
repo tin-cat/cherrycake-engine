@@ -248,7 +248,7 @@ class Image {
 			"/".
 			$this->getFileName($sizeName).
 			".".
-			($this->sizes[$sizeName] ?
+			($this->sizes[$sizeName] ?? false ?
 				$sizeName.
 				".".
 				$this->sizes[$sizeName]["imageFormat"]

@@ -19,6 +19,7 @@ class UiComponentColumns extends UiComponent {
     protected $isInnerGap = true;
 	protected $domId;
 	protected $additionalCssClasses;
+	protected $style;
 
 	/**
 	 * AddCssAndJavascriptSetsToHtmlDocument
@@ -46,7 +47,7 @@ class UiComponentColumns extends UiComponent {
 
 		$this->setProperties($setup);
 
-        $r .=
+        $r =
             "<div".
 				" class=\"".
 					"UiComponentColumns".
@@ -61,7 +62,7 @@ class UiComponentColumns extends UiComponent {
 		foreach ($this->columns as $column) {
 			$r .=
 				"<div".
-					($column["style"] ?
+					($column["style"] ?? false ?
 						" class=\"".
 							(is_array($column["style"]) ? implode(" ", $column["style"]) : $column["style"]).
 						"\""

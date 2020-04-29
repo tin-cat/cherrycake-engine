@@ -80,7 +80,7 @@ class DatabaseRow {
 	 *
 	 * @param $key The key of the field
 	 * @param array $fields An optional array definition of fields and their types
-	 * @return mixed The value of the field
+	 * @return mixed The value of the field, or null if the field didn't exist
 	 */
 	function getField($key, $fields = false) {
 		if ($fields && $fields[$key]["type"]) {
@@ -92,7 +92,7 @@ class DatabaseRow {
 				return $this->treatFieldData($this->data["key"], $fields[$key]["type"]);
 		}
 		else
-			return $this->data[$key];
+			return $this->data[$key] ?? null;
 	}
 
 	/**

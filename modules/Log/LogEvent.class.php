@@ -65,7 +65,7 @@ class LogEvent extends Item {
 	 */
 	function loadInline($data = false) {
 		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
-		$this->subType = $data["subType"];
+		$this->subType = $data["subType"] ?? false;
 
 		if ($data["ip"] ?? false)
 			$this->ip = $data["ip"];
