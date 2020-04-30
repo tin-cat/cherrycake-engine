@@ -175,6 +175,11 @@ function handleError(
 			.errorReport .stack .file {
 				color: #aaa;
 			}
+			.errorReport .engineStatus div {
+				font-size: 7pt;
+				max-height: 400px;
+				overflow: auto;
+			}
 			.errorReport .source {
 				margin-top: 1em;
 				overflow-x: auto;
@@ -368,6 +373,19 @@ function handleError(
 		}
 		$html .=
 		"
+				</td>
+			</tr>
+		";
+	}
+
+	if (is_array($backtrace)) {
+		$backtrace = array_reverse($backtrace);
+		$html .=
+		"
+			<tr>
+				<td class='key'>Engine status</td>
+				<td class='engineStatus'>
+					<div>".$e->getStatusHtml()."</div>
 				</td>
 			</tr>
 		";

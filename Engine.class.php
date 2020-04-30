@@ -92,7 +92,7 @@ namespace Cherrycake {
 		/**
 		 * @var Cache $cache Holds the bottom-level Cache object
 		 */
-		private $cache;
+		public $cache;
 
 		/**
 		 * @var array $loadedModules Stores the names of all included modules
@@ -238,6 +238,7 @@ namespace Cherrycake {
 		function getAvailableAppModuleNamesWithMethod($methodName) {		
 			return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", $this->getAppModulesDir(), $methodName);
 		}
+		
 		/*
 		* @param string $nameSpace The namespace to use
 		* @param string $modulesDirectory The directory where the specified module is stored
@@ -258,12 +259,10 @@ namespace Cherrycake {
 			}
 
 			foreach ($moduleNames as $moduleName) {
-				if (!$this->isModuleExists($modulesDirectory, $moduleName)) {
+				if (!$this->isModuleExists($modulesDirectory, $moduleName))
 					continue;
-				}
-				if ($this->isModuleImplementsMethod($nameSpace, $modulesDirectory, $moduleName, $methodName)) {
+				if ($this->isModuleImplementsMethod($nameSpace, $modulesDirectory, $moduleName, $methodName))
 					$modulesWithMethod[] = $moduleName;
-				}
 			}
 
 			$this->cache->setInBucket($cacheBucketName, $cacheKey, $modulesWithMethod ?? false, $cacheTtl);
@@ -713,11 +712,15 @@ namespace Cherrycake {
 									)
 								).
 								" / loaded at ".number_format(($historyItem["loadingStartHrTime"] - $status["executionStartHrTime"]) / 1000000, 4)."ms".
-								" / init took ".number_format(($historyItem["initEndHrTime"] - $historyItem["initStartHrTime"]) / 1000000, 4)."ms";
+								($historyItem["initEndHrTime"] ?? false ?
+									" / init took ".number_format(($historyItem["initEndHrTime"] - $historyItem["initStartHrTime"]) / 1000000, 4)."ms"
+								:
+									" / didn't finish"
+								);
 						}
 						break;
 					case "actions":
-						$r[$key] = $value["brief"];
+						$r[$key] = $value["brief"] ?? false;
 						break;
 					default:
 						$r[$key] = $value;
@@ -732,7 +735,7 @@ namespace Cherrycake {
 		 * @return string The HTML code
 		 */
 		function getStatusHtml() {
-			return print_pretty($this->getStatusHumanReadable(), true);
+			return prettyprint($this->getStatusHumanReadable(), true);
 		}
 
 		/**

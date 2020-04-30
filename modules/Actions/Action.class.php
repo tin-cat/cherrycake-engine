@@ -141,10 +141,10 @@ class Action {
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);
 		else
-		if ($this->moduleType == ACTION_MODULE_TYPE_CORE_UICOMPONENT && $e->Ui)
+		if ($this->moduleType == ACTION_MODULE_TYPE_CORE_UICOMPONENT && $e->isModuleLoaded("Ui"))
 			$e->Ui->addCoreUiComponent($this->moduleName);
 		else
-		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->Ui)
+		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->isModuleLoaded("Ui"))
 			$e->Ui->addAppUiComponent($this->moduleName);
 
 		if (!$this->request->securityCheck())

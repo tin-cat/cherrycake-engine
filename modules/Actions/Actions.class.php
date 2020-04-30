@@ -249,7 +249,7 @@ class Actions extends \Cherrycake\Module {
 			reset($this->actions);
 		}
 
-		return $r;
+		return $r ?? null;
 	}
 
 }

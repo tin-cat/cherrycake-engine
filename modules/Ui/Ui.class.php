@@ -77,11 +77,13 @@ class Ui extends \Cherrycake\Module {
 		);
 
 		// Sets up Ui components
-		if (is_array($CoreUiComponents = $this->getConfig("coreUiComponents")))
-			foreach($CoreUiComponents as $CoreUiComponent)
-				$this->addCoreUiComponent($CoreUiComponent);
+		$coreUiComponents = $this->getConfig("coreUiComponents");
+		if (is_array($coreUiComponents))
+			foreach($coreUiComponents as $coreUiComponent)
+				$this->addCoreUiComponent($coreUiComponent);		
 
-		if (is_array($appUiComponents = $this->getConfig("appUiComponents")))
+		$appUiComponents = $this->getConfig("appUiComponents");
+		if (is_array($appUiComponents))
 			foreach($appUiComponents as $appUiComponent)
 				$this->addAppUiComponent($appUiComponent);
 
@@ -101,6 +103,7 @@ class Ui extends \Cherrycake\Module {
 		if (!isset($this->uiComponents[$uiComponentName])) {
 			$e->loadCoreModuleClass("Ui", $uiComponentName);
 			eval("\$this->uiComponents[\"".$uiComponentName."\"] = new \\Cherrycake\\".$uiComponentName."();");
+			$this->uiComponents[$uiComponentName]->init();
 		}
 	}
 

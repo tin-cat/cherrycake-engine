@@ -61,7 +61,8 @@ class Janitor extends \Cherrycake\Module {
 	 * @var array $config Holds the default configuration for this module
 	 */
 	protected $config = [
-		"key" => false,
+		"key" => "",
+		"logDatabaseProviderName" => "main",
 		"logTableName" => "cherrycake_janitor_log"
 	];
 
@@ -120,10 +121,7 @@ class Janitor extends \Cherrycake\Module {
 					"parameters" => [
 						new \Cherrycake\RequestParameter([
 							"name" => "key",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET,
-							"securityRules" => [
-								\Cherrycake\SECURITY_RULE_NOT_EMPTY
-							]
+							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 						]),
 						new \Cherrycake\RequestParameter([
 							"name" => "task",
@@ -280,88 +278,90 @@ class Janitor extends \Cherrycake\Module {
 			return false;
 		}
 
-		foreach ($this->janitorTasks as $janitorTaskName => $janitorTask) {
-			if ($task && $task != $janitorTaskName)
-				continue;
+		if (is_array($this->janitorTasks)) {
+			foreach ($this->janitorTasks as $janitorTaskName => $janitorTask) {
+				if ($task && $task != $janitorTaskName)
+					continue;
 
-			$r .= " . ".$janitorTaskName." [".$janitorTask->getPeriodicityDebugInfo()."] ";
+				$r .= " . ".$janitorTaskName." [".$janitorTask->getPeriodicityDebugInfo()."] ";
 
-			if ($janitorTask->isToBeExecuted($baseTimestamp) || $isForceRun) {
-				if ($isForceRun)
-					$r .= "Forcing execution. ";
-				$r .= "Executing: ";
-				$microtimeStart = microtime(true);
-				list($resultCode, $resultDescription) = $janitorTask->run($baseTimestamp);
-				$executionSeconds = (microtime(true) - $microtimeStart);
-				$r .= number_format($executionSeconds * 1000, 0)."ms. ";
-				$r .= "Logging: ";
+				if ($janitorTask->isToBeExecuted($baseTimestamp) || $isForceRun) {
+					if ($isForceRun)
+						$r .= "Forcing execution. ";
+					$r .= "Executing: ";
+					$microtimeStart = microtime(true);
+					list($resultCode, $resultDescription) = $janitorTask->run($baseTimestamp);
+					$executionSeconds = (microtime(true) - $microtimeStart);
+					$r .= number_format($executionSeconds * 1000, 0)."ms. ";
+					$r .= "Logging: ";
 
-				$databaseProviderName = $this->getConfig("logDatabaseProviderName");
-				$result = $e->Database->$databaseProviderName->prepareAndExecute(
-					"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
-					[
+					$databaseProviderName = $this->getConfig("logDatabaseProviderName");
+					$result = $e->Database->$databaseProviderName->prepareAndExecute(
+						"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
 						[
-							"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
-							"value" => $baseTimestamp
-						],
-						[
-							"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT,
-							"value" => $executionSeconds
-						],
-						[
-							"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
-							"value" => $janitorTask->getName()
-						],
-						[
-							"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
-							"value" => $resultCode
-						],
-						[
-							"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
-							"value" => json_encode($resultDescription)
-						]
-					]
-				);
-
-				if (!$result)
-					$r .= "Failed. ";
-				else
-					$r .= "Ok. ";
-
-				$r .= "Result: ";
-				$r .= $this->getJanitorTaskReturnCodeDescription($resultCode).". ";
-
-
-				if ($resultCode != \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK) {
-					$r .= "Logging error: ";
-					$e->Errors->trigger(
-						\Cherrycake\Modules\ERROR_SYSTEM,
-						[
-							"errorDescription" => "JanitorTask failed",
-							"errorVariables" => [
-								"JanitorTask name" => $janitorTask->getName(),
-								"JanitorTask result code" => $this->getJanitorTaskReturnCodeDescription($resultCode),
-								"JanitorTask result description" => $resultDescription
+							[
+								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+								"value" => $baseTimestamp
 							],
-							"isSilent" => true
+							[
+								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT,
+								"value" => $executionSeconds
+							],
+							[
+								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+								"value" => $janitorTask->getName()
+							],
+							[
+								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+								"value" => $resultCode
+							],
+							[
+								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+								"value" => json_encode($resultDescription)
+							]
 						]
 					);
-					$r .= "Ok. ";
-				}
 
-				if ($resultDescription) {
-					$r .= "\n";
-					if (!is_array($resultDescription))
-						$r .= "   ".$resultDescription."\n";
+					if (!$result)
+						$r .= "Failed. ";
 					else
-						foreach ($resultDescription as $key => $value)
-							$r .= "   ".$key.": ".$value."\n";
+						$r .= "Ok. ";
+
+					$r .= "Result: ";
+					$r .= $this->getJanitorTaskReturnCodeDescription($resultCode).". ";
+
+
+					if ($resultCode != \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK) {
+						$r .= "Logging error: ";
+						$e->Errors->trigger(
+							\Cherrycake\Modules\ERROR_SYSTEM,
+							[
+								"errorDescription" => "JanitorTask failed",
+								"errorVariables" => [
+									"JanitorTask name" => $janitorTask->getName(),
+									"JanitorTask result code" => $this->getJanitorTaskReturnCodeDescription($resultCode),
+									"JanitorTask result description" => $resultDescription
+								],
+								"isSilent" => true
+							]
+						);
+						$r .= "Ok. ";
+					}
+
+					if ($resultDescription) {
+						$r .= "\n";
+						if (!is_array($resultDescription))
+							$r .= "   ".$resultDescription."\n";
+						else
+							foreach ($resultDescription as $key => $value)
+								$r .= "   ".$key.": ".$value."\n";
+					}
 				}
+				else
+					$r .= "Not to be executed\n";
 			}
-			else
-				$r .= "Not to be executed\n";
+			reset($this->janitorTasks);
 		}
-		reset($this->janitorTasks);
 
 		$e->Output->setResponse(new \Cherrycake\ResponseTextPlain([
 			"payload" => $r
