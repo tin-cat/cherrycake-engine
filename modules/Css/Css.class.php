@@ -58,7 +58,7 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
  * 				"content.css"
  * 			]
  * 		],
- *		"UiComponents" => [ // This set must be declared when working with Ui module
+ *		"uiComponents" => [ // This set must be declared when working with Ui module
  *			"version" => 1,
  *			"directory" => "res/css/UiComponents",
  *			"files" => [ // The default Ui-related Css files, these are normally the ones that are not bonded to an specific UiComponent, since any other required file is automatically added here by the specific UiComponent object.
@@ -71,7 +71,7 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
  * @package Cherrycake
  * @category Modules
  */
-class Css extends \Cherrycake\Module {
+class Css  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
@@ -82,12 +82,24 @@ class Css extends \Cherrycake\Module {
 	 */
 	var $config = [
 		"cachePrefix" => "Css",
-		"cacheTtl" => \Cherrycake\CACHE_TTL_NORMAL,
+		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL for CSS sets
+		"cacheProviderName" => "engine", // The cache provider for CSS sets
+		"isCache" => false, // The default value for isCache in each set
+		"lastModifiedTimestamp" => false, // The global version
+		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
+		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
 		"lastModifiedTimestamp" => 1,
 		"isCache" => false,
 		"isHttpCache" => false,
 		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"isMinify" => true
+		"isMinify" => false,
+		"responsiveWidthBreakpoints" => [
+			"tiny" => 500,
+			"small" => 700,
+			"normal" => 980,
+			"big" => 1300,
+			"huge" => 1700
+		]
 	];
 
 	/**
@@ -98,8 +110,7 @@ class Css extends \Cherrycake\Module {
 		"Actions",
 		"Cache",
 		"Patterns",
-		"HtmlDocument",
-		"Ui"
+		"HtmlDocument"
 	];
 
 	/**
@@ -170,8 +181,6 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addSet
-	 *
 	 * @param $setName
 	 * @param $setConfig
 	 */
@@ -180,8 +189,6 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * getSetUrl
-	 *
 	 * @param mixed $setNames The name of the Css set, or an array of them
 	 * @return string The Url of the Css set
 	 */
@@ -208,17 +215,15 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addFileToSet
-	 *
 	 * Adds a file to a Css set
 	 *
 	 * @param string $setName The name of the set
 	 * @param string $fileName The name of the file
 	 */
 	function addFileToSet($setName, $fileName) {
+		
 		if (!$this->sets[$setName] ?? false && is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
 			return;
-
 		$this->sets[$setName]["files"][] = $fileName;
 	}
 
@@ -251,11 +256,6 @@ class Css extends \Cherrycake\Module {
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
-		if ($e->Ui && $e->Ui->uiComponents)
-			foreach ($e->Ui->uiComponents as $UiComponent) {
-				$UiComponent->addCssAndJavascript();
-			}
-
 		if ($this->GetConfig("isCache")) {
 			$cacheProviderName = $this->GetConfig("cacheProviderName");
 			$cacheTtl = $this->GetConfig("cacheTtl");
@@ -278,6 +278,7 @@ class Css extends \Cherrycake\Module {
 
 		$css = "";
 		foreach($requestedSetNames as $requestedSetName) {
+			
 
 			if (!$requestedSet = $this->sets[$requestedSetName])
 				continue;

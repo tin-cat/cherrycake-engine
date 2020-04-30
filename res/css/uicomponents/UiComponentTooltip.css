@@ -50,7 +50,7 @@
 	width: 0;
 	height: 0;
 	border-style: solid;
-	border-width: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") / 2 ?>px;
+	border-width: <?= $e->UiComponentTooltip->getConfig("arrowSize") / 2 ?>px;
 	border-color: #fff;
 }
 
@@ -96,46 +96,46 @@
 
 
 /* arrow positions */
-.UiComponentTooltip.bottomLeft > .tooltip > .arrow { bottom: calc(100% - 1px); left: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") ?>px; }
-.UiComponentTooltip.bottomCenter > .tooltip > .arrow { bottom: calc(100% - 1px); left: 50%; margin-left: -<?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") ?>px; }
-.UiComponentTooltip.bottomRight > .tooltip > .arrow { bottom: calc(100% - 1px); right: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") ?>px; }
+.UiComponentTooltip.bottomLeft > .tooltip > .arrow { bottom: calc(100% - 1px); left: <?= $e->UiComponentTooltip->getConfig("arrowMargin") ?>px; }
+.UiComponentTooltip.bottomCenter > .tooltip > .arrow { bottom: calc(100% - 1px); left: 50%; margin-left: -<?= $e->UiComponentTooltip->getConfig("arrowSize") ?>px; }
+.UiComponentTooltip.bottomRight > .tooltip > .arrow { bottom: calc(100% - 1px); right: <?= $e->UiComponentTooltip->getConfig("arrowMargin") ?>px; }
 
-.UiComponentTooltip.topLeft > .tooltip > .arrow { top: calc(100% - 1px); left: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") ?>px; }
-.UiComponentTooltip.topCenter > .tooltip > .arrow { top: calc(100% - 1px); left: 50%; margin-left: -<?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") ?>px; }
-.UiComponentTooltip.topRight > .tooltip > .arrow { top: calc(100% - 1px); right: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") ?>px; }
+.UiComponentTooltip.topLeft > .tooltip > .arrow { top: calc(100% - 1px); left: <?= $e->UiComponentTooltip->getConfig("arrowMargin") ?>px; }
+.UiComponentTooltip.topCenter > .tooltip > .arrow { top: calc(100% - 1px); left: 50%; margin-left: -<?= $e->UiComponentTooltip->getConfig("arrowSize") ?>px; }
+.UiComponentTooltip.topRight > .tooltip > .arrow { top: calc(100% - 1px); right: <?= $e->UiComponentTooltip->getConfig("arrowMargin") ?>px; }
 
-.UiComponentTooltip.rightTop > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
-.UiComponentTooltip.rightCenter > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
-.UiComponentTooltip.rightBottom > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.rightTop > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.rightCenter > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.rightBottom > .tooltip > .arrow { right: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
 
-.UiComponentTooltip.leftTop > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
-.UiComponentTooltip.leftCenter > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
-.UiComponentTooltip.leftBottom > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.leftTop > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.leftCenter > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
+.UiComponentTooltip.leftBottom > .tooltip > .arrow { left: calc(100% - 1px); top: calc(50% - <?= $e->UiComponentTooltip->getConfig("arrowMargin") / 2 ?>px); }
 
 
 /* tooltip margins */
 .UiComponentTooltip.bottomLeft > .tooltip,
 .UiComponentTooltip.bottomCenter > .tooltip,
 .UiComponentTooltip.bottomRight > .tooltip {
-	margin-top: <?= floor(($e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") / 2)) + $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("margin") ?>px;
+	margin-top: <?= floor(($e->UiComponentTooltip->getConfig("arrowSize") / 2)) + $e->UiComponentTooltip->getConfig("margin") ?>px;
 }
 
 .UiComponentTooltip.topLeft > .tooltip,
 .UiComponentTooltip.topCenter > .tooltip,
 .UiComponentTooltip.topRight > .tooltip {
-	margin-bottom: <?= floor(($e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") / 2)) + $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("margin") ?>px;
+	margin-bottom: <?= floor(($e->UiComponentTooltip->getConfig("arrowSize") / 2)) + $e->UiComponentTooltip->getConfig("margin") ?>px;
 }
 
 .UiComponentTooltip.rightTop > .tooltip,
 .UiComponentTooltip.rightCenter > .tooltip,
 .UiComponentTooltip.rightBottom > .tooltip {
-	margin-left: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") + $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("margin") ?>px;
+	margin-left: <?= $e->UiComponentTooltip->getConfig("arrowSize") + $e->UiComponentTooltip->getConfig("margin") ?>px;
 }
 
 .UiComponentTooltip.leftTop > .tooltip,
 .UiComponentTooltip.leftCenter > .tooltip,
 .UiComponentTooltip.leftBottom > .tooltip {
-	margin-right: <?= $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("arrowSize") + $e->Ui->uiComponents["UiComponentTooltip"]->getConfig("margin") ?>px;
+	margin-right: <?= $e->UiComponentTooltip->getConfig("arrowSize") + $e->UiComponentTooltip->getConfig("margin") ?>px;
 }
 
 /* clickable */

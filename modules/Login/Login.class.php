@@ -38,7 +38,7 @@ const LOGOUT_RESULT_FAILED = 1;
  * @package Cherrycake
  * @category Modules
  */
-class Login extends \Cherrycake\Module {
+class Login  extends \Cherrycake\Module {
 	protected $isConfigFile = true;
 
 	/**

@@ -27,7 +27,7 @@ namespace Cherrycake\Modules;
  * @category AppModules
  */
 
-class Log extends \Cherrycake\Module {
+class Log  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

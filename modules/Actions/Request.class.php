@@ -318,7 +318,7 @@ class Request {
 	function buildFormHtml($setup = false) {
 		global $e;
 		$setup["request"] = $this;
-		return $e->Ui->uiComponents["UiComponentForm"]->build($setup);
+		return $e->UiComponentForm->build($setup);
 	}
 
 	/**

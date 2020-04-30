@@ -17,7 +17,7 @@ function ajaxUpload(setup) {
 			{
 				isFileUpload: true,
 				data: formData,
-				timeout: setup.timeout ? setup.timeout : <?= $e->Ui->uiComponents["UiComponentAjaxUpload"]->getConfig("timeout") ?>,
+				timeout: setup.timeout ? setup.timeout : <?= $e->UiComponentAjaxUpload->getConfig("timeout") ?>,
 				onSuccess: function(data) {
 					if (setup.onSuccess)
 						setup.onSuccess(data);

@@ -18,7 +18,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Browser extends \Cherrycake\Module {
+class Browser  extends \Cherrycake\Module {
 	private $_agent = '';
 	private $_browser_name = '';
 	private $_version = '';

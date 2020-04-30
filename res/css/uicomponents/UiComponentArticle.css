@@ -35,12 +35,12 @@
 .UiComponentArticle > *,
 .UiComponentArticle ul,
 .UiComponentArticle code {
-    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+    margin: <?= $e->UiComponentArticle->getConfig("baseGap") * 2 ?>px 0;
 }
 
 /* Isolated elements have a bigger margin on top and bottom. Some elements also have the margin even if they're inside other elements */
 .UiComponentArticle .isolated {
-    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 4 ?>px 0 !important;
+    margin: <?= $e->UiComponentArticle->getConfig("baseGap") * 4 ?>px 0 !important;
 }
 
 /* All H elements leave a larger margin on top to separate from other contents */
@@ -50,7 +50,7 @@
 .UiComponentArticle > h4,
 .UiComponentArticle > h5 {
     position: relative;
-    margin-top: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 4 ?>px;
+    margin-top: <?= $e->UiComponentArticle->getConfig("baseGap") * 4 ?>px;
     margin-bottom: 0;
 }
 
@@ -63,7 +63,7 @@
 }
 
 <?= $e->Css->mediaQuery([
-	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["small"],
+	"maxWidth" => $e->UiComponentArticle->getConfig("responsiveBreakpoints")["small"],
     "css" => "
         .UiComponentArticle h1 > .line,
         .UiComponentArticle h2 > .line,
@@ -152,7 +152,7 @@
 .UiComponentArticle > h3 + *,
 .UiComponentArticle > h4 + *,
 .UiComponentArticle > h5 + * {
-    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px 0;
+    margin: <?= $e->UiComponentArticle->getConfig("baseGap") ?>px 0;
 }
 
 .UiComponentArticle > .header {
@@ -179,12 +179,12 @@
 /* regular list */
 .UiComponentArticle ul {
     list-style: none;
-    padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
+    padding-left: calc(<?= $e->UiComponentArticle->getConfig("baseGap") * 2 ?>px + 35px);
 }
 
 .UiComponentArticle ul > li {
     position: relative;
-    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+    margin: <?= $e->UiComponentArticle->getConfig("baseGap") * 2 ?>px 0;
 }
 
 .UiComponentArticle ul > li:before {
@@ -196,7 +196,7 @@
     font-size: 10pt;
     font-weight: bold;
     box-sizing: border-box;
-    margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+    margin-right: <?= $e->UiComponentArticle->getConfig("baseGap") ?>px;
 }
 
 .UiComponentArticle ul > li.withIcon:before {
@@ -218,12 +218,12 @@
 /* ordered list */
 .UiComponentArticle ol {
     list-style: none;
-    padding-left: calc(<?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px + 35px);
+    padding-left: calc(<?= $e->UiComponentArticle->getConfig("baseGap") * 2 ?>px + 35px);
 }
 
 .UiComponentArticle ol > li {
     position: relative;
-    margin: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") * 2 ?>px 0;
+    margin: <?= $e->UiComponentArticle->getConfig("baseGap") * 2 ?>px 0;
 }
 
 .UiComponentArticle ol > li[data-title]:after {
@@ -240,7 +240,7 @@
     min-width: 20px;
     border-radius: 20px;
     text-align: center;
-    margin-right: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+    margin-right: <?= $e->UiComponentArticle->getConfig("baseGap") ?>px;
     white-space: nowrap;
 }
 
@@ -444,7 +444,7 @@
 }
 
 <?= $e->Css->mediaQuery([
-	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["small"],
+	"maxWidth" => $e->UiComponentArticle->getConfig("responsiveBreakpoints")["small"],
     "css" => "
         .UiComponentArticle > .columns.twoColumns > div,
         .UiComponentArticle > .columns.twoColumns > a {
@@ -456,7 +456,7 @@
 ?>
 
 <?= $e->Css->mediaQuery([
-	"maxWidth" => $e->Ui->uiComponents["UiComponentArticle"]->getConfig("responsiveBreakpoints")["medium"],
+	"maxWidth" => $e->UiComponentArticle->getConfig("responsiveBreakpoints")["medium"],
     "css" => "
         .UiComponentArticle > .columns.threeColumns > div,
         .UiComponentArticle > .columns.threeColumns > a,
@@ -573,7 +573,7 @@
     content: attr(data-credit);
     display: block;
     text-align: right;
-    margin-top: <?= $e->Ui->uiComponents["UiComponentArticle"]->getConfig("baseGap") ?>px;
+    margin-top: <?= $e->UiComponentArticle->getConfig("baseGap") ?>px;
 }
 
 .UiComponentArticleFullScreenContainer {
@@ -589,5 +589,5 @@
 }
 
 body.withUiComponentMenuBar .UiComponentArticleFullScreenContainer {
-    height: calc(100vh - <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px);
+    height: calc(100vh - <?=$e->UiComponentMenuBar->getConfig("height")?>px);
 }

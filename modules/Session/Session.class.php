@@ -48,7 +48,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Session extends \Cherrycake\Module {
+class Session  extends \Cherrycake\Module {
 	protected $isConfigFile = true;
 
 	/**

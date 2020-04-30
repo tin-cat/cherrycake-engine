@@ -51,7 +51,7 @@ const JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH = 5; // The task must be exe
  * @package Cherrycake
  * @category Modules
  */
-class Janitor extends \Cherrycake\Module {
+class Janitor  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

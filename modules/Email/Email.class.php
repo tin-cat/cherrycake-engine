@@ -37,7 +37,7 @@ const EMAIL_SMTP_ENCRYPTION_SSL = 1;
  * @package Cherrycake
  * @category Modules
  */
-class Email extends \Cherrycake\Module {
+class Email  extends \Cherrycake\Module {
     protected $isConfigFile = true;
     private $phpMailer;
 

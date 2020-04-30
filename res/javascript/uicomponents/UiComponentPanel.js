@@ -145,7 +145,7 @@
 
 	$.UiComponentPanel.defaults = {
         responsiveBreakpoints: {
-            smallScreenWidthThreshold: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("responsiveBreakpoints")["smallScreenWidthThreshold"] ?>
+            smallScreenWidthThreshold: <?= $e->UiComponentPanel->getConfig("responsiveBreakpoints")["smallScreenWidthThreshold"] ?>
         },
         isMainOpen: true,
         iconHamburgerName: 'hamburger',

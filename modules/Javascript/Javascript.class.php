@@ -38,7 +38,7 @@ namespace Cherrycake\Modules;
  * 				"main.js"
  * 			]
  * 		],
- * 		"UiComponents" => [ // This set must be declared when working with Ui module
+ * 		"uiComponents" => [ // This set must be declared when working with Ui module
  * 			"directory" => "res/javascript/UiComponents",
  * 			"files" => [ // The default Ui-related Javascript files, these are normally the ones that are not bonded to an specific UiComponent, since any other required file is automatically added here by the specific UiComponent object.
  * 			]
@@ -50,7 +50,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Javascript extends \Cherrycake\Module {
+class Javascript  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
@@ -60,13 +60,15 @@ class Javascript extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"cacheProviderName" => "engine", // The cache provider for Javascript sets
 		"cachePrefix" => "Javascript",
-		"cacheTtl" => \Cherrycake\CACHE_TTL_NORMAL,
+		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
 		"lastModifiedTimestamp" => 1,
 		"isCache" => false,
-		"isHttpCache" => false,
+		"lastModifiedTimestamp" => false, // The global version
+		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
 		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"isMinify" => true
+		"isMinify" => false
 	];
 
 	/**
@@ -77,8 +79,7 @@ class Javascript extends \Cherrycake\Module {
 		"Actions",
 		"Cache",
 		"Patterns",
-		"Locale",
-		"Ui"
+		"Locale"
 	];
 
 	/**
@@ -229,10 +230,6 @@ class Javascript extends \Cherrycake\Module {
 
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
-
-		if ($e->Ui && $e->Ui->uiComponents)
-			foreach ($e->Ui->uiComponents as $UiComponent)
-				$UiComponent->addCssAndJavascript();
 
 		if ($this->GetConfig("isCache")) {
 			$cacheProviderName = $this->GetConfig("cacheProviderName");

@@ -171,6 +171,7 @@ namespace Cherrycake {
 			$this->cache = new Cache;
 
 			require ENGINE_DIR."/Module.class.php";
+			require ENGINE_DIR."/UiComponent.class.php";
 
 			if (isset($setup["additionalAppConfigFiles"]))
 				foreach ($setup["additionalAppConfigFiles"] as $additionalAppConfigFile)

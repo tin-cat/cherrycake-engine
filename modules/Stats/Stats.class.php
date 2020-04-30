@@ -28,7 +28,7 @@ const STATS_EVENT_TIME_RESOLUTION_YEAR = 4;
  * @package Cherrycake
  * @category Modules
  */
-class Stats extends \Cherrycake\Module {
+class Stats  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

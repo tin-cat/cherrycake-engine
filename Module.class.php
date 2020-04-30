@@ -1,22 +1,18 @@
 <?php
 
 /**
- * Module
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake;
 
 /**
- * Module
- *
  * The base class for modules. Intented to be overloaded by specific functionality classes
  *
  * @package Cherrycake
  * @category Modules
  */
-class Module {
+class Module extends BasicObject {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

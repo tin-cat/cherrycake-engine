@@ -31,8 +31,8 @@
 
 	$.UiComponentMenuBar.defaults = {
         responsiveBreakpoints: {
-            thresholdWidthToHideLogo: <?= $e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("responsiveBreakpoints")["thresholdWidthToHideLogo"] ?>,
-            thresholdWidthToUseSlidingPanel: <?= $e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("responsiveBreakpoints")["thresholdWidthToHideLogo"] ?>
+            thresholdWidthToHideLogo: <?= $e->UiComponentMenuBar->getConfig("responsiveBreakpoints")["thresholdWidthToHideLogo"] ?>,
+            thresholdWidthToUseSlidingPanel: <?= $e->UiComponentMenuBar->getConfig("responsiveBreakpoints")["thresholdWidthToHideLogo"] ?>
         }
 	};
 

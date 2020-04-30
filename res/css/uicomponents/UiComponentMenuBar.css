@@ -1,5 +1,5 @@
 body.withUiComponentMenuBar {
-    padding-top: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    padding-top: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
 }
 
 #UiComponentMenuBar {
@@ -7,7 +7,7 @@ body.withUiComponentMenuBar {
     top: 0;
     left: 0;
     right: 0;
-    height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,15 +27,15 @@ body.withUiComponentMenuBar {
     position: absolute;
     right: 0;
     top: 0;
-    width: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
-    height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    width: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
+    height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     visibility: hidden;
 }
 
 #UiComponentMenuBar > .wrapper {
     display: flex;
     justify-content: center;
-    width: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("width")?>px;
+    width: <?=$e->UiComponentMenuBar->getConfig("width")?>px;
 }
 
 #UiComponentMenuBar.withLogo > .wrapper {
@@ -43,12 +43,12 @@ body.withUiComponentMenuBar {
 }
 
 #UiComponentMenuBar > .wrapper > .logo {
-    height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     margin: 0 10px;
 }
 
 #UiComponentMenuBar > .wrapper > .logo.text {
-    line-height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    line-height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     font-weight: bold;
     text-decoration: none;
 }
@@ -62,7 +62,7 @@ body.withUiComponentMenuBar {
 }
 
 #UiComponentMenuBar > .wrapper > .logo > img {
-    height: calc(<?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px - 14px);
+    height: calc(<?=$e->UiComponentMenuBar->getConfig("height")?>px - 14px);
     margin: 7px 0;
 }
 
@@ -70,12 +70,12 @@ body.withUiComponentMenuBar {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
 }
 
 #UiComponentMenuBar > .wrapper > .options > .option {
-    height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
-    line-height: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
+    line-height: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     padding: 0 20px;
     text-decoration: none;
 }
@@ -93,7 +93,7 @@ body.withUiComponentMenuBar {
 
 #UiComponentMenuBar > .smallScreenMenu {
     position: fixed;
-    top: <?=$e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("height")?>px;
+    top: <?=$e->UiComponentMenuBar->getConfig("height")?>px;
     right: 0;
     left: 100vw;
     bottom: 0;
@@ -112,7 +112,7 @@ body.withUiComponentMenuBar {
 }
 
 <?= $e->Css->mediaQuery([
-	"maxWidth" => $e->Ui->uiComponents["UiComponentMenuBar"]->getConfig("responsiveBreakpoints")["thresholdWidthToUseSlidingPanel"],
+	"maxWidth" => $e->UiComponentMenuBar->getConfig("responsiveBreakpoints")["thresholdWidthToUseSlidingPanel"],
     "css" => "
         #UiComponentMenuBar > .buttonSmallScreenMenu.open { visibility: visible; }
         #UiComponentMenuBar > .buttonSmallScreenMenu.close { visibility: hidden; }

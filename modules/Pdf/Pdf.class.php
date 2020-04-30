@@ -18,7 +18,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Pdf extends \Cherrycake\Module {
+class Pdf  extends \Cherrycake\Module {
     function init() {
         if (!parent::init())
             return false;

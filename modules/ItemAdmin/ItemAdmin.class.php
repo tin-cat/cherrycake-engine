@@ -29,7 +29,7 @@ const FORM_ITEM_META_TYPE_LOCATION = 1;
  * @package Cherrycake
  * @category Modules
  */
-class ItemAdmin extends \Cherrycake\Module {
+class ItemAdmin  extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
@@ -167,7 +167,7 @@ class ItemAdmin extends \Cherrycake\Module {
         if (!$map = $this->getMap($mapName))
             return false;
         global $e;
-        return $e->Ui->getUiComponent("UiComponentItemAdmin")->buildHtml($mapName, $id, $setup);
+        return $e->UiComponentItemAdmin->buildHtml($mapName, $id, $setup);
     }
 
     /**

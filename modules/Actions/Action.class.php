@@ -10,8 +10,6 @@ namespace Cherrycake;
 
 const ACTION_MODULE_TYPE_CORE = 0;
 const ACTION_MODULE_TYPE_APP = 1;
-const ACTION_MODULE_TYPE_CORE_UICOMPONENT = 2;
-const ACTION_MODULE_TYPE_APP_UICOMPONENT = 3;
 
 /**
  * Action
@@ -140,12 +138,6 @@ class Action {
 		else
 		if ($this->moduleType == ACTION_MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);
-		else
-		if ($this->moduleType == ACTION_MODULE_TYPE_CORE_UICOMPONENT && $e->isModuleLoaded("Ui"))
-			$e->Ui->addCoreUiComponent($this->moduleName);
-		else
-		if ($this->moduleType == ACTION_MODULE_TYPE_APP_UICOMPONENT && $e->isModuleLoaded("Ui"))
-			$e->Ui->addAppUiComponent($this->moduleName);
 
 		if (!$this->request->securityCheck())
 			return false;
@@ -158,14 +150,6 @@ class Action {
 					return true;
 				}
 				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
-				break;
-			case ACTION_MODULE_TYPE_CORE_UICOMPONENT:
-			case ACTION_MODULE_TYPE_APP_UICOMPONENT:
-				if (!method_exists($e->Ui->getUiComponent($this->moduleName), $this->methodName)) {
-					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "UiComponentModule mapped method ".$this->moduleName."::".$this->methodName." not found"]);
-					return true;
-				}
-				eval("\$return = \$e->Ui->getUiComponent(\"".$this->moduleName."\")->".$this->methodName."(\$this->request);");
 				break;
 		}
 

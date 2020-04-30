@@ -13,7 +13,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Modules
  */
-class Actions extends \Cherrycake\Module {
+class Actions  extends \Cherrycake\Module {
 	protected $isConfigFile = true;
 
 	/**

@@ -103,11 +103,11 @@
 	}
 
 	$.UiComponentNotice.defaults = {
-		revealDelay: <?= $e->Ui->uiComponents["UiComponentNotice"]->getConfig("revealDelay") ?>,
-		hideDelay: <?= $e->Ui->uiComponents["UiComponentNotice"]->getConfig("hideDelay") ?>,
-		revealEasing: '<?= $e->Ui->uiComponents["UiComponentNotice"]->getConfig("revealEasing") ?>',
-		hideEasing: '<?= $e->Ui->uiComponents["UiComponentNotice"]->getConfig("hideEasing") ?>',
-		defaultDisappearDelay: <?= $e->Ui->uiComponents["UiComponentNotice"]->getConfig("defaultDisappearDelay") ?>
+		revealDelay: <?= $e->UiComponentNotice->getConfig("revealDelay") ?>,
+		hideDelay: <?= $e->UiComponentNotice->getConfig("hideDelay") ?>,
+		revealEasing: '<?= $e->UiComponentNotice->getConfig("revealEasing") ?>',
+		hideEasing: '<?= $e->UiComponentNotice->getConfig("hideEasing") ?>',
+		defaultDisappearDelay: <?= $e->UiComponentNotice->getConfig("defaultDisappearDelay") ?>
 	};
 
 	$.fn.UiComponentNotice = function(options, params) {

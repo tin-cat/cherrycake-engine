@@ -90,7 +90,7 @@ const LOCALE_GEOLOCATION_METHOD_CLOUDFLARE = 0;
  * @package Cherrycake
  * @category Modules
  */
-class Locale extends \Cherrycake\Module
+class Locale  extends \Cherrycake\Module
 {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.

@@ -78,7 +78,7 @@ const HTML_RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;
  * @todo Make html tag's lang parameter match the real language using the Locale module in header method
  * @todo Implement link rel="canonical" based on the Locale module config key "canonicalLocale" (info: https://support.google.com/webmasters/answer/139394?hl=es)
  */
-class HtmlDocument extends \Cherrycake\Module {
+class HtmlDocument  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

@@ -13,11 +13,11 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainSmallWidth") ?>px;
-    height: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px;
+    width: <?= $e->UiComponentPanel->getConfig("mainSmallWidth") ?>px;
+    height: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px;
     background: #fff;
     border-bottom: solid rgba(0, 0, 0, .07) 1px;
-    transition: all <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: all <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     margin: 0;
     padding: 0;
 }
@@ -29,7 +29,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transition: opacity <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: opacity <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     border: none;
 }
 
@@ -43,12 +43,12 @@
 #UiComponentPanel > .top {
     position: absolute;
     top: 0;
-    left: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainSmallWidth") ?>px;
+    left: <?= $e->UiComponentPanel->getConfig("mainSmallWidth") ?>px;
     right: 0;
-    height: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px;
+    height: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px;
     background: #fff;
     border-bottom: solid rgba(0, 0, 0, .07) 1px;
-    transition: all <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: all <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
 }
 
 #UiComponentPanel > .top > .topLeft {
@@ -95,16 +95,16 @@
 
 #UiComponentPanel > .main {
     position: absolute;
-    top: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px;
+    top: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px;
     left: 0;
     bottom: 0;
-    width: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainSmallWidth") ?>px;
+    width: <?= $e->UiComponentPanel->getConfig("mainSmallWidth") ?>px;
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     border-right: solid rgba(0, 0, 0, 0.07) 1px;
     background: #272727;
-    transition: all <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: all <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     box-sizing: border-box;
 }
 
@@ -160,13 +160,13 @@
 
 #UiComponentPanel > .content {
     position: absolute;
-    top: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px;
-    left: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainSmallWidth") ?>px;
+    top: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px;
+    left: <?= $e->UiComponentPanel->getConfig("mainSmallWidth") ?>px;
     right: 0;
     bottom: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    transition: all <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: all <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
 }
 
 /* mainOpen*/
@@ -174,19 +174,19 @@
 #UiComponentPanel.mainOpen:not(.small) > .header > .logo.small { opacity: 0; }
 
 #UiComponentPanel.mainOpen:not(.small) > .header {
-    width: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainWidth") ?>px;
+    width: <?= $e->UiComponentPanel->getConfig("mainWidth") ?>px;
 }
 
 #UiComponentPanel.mainOpen:not(.small) > .top {
-    left: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainWidth") ?>px;
+    left: <?= $e->UiComponentPanel->getConfig("mainWidth") ?>px;
 }
 
 #UiComponentPanel.mainOpen:not(.small) > .main {
-    width: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainWidth") ?>px;
+    width: <?= $e->UiComponentPanel->getConfig("mainWidth") ?>px;
 }
 
 #UiComponentPanel.mainOpen:not(.small) > .content {
-    left: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("mainWidth") ?>px;
+    left: <?= $e->UiComponentPanel->getConfig("mainWidth") ?>px;
 }
 
 /* small */
@@ -221,26 +221,26 @@
 }
 
 #UiComponentPanel.small > .main {
-    top: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px !important;
+    top: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px !important;
     left: -100% !important;
     width: 90vw !important;
     z-index: 1;
-    transition: transform <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: transform <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     will-change: transform;
 }
 
 #UiComponentPanel.small > .content {
     width: 100vw;
-    top: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px !important;
-    bottom: <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("topHeight") ?>px !important;
+    top: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px !important;
+    bottom: <?= $e->UiComponentPanel->getConfig("topHeight") ?>px !important;
     left: 0 !important;
-    transition: opacity <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: opacity <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     will-change: opacity;
 }
 
 
 #UiComponentPanel.small > .top {
-    transition: opacity <?= $e->Ui->uiComponents["UiComponentPanel"]->getConfig("transitionTime") ?>s ease-in-out;
+    transition: opacity <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     will-change: opacity;
 }
 

@@ -45,7 +45,7 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
  * @package Cherrycake
  * @category Modules
  */
-class Errors extends \Cherrycake\Module {
+class Errors  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
