@@ -43,7 +43,7 @@ class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
      * @return mixed The sub option at the specified key, or false if no suboption with that key.
      */
     function getSubOption($key) {
-        return $this->subOptions[$key];
+        return $this->subOptions[$key] ?? false;
     }
 
 	/**
