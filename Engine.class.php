@@ -542,18 +542,18 @@ namespace Cherrycake {
 			include_once($this->getAppModulesDir()."/".$moduleName."/".$className.".class.php");
 		}
 
-		// /**
-		//  * Magic get method that tries to load modules if the the requested property is not found
-		//  * @param string $key The key of the property or module name to get.
-		//  * @return mixed The data. Null if data with the given key is not set.
-		//  */
-		// function __get($key) {
-		// 	if (property_exists($this, $key))
-		// 		return $this->$key;
-		// 	if ($this->loadUnknownModule($key))
-		// 		return $this->$key;
-		// 	return false;
-		// }
+		/**
+		 * Magic get method that tries to load modules if the the requested property is not found
+		 * @param string $key The key of the property or module name to get.
+		 * @return mixed The data. Null if data with the given key is not set.
+		 */
+		function __get($key) {
+			// if (property_exists($this, $key))
+			// 	return $this->$key;
+			if ($this->loadUnknownModule($key))
+				return $this->$key;
+			return false;
+		}
 
 		/**
 		 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules
@@ -797,7 +797,7 @@ namespace Cherrycake {
 namespace {
 
 	/**
-	 * Defines an autoloader for requested classes, to allow the automatic inclusion of class files when they're needed. It distinguishes from Cherrycake classes and App classes by checking the namespace
+	 * Autoloader for requested classes and modules, to allow the automatic inclusion of class files when they're needed. It distinguishes from Cherrycake classes and App classes by checking the namespace
 	 */
 	spl_autoload_register(function ($className) {
 		global $e;
@@ -806,15 +806,46 @@ namespace {
 		// If autoload for Predis namespace is requested, don't do it. Exception for performance only.
 		// This causes the "Predis" namespace name to be forbidden to use when creating a Cherrycake app.
 		if ($namespace == "Predis")
-			return;
+			return false;
 
-		$fileName = str_replace("\\", "/", substr(strstr($className, "\\"), 1)).".class.php";
+		$className = str_replace("\\", "/", substr(strrchr($className, "\\"), 1));
+		$fileName = $className.".class.php";
 
-		if ($namespace == "Cherrycake")
-			include ENGINE_DIR."/classes/".$fileName;
-		else
-		if (file_exists($e->getAppClassesDir()."/".$fileName))
-			include $e->getAppClassesDir()."/".$fileName;
+		if ($namespace == "Cherrycake") {
+			// Core class or module
+			// First check if it exists as a class
+			if (file_exists(ENGINE_DIR."/classes/".$fileName)) {
+				include ENGINE_DIR."/classes/".$fileName;
+			}
+				// If not, check if it exists as a module
+			else
+			if ($e->isCoreModuleExists($className)) {
+				$e->loadCoreModule($className);
+			}
+			// If not, throw an error
+			else {
+				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+					"errorDescription" => "Core class or module \"$className\" could not be loaded automatically"
+				]);
+			}
+		}
+		else {
+			// Non-core class or module
+			if (file_exists($e->getAppClassesDir()."/".$fileName)) {
+				include $e->getAppClassesDir()."/".$fileName;
+			}
+			// If not, check if it exists as a module
+			else
+			if ($e->isAppModuleExists($className)) {
+				$e->loadAppModule($className);
+			}
+			// If not, throw an error
+			else {
+				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+					"errorDescription" => "App class or module \"$className\" could not be loaded automatically"
+				]);
+			}
+		}
 	});
 
 	/**

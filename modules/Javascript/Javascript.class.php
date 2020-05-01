@@ -166,9 +166,6 @@ class Javascript  extends \Cherrycake\Module {
 	function getSetUrl($setNames) {
 		global $e;
 
-		if (!$e->Actions->getAction("javascript"))
-			return false;
-
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 

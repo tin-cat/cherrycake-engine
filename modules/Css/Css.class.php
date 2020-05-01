@@ -193,9 +193,6 @@ class Css  extends \Cherrycake\Module {
 	function getSetUrl($setNames) {
 		global $e;
 
-		if (!$e->Actions->getAction("css"))
-			return false;
-
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 

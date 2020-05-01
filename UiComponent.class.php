@@ -14,6 +14,8 @@ namespace Cherrycake;
  */
 class UiComponent extends Module {
 	function init() {
+		$this->dependentCoreModules[] = "Css";
+		$this->dependentCoreModules[] = "Javascript";
 		if (!parent::init())
 			return false;
 		$this->addCssAndJavascript();

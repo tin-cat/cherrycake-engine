@@ -288,7 +288,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
 			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
-
+			
 		// Css
 		if ($e->Css)
 			if (is_array($this->cssSets))
