@@ -89,6 +89,9 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
 	 */
     protected $blocks;
 
+    protected $mainOptionSelected;
+    protected $mainSubOptionSelected;
+
 	function addCssAndJavascript() {
         global $e;
 		$e->Css->addFileToSet("coreUiComponents", "UiComponentPanel.css");
@@ -197,9 +200,9 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
                 $this->buildHtmlSection("topRight").
             "</div>".
             $this->buildHtmlSection("main", [
-                "isAllSelected" => $this->isAllMainOptionsOpen ?? null,
-                "optionSelected" => $this->mainOptionSelected ?? null,
-                "subOptionSelected" => $this->mainSubOptionSelected ?? null
+                "isAllSelected" => $this->getConfig("isAllMainOptionsOpen"),
+                "optionSelected" => $this->mainOptionSelected,
+                "subOptionSelected" => $this->mainSubOptionSelected
             ]).
             "<div class=\"content\">".
                 $setup["content"].
