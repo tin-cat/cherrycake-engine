@@ -87,9 +87,6 @@ class Css  extends \Cherrycake\Module {
 		"lastModifiedTimestamp" => false, // The global version
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
 		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"lastModifiedTimestamp" => 1,
-		"isHttpCache" => false,
-		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
 		"isMinify" => false,
 		"responsiveWidthBreakpoints" => [
 			"tiny" => 500,
@@ -97,8 +94,7 @@ class Css  extends \Cherrycake\Module {
 			"normal" => 980,
 			"big" => 1300,
 			"huge" => 1700
-		],
-		"setFilesCacheTtl" => \Cherrycake\CACHE_TTL_LONGEST
+		]
 	];
 
 	/**
@@ -239,7 +235,7 @@ class Css  extends \Cherrycake\Module {
 	 * @param string $css The Css
 	 */
 	function addCssToSet($setName, $css) {
-		$this->sets[$setName]["appendCss"] = ($this->sets[$setName]["appendCss"] ?? null).$css;
+		$this->sets[$setName]["appendCss"] = ($this->sets[$setName]["appendCss"] ?? false ?: "").$css;
 	}
 
 	/**
@@ -250,16 +246,16 @@ class Css  extends \Cherrycake\Module {
 		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
 			"uniqueId" => $setName
 		]);
-		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
+		if ($e->isDevel() || !$e->Cache->$cacheProviderName->isKey($cacheKey))
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$this->parseSet($setName),
-				$this->getConfig("setFilesCacheTtl")
+				$cacheTtl
 			);
 	}
 

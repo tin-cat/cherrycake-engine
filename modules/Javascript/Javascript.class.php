@@ -62,12 +62,10 @@ class Javascript  extends \Cherrycake\Module {
 		"cacheProviderName" => "engine", // The cache provider for Javascript sets
 		"cachePrefix" => "Javascript",
 		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
-		"lastModifiedTimestamp" => 1,
 		"lastModifiedTimestamp" => false, // The global version
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
 		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"isMinify" => false,
-		"setFilesCacheTtl" => \Cherrycake\CACHE_TTL_LONGEST
+		"isMinify" => false
 	];
 
 	/**
@@ -212,7 +210,7 @@ class Javascript  extends \Cherrycake\Module {
 	 * @param string $javascript The Javascript
 	 */
 	function addJavascriptToSet($setName, $javascript) {
-		$this->sets[$setName]["appendJavascript"] .= $javascript;
+		$this->sets[$setName]["appendJavascript"] = ($this->sets[$setName]["appendJavascript"] ?? false ?: "").$javascript;
 	}
 
 	/**
@@ -233,16 +231,16 @@ class Javascript  extends \Cherrycake\Module {
 		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "javascriptParsedSet",
 			"uniqueId" => $setName
 		]);
-		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
+		if ($e->isDevel() || !$e->Cache->$cacheProviderName->isKey($cacheKey))
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$this->parseSet($setName),
-				$this->getConfig("setFilesCacheTtl")
+				$cacheTtl
 			);
 	}
 

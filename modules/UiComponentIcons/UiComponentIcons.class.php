@@ -45,6 +45,7 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 	 */
 	protected $config = [
 		"directory" => "res/icons",
+		"cssSetName" => "main",
 		"sizes" => [16, 32, 64, 128, 256],  // The icon sizes to generate
 		"sizeUnits" => "px", // The unit on which sizes are specified
 		"defaultSize" => 16, // The default icon size to use when no size Css class is specified
