@@ -143,7 +143,7 @@ class Patterns  extends \Cherrycake\Module {
 			foreach ($setup["variables"] as $variableName => $variable)
 				eval("\$".$variableName." = \$variable;");
 		}
-
+		
 		$this->lastTreatedFile = $patternFile;
 		$this->lastEvaluatedCode = file_get_contents($patternFile);
 		ob_start();
@@ -162,7 +162,7 @@ class Patterns  extends \Cherrycake\Module {
 				$buffer,
 				$setup["cacheTtl"] ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?: $this->getConfig("defaultCacheTtl")
 			);
-
+		
 		return $buffer;
 	}
 

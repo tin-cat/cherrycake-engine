@@ -284,7 +284,9 @@ class Javascript  extends \Cherrycake\Module {
 		}
 
 		if (isset($requestedSet["appendJavascript"]))
-			$js .= $requestedSet["appendJavascript"];
+			$js .=
+				($e->isDevel() ? "\n/* ".$setName." appended JavaScript */\n\n" : null).
+				$requestedSet["appendJavascript"];
 
 		// Include variablesFile specified files
 		if (isset($requestedSet["variablesFile"]))

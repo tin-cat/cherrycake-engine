@@ -299,7 +299,9 @@ class Css  extends \Cherrycake\Module {
 		}
 
 		if (isset($requestedSet["appendCss"]))
-			$css .= $requestedSet["appendCss"];
+			$css .=
+				($e->isDevel() ? "\n/* ".$setName." appended CSS */\n\n" : null).
+				$requestedSet["appendCss"];
 
 		// Include variablesFile specified files
 		if (isset($requestedSet["variablesFile"]))

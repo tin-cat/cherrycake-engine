@@ -48,8 +48,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFonts extends \Cherrycake\UiComponent
-{
+class UiComponentFonts extends \Cherrycake\UiComponent {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */
@@ -64,8 +63,7 @@ class UiComponentFonts extends \Cherrycake\UiComponent
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addCssToSet($this->getConfig("cssSetName"), $this->generateCss());
-		return true;
+		$e->Css->addCssToSet("coreUiComponents", $this->generateCss());
 	}
 
 	/**

@@ -237,11 +237,11 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
                 
                 switch (get_class($uiComponent)) {
 
-                    case "Cherrycake\UiComponentMenuOption":
+                    case "Cherrycake\Modules\UiComponentMenuOption":
                         $uiComponent->setSelected((isset($setup["optionSelected"]) && $setup["optionSelected"] == $blockName) || (isset($setup["isAllSelected"]) ? $setup["isAllSelected"] : false));
                         break;
 
-                    case "Cherrycake\UiComponentMenuOptionWithSuboptions":
+                    case "Cherrycake\Modules\UiComponentMenuOptionWithSuboptions":
                         if ($setup["optionSelected"] == $blockName || $setup["isAllSelected"]) {
                             $uiComponent->setSelected(true);
                             if ($setup["subOptionSelected"] && $subOption = $uiComponent->getSubOption($setup["subOptionSelected"])) {

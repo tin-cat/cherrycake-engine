@@ -13,7 +13,6 @@ namespace Cherrycake\Modules;
  * @category Classes
  */
 class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
-
     protected $dependentCoreModules = [
         "UiComponentJquery",
         "UiComponentMenuOption"
@@ -62,7 +61,8 @@ class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
             $this->domId = uniqid();
 
         // Go through sub options
-		$subOptionsHtml = "";
+        $subOptionsHtml = "";
+        $isAnySubOptionSelected = false;
         foreach ($this->subOptions as $subOption) {
             if ($subOption->isSelected)
                 $isAnySubOptionSelected = true;
@@ -73,7 +73,7 @@ class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
             "<div".
                 " class=\"".
                     "UiComponentMenuOptionWithSuboptions".
-                    ($isAnySubOptionSelected ?? false || $this->isSelected ?? false ? " open" : null).
+                    ($isAnySubOptionSelected || $this->isSelected ? " open" : null).
                 "\"".
                 " id=\"".$this->domId."\"".
             ">".

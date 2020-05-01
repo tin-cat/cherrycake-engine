@@ -45,7 +45,6 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 	 */
 	protected $config = [
 		"directory" => "res/icons",
-		"cssSetName" => "main",
 		"sizes" => [16, 32, 64, 128, 256],  // The icon sizes to generate
 		"sizeUnits" => "px", // The unit on which sizes are specified
 		"defaultSize" => 16, // The default icon size to use when no size Css class is specified
@@ -60,7 +59,7 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addCssToSet($this->getConfig("cssSetName"), $this->generateCss());
+		$e->Css->addCssToSet("coreUiComponents", $this->generateCss());
 		$e->Css->addFileToSet("coreUiComponents", "UiComponentIcons.css");
 		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentIcons.js");
 	}
