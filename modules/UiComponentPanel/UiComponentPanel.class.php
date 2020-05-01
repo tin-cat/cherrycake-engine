@@ -56,21 +56,12 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
     protected $isConfigFile = true;
     
     var $dependentCoreModules = [
-		"UiComponentButton",
+		"UiComponentJquery",
+        "UiComponentIcons",
 		"UiComponentMenuOption",
 		"UiComponentMenuOptionWithSuboptions"
 	];
     
-	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
-	 */
-	protected $dependentCoreUiComponents = [
-        "UiComponentJquery",
-        "UiComponentIcons",
-        "UiComponentMenuOption",
-        "UiComponentMenuOptionWithSuboptions"
-    ];
-
     /**
 	 * @var array $config Default configuration options
 	 */
@@ -99,9 +90,9 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
     protected $blocks;
 
 	function addCssAndJavascript() {
-		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentPanel.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentPanel.js");
+        global $e;
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentPanel.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentPanel.js");
     }
 
     /**

@@ -60,8 +60,8 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
 		$e->Css->addCssToSet($this->getConfig("cssSetName"), $this->generateCss());
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentIcons.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentIcons.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentIcons.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentIcons.js");
 	}
 
 	/**

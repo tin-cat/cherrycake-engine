@@ -28,7 +28,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentNotice extends \Cherrycake\Module {
+class UiComponentNotice extends \Cherrycake\UiComponent {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */
@@ -47,17 +47,17 @@ class UiComponentNotice extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentNotice.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentNotice.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentNotice.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentNotice.js");
 		if ($this->getConfig("isAdvancedEasings"))
-			$e->Javascript->addFileToSet("cherrycakemain", "jquery.easing.1.3.js");
+			$e->Javascript->addFileToSet("coreUiComponents", "jquery.easing.1.3.js");
 	}
 }

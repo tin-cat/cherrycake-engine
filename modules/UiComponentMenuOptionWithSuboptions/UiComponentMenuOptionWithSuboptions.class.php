@@ -14,15 +14,15 @@ namespace Cherrycake\Modules;
  */
 class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
 
-    protected $dependentCoreUiComponents = [
+    protected $dependentCoreModules = [
         "UiComponentJquery",
         "UiComponentMenuOption"
     ];
 
 	function addCssAndJavascript() {
 		global $e;
-        $e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentMenuOptionWithSuboptions.css");
-        $e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentMenuOptionWithSuboptions.js");
+        $e->Css->addFileToSet("coreUiComponents", "UiComponentMenuOptionWithSuboptions.css");
+        $e->Javascript->addFileToSet("coreUiComponents", "UiComponentMenuOptionWithSuboptions.js");
     }
 
     /**

@@ -30,7 +30,7 @@ class UiComponentFormSelect extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormSelect.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormSelect.css");
 		return true;
 	}
 

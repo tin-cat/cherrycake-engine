@@ -389,6 +389,19 @@ namespace Cherrycake {
 		}
 
 		/**
+		 * Loads a module when it's not known whether it's an app or a core module
+		 * 
+		 * @param string $moduleName The name of the module to load
+		 * @param string $requiredByModuleName The name of the module that required this module, if any.
+		 * @return boolean Whether the module has been loaded ok
+		 */
+		function loadUnknownModule($moduleName, $requiredByModuleName = false) {
+			if ($this->isCoreModuleExists($moduleName))
+				return $this->loadCoreModule($moduleName, $requiredByModuleName);
+			return $this->loadAppModule($moduleName, $requiredByModuleName);
+		}
+
+		/**
 		 * Generic method to load a module. Modules are classes extending the module class providing specific functionalities in a modular-type framework. Module can have its own configuration file.
 		 *
 		 * @param string $modulesDirectory Directory where modules are stored
@@ -465,6 +478,22 @@ namespace Cherrycake {
 			return file_exists($this->getModuleFilePath($modulesDirectory, $moduleName));
 		}
 
+		/**
+		 * @param string $moduleName The name of the module
+		 * @return boolean Whether the specified module exists and is a core module
+		 */
+		function isCoreModuleExists($moduleName) {
+			return $this->isModuleExists(ENGINE_DIR."/modules", $moduleName);
+		}
+
+		/**
+		 * @param string $moduleName The name of the module
+		 * @return boolean Whether the specified module exists and is an app module
+		 */
+		function isAppModuleExists($moduleName) {
+			return $this->isModuleExists($this->getAppModulesDir(), $moduleName);
+		}
+
 		/*
 		* Generic method to include a module class
 		*
@@ -512,6 +541,19 @@ namespace Cherrycake {
 		function loadAppModuleClass($moduleName, $className) {
 			include_once($this->getAppModulesDir()."/".$moduleName."/".$className.".class.php");
 		}
+
+		// /**
+		//  * Magic get method that tries to load modules if the the requested property is not found
+		//  * @param string $key The key of the property or module name to get.
+		//  * @return mixed The data. Null if data with the given key is not set.
+		//  */
+		// function __get($key) {
+		// 	if (property_exists($this, $key))
+		// 		return $this->$key;
+		// 	if ($this->loadUnknownModule($key))
+		// 		return $this->$key;
+		// 	return false;
+		// }
 
 		/**
 		 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules

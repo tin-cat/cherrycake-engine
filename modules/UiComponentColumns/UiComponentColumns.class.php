@@ -23,7 +23,7 @@ class UiComponentColumns extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentColumns.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentColumns.css");
 		return true;
     }
     

@@ -16,10 +16,6 @@ class UiComponent extends Module {
 	function init() {
 		if (!parent::init())
 			return false;
-		if (!$this->isConfig("cssSetName"))
-			$this->setConfig("cssSetName", "uiComponents");
-		if (!$this->isConfig("javascriptSetName"))
-			$this->setConfig("javascriptSetName", "uiComponents");
 		$this->addCssAndJavascript();
 		return true;
 	}

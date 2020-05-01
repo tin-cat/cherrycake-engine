@@ -16,7 +16,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentJqueryEventUe extends \Cherrycake\Module
+class UiComponentJqueryEventUe extends \Cherrycake\UiComponent
 {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
@@ -24,14 +24,14 @@ class UiComponentJqueryEventUe extends \Cherrycake\Module
 	protected $isConfigFile = false;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
         "UiComponentJquery"
     ];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "jquery.event.ue.min.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "jquery.event.ue.min.js");
 	}
 }

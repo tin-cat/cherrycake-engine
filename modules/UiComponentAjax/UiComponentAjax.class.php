@@ -47,16 +47,16 @@ class UiComponentAjax extends \Cherrycake\UiComponent {
 	];
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentPopup"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentAjax.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentAjax.js");
 		return true;
 	}
 }

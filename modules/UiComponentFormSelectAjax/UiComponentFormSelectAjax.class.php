@@ -26,22 +26,19 @@ class UiComponentFormSelectAjax extends \Cherrycake\UiComponent {
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentJqueryEventUe",
 		"UiComponentTooltip",
 		"UiComponentFormRadios",
-		"UiComponentAjax"
-	];
-
-	protected $dependentCoreModules = [
+		"UiComponentAjax",
 		"HtmlDocument",
 		"Security"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormSelectAjax.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentFormSelectAjax.js");
 	}
 
 	/**

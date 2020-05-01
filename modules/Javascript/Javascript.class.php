@@ -27,7 +27,6 @@ namespace Cherrycake\Modules;
  * 	"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The cache TTL for JS sets
  * 	"cacheProviderName" => "engine", // The cache provider for JS sets
  * 	"lastModifiedTimestamp" => 1, // The last modified timestamp of JS, to handle caches and http cache
- *  "isCache" => false, // Whether to use cache or not
  *  "isHttpCache" => false, // Whether to send HTTP Cache headers or not
  *  "httpCacheMaxAge" => false, // The maximum age in seconds for HTTP Cache
  *  "isMinify" => true, // Whether to minify the resulting CSS or not
@@ -64,11 +63,11 @@ class Javascript  extends \Cherrycake\Module {
 		"cachePrefix" => "Javascript",
 		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
 		"lastModifiedTimestamp" => 1,
-		"isCache" => false,
 		"lastModifiedTimestamp" => false, // The global version
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
 		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"isMinify" => false
+		"isMinify" => false,
+		"setFilesCacheTtl" => \Cherrycake\CACHE_TTL_LONGEST
 	];
 
 	/**
@@ -104,9 +103,9 @@ class Javascript  extends \Cherrycake\Module {
 
 		// Adds cherrycake sets
 		$this->addSet(
-			"cherrycakemain",
+			"coreUiComponents",
 			[
-				"directory" => ENGINE_DIR."/res/javascript/main"
+				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
 			]
 		);
 
@@ -160,7 +159,8 @@ class Javascript  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * getSetUrl
+	 * Builds a URL to request the given set contents.
+	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 *
 	 * @param mixed $setNames The name of the Javascript set, or an array of them
 	 * @return string The Url of the Javascript set
@@ -175,8 +175,10 @@ class Javascript  extends \Cherrycake\Module {
 			$setNames = [$setNames];
 
 		$parameterSetNames = "";
-		foreach ($setNames as $setName)
+		foreach ($setNames as $setName) {
+			$this->storeParsedSetInCache($setName);
 			$parameterSetNames .= $setName."-";
+		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
 		return $e->Actions->getAction("javascript")->request->buildUrl([
@@ -198,7 +200,6 @@ class Javascript  extends \Cherrycake\Module {
 	function addFileToSet($setName, $fileName) {
 		if (!($this->sets[$setName] ?? false) && isset($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
 			return;
-
 		$this->sets[$setName]["files"][] = $fileName;
 	}
 
@@ -215,10 +216,103 @@ class Javascript  extends \Cherrycake\Module {
 	}
 
 	/**
+	 * @param string $setName The name of the set
+	 * @return string A string that uniquely identifies the current combination of files in the specified set
+	 */
+	function buildSetUniqId($setName) {
+		if (!isset($this->sets[$setName]) || !isset($this->sets[$setName]["files"]))
+			return md5($setName);
+		return md5($setName.implode($this->sets[$setName]["files"]));
+	}
+
+	/**
+	 * Parses the given set and stores it into cache.
+	 * @param string $setName The name of the set
+	 */
+	function storeParsedSetInCache($setName) {
+		global $e;
+		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
+		$cacheProviderName = $this->GetConfig("cacheProviderName");
+		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheKey = $e->Cache->buildCacheKey([
+			"prefix" => "javascriptParsedSet",
+			"uniqueId" => $setName
+		]);
+		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
+			$e->Cache->$cacheProviderName->set(
+				$cacheKey,
+				$this->parseSet($setName),
+				$this->getConfig("setFilesCacheTtl")
+			);
+	}
+
+	/**
+	 * Parses the given set
+	 * @param string $setName The name of the set
+	 * @return string The parsed set
+	 */
+	function parseSet($setName) {
+		global $e;
+
+		if (!isset($this->sets[$setName]))
+			return null;
+		
+		if ($e->isDevel())
+			$develInformation = "\nSet \"".$setName."\":\n";
+		
+		$requestedSet = $this->sets[$setName];
+
+		$js = "";
+
+		if (isset($requestedSet["files"])) {
+			$parsed = [];
+			foreach ($requestedSet["files"] as $file) {
+				if (in_array($file, $parsed))
+					continue;
+				else
+					$parsed[] = $file;
+				
+				if ($e->isDevel())
+					$develInformation .= $requestedSet["directory"]."/".$file."\n";
+				
+				$js .= $e->Patterns->parse(
+					$file,
+					[
+						"directoryOverride" => $requestedSet["directory"] ?? false,
+						"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
+					]
+				)."\n";
+			}
+		}
+
+		if (isset($requestedSet["appendJavascript"]))
+			$js .= $requestedSet["appendJavascript"];
+
+		// Include variablesFile specified files
+		if (isset($requestedSet["variablesFile"]))
+			if (is_array($requestedSet["variablesFile"]))
+				foreach ($requestedSet["variablesFile"] as $fileName)
+					include($fileName);
+			else
+				include($requestedSet["variablesFile"]);
+
+		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
+		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
+
+		if($this->getConfig("isMinify"))
+			$js = $this->minify($js);
+		
+		if ($e->isDevel())
+			$js = "/*\n".$develInformation."\n*/\n\n".$js;
+
+		return $js;
+	}
+
+
+	/**
 	 * dump
 	 *
 	 * Outputs the requested Javascript sets to the client.
-	 * It requests all UiComponent objects (if any) in the Ui module to add their own Javascript code or to include their needed Javascript files.
 	 * It guesses what Javascript sets to dump via the "set" get parameter.
 	 * It handles Javascript caching,
 	 * Intended to be called from a <script src ...>
@@ -230,74 +324,29 @@ class Javascript  extends \Cherrycake\Module {
 
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
+		
+		$setNames = explode("-", $request->set);
 
-		if ($this->GetConfig("isCache")) {
-			$cacheProviderName = $this->GetConfig("cacheProviderName");
-			$cacheTtl = $this->GetConfig("cacheTtl");
+		$cacheProviderName = $this->GetConfig("cacheProviderName");
+		
+		$js = "";
 
-			// Build cache key
+		foreach($setNames as $setName) {
 			$cacheKey = $e->Cache->buildCacheKey([
-				"prefix" => $this->GetConfig("cachePrefix"),
-				"uniqueId" => $request->set."_".$this->getConfig("lastModifiedTimestamp")
+				"prefix" => "javascriptParsedSet",
+				"uniqueId" => $setName
 			]);
-
-			if ($javascript = $e->Cache->$cacheProviderName->get($cacheKey)) {
-				$e->Output->setResponse(new \Cherrycake\ResponseApplicationJavascript([
-					"payload" => $javascript
-				]));
-				return;
-			}
+			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
+				$js .= $e->Cache->$cacheProviderName->get($cacheKey);
+			else
+			if ($e->isDevel())
+				$js .= "/* Javascript set \"".$setName."\" not cached */\n";
 		}
-
-		$requestedSetNames = explode("-", $request->set);
-
-		$javascript = "";
-		foreach($requestedSetNames as $requestedSetName) {
-			if (!$requestedSet = $this->sets[$requestedSetName])
-				continue;
-
-			if (isset($requestedSet["files"])) {
-				$parsed = [];
-				foreach ($requestedSet["files"] as $file) {
-					if (in_array($file, $parsed))
-						continue;
-					else
-						$parsed[] = $file;
-					
-					$javascript .= $e->Patterns->parse(
-						$file,
-						[
-							"directoryOverride" => $requestedSet["directory"] ?? false,
-							"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
-						]
-					)."\n";
-				}
-			}
-
-			if (isset($requestedSet["appendJavascript"]))
-				$javascript .= $requestedSet["appendJavascript"];
-
-			// Include variablesFile specified files
-			if (isset($requestedSet["variablesFile"]))
-				if (is_array($requestedSet["variablesFile"]))
-					foreach ($requestedSet["variablesFile"] as $fileName)
-						include($fileName);
-				else
-					include($requestedSet["variablesFile"]);
-		}
-
-		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
-		$javascript .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
-
-		if($this->getConfig("isMinify"))
-			$javascript = $this->minify($javascript);
-
-		if ($this->GetConfig("isCache"))
-			$e->Cache->$cacheProviderName->set($cacheKey, $javascript, $cacheTtl);
-
+		
 		$e->Output->setResponse(new \Cherrycake\ResponseApplicationJavascript([
-			"payload" => $javascript
+			"payload" => $js
 		]));
+		return;
 	}
 
 	/**

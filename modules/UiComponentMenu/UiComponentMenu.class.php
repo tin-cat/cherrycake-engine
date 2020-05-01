@@ -17,7 +17,7 @@ namespace Cherrycake\Modules;
 class UiComponentMenu extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentMenu.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentMenu.css");
 	}
 
 	/**

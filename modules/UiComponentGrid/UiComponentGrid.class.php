@@ -46,7 +46,7 @@ class UiComponentGrid extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentGrid.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentGrid.css");
 	}
 
 }

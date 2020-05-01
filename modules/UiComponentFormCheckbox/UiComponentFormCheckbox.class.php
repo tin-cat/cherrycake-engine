@@ -27,15 +27,15 @@ class UiComponentFormCheckbox extends \Cherrycake\UiComponent {
 	protected $title;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentTooltip"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormCheckbox.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormCheckbox.css");
 		return true;
 	}
 

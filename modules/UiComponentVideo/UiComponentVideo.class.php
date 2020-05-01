@@ -16,9 +16,9 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentVideo extends \Cherrycake\Module {
+class UiComponentVideo extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "video.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "video.js");
 	}
 }

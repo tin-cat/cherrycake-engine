@@ -34,16 +34,16 @@ class UiComponentFormText extends \Cherrycake\UiComponent {
 	protected $ajaxSaveUrl;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentTooltip"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormText.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormText.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormText.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentFormText.js");
 	}
 
 	/**

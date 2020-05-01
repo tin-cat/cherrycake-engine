@@ -48,7 +48,7 @@ class UiComponentFormDatabaseQueryAjax extends \Cherrycake\UiComponent {
 		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
 	];
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentFormSelectAjax",
 		"UiComponentFormRadiosAjax"
 	];

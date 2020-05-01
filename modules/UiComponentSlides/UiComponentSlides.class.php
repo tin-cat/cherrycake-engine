@@ -19,6 +19,6 @@ namespace Cherrycake\Modules;
 class UiComponentSlides extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentSlides.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentSlides.css");
 	}
 }

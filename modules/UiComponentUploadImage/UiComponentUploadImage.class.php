@@ -26,17 +26,17 @@ class UiComponentUploadImage extends \Cherrycake\UiComponent {
 	protected $defaultImageUrl;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentButton",
 		"UiComponentAjaxUpload"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentUploadImage.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentUploadImage.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentUploadImage.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentUploadImage.js");
 	}
 
 	/**

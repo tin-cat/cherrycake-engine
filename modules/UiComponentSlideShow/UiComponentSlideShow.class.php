@@ -16,18 +16,18 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentSlideShow extends \Cherrycake\Module {
+class UiComponentSlideShow extends \Cherrycake\UiComponent {
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentTouchWipe"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentSlideShow.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentSlideShow.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentSlideShow.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentSlideShow.js");
 	}
 }

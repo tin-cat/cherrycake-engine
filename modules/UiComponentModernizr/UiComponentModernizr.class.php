@@ -16,9 +16,9 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentModernizr extends \Cherrycake\Module {
+class UiComponentModernizr extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "modernizr.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "modernizr.js");
 	}
 }

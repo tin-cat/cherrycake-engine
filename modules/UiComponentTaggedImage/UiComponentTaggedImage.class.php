@@ -16,11 +16,11 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentTaggedImage extends \Cherrycake\Module {
+class UiComponentTaggedImage extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentTaggedImage.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentTaggedImage.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentTaggedImage.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentTaggedImage.js");
 	}
 
 	/**

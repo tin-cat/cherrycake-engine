@@ -23,7 +23,7 @@ class UiComponentButtonSwitchAjax extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentButtonSwitchAjax.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentButtonSwitchAjax.js");
 		return true;
 	}
 

@@ -37,19 +37,16 @@ class UiComponentFormTextAjax extends \Cherrycake\UiComponent {
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey;
 
-	protected $dependentCoreUiComponents = [
-        "UiComponentFormText",
-        "UiComponentFormInputAjax"
-	];
-
 	protected $dependentCoreModules = [
+        "UiComponentFormText",
+        "UiComponentFormInputAjax",
 		"HtmlDocument",
 		"Security"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormTextAjax.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormTextAjax.css");
 	}
 
 	/**

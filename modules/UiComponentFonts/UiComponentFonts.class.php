@@ -48,7 +48,7 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFonts extends \Cherrycake\Module
+class UiComponentFonts extends \Cherrycake\UiComponent
 {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.

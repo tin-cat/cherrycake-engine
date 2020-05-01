@@ -16,9 +16,9 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentTouchWipe extends \Cherrycake\Module {
+class UiComponentTouchWipe extends \Cherrycake\UiComponent {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "jquery.touchwipe.1.1.1.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "jquery.touchwipe.1.1.1.js");
 	}
 }

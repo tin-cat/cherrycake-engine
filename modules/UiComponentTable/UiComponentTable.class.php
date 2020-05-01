@@ -49,8 +49,8 @@ class UiComponentTable extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentTable.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentTable.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentTable.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentTable.js");
 	}
 
 	/**

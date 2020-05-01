@@ -16,18 +16,18 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentAnimationEffects extends \Cherrycake\Module
+class UiComponentAnimationEffects extends \Cherrycake\UiComponent
 {
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentAnimationEffects.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentAnimationEffects.js");
 		return true;
 	}
 }

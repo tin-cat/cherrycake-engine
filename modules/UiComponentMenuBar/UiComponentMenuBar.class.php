@@ -58,9 +58,9 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	];
     
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentIcons"
     ];
@@ -82,8 +82,8 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentMenuBar.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentMenuBar.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentMenuBar.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentMenuBar.js");
     }
 
     /**

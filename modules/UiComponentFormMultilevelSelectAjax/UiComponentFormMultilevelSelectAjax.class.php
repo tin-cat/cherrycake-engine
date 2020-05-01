@@ -28,7 +28,7 @@ class UiComponentFormMultilevelSelectAjax extends \Cherrycake\UiComponent {
 
 	protected $saveAjaxUrl;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentJqueryEventUe",
 		"UiComponentTooltip",
@@ -39,7 +39,7 @@ class UiComponentFormMultilevelSelectAjax extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormMultilevelSelectAjax.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentFormMultilevelSelectAjax.js");
 		return true;
 	}
 

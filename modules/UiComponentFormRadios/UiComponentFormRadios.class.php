@@ -23,15 +23,15 @@ class UiComponentFormRadios extends \Cherrycake\UiComponent {
 	protected $value;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentTooltip"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormRadios.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormRadios.css");
 		return true;
 	}
 	

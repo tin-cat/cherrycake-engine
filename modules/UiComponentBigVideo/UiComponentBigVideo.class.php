@@ -16,12 +16,12 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentBigVideo extends \Cherrycake\Module
+class UiComponentBigVideo extends \Cherrycake\UiComponent
 {
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentModernizr",
 		"UiComponentJquery",
 		"UiComponentVideo"
@@ -29,7 +29,7 @@ class UiComponentBigVideo extends \Cherrycake\Module
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "bigvideo.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "bigvideo.js");
 		return true;
 	}
 }

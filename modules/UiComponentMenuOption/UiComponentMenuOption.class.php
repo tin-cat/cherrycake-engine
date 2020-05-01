@@ -13,13 +13,13 @@ namespace Cherrycake\Modules;
  * @category Classes
  */
 class UiComponentMenuOption extends \Cherrycake\UiComponent {
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
         "UiComponentIcons"
 	];
 	
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentMenuOption.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentMenuOption.css");
 	}
 
 	/**

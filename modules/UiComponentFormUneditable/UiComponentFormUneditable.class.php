@@ -19,14 +19,14 @@ class UiComponentFormUneditable extends \Cherrycake\UiComponent {
 	protected $style;
 	protected $title;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
         "UiComponentFormInput",
 		"UiComponentTooltip"
     ];
     
     function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormUneditable.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormUneditable.css");
 	}
 
 	/**

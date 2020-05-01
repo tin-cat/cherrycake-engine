@@ -38,14 +38,14 @@ class UiComponentButton extends \Cherrycake\UiComponent {
 	protected $confirmationMessage = false;
 	public $onClick;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJqueryEventUe"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentButton.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentButton.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentButton.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentButton.js");
 		return true;
 	}
 

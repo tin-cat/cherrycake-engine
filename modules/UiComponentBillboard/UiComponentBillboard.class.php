@@ -25,7 +25,7 @@ class UiComponentBillboard extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentBillboard.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentBillboard.css");
 		return true;
 	}
 

@@ -1,39 +1,19 @@
 <?php
 
 /**
- * UiComponentJquery
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake\Modules;
 
 /**
- * UiComponentJquery
- *
  * A Ui component to include the jQuery Javascript library.
- *
- * Configuration example for UiComponentjquery.config.php:
- * <code>
- *  $UiComponentJQueryConfig = [
- *      "version" => "1.11.1", // The jQuery version to use. Defaulted to 1.11.1
- *      "isMinified" => true // Whether to use the minified version or not. Defaulted to true
- *  ];
- * </code>
  *
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentJquery extends \Cherrycake\Module
-{
-	/**
-	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
-	 */
+class UiComponentJquery extends \Cherrycake\UiComponent {
 	protected $isConfigFile = true;
-
-	/**
-	 * @var array $config Holds the default configuration for this UiComponent
-	 */
 	protected $config = [
 		"version" => "3.4.1",
 		"isMinified" => true
@@ -41,6 +21,6 @@ class UiComponentJquery extends \Cherrycake\Module
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet("cherrycakemain", "jquery-".$this->getConfig("version").($this->getConfig("isMinified") ? ".min" : "").".js");
+		$e->Javascript->addFileToSet("coreUiComponents", "jquery-".$this->getConfig("version").($this->getConfig("isMinified") ? ".min" : "").".js");
 	}
 }

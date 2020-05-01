@@ -35,7 +35,7 @@ const UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_OPTION = 3;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentTooltip extends \Cherrycake\Module {
+class UiComponentTooltip extends \Cherrycake\UiComponent {
 	/**
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */
@@ -56,17 +56,17 @@ class UiComponentTooltip extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentNotice"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentTooltip.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentTooltip.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentTooltip.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentTooltip.js");
 	}
 
 	/**

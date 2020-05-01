@@ -40,24 +40,21 @@ class UiComponentFormInputAjax extends \Cherrycake\UiComponent {
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery",
 		"UiComponentJqueryEventUe",
 		"UiComponentTooltip",
 		"UiComponentFormInput",
 		"UiComponentAnimationEffects",
-		"UiComponentAjax"
-	];
-
-	protected $dependentCoreModules = [
+		"UiComponentAjax",
 		"HtmlDocument",
 		"Security"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormInputAjax.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormInputAjax.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormInputAjax.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentFormInputAjax.js");
 		return true;
 	}
 

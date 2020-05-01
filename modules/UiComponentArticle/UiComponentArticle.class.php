@@ -34,13 +34,13 @@ class UiComponentArticle extends \Cherrycake\UiComponent {
 		]
     ];
     
-    protected $dependentCoreUiComponents = [
+    protected $dependentCoreModules = [
 		"UiComponentMenuBar"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentArticle.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentArticle.css");
 		return true;
 	}
 }

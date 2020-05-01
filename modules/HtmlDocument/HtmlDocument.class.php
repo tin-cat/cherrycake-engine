@@ -88,12 +88,40 @@ class HtmlDocument  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"title" => false,  // The default page title
+		"description" => false,  // The default page description
+		"copyright" => false, // The default page copyright info
+		"keywords" => false, // The default page keywords
 		"charset" => "utf-8",
+		"defaultCssSetsToInclude" => ["coreUiComponents", "main", "uiComponents"], // An array of Css set names that will be always included
+		"defaultJavascriptSetsToInclude" => ["coreUiComponents", "main", "uiComponents"], // An array of Javascript set names that will be always included
 		"bodyAdditionalCssClasses" => false,
-		"isAllowRobotsIndex" => true,
-		"isAllowRobotsFollow" => true,
+		"isAllowRobotsIndex" => true, // Whether to allow robots to index the document
+		"isAllowRobotsFollow" => true, // Whether to allow robots to follow links on the document
+		"isDeferJavascript" => false,
 		"isNoticeForOlderInternetExplorer" => false,
-		"isDeferJavascript" => false
+		"mobileViewport" => [ // Configuration for the site when viewed in a mobile device, via the viewport meta
+			"width" => "device-width", // The width of the viewport: A number of pixels, or "device-width"
+			"userScalable" => true, // Optional, whether or not to let the user pinch to zoom in/out
+			"initialScale" => 1, // Optional, the initial scale
+			"maximumScale" => 2 // Optional, the maximum scale
+		],
+		"microsoftApplicationInfo" => [ // Application info for Microsoft standards (i.e: When adding the web as a shortcut in Windows 8)
+			"name" => false, // The name of the app
+			"tileColor" => false, // The color of the tile on Windows 8, in HTML hexadecimal format (i.e: #dd2153)
+			"tileImage" => false, // Path to an image to use as a tile image for Windows 8. Must be in png format
+		],
+		"appleApplicationInfo" => [ // Application info for Apple standards (i.e: When adding the web as a shortcut in iOs devices, or to hint the users about the App store APP for this site)
+			"name" => false, // The name of the app
+			"icons" => [ // Image SRCs for common icon sizes. Must be in png format
+				"180x180" => false
+			]
+		],
+		"favIcons" => [ // Image SRCs for common favicon files. Must be in png format
+			"16x16" => false,
+			"32x32" => false		],
+		"matomoServerUrl" => false,
+		"matomoTrackingId" => false
 	];
 
 	/**

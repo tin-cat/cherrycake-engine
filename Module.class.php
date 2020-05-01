@@ -132,15 +132,19 @@ class Module extends BasicObject {
 	function loadDependencies() {
 		global $e;
 
-		if (is_array($this->dependentCoreModules))
-			foreach ($this->dependentCoreModules as $moduleName)
+		if (is_array($this->dependentCoreModules)) {
+			foreach ($this->dependentCoreModules as $moduleName) {
 				if (!$e->loadCoreModule($moduleName, $this->getName()))
 					return false;
+			}
+		}
 
-		if (is_array($this->dependentAppModules))
-			foreach ($this->dependentAppModules as $moduleName)
+		if (is_array($this->dependentAppModules)) {
+			foreach ($this->dependentAppModules as $moduleName) {
 				if (!$e->loadAppModule($moduleName, $this->getName()))
 					return false;
+			}
+		}
 
 		return true;
 	}

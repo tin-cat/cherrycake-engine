@@ -34,6 +34,6 @@ class UiComponentLoadingSpinner extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentLoadingSpinner.css");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentLoadingSpinner.css");
 	}
 }

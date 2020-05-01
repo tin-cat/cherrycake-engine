@@ -24,7 +24,7 @@ class UiComponentAjaxUpload extends \Cherrycake\UiComponent {
 	
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentAjaxUpload.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentAjaxUpload.js");
 		return true;
 	}
 }

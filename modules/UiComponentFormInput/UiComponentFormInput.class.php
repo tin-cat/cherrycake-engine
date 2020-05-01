@@ -34,16 +34,16 @@ class UiComponentFormInput extends \Cherrycake\UiComponent {
 	protected $isSubmitOnEnter;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentTooltip"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentFormInput.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentFormInput.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentFormInput.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentFormInput.js");
 		return true;
 	}
 

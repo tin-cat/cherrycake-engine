@@ -27,9 +27,9 @@ class UiComponentForm extends \Cherrycake\UiComponent {
 	protected $items;
 
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentColumns",
 		"UiComponentFormInput",
 		"UiComponentFormUneditable"
@@ -37,8 +37,8 @@ class UiComponentForm extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentForm.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentForm.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentForm.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentForm.js");
 		return true;
 	}
 

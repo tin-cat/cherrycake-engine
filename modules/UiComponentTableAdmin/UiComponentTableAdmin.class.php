@@ -14,7 +14,7 @@ namespace Cherrycake\Modules;
  * @category Classes
  */
 class UiComponentTableAdmin extends \Cherrycake\UiComponent {
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
         "UiComponentAjax",
         "UiComponentTable",
         "UiComponentButton",
@@ -23,7 +23,7 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentTableAdmin.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentTableAdmin.js");
 		return true;
     }
     

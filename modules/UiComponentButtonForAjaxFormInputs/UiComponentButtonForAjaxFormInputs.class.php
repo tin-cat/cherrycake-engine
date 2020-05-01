@@ -32,13 +32,13 @@ class UiComponentButtonForAjaxFormInputs extends \Cherrycake\UiComponent {
      */
     protected $onSomeErrorsAjaxUrl;
 
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentButton"
     ];
     
 	function addCssAndJavascript() {
 		global $e;
-        $e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentButtonForAjaxFormInputs.js");
+        $e->Javascript->addFileToSet("coreUiComponents", "UiComponentButtonForAjaxFormInputs.js");
         return true;
 	}
 

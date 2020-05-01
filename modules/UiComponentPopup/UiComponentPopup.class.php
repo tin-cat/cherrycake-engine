@@ -16,18 +16,18 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentPopup extends \Cherrycake\Module
+class UiComponentPopup extends \Cherrycake\UiComponent
 {
 	/**
-	 * @var array $dependentCoreUiComponents Cherrycake UiComponent names that are required by this module
+	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
-	protected $dependentCoreUiComponents = [
+	protected $dependentCoreModules = [
 		"UiComponentJquery"
 	];
 
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentPopup.css");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentPopup.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentPopup.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentPopup.js");
 	}
 }

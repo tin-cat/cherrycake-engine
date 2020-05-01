@@ -16,13 +16,13 @@ namespace Cherrycake\Modules;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentCarousel extends \Cherrycake\Module
+class UiComponentCarousel extends \Cherrycake\UiComponent
 {
 	function addCssAndJavascript() {
 		global $e;
-		$e->Css->addFileToSet($this->getConfig("cssSetName"), "UiComponentCarousel.css");
-		$e->Javascript->addFileToSet("cherrycakemain", "jquery-1.11.1.min.js");
-		$e->Javascript->addFileToSet($this->getConfig("javascriptSetName"), "UiComponentCarousel.js");
+		$e->Css->addFileToSet("coreUiComponents", "UiComponentCarousel.css");
+		$e->Javascript->addFileToSet("coreUiComponents", "jquery-1.11.1.min.js");
+		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentCarousel.js");
 		return true;
 	}
 }
