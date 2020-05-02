@@ -18,37 +18,37 @@ namespace Cherrycake;
  */
 class DatabaseRowMysql extends DatabaseRow {
 	/**
-	 * Returns a treated version of the given data according to the given \Cherrycake\Modules\DATABASE_FIELD_TYPE_* fieldType. $data contains data as is came out from the database.
+	 * Returns a treated version of the given data according to the given \Cherrycake\DATABASE_FIELD_TYPE_* fieldType. $data contains data as is came out from the database.
 	 * @param mixed $data The data to treat, as it came out of the database
-	 * @param integer $fieldType The field type, one of \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+	 * @param integer $fieldType The field type, one of \Cherrycake\DATABASE_FIELD_TYPE_*
 	 * @return mixed The treated data
 	 */
 	function treatFieldData($data, $fieldType) {
 		switch ($fieldType) {
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_BLOB:
+			case \Cherrycake\DATABASE_FIELD_TYPE_INTEGER:
+			case \Cherrycake\DATABASE_FIELD_TYPE_TINYINT:
+			case \Cherrycake\DATABASE_FIELD_TYPE_YEAR:
+			case \Cherrycake\DATABASE_FIELD_TYPE_FLOAT:
+			case \Cherrycake\DATABASE_FIELD_TYPE_STRING:
+			case \Cherrycake\DATABASE_FIELD_TYPE_BLOB:
 				return $data;
 				break;
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_BOOLEAN:
+			case \Cherrycake\DATABASE_FIELD_TYPE_BOOLEAN:
 				return $data ? true : false;
 				break;
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATE:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TIME:
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TIMESTAMP:
+			case \Cherrycake\DATABASE_FIELD_TYPE_DATE:
+			case \Cherrycake\DATABASE_FIELD_TYPE_DATETIME:
+			case \Cherrycake\DATABASE_FIELD_TYPE_TIME:
+			case \Cherrycake\DATABASE_FIELD_TYPE_TIMESTAMP:
 				return strtotime($data);
 				break;
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP:
+			case \Cherrycake\DATABASE_FIELD_TYPE_IP:
 				return $data ? inet_ntop($data) : false;
 				break;
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_SERIALIZED:
+			case \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED:
 				return json_decode($data, true);
 				break;
-			case \Cherrycake\Modules\DATABASE_FIELD_TYPE_COLOR:
+			case \Cherrycake\DATABASE_FIELD_TYPE_COLOR:
 				return $data ? new Color("withHex", $data) : false;
 				break;
 			default:

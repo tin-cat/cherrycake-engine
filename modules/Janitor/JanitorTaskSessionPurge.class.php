@@ -29,7 +29,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 	 * @var array $config Default configuration options
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
 		"purgeSessionsWithoutDataOlderThanSeconds" => 86400, // Sessions older than this seconds without any data will be deleted from the database, since they haven't been actually used (most likely, visits that have bounced the site). (86400 = 1 day)
 		"purgeSessionsWithDataOlderThanSeconds" => 31536000 // Sessions older than this seconds _with_ data will be deleted from the database. This should be a lot higher (specially when isSessionRenew in session.config.php for Session module is true) than the session duration in session.config.php (sessionDuration config key), in order to remove sessions that have been used but lasted too long. This is intended mostly to avoid cluttering the database with too many sessions, and to avoid potential session id collisions, which can represent a security risk. (31536000 = 365 days)
@@ -80,7 +80,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithoutDataOlderThanSeconds"))
 				]
 			]
@@ -88,7 +88,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 
 		if (!$result)
 			return [
-				\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -100,7 +100,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 				[
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithoutDataOlderThanSeconds"))
 					]
 				]
@@ -108,7 +108,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 
 			if (!$result)
 				return [
-					\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 					"Could not delete sessions from the database"
 				];
 		}
@@ -119,7 +119,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithDataOlderThanSeconds"))
 				]
 			]
@@ -127,7 +127,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 
 		if (!$result)
 			return [
-				\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -139,7 +139,7 @@ class JanitorTaskSessionPurge extends JanitorTask
 				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 				[
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithDataOlderThanSeconds"))
 					]
 				]
@@ -147,14 +147,14 @@ class JanitorTaskSessionPurge extends JanitorTask
 
 			if (!$result)
 				return [
-					\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 					"Could not delete sessions from the database"
 				];
 		}
 
 
 		return [
-			\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK,
+			\Cherrycake\JANITORTASK_EXECUTION_RETURN_OK,
 			[
 				"Sessions older than ".$this->getConfig("purgeSessionsWithoutDataOlderThanSeconds")." seconds without data purged" => $numberOfSessionsToPurgeWithoutData,
 				"Sessions older than ".$this->getConfig("purgeSessionsWithDataOlderThanSeconds")." seconds with data purged" => $numberOfSessionsToPurgeWithData

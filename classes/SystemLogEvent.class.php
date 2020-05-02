@@ -18,47 +18,47 @@ class SystemLogEvent extends Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Id"
 		],
 		"dateAdded" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 			"title" => "Date added"
 		],
 		"type" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Type"
 		],
 		"class" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Class"
 		],
 		"subType" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Subtype"
 		],
 		"ip" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_IP,
 			"title" => "IP"
 		],
 		"httpHost" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Host"
 		],
 		"requestUri" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Uri"
 		],
 		"browserString" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Browser string"
 		],
 		"description" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Description"
 		],
 		"data" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_SERIALIZED,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED,
 			"title" => "Data"
 		]
 	];

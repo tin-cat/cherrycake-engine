@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * Module that validates many kinds of data

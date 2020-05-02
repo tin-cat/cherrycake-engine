@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * Session
@@ -172,26 +172,26 @@ class Session  extends \Cherrycake\Module {
 			"insert into ".$this->getConfig("sessionTableName")." (id, creationDate, ip, browserString, data) values (?, ?, ?, ?, null)",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => $sessionId
 				],
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 					"value" => time()
 				],
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_IP,
 					"value" => $this->getClientIp()
 				],
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => $this->getClientBrowserString()
 				],
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Could not create the session into the DB"
 			]);
 			return false;
@@ -248,7 +248,7 @@ class Session  extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "The session cookie could not be sent"
 			]);
 			return false;
@@ -291,7 +291,7 @@ class Session  extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "The session cookie could not be sent"
 			]);
 			return false;
@@ -311,7 +311,7 @@ class Session  extends \Cherrycake\Module {
 	function generateNewSessionId($attemptsCounter = 0) {
 		if (!function_exists("openssl_random_pseudo_bytes")) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Session module needs function openssl_random_pseudo_bytes()"
 			]);
 			return false;
@@ -319,7 +319,7 @@ class Session  extends \Cherrycake\Module {
 
 		if ($attemptsCounter > 10) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Maximum attempts to generate a unique session id had been reached"
 			]);
 			return false;
@@ -342,7 +342,7 @@ class Session  extends \Cherrycake\Module {
 	 * @return string The cache key to use when accessing or storing the given session id to cache
 	 */
 	function getSessionCacheKey($sessionId) {
-		return \Cherrycake\Modules\Cache::buildCacheKey([
+		return \Cherrycake\Cache::buildCacheKey([
 			"prefix" => $this->getConfig("cachePrefix"),
 			"uniqueId" => $sessionId
 		]);
@@ -380,7 +380,7 @@ class Session  extends \Cherrycake\Module {
 			"select data from ".$this->getConfig("sessionTableName")." where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => $sessionId
 				]
 			]
@@ -455,7 +455,7 @@ class Session  extends \Cherrycake\Module {
 			return false;
 
 		if (!$this->isSession()) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Couldn't set session data because no session is present."
 			]);
 			return false;
@@ -480,18 +480,18 @@ class Session  extends \Cherrycake\Module {
 			"update ".$this->getConfig("sessionTableName")." set data = ? where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => serialize($e->Cache->$cacheProviderName->hGetAll($this->getSessionCacheKey($this->getSessionId())))
 				],
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => $this->getSessionId()
 				]
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Couldn't update session data in DB"
 			]);
 			return false;

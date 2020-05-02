@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * UiComponentIcons
@@ -120,7 +120,7 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 
 		// Load$directories that indicate different icon styles (i.e: colors)
 		if (!$handler = opendir($this->getConfig("directory"))) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Can't open directory ".$this->getConfig("directory")]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Can't open directory ".$this->getConfig("directory")]);
 			return false;
 		}
 

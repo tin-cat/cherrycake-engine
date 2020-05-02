@@ -20,28 +20,28 @@ class TextItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"textCategories_id" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Text category Id",
 			"prefix" => "#"
 		],
 		"code" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
-			"formItem" => ["type" => \Cherrycake\Modules\FORM_ITEM_TYPE_STRING],
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"formItem" => ["type" => \Cherrycake\FORM_ITEM_TYPE_STRING],
 			"title" => "Code"
 		],
 		"description" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
-			"formItem" => ["type" => \Cherrycake\Modules\FORM_ITEM_TYPE_STRING],
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"formItem" => ["type" => \Cherrycake\FORM_ITEM_TYPE_STRING],
 			"title" => "Description"
 		],
 		"text" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_TEXT,
-			"formItem" => ["type" => \Cherrycake\Modules\FORM_ITEM_TYPE_TEXT],
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_TEXT,
+			"formItem" => ["type" => \Cherrycake\FORM_ITEM_TYPE_TEXT],
 			"title" => "Text",
 			"isMultiLanguage" => true
 		]
@@ -56,7 +56,7 @@ class TextItem extends \Cherrycake\Item {
 		global $e;
 		foreach ($e->Locale->getConfig("availableLanguages") as $language)
 			$this->fields["text".$language] = [
-				"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+				"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 				"title" => $e->Locale->getLanguageName($language)." text"
 			];
 		return parent::init();

@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const FORM_ITEM_TYPE_NUMERIC = 0;
 const FORM_ITEM_TYPE_STRING = 1;

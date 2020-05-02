@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * A Ui component to create a menu option, normally used in conjunction with other higher level UiComponents like UiComponentPanel

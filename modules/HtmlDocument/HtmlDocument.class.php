@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const HTML_RESPONSE_CODE_NOT_FOUND = 404;
 const HTML_RESPONSE_CODE_NO_PERMISSION = 403;

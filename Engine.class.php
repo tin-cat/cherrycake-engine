@@ -168,7 +168,7 @@ namespace Cherrycake {
 			date_default_timezone_set($this->getTimezoneName());
 			
 
-			$this->cache = new Cache;
+			$this->engineCache = new EngineCache;
 
 			require ENGINE_DIR."/Module.class.php";
 			require ENGINE_DIR."/UiComponent.class.php";
@@ -229,7 +229,7 @@ namespace Cherrycake {
 		 * @return array The Core module names that implement the specified method
 		 */
 		function getAvailableCoreModuleNamesWithMethod($methodName) {
-			return $this->getAvailableModuleNamesWithMethod("Cherrycake\Modules", ENGINE_DIR."/modules", $methodName);
+			return $this->getAvailableModuleNamesWithMethod("Cherrycake", ENGINE_DIR."/modules", $methodName);
 		}
 
 		/**
@@ -237,7 +237,7 @@ namespace Cherrycake {
 		 * @return array The App module names that implement the specified method
 		 */
 		function getAvailableAppModuleNamesWithMethod($methodName) {		
-			return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace()."\Modules", $this->getAppModulesDir(), $methodName);
+			return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace(), $this->getAppModulesDir(), $methodName);
 		}
 		
 		/*
@@ -251,11 +251,11 @@ namespace Cherrycake {
 			$cacheKey = [$nameSpace, $modulesDirectory, $methodName];
 			$cacheTtl = $this->isDevel() ? 3 : 600;
 
-			if ($this->cache->isKeyExistsInBucket($cacheBucketName, $cacheKey))
-				return $this->cache->getFromBucket($cacheBucketName, $cacheKey);
+			if ($this->engineCache->isKeyExistsInBucket($cacheBucketName, $cacheKey))
+				return $this->engineCache->getFromBucket($cacheBucketName, $cacheKey);
 		
 			if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
-				$this->cache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
+				$this->engineCache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
 				return false;
 			}
 
@@ -266,7 +266,7 @@ namespace Cherrycake {
 					$modulesWithMethod[] = $moduleName;
 			}
 
-			$this->cache->setInBucket($cacheBucketName, $cacheKey, $modulesWithMethod ?? false, $cacheTtl);
+			$this->engineCache->setInBucket($cacheBucketName, $cacheKey, $modulesWithMethod ?? false, $cacheTtl);
 
 			return $modulesWithMethod ?? false;
 		}
@@ -434,7 +434,7 @@ namespace Cherrycake {
 
 			$this->includeModuleClass($modulesDirectory, $moduleName);
 
-			eval("\$this->".$moduleName." = new \\".$namespace."\\Modules\\".$moduleName."();");
+			eval("\$this->".$moduleName." = new \\".$namespace."\\".$moduleName."();");
 
 			if ($this->isDevel())
 				$this->moduleLoadingHistory[$moduleLoadingHistoryId]["initStartHrTime"] = hrtime(true);
@@ -565,7 +565,7 @@ namespace Cherrycake {
 			if (is_array($cherrycakeModuleNames)) {
 				foreach ($cherrycakeModuleNames as $cherrycakeModuleName) {
 					$this->includeModuleClass(ENGINE_DIR."/modules", $cherrycakeModuleName);
-					forward_static_call(["\\Cherrycake\\Modules\\".$cherrycakeModuleName, $methodName]);
+					forward_static_call(["\\Cherrycake\\".$cherrycakeModuleName, $methodName]);
 				}
 				reset($cherrycakeModuleNames);
 			}
@@ -574,7 +574,7 @@ namespace Cherrycake {
 			if (is_array($appModuleNames)) {
 				foreach ($appModuleNames as $appModuleName) {
 					$this->includeModuleClass($this->getAppModulesDir(), $appModuleName);
-					forward_static_call(["\\".$this->getAppNamespace()."\\Modules\\".$appModuleName, $methodName]);
+					forward_static_call(["\\".$this->getAppNamespace()."\\".$appModuleName, $methodName]);
 				}
 				reset($appModuleNames);
 			}
@@ -613,7 +613,7 @@ namespace Cherrycake {
 			}
 
 			if ($argc < 2) {
-				$this->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$this->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "No action name specified"
 				]);
 				die;
@@ -621,7 +621,7 @@ namespace Cherrycake {
 
 			$actionName = $argv[1];
 			if (!$action = $this->Actions->getAction($actionName)) {
-				$this->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$this->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Unknown action",
 					"errorVariables" => [
 						"actionName" => $actionName
@@ -824,7 +824,7 @@ namespace {
 			}
 			// If not, throw an error
 			else {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Core class or module \"$className\" could not be loaded automatically"
 				]);
 			}
@@ -841,7 +841,7 @@ namespace {
 			}
 			// If not, throw an error
 			else {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "App class or module \"$className\" could not be loaded automatically"
 				]);
 			}

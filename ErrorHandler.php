@@ -474,7 +474,7 @@ function handleError(
 			default:
 				if ($e->isDevel()) {
 					$response = new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -501,7 +501,7 @@ function handleError(
 				}
 				else {
 					$response = new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]);
 				}

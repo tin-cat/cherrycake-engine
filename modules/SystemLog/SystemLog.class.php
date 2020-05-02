@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * SystemLog
@@ -25,7 +25,7 @@ namespace Cherrycake\Modules;
  *	 ],
  *	"databaseProviderName" => "main", // The name of the database provider where the system log table is found
  *	"tableName" => "cherrycake_systemLog" // The name of the table, defaulted to this
- *	"cacheProviderName" => "huge", // The name of the cache provider that will be used to temporally store log events as they happen, to be later added to the database by the JanitorTaskSystemLog
+ *	"cacheProviderName" => "engine", // The name of the cache provider that will be used to temporally store log events as they happen, to be later added to the database by the JanitorTaskSystemLog
  *  "cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache. Defaults to "QueuedSystemLogEvents"
  *  "isQueueInCache" => true, // Whether to store the log events into cache (queue it) in order to be later processed by JanitorTaskSystemLog, or directly store it on the database. Defaults to true.
  * ];
@@ -52,6 +52,8 @@ class SystemLog  extends \Cherrycake\Module {
 			"SystemLogEventHack"
 		],
 		"tableName" => "cherrycake_systemLog",
+		"cacheKeyUniqueId" => "engine",
+		"databaseProviderName" => "main",
 		"cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache. Defaults to "QueuedSystemLogEvents"
 		"isQueueInCache" => true
 	];
@@ -74,7 +76,6 @@ class SystemLog  extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
-
 		return true;
 	}
 
@@ -158,7 +159,7 @@ class SystemLog  extends \Cherrycake\Module {
 			"select count(*) as numberOf from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 					"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 				]
 			]
@@ -178,7 +179,7 @@ class SystemLog  extends \Cherrycake\Module {
 				"delete from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 				[
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 					]
 				]

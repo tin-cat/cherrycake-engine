@@ -30,7 +30,7 @@ class Response {
 	/**
 	 * @var integet $code The response code, one of the RESPONSE_* availables
 	 */
-	private $code = \Cherrycake\Modules\RESPONSE_OK;
+	private $code = \Cherrycake\RESPONSE_OK;
 
 	/**
 	 * @var string $url The url to redirect
@@ -145,22 +145,22 @@ class Response {
 
 	function addResponseHeader() {
 		switch ($this->code) {
-			case \Cherrycake\Modules\RESPONSE_OK:
+			case \Cherrycake\RESPONSE_OK:
 				$this->addHeader("HTTP/1.0 200 Ok");
 				break;
-			case \Cherrycake\Modules\RESPONSE_NOT_FOUND:
+			case \Cherrycake\RESPONSE_NOT_FOUND:
 				$this->addHeader("HTTP/1.0 404 Not Found");
 				break;
-			case \Cherrycake\Modules\RESPONSE_NO_PERMISSION:
+			case \Cherrycake\RESPONSE_NO_PERMISSION:
 				$this->addHeader("HTTP/1.0 403 Not Found");
 				break;
-			case \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR:
+			case \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR:
 				$this->addHeader("HTTP/1.1 500 Internal Server Error");
 				break;
-			case \Cherrycake\Modules\RESPONSE_REDIRECT_MOVED_PERMANENTLY:
+			case \Cherrycake\RESPONSE_REDIRECT_MOVED_PERMANENTLY:
 				$this->addHeader("HTTP/1.1 301 Moved Permanently");
 				break;
-			case \Cherrycake\Modules\RESPONSE_REDIRECT_FOUND:
+			case \Cherrycake\RESPONSE_REDIRECT_FOUND:
 				$this->addHeader("HTTP/1.1 302 Found");
 				break;
 		}

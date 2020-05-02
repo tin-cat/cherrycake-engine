@@ -41,7 +41,7 @@ class TextItems extends \Cherrycake\Items {
 				"sqlPart" => "textCategories_id = ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 						"value" => $p["textCategoryId"]
 					]
 				]

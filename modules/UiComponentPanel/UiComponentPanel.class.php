@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * A Ui component to build a complex panel aimed to compose the entire webpage structure. The panel is comprised of three sections:
@@ -240,11 +240,11 @@ class UiComponentPanel extends \Cherrycake\UiComponent {
                 
                 switch (get_class($uiComponent)) {
 
-                    case "Cherrycake\Modules\UiComponentMenuOption":
+                    case "Cherrycake\UiComponentMenuOption":
                         $uiComponent->setSelected((isset($setup["optionSelected"]) && $setup["optionSelected"] == $blockName) || (isset($setup["isAllSelected"]) ? $setup["isAllSelected"] : false));
                         break;
 
-                    case "Cherrycake\Modules\UiComponentMenuOptionWithSuboptions":
+                    case "Cherrycake\UiComponentMenuOptionWithSuboptions":
                         if ($setup["optionSelected"] == $blockName || $setup["isAllSelected"]) {
                             $uiComponent->setSelected(true);
                             if ($setup["subOptionSelected"] && $subOption = $uiComponent->getSubOption($setup["subOptionSelected"])) {

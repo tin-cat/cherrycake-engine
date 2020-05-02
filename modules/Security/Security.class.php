@@ -31,7 +31,7 @@ const SECURITY_FILTER_STRIP_TAGS = 1; // HTML tags are removed from the value
 const SECURITY_FILTER_TRIM = 2; // Spaces at the beggining and at the end of the value are trimmed
 const SECURITY_FILTER_JSON = 3; // Decodes json data
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * Provides security measures.

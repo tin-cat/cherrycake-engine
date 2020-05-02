@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * A Ui component that includes a css library to build beautiful articles, posts or contents

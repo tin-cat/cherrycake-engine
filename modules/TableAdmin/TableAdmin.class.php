@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * TableAdmin
@@ -189,7 +189,7 @@ class TableAdmin  extends \Cherrycake\Module {
                             $result = $requestParameter->checkValueSecurity();
                             if (!$result->isOk) {
                                 global $e;
-                                $e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+                                $e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
                                     "errorDescription" => "From TableAdmin: ".implode(" / ", $result->description),
                                     "errorVariables" => [
                                         "mapName" => $request->mapName,

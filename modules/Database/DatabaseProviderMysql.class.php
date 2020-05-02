@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * DatabaseProviderMysql
@@ -19,7 +19,7 @@ namespace Cherrycake\Modules;
  */
 class DatabaseProviderMysql extends DatabaseProvider {
 	/**
-	 * @var array Configuration about fieldtypes (\Cherrycake\Modules\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
+	 * @var array Configuration about fieldtypes (\Cherrycake\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
 	 */
 	protected $fieldTypes = [
 		DATABASE_FIELD_TYPE_INTEGER => [
@@ -95,13 +95,13 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (mysqli_connect_error()) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
 			return false;
 		}
 
 		if (!$this->connectionHandler->set_charset($this->getConfig("charset"))) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"]);
 			return false;
 		}
 
@@ -120,7 +120,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$this->connectionHandler->close())
 		{
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
 			return false;
 		}
 		$this->isConnected = false;
@@ -142,7 +142,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (!$resultHandler = $this->connectionHandler->query($sql, MYSQLI_STORE_RESULT)) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Error querying MySQL (".$this->connectionHandler->error.")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error querying MySQL (".$this->connectionHandler->error.")"]);
 			return false;
 		}
 
@@ -166,7 +166,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		$this->requireConnection();
 		if (!$statement = $this->connectionHandler->prepare($sql)) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
 			return false;
 		}
 		
@@ -184,7 +184,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
 	 *
-	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\DATABASE_FIELD_TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
 	 *
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
@@ -240,7 +240,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 			if (!call_user_func_array([$prepareResult["statement"], "bind_param"], $this->convertArrayValuesToRefForCallUserFuncArray($callUserFuncParametersArray))) {
 				global $e;
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Error MySQL binding query statement parameters (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
 					"errorVariables" => [
 						"sql" => $prepareResult["sql"],
@@ -253,7 +253,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (!$prepareResult["statement"]->execute()) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
 				"errorVariables" => [
 					"sql" => $prepareResult["sql"],

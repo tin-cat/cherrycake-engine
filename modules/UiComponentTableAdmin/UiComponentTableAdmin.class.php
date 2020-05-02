@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * A Ui component to admin database tables. Works in conjunction with the TableAdmin module.
@@ -95,23 +95,23 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
     
     /**
      * Determines the best alignment for an Item field on a table, depending on its type
-     * @param integer $fieldType One of the \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+     * @param integer $fieldType One of the \Cherrycake\DATABASE_FIELD_TYPE_*
      * @return integer One of the TABLE_COLUMN_ALIGN_*, depending on the specified $fieldType
      */
     function guessFieldAlignBasedOnFieldType($fieldType) {
         switch ($fieldType) {
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TINYINT:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP:
+            case \Cherrycake\DATABASE_FIELD_TYPE_INTEGER:
+            case \Cherrycake\DATABASE_FIELD_TYPE_TINYINT:
+            case \Cherrycake\DATABASE_FIELD_TYPE_FLOAT:
+            case \Cherrycake\DATABASE_FIELD_TYPE_IP:
                 return "right";
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATE:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TIMESTAMP:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_TIME:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_YEAR:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_BOOLEAN:
-            case \Cherrycake\Modules\DATABASE_FIELD_TYPE_COLOR:
+            case \Cherrycake\DATABASE_FIELD_TYPE_DATE:
+            case \Cherrycake\DATABASE_FIELD_TYPE_DATETIME:
+            case \Cherrycake\DATABASE_FIELD_TYPE_TIMESTAMP:
+            case \Cherrycake\DATABASE_FIELD_TYPE_TIME:
+            case \Cherrycake\DATABASE_FIELD_TYPE_YEAR:
+            case \Cherrycake\DATABASE_FIELD_TYPE_BOOLEAN:
+            case \Cherrycake\DATABASE_FIELD_TYPE_COLOR:
                 return "center";
             default:
                 return "left";

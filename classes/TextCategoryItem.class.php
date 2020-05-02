@@ -20,16 +20,16 @@ class TextCategoryItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"code" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Category code"
 		],
 		"description" => [
-			"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Description"
 		]
 	];

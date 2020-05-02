@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const JANITORTASK_EXECUTION_RETURN_WARNING = 0; // Return code for JanitorTask run when task returned an error
 const JANITORTASK_EXECUTION_RETURN_ERROR = 1; // Return code for JanitorTask run when task returned an error
@@ -244,7 +244,7 @@ class Janitor  extends \Cherrycake\Module {
 	function checkKey($key) {	
 		if ($this->getConfig("key") === false || $key != $this->getConfig("key")) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, ["errorDescription" => "Wrong Janitor key provided"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Wrong Janitor key provided"]);
 			return false;
 		}
 		return true;
@@ -300,23 +300,23 @@ class Janitor  extends \Cherrycake\Module {
 						"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
 						[
 							[
-								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+								"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 								"value" => $baseTimestamp
 							],
 							[
-								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_FLOAT,
+								"type" => \Cherrycake\DATABASE_FIELD_TYPE_FLOAT,
 								"value" => $executionSeconds
 							],
 							[
-								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 								"value" => $janitorTask->getName()
 							],
 							[
-								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+								"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 								"value" => $resultCode
 							],
 							[
-								"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 								"value" => json_encode($resultDescription)
 							]
 						]
@@ -331,10 +331,10 @@ class Janitor  extends \Cherrycake\Module {
 					$r .= $this->getJanitorTaskReturnCodeDescription($resultCode).". ";
 
 
-					if ($resultCode != \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK) {
+					if ($resultCode != \Cherrycake\JANITORTASK_EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
 						$e->Errors->trigger(
-							\Cherrycake\Modules\ERROR_SYSTEM,
+							\Cherrycake\ERROR_SYSTEM,
 							[
 								"errorDescription" => "JanitorTask failed",
 								"errorVariables" => [

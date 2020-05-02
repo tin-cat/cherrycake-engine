@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const ERROR_SYSTEM = 0; // Errors caused by bad programming
 const ERROR_APP = 1; // Errors caused by bad usering
@@ -25,10 +25,10 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
  * $errorsConfig = [
  *  "isHtmlOutput" => true, // Whether to dump HTML formatted errors or not when not using a pattern to show errors. Defaults to true
  * 	"patternNames" => [
- *		\Cherrycake\Modules\ERROR_SYSTEM => "errors/error.html",
- *		\Cherrycake\Modules\ERROR_APP => "errors/error.html",
- *		\Cherrycake\Modules\ERROR_NOT_FOUND => "errors/error.html"
- *		\Cherrycake\Modules\ERROR_NO_PERMISSION => "errors/error.html"
+ *		\Cherrycake\ERROR_SYSTEM => "errors/error.html",
+ *		\Cherrycake\ERROR_APP => "errors/error.html",
+ *		\Cherrycake\ERROR_NOT_FOUND => "errors/error.html"
+ *		\Cherrycake\ERROR_NO_PERMISSION => "errors/error.html"
  *	], // An array of pattern names to user when an error occurs. If a patterns is not specified, a generic error is triggered.
  * 	"isLogSystemErrors" => true, // Whether or not to log system errors. Defaults to true
  * 	"isLogAppErrors" => true // Whether or not to log app errors.  Defaults to true
@@ -229,10 +229,10 @@ class Errors  extends \Cherrycake\Module {
 							]
 						],
 						[
-							ERROR_SYSTEM => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
-							ERROR_APP => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
-							ERROR_NOT_FOUND => \Cherrycake\Modules\RESPONSE_NOT_FOUND,
-							ERROR_NO_PERMISSION => \Cherrycake\Modules\RESPONSE_NO_PERMISSION
+							ERROR_SYSTEM => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
+							ERROR_APP => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
+							ERROR_NOT_FOUND => \Cherrycake\RESPONSE_NOT_FOUND,
+							ERROR_NO_PERMISSION => \Cherrycake\RESPONSE_NO_PERMISSION
 						][$errorType]
 					);
 				}
@@ -309,7 +309,7 @@ class Errors  extends \Cherrycake\Module {
 			case "plain":
 				if ($e->isDevel()) {
 					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								ERROR_SYSTEM => "System error",
@@ -325,7 +325,7 @@ class Errors  extends \Cherrycake\Module {
 				}
 				else {
 					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\Modules\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]));
 				}

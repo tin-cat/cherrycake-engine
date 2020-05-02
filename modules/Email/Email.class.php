@@ -9,7 +9,7 @@
 use \PHPMailer\PHPMailer\PHPMailer;
 use \PHPMailer\PHPMailer\Exception;
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const EMAIL_SMTP_ENCRYPTION_TLS = 0;
 const EMAIL_SMTP_ENCRYPTION_SSL = 1;
@@ -73,7 +73,7 @@ class Email  extends \Cherrycake\Module {
                 $this->phpMailer->Port = $this->getConfig("SMTPPort");
                 if ($this->getConfig("SMTPAuth")) {
                     $this->phpMailer->SMTPAuth = true;
-                    $this->phpMailer->SMTPSecure = [\Cherrycake\Modules\EMAIL_SMTP_ENCRYPTION_TLS => "tls", \Cherrycake\Modules\EMAIL_SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
+                    $this->phpMailer->SMTPSecure = [\Cherrycake\EMAIL_SMTP_ENCRYPTION_TLS => "tls", \Cherrycake\EMAIL_SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
                     $this->phpMailer->Username = $this->getConfig("SMTPUsername");
                     $this->phpMailer->Password = $this->getConfig("SMTPPassword");
                 }

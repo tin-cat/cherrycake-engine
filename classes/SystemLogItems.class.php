@@ -44,7 +44,7 @@ class SystemLogItems extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded > ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["fromDate"]
 					]
 				]
@@ -55,7 +55,7 @@ class SystemLogItems extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded <= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["toDate"]
 					]
 				]

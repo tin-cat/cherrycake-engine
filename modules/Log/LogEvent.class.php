@@ -21,15 +21,15 @@ class LogEvent extends Item {
 	protected $cacheSpecificPrefix = "Log";
 
 	protected $fields = [
-		"id" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER],
-		"timestamp" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_DATETIME],
-		"type" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING],
-		"subType" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING],
-		"ip" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_IP],
-		"user_id" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER],
-		"outher_id" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER],
-		"secondaryOuther_id" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER],
-		"additionalData" => ["type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_SERIALIZED]
+		"id" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER],
+		"timestamp" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME],
+		"type" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING],
+		"subType" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING],
+		"ip" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_IP],
+		"user_id" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER],
+		"outher_id" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER],
+		"secondaryOuther_id" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER],
+		"additionalData" => ["type" => \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED]
 	];
 
 	/**

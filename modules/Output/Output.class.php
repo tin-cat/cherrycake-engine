@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const RESPONSE_OK = 200;
 const RESPONSE_NOT_FOUND = 404;

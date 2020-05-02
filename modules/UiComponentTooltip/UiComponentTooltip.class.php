@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_SEPARATOR = 0;
 const UICOMPONENTTOOLTIP_CONTENT_ITEM_TYPE_CONTENT = 1;

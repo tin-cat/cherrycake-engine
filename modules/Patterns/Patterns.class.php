@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * Module to manage patterns.
@@ -118,7 +118,7 @@ class Patterns  extends \Cherrycake\Module {
 				$setup["isCache"]
 			) {
 				$cacheProviderName = $setup["cacheProviderName"] ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?: $this->getConfig("defaultCacheProviderName");
-				$cacheKey = \Cherrycake\Modules\Cache::buildCacheKey([
+				$cacheKey = \Cherrycake\Cache::buildCacheKey([
 					"prefix" => $setup["cachePrefix"] ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
 				]);

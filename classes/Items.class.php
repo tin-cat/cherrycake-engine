@@ -183,7 +183,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * * wheres: <array|false> Default: false. An array of wheres, where each item is a hash array containing the following keys:
 	 * * * sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
 	 * * * values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
-	 * * * * type: The type of the value, must be one of the \Cherrycake\Modules\DATABASE_FIELD_TYPE_*
+	 * * * * type: The type of the value, must be one of the \Cherrycake\DATABASE_FIELD_TYPE_*
 	 * * * * value: The value itself
 	 * * limit: <integer|false> Default: false. Maximum number of items returned
 	 * * order <array|false> Default: false: An ordered array of orders to apply to results, on which each item can be one of the configured in the "orders" parameter
@@ -195,7 +195,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * * isBuildTotalNumberOfItems: <true|false> Default: false. Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account the specified limit, if specified.
 	 * * isFillItems: <true|false> Default: true. Whether to return the matching items or not in the "items" results key.
 	 * * isForceNoCache: <true|false> Default: false. If set to true, the query won't use cache, even if the object is configured to do so.
-	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built byt the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Modules\Cache::buildCacheKey
+	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built byt the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
 	 * * isStoreInCacheWhenNoResults: <boolean> Default: true. Whether to store results in cache even when there are no results.
 	 *
 	 * Stores the results on the following object variables, so they can be later used by other methods:
@@ -273,7 +273,7 @@ abstract class Items extends BasicObject implements \Iterator {
 			if ($p["limit"]) {
 				$sql .= " limit ? ";
 				$fields[] = [
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["limit"]
 				];
 			}
@@ -281,11 +281,11 @@ abstract class Items extends BasicObject implements \Iterator {
 			if ($p["isPaging"]) {
 				$sql .= " limit ?,? ";
 				$fields[] = [
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["page"] * $p["itemsPerPage"]
 				];
 				$fields[] = [
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["itemsPerPage"]
 				];
 			}
@@ -301,7 +301,7 @@ abstract class Items extends BasicObject implements \Iterator {
 				);
 
 				if ($this->cachedKeysPoolName)
-					$this->addCachedKey(\Cherrycake\Modules\Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
+					$this->addCachedKey(\Cherrycake\Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
 			}
 			else
 				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(

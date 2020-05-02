@@ -136,7 +136,7 @@ class Request {
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+						$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 							"errorDescription" => implode(" / ", $result->description),
 							"errorVariables" => [
 								"pathComponent name" => $pathComponent->name,
@@ -158,7 +158,7 @@ class Request {
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 						"errorDescription" => implode(" / ", $result->description),
 						"errorVariables" => [
 							"parameter name" => $parameter->name,
@@ -376,7 +376,7 @@ class Request {
 		global $e;
 		$cacheKeyNamingOptions["prefix"] = $prefix;
 		$cacheKeyNamingOptions["key"] = $key;
-		return \Cherrycake\Modules\Cache::buildCacheKey($cacheKeyNamingOptions);
+		return \Cherrycake\Cache::buildCacheKey($cacheKeyNamingOptions);
 	}
 
 	/**

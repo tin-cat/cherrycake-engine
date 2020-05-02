@@ -15,7 +15,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class Cache {
+class EngineCache {
 	private $defaultBucketName = "default";
 
 	/**

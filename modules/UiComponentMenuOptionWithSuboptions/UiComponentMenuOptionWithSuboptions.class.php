@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * A Ui component to create a menu option, normally used in conjunction with other higher level UiComponents like UiComponentPanel
@@ -77,7 +77,7 @@ class UiComponentMenuOptionWithSuboptions extends \Cherrycake\UiComponent {
                 "\"".
                 " id=\"".$this->domId."\"".
             ">".
-                \Cherrycake\Modules\UiComponentMenuOption::build([
+                \Cherrycake\UiComponentMenuOption::build([
                     "title" => $this->title ?? false,
                     "iconName" => $this->iconName ?? false,
                     "iconVariant" => $this->iconVariant ?? false,

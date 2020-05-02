@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 = 0;
 
@@ -102,7 +102,7 @@ class Login  extends \Cherrycake\Module {
 
 		eval("\$this->user = new ".$this->getConfig("userClassName")."();");
 		if (!$this->user->loadFromId($userId)) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Cannot load the user from the given Id",
 				"errorVariables" => [
 					"userId" => $userId

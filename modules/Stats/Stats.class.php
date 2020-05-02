@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const STATS_EVENT_TIME_RESOLUTION_MINUTE = 0;
 const STATS_EVENT_TIME_RESOLUTION_HOUR = 1;

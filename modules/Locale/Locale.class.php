@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const LANGUAGE_SPANISH = 1;
 const LANGUAGE_ENGLISH = 2;
@@ -101,7 +101,7 @@ class Locale  extends \Cherrycake\Module
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"geolocationMethod" => \Cherrycake\Modules\LOCALE_GEOLOCATION_METHOD_CLOUDFLARE,
+		"geolocationMethod" => \Cherrycake\LOCALE_GEOLOCATION_METHOD_CLOUDFLARE,
 		"textsTableName" => "cherrycake_locale_texts",
 		"textCategoriesTableName" => "cherrycake_locale_textCategories",
 		"textCacheProviderName" => "engine",
@@ -335,7 +335,7 @@ class Locale  extends \Cherrycake\Module
 
 			$result = $e->Database->$databaseProviderName->query($sql);
 			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Requested text code not found",
 					"errorVariables" => ["code" => $code],
 					"isSilent" => true
@@ -494,7 +494,7 @@ class Locale  extends \Cherrycake\Module
 
 			$result = $e->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".$e->Database->$databaseProviderName->safeString($timezone));
 			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Requested timezone not found",
 					"errorVariables" => ["timezone" => $timezone],
 					"isSilent" => true
@@ -583,7 +583,7 @@ class Locale  extends \Cherrycake\Module
 		}
 
 		if (!isset($setup["style"]))
-			$setup["style"] = \Cherrycake\Modules\TIMESTAMP_FORMAT_BASIC;
+			$setup["style"] = \Cherrycake\TIMESTAMP_FORMAT_BASIC;
 
 		if (!isset($setup["isShortYear"]))
 			$setup["isShortYear"] = true;
@@ -595,7 +595,7 @@ class Locale  extends \Cherrycake\Module
 			$setup["isHours"] = false;
 
 		if (!isset($setup["hoursFormat"]))
-			$setup["hoursFormat"] = \Cherrycake\Modules\HOURS_FORMAT_24H;
+			$setup["hoursFormat"] = \Cherrycake\HOURS_FORMAT_24H;
 
 		if (!isset($setup["isSeconds"]))
 			$setup["isSeconds"] = false;
@@ -614,29 +614,29 @@ class Locale  extends \Cherrycake\Module
 			return date($setup["format"], $timestamp);
 
 		switch ($setup["style"]) {
-			case \Cherrycake\Modules\TIMESTAMP_FORMAT_BASIC:
+			case \Cherrycake\TIMESTAMP_FORMAT_BASIC:
 
 				if ($setup["isDay"]) {
 					$isCurrentYear = (date("Y", $timestamp) == date("Y"));
 
 					switch ($this->locale["dateFormat"]) {
-						case \Cherrycake\Modules\DATE_FORMAT_LITTLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_LITTLE_ENDIAN:
 							$dateFormat = "j/n".((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? "/".($setup["isShortYear"] ? "y" : "Y") : "");
 							break;
-						case \Cherrycake\Modules\DATE_FORMAT_BIG_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_BIG_ENDIAN:
 							$dateFormat = ((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? ($setup["isShortYear"] ? "y" : "Y")."/" : "")."n/j";
 							break;
-						case \Cherrycake\Modules\DATE_FORMAT_MIDDLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$dateFormat = "n/j".((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? "/".($setup["isShortYear"] ? "y" : "Y") : "");
 							break;
 					}
 				}
 
 				if ($setup["isHours"]) {
-					if ($setup["hoursFormat"] == \Cherrycake\Modules\HOURS_FORMAT_12H)
+					if ($setup["hoursFormat"] == \Cherrycake\HOURS_FORMAT_12H)
 						$dateFormat .= " h:i".($setup["isSeconds"] ? ".s" : "")." a";
 					else
-					if ($setup["hoursFormat"] == \Cherrycake\Modules\HOURS_FORMAT_24H)
+					if ($setup["hoursFormat"] == \Cherrycake\HOURS_FORMAT_24H)
 						$dateFormat .= " H:i".($setup["isSeconds"] ? ".s" : "");
 				}
 
@@ -644,13 +644,13 @@ class Locale  extends \Cherrycake\Module
 
 				break;
 			
-			case \Cherrycake\Modules\TIMESTAMP_FORMAT_HUMAN:
+			case \Cherrycake\TIMESTAMP_FORMAT_HUMAN:
 
 				if ($setup["isDay"]) {
 					$isCurrentYear = (date("Y", $timestamp) == date("Y"));
 
 					switch ($this->locale["dateFormat"]) {
-						case \Cherrycake\Modules\DATE_FORMAT_LITTLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_LITTLE_ENDIAN:
 							$r =
 								date("j", $timestamp).
 								($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
@@ -660,7 +660,7 @@ class Locale  extends \Cherrycake\Module
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
 								: null);
 							break;
-						case \Cherrycake\Modules\DATE_FORMAT_BIG_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_BIG_ENDIAN:
 							$r =
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp).
@@ -671,7 +671,7 @@ class Locale  extends \Cherrycake\Module
 								date("j", $timestamp);
 								
 							break;
-						case \Cherrycake\Modules\DATE_FORMAT_MIDDLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
 								$this->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
 								" ".
@@ -688,16 +688,16 @@ class Locale  extends \Cherrycake\Module
 					$r .=
 						($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionAt"], $setup["language"])." ");
 
-					if ($setup["hoursFormat"] == \Cherrycake\Modules\HOURS_FORMAT_12H)
+					if ($setup["hoursFormat"] == \Cherrycake\HOURS_FORMAT_12H)
 						$r .= date(" h:i".($setup["isSeconds"] ? ".s" : "")." a", $timestamp);
 					else
-					if ($setup["hoursFormat"] == \Cherrycake\Modules\HOURS_FORMAT_24H)
+					if ($setup["hoursFormat"] == \Cherrycake\HOURS_FORMAT_24H)
 						$r .= date(" H:i".($setup["isSeconds"] ? ".s" : ""), $timestamp);
 				}
 
 				break;
 
-			case \Cherrycake\Modules\TIMESTAMP_FORMAT_RELATIVE_HUMAN:
+			case \Cherrycake\TIMESTAMP_FORMAT_RELATIVE_HUMAN:
 				// If in the past
 				if ($timestamp < time()) {
 

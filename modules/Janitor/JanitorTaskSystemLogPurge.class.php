@@ -24,7 +24,7 @@ class JanitorTaskSystemLogPurge extends JanitorTask
 	 * @var array $config Default configuration options
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 240,
 		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
 	];
@@ -68,7 +68,7 @@ class JanitorTaskSystemLogPurge extends JanitorTask
 
 		list($result, $resultDescription) = $e->SystemLog->purge();
 		return [
-			$result ? \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+			$result ? \Cherrycake\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 			$resultDescription
 		];
 	}

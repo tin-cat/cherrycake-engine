@@ -28,7 +28,7 @@ class JanitorTaskJanitorPurge extends JanitorTask
 	 * @var array $config Default configuration options
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
 		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
 	];
@@ -77,7 +77,7 @@ class JanitorTaskJanitorPurge extends JanitorTask
 			"select count(*) as numberOf from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
 			[
 				[
-					"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds"))
 				]
 			]
@@ -85,7 +85,7 @@ class JanitorTaskJanitorPurge extends JanitorTask
 
 		if (!$result)
 			return [
-				\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -97,7 +97,7 @@ class JanitorTaskJanitorPurge extends JanitorTask
 				"delete from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
 				[
 					[
-						"type" => \Cherrycake\Modules\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds"))
 					]
 				]
@@ -105,13 +105,13 @@ class JanitorTaskJanitorPurge extends JanitorTask
 
 			if (!$result)
 				return [
-					\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
 					"Could not delete log entries from the database"
 				];
 		}
 
 		return [
-			\Cherrycake\Modules\JANITORTASK_EXECUTION_RETURN_OK,
+			\Cherrycake\JANITORTASK_EXECUTION_RETURN_OK,
 			[
 				"Log entries older than ".$this->getConfig("purgeLogsOlderThanSeconds")." seconds purged" => $numberOfLogEntriesToPurge
 			]

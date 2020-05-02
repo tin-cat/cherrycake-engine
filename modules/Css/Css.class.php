@@ -6,7 +6,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 const CSS_MEDIAQUERY_TABLET = 0; // Matches tablets in all orientations
 const CSS_MEDIAQUERY_TABLET_PORTRAIT = 1; // Matches tablets in portrait orientation

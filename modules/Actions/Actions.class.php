@@ -4,7 +4,7 @@
  * @package Cherrycake
  */
 
-namespace Cherrycake\Modules;
+namespace Cherrycake;
 
 /**
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
@@ -170,7 +170,7 @@ class Actions  extends \Cherrycake\Module {
 		global $e;
 
 		if ($e->isDevel() && !is_array($this->actions)) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "No mapped actions"
 			]);
 		}
@@ -189,7 +189,7 @@ class Actions  extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+			$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
 				"errorDescription" => "No mapped action found for this request"
 			]);
 			return false;
@@ -208,7 +208,7 @@ class Actions  extends \Cherrycake\Module {
 				return;
 		}
 
-		$e->Errors->trigger(\Cherrycake\Modules\ERROR_NOT_FOUND, [
+		$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
 			"errorDescription" => "No matching actions were productive",
 			"errorVariables" => [
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions
