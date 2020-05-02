@@ -188,6 +188,21 @@ class Css  extends \Cherrycake\Module {
 	}
 
 	/**
+	 * Builds a unique id that identifies the specified set with its current files, in a way that it doesn't matters the order of the files
+	 * @param string $setName The name of the set
+	 * @return string A uniq id
+	 */
+	function getSetUniqueId($setName) {
+		if ($this->sets[$setName]["files"] ?? false && is_array($this->sets[$setName]["files"])) {
+			$fileNames = $this->sets[$setName]["files"];
+			asort($fileNames);
+		}
+		else
+			$fileNames = [];
+		return sizeof($fileNames).")".md5(implode($fileNames));
+	}
+
+	/**
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 * 
@@ -210,8 +225,8 @@ class Css  extends \Cherrycake\Module {
 		$parameterSetNames = "";
 		foreach ($orderedSetNames as $order => $setNames) {
 			foreach ($setNames as $setName) {
+				$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
 				$this->storeParsedSetInCache($setName);
-				$parameterSetNames .= $setName."-";
 			}
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
@@ -259,7 +274,8 @@ class Css  extends \Cherrycake\Module {
 		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
-			"uniqueId" => $setName
+			"setName" => $setName,
+			"uniqueId" => $this->getSetUniqueId($setName)
 		]);
 		if ($e->isDevel() || !$e->Cache->$cacheProviderName->isKey($cacheKey))
 			$e->Cache->$cacheProviderName->set(
@@ -365,16 +381,18 @@ class Css  extends \Cherrycake\Module {
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 		
-		$setNames = explode("-", $request->set);
+		$setPairs = explode("-", $request->set);
 
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 		
 		$css = "";
 
-		foreach($setNames as $setName) {
+		foreach($setPairs as $setPair) {
+			list($setName, $setUniqueId) = explode(":", $setPair);
 			$cacheKey = $e->Cache->buildCacheKey([
 				"prefix" => "cssParsedSet",
-				"uniqueId" => $setName
+				"setName" => $setName,
+				"uniqueId" => $setUniqueId
 			]);
 			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
 				$css .= $e->Cache->$cacheProviderName->get($cacheKey);

@@ -190,7 +190,7 @@ class Module extends BasicObject {
 	 *
 	 * @return boolean Whether the module has been loaded ok
 	 */
-	function init() {		
+	function init() {
 		if (!$this->loadDependencies())
 			return false;
 		$this->loadConfigFile();

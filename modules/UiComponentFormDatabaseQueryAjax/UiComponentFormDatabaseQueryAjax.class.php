@@ -8,9 +8,6 @@
 
 namespace Cherrycake;
 
-const UICOMPONENTFORMDATABASEQUERY_SELECTION_STYLE_RADIOS = 0;
-const UICOMPONENTFORMDATABASEQUERY_SELECTION_STYLE_SELECT = 1;
-
 /**
  * UiComponentFormDatabaseQueryAjax
  *

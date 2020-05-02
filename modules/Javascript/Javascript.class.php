@@ -159,6 +159,21 @@ class Javascript  extends \Cherrycake\Module {
 	function addSet($setName, $setConfig) {
 		$this->sets[$setName] = $setConfig;
 	}
+	
+	/**
+	 * Builds a unique id that identifies the specified set with its current files, in a way that it doesn't matters the order of the files
+	 * @param string $setName The name of the set
+	 * @return string A uniq id
+	 */
+	function getSetUniqueId($setName) {
+		if ($this->sets[$setName]["files"] ?? false && is_array($this->sets[$setName]["files"])) {
+			$fileNames = $this->sets[$setName]["files"];
+			asort($fileNames);
+		}
+		else
+			$fileNames = [];
+		return md5(implode($fileNames));
+	}
 
 	/**
 	 * Builds a URL to request the given set contents.
@@ -184,7 +199,7 @@ class Javascript  extends \Cherrycake\Module {
 		foreach ($orderedSetNames as $order => $setNames) {
 			foreach ($setNames as $setName) {
 				$this->storeParsedSetInCache($setName);
-				$parameterSetNames .= $setName."-";
+				$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
 			}
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
@@ -244,7 +259,8 @@ class Javascript  extends \Cherrycake\Module {
 		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "javascriptParsedSet",
-			"uniqueId" => $setName
+			"setName" => $setName,
+			"uniqueId" => $this->getSetUniqueId($setName)
 		]);
 		if ($e->isDevel() || !$e->Cache->$cacheProviderName->isKey($cacheKey))
 			$e->Cache->$cacheProviderName->set(
@@ -342,16 +358,18 @@ class Javascript  extends \Cherrycake\Module {
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 		
-		$setNames = explode("-", $request->set);
+		$setPairs = explode("-", $request->set);
 
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 		
 		$js = "";
 
-		foreach($setNames as $setName) {
+		foreach($setPairs as $setPair) {
+			list($setName, $setUniqueId) = explode(":", $setPair);
 			$cacheKey = $e->Cache->buildCacheKey([
 				"prefix" => "javascriptParsedSet",
-				"uniqueId" => $setName
+				"setName" => $setName,
+				"uniqueId" => $setUniqueId
 			]);
 			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
 				$js .= $e->Cache->$cacheProviderName->get($cacheKey);

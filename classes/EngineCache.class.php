@@ -92,6 +92,14 @@ class EngineCache {
 	}
 
 	/**
+	 * @param mixed $id A string, or an array of strings that uniquely identify an item in the cache
+	 * @return boolean Whether the specified item from the specified bucket in the cache exists
+	 */
+	function exists($id) {
+		return $this->isKeyExistsInBucket($this->defaultBucketName, $id);
+	}
+
+	/**
 	 * Removes an item from the cache
 	 * @param mixed $id A string, or an array of strings that uniquely identify an item in the cache
 	 * @return boolean True if success, false otherwise
