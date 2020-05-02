@@ -48,17 +48,20 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
  *      "big" => 1300,
  *      "huge" => 1700
  *  ],
- * 	"defaultSets" => [] // The CSS sets available to be included in HTML documents
+ * 	"sets" => [] // The CSS sets available to be included in HTML documents
  * 		"main" => [
+ * 			"order" => 20, // An optional numeric order to control the order on which the files inside this set are dumped
  * 			"directory" => "res/css/main", // The specific directory where the CSS files for this set reside
  * 			"variablesFile" => "res/css/cssvariables.php", // A file to include whenever parsing this set files, usually for defining variables that can be later used inside the css files
+ * 			"isIncludeAllFilesInDirectory" => false, // Whether to automatically include in the set all the files found in directory or not
  * 			"files" => [ // The files that this CSS set contain
  * 				"main.css",
  * 				"header.css",
  * 				"content.css"
  * 			]
  * 		],
- *		"uiComponents" => [ // This set must be declared when working with Ui module
+ *		"appUiComponents" => [ // This set must be declared when working with Ui module
+ *			"order" => 20, // An optional numeric order to control the order on which the files inside this set are dumped
  *			"version" => 1,
  *			"directory" => "res/css/UiComponents",
  *			"files" => [ // The default Ui-related Css files, these are normally the ones that are not bonded to an specific UiComponent, since any other required file is automatically added here by the specific UiComponent object.
@@ -124,14 +127,15 @@ class Css  extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		if ($defaultSets = $this->getConfig("defaultSets"))
-			foreach ($defaultSets as $setName => $setConfig)
+		if ($sets = $this->getConfig("sets"))
+			foreach ($sets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
 
 		// Adds cherrycake sets
 		$this->addSet(
 			"coreUiComponents",
 			[
+				"order" => 10,
 				"directory" => ENGINE_DIR."/res/css/uicomponents"
 			]
 		);
@@ -187,19 +191,28 @@ class Css  extends \Cherrycake\Module {
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 * 
-	 * @param mixed $setNames The name of the Css set, or an array of them
+	 * @param mixed $setNames Optional nhe name of the Css set, or an array of them. If set to false, all available sets are used.
 	 * @return string The Url of the Css set
 	 */
-	function getSetUrl($setNames) {
+	function getSetUrl($setNames = false) {
 		global $e;
+
+		if ($setNames == false)
+			$setNames = array_keys($this->sets);
 
 		if (!is_array($setNames))
 			$setNames = [$setNames];
+		
+		foreach ($setNames as $setName)
+			$orderedSetNames[$this->sets[$setName]["order"] ?? 100][] = $setName;
+		ksort($orderedSetNames);
 
 		$parameterSetNames = "";
-		foreach ($setNames as $setName) {
-			$this->storeParsedSetInCache($setName);
-			$parameterSetNames .= $setName."-";
+		foreach ($orderedSetNames as $order => $setNames) {
+			foreach ($setNames as $setName) {
+				$this->storeParsedSetInCache($setName);
+				$parameterSetNames .= $setName."-";
+			}
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
@@ -272,6 +285,16 @@ class Css  extends \Cherrycake\Module {
 		
 		$requestedSet = $this->sets[$setName];
 
+		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
+			if ($handler = opendir($requestedSet["directory"])) {
+				while (false !== ($entry = readdir($handler))) {
+					if (substr($entry, -4) == ".css")
+						$requestedSet["files"][] = $entry;
+				}
+				closedir($handler);
+			}
+		}
+		
 		$css = "";
 
 		if (isset($requestedSet["files"])) {

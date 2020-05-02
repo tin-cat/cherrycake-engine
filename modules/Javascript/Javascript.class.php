@@ -32,12 +32,15 @@ namespace Cherrycake\Modules;
  *  "isMinify" => true, // Whether to minify the resulting CSS or not
  * 	"sets" => [ // The Javascript sets available to be included in HTML documents
  * 		"main" => [
+ * 			"order" => 20, // An optional numeric order to control the order on which the files inside this set are dumped
  * 			"directory" => "res/javascript/main", // The specific directory where the Javascript files for this set reside
+ * 			"isIncludeAllFilesInDirectory" => false, // Whether to automatically include in the set all the files found in directory or not
  * 			"files" => [ // The files that this Javascript set contain
  * 				"main.js"
  * 			]
  * 		],
- * 		"uiComponents" => [ // This set must be declared when working with Ui module
+ * 		"appUiComponents" => [ // This set must be declared when working with Ui module
+ * 			"order" => 10, // An optional numeric order to control the order on which the files inside this set are dumped
  * 			"directory" => "res/javascript/UiComponents",
  * 			"files" => [ // The default Ui-related Javascript files, these are normally the ones that are not bonded to an specific UiComponent, since any other required file is automatically added here by the specific UiComponent object.
  * 			]
@@ -95,14 +98,15 @@ class Javascript  extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		if ($defaultSets = $this->getConfig("defaultSets"))
-			foreach ($defaultSets as $setName => $setConfig)
+		if ($sets = $this->getConfig("sets"))
+			foreach ($sets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
 
 		// Adds cherrycake sets
 		$this->addSet(
 			"coreUiComponents",
 			[
+				"order" => 10,
 				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
 			]
 		);
@@ -160,19 +164,28 @@ class Javascript  extends \Cherrycake\Module {
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 *
-	 * @param mixed $setNames The name of the Javascript set, or an array of them
+	 * @param mixed $setNames Optional nhe name of the Javascript set, or an array of them. If set to false, all available sets are used.
 	 * @return string The Url of the Javascript set
 	 */
 	function getSetUrl($setNames) {
 		global $e;
 
+		if ($setNames == false)
+			$setNames = array_keys($this->sets);
+
 		if (!is_array($setNames))
 			$setNames = [$setNames];
+		
+		foreach ($setNames as $setName)
+			$orderedSetNames[$this->sets[$setName]["order"] ?? 100][] = $setName;
+		ksort($orderedSetNames);
 
 		$parameterSetNames = "";
-		foreach ($setNames as $setName) {
-			$this->storeParsedSetInCache($setName);
-			$parameterSetNames .= $setName."-";
+		foreach ($orderedSetNames as $order => $setNames) {
+			foreach ($setNames as $setName) {
+				$this->storeParsedSetInCache($setName);
+				$parameterSetNames .= $setName."-";
+			}
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
@@ -257,6 +270,16 @@ class Javascript  extends \Cherrycake\Module {
 		
 		$requestedSet = $this->sets[$setName];
 
+		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
+			if ($handler = opendir($requestedSet["directory"])) {
+				while (false !== ($entry = readdir($handler))) {
+					if (substr($entry, -4) == ".js")
+						$requestedSet["files"][] = $entry;
+				}
+				closedir($handler);
+			}
+		}
+
 		$js = "";
 
 		if (isset($requestedSet["files"])) {
@@ -292,9 +315,6 @@ class Javascript  extends \Cherrycake\Module {
 					include($fileName);
 			else
 				include($requestedSet["variablesFile"]);
-
-		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
-		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
 
 		if($this->getConfig("isMinify"))
 			$js = $this->minify($js);
@@ -339,6 +359,9 @@ class Javascript  extends \Cherrycake\Module {
 			if ($e->isDevel())
 				$js .= "/* Javascript set \"".$setName."\" not cached */\n";
 		}
+
+		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
+		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
 		
 		$e->Output->setResponse(new \Cherrycake\ResponseApplicationJavascript([
 			"payload" => $js

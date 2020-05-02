@@ -29,12 +29,6 @@ const HTML_RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;
  *  "googleAnalyticsTrackingId" => false, // Set it to the Google Analytics Tracking Id (UA-999999-99) to setup GA Statistics. Leave it to false to not use Google Analytics. Only added when not in devel environment.
  *  "matomoTrackingId" => false, // Set it to the Matomo Analytics Tracking Id. Leave it to false to not use Matomo. Only added when not in devel environment.
  *  "matomoServerUrl" => false, // When using Matomo, set it to the Matomo¡s server url  
- *	"defaultCssSetsToInclude" => [] // The CSS sets that will be included by default in the document if none specified. Each element of the array corresponds to one <link rel ...> in the html document (use this logic to combine version caching capabilities while reducing the number of different CSS requests to be done by the client)
- *		"main"
- *	],
- *	"defaultJavascriptSetsToInclude" => [ // The Javascript sets that will be included by default in the document if none specified. Each element of the array corresponds to one <script src ...> in the html document (use this logic to combine version caching capabilities while reducing the number of different Javascript request to be done by the client)
- *		"main"
- *	],
  *  "mobileViewport" => [ // Configuration for the site when viewed in a mobile device, via the viewport meta
  *      "width" => 500, // The width of the viewport: A number of pixels, or "device-width"
  *      "userScalable" => false, // Optional, whether or not to let the user pinch to zoom in/out
@@ -93,8 +87,6 @@ class HtmlDocument  extends \Cherrycake\Module {
 		"copyright" => false, // The default page copyright info
 		"keywords" => false, // The default page keywords
 		"charset" => "utf-8",
-		"defaultCssSetsToInclude" => ["coreUiComponents", "main", "uiComponents"], // An array of Css set names that will be always included
-		"defaultJavascriptSetsToInclude" => ["coreUiComponents", "main", "uiComponents"], // An array of Javascript set names that will be always included
 		"bodyAdditionalCssClasses" => false,
 		"isAllowRobotsIndex" => true, // Whether to allow robots to index the document
 		"isAllowRobotsFollow" => true, // Whether to allow robots to follow links on the document
@@ -151,28 +143,6 @@ class HtmlDocument  extends \Cherrycake\Module {
 		"Css",
 		"Javascript"
 	];
-
-	/**
-	 * init
-	 *
-	 * Initializes the module
-	 *
-	 * @return boolean Whether the module has been initted ok
-	 */
-	function init() {
-		if (!parent::init())
-			return false;
-
-		if ($this->getConfig("defaultCssSetsToInclude"))
-			foreach ($this->getConfig("defaultCssSetsToInclude") as $cssSetName)
-				$this->addCssSet($cssSetName);
-
-		if ($this->getConfig("defaultJavascriptSetsToInclude"))
-			foreach ($this->getConfig("defaultJavascriptSetsToInclude") as $cssSetName)
-				$this->addJavascriptSet($cssSetName);
-
-		return true;
-	}
 
 	/**
 	 * setTitle
@@ -291,13 +261,11 @@ class HtmlDocument  extends \Cherrycake\Module {
 			
 		// Css
 		if ($e->Css)
-			if (is_array($this->cssSets))
-				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($this->cssSets)."\" />\n";
+			$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($this->cssSets)."\" />\n";
 
 		// Javascript
 		if ($e->Javascript)
-			if (is_array($this->javascriptSets) && !$this->getConfig("isDeferJavascript"))
-				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($this->javascriptSets)."\"></script>\n";
+			$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($this->javascriptSets)."\"></script>\n";
 
 		// Mobile viewport
 		if ($mobileViewport = $this->getConfig("mobileViewport")) {
@@ -377,34 +345,38 @@ class HtmlDocument  extends \Cherrycake\Module {
 				"<![endif]-->\n";
 
 		// Javascript
-		if ($e->Javascript)
+		if ($e->Javascript) {
 			if (is_array($this->javascriptSets)) {
 				if($this->getConfig("isDeferJavascript")) {
 					$r .=
 						"<script type=\"text/javascript\">
 							var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
-
 							DOMReady(function () {
 								var element = document.createElement(\"script\");
 								element.src = \"".$e->Javascript->getSetUrl($this->javascriptSets)."\";
 								document.body.appendChild(element);
 							});
-
-							".($this->inlineJavascript ? "
-								function executeDeferredInlineJavascript() {
-									".$this->inlineJavascript."
-								}
-							" : null)."
 						</script>";
 				}
-				else
-				if ($this->inlineJavascript) {
+			}
+
+			if ($this->inlineJavascript) {
+				if ($this->getConfig("isDeferJavascript")) {
+					$r .=
+						"<script type=\"text/javascript\">
+							function executeDeferredInlineJavascript() {
+								".$this->inlineJavascript."
+							}
+						</script>";
+				}
+				else {					
 					$r .=
 						"<script type=\"text/javascript\">
 							".$this->inlineJavascript."
 						</script>";
 				}
 			}
+		}
 		
 		$r .=
 			"</body>\n</html>";
