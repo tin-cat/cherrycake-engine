@@ -62,6 +62,7 @@ class Javascript  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
 		"cacheProviderName" => "engine", // The cache provider for Javascript sets
 		"cachePrefix" => "Javascript",
 		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
@@ -185,22 +186,11 @@ class Javascript  extends \Cherrycake\Module {
 	function getSetUrl($setNames) {
 		global $e;
 
-		if ($setNames == false)
-			$setNames = array_keys($this->sets);
-
-		if (!is_array($setNames))
-			$setNames = [$setNames];
-		
-		foreach ($setNames as $setName)
-			$orderedSetNames[$this->sets[$setName]["order"] ?? 100][] = $setName;
-		ksort($orderedSetNames);
-
+		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
-		foreach ($orderedSetNames as $order => $setNames) {
-			foreach ($setNames as $setName) {
-				$this->storeParsedSetInCache($setName);
-				$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
-			}
+		foreach ($orderedSets as $setName => $set) {
+			$this->storeParsedSetInCache($setName);
+			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
@@ -210,6 +200,31 @@ class Javascript  extends \Cherrycake\Module {
 				"version" => $this->getConfig("lastModifiedTimestamp")
 			]
 		]);
+	}
+
+	/**
+	 * Returns an ordered version of the current sets
+	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
+	 * @return array The sets
+	 */
+	function getOrderedSets($setNames = false) {
+		if ($setNames == false)
+			$setNames = array_keys($this->sets);
+
+		if (!is_array($setNames))
+			$setNames = [$setNames];
+		
+		foreach ($setNames as $setName)
+			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
+		ksort($orderedSetNames);
+
+		foreach ($orderedSetNames as $order => $setNames) {
+			foreach ($setNames as $setName) {
+				$orderedSets[$setName] = $this->sets[$setName];
+			}
+		}
+
+		return $orderedSets;
 	}
 
 	/**
@@ -293,6 +308,15 @@ class Javascript  extends \Cherrycake\Module {
 		$requestedSet = $this->sets[$setName];
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
+			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
+					"errorDescription" => "Couldn't open JavaScript directory",
+					"errorVariables" => [
+						"setName" => $setName,
+						"directory" => $requestedSet["directory"]
+					]
+				]);
+			}
 			if ($handler = opendir($requestedSet["directory"])) {
 				while (false !== ($entry = readdir($handler))) {
 					if (substr($entry, -4) == ".js")
@@ -415,5 +439,36 @@ class Javascript  extends \Cherrycake\Module {
 	 */
 	function safeString($string) {
 		return str_replace("'", "\\'", $string);
+	}
+
+	/**
+	 * @return array Status information
+	 */
+	function getStatus() {
+		if (is_array($this->sets)) {
+			$orderedSets = $this->getOrderedSets();
+			foreach ($orderedSets as $setName => $set) {
+
+				$r[$setName]["order"] = $set["order"] ?? $this->getConfig("defaultSetOrder");
+
+				$r[$setName]["directory"] = $set["directory"];
+
+				if (isset($set["variablesFile"]))
+					$r[$setName]["variablesFile"] = implode(", ", $set["variablesFile"]);
+				
+				if ($set["isIncludeAllFilesInDirectory"] ?? false)
+				$r[$setName]["files"][] = $set["directory"]."/*.js";
+
+				if (!isset($set["files"]))
+					continue;
+
+				foreach ($set["files"] as $file)
+					$r[$setName]["files"][] = $file;
+
+			}
+			reset($this->sets);
+		}
+
+		return $r ?? null;
 	}
 }

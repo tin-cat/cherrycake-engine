@@ -52,7 +52,8 @@ class SystemLog  extends \Cherrycake\Module {
 			"SystemLogEventHack"
 		],
 		"tableName" => "cherrycake_systemLog",
-		"cacheKeyUniqueId" => "engine",
+		"cacheKeyUniqueId" => "QueuedSystemLogEvents",
+		"cacheProviderName" => "engine",
 		"databaseProviderName" => "main",
 		"cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache. Defaults to "QueuedSystemLogEvents"
 		"isQueueInCache" => true

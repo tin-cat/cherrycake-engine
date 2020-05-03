@@ -112,4 +112,38 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface 
 	function touch($key, $ttl) {
 		$this->set($key, $this->get($key), $ttl);
 	}
+
+	/**
+	 * Appends a value to the end of a queue.
+	 * @param string $queueName The name of the queue
+	 * @param mixed $value The value to store
+	 * @return boolean True if everything went ok, false otherwise
+	 */
+	function rPush($queueName, $value) {
+	}
+
+	/**
+	 * Prepends a value to the beginning of a queue.
+	 * @param string $queueName The name of the queue
+	 * @param mixed $value The value to store
+	 * @return boolean True if everything went ok, false otherwise
+	 */
+	function lPush($queueName, $value) {
+	}
+
+	/**
+	 * Returns the element at the end of a queue, and removes it
+	 * @param string $queueName The name of the queue
+	 * @return mixed The stored value
+	 */
+	function rPop($queueName) {
+	}
+
+	/**
+	 * Returns the element at the beggining of a queue, and removes it
+	 * @param string $queueName The name of the queue
+	 * @return mixed The stored value
+	 */
+	function lPop($queueName) {
+	}
 }

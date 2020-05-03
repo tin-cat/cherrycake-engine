@@ -84,6 +84,7 @@ class Css  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
 		"cachePrefix" => "Css",
 		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL for CSS sets
 		"cacheProviderName" => "engine", // The cache provider for CSS sets
@@ -206,28 +207,17 @@ class Css  extends \Cherrycake\Module {
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 * 
-	 * @param mixed $setNames Optional nhe name of the Css set, or an array of them. If set to false, all available sets are used.
+	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
 	 * @return string The Url of the Css set
 	 */
 	function getSetUrl($setNames = false) {
 		global $e;
 
-		if ($setNames == false)
-			$setNames = array_keys($this->sets);
-
-		if (!is_array($setNames))
-			$setNames = [$setNames];
-		
-		foreach ($setNames as $setName)
-			$orderedSetNames[$this->sets[$setName]["order"] ?? 100][] = $setName;
-		ksort($orderedSetNames);
-
+		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
-		foreach ($orderedSetNames as $order => $setNames) {
-			foreach ($setNames as $setName) {
-				$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
-				$this->storeParsedSetInCache($setName);
-			}
+		foreach ($orderedSets as $setName => $set) {
+			$this->storeParsedSetInCache($setName);
+			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";			
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
@@ -237,6 +227,31 @@ class Css  extends \Cherrycake\Module {
 				"version" => $this->getConfig("lastModifiedTimestamp")
 			]
 		]);
+	}
+
+	/**
+	 * Returns an ordered version of the current sets
+	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
+	 * @return array The sets
+	 */
+	function getOrderedSets($setNames = false) {
+		if ($setNames == false)
+			$setNames = array_keys($this->sets);
+
+		if (!is_array($setNames))
+			$setNames = [$setNames];
+		
+		foreach ($setNames as $setName)
+			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
+		ksort($orderedSetNames);
+
+		foreach ($orderedSetNames as $order => $setNames) {
+			foreach ($setNames as $setName) {
+				$orderedSets[$setName] = $this->sets[$setName];
+			}
+		}
+
+		return $orderedSets;
 	}
 
 	/**
@@ -308,15 +323,25 @@ class Css  extends \Cherrycake\Module {
 		$requestedSet = $this->sets[$setName];
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
+			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
+					"errorDescription" => "Couldn't open CSS directory",
+					"errorVariables" => [
+						"setName" => $setName,
+						"directory" => $requestedSet["directory"]
+					]
+				]);
+			}
 			if ($handler = opendir($requestedSet["directory"])) {
 				while (false !== ($entry = readdir($handler))) {
-					if (substr($entry, -4) == ".css")
+					if (substr($entry, -4) == ".css") {
 						$requestedSet["files"][] = $entry;
+					}
 				}
 				closedir($handler);
 			}
 		}
-		
+
 		$css = "";
 
 		if (isset($requestedSet["files"])) {
@@ -717,6 +742,37 @@ class Css  extends \Cherrycake\Module {
 		$r .= " { ".$setup["css"]." }\n";
 
 		return $r;
+	}
+
+	/**
+	 * @return array Status information
+	 */
+	function getStatus() {
+		if (is_array($this->sets)) {
+			$orderedSets = $this->getOrderedSets();
+			foreach ($orderedSets as $setName => $set) {
+
+				$r[$setName]["order"] = $set["order"] ?? $this->getConfig("defaultSetOrder");
+
+				$r[$setName]["directory"] = $set["directory"];
+
+				if (isset($set["variablesFile"]))
+					$r[$setName]["variablesFile"] = implode(", ", $set["variablesFile"]);
+				
+				if ($set["isIncludeAllFilesInDirectory"] ?? false)
+				$r[$setName]["files"][] = $set["directory"]."/*.css";
+
+				if (!isset($set["files"]))
+					continue;
+
+				foreach ($set["files"] as $file)
+					$r[$setName]["files"][] = $file;
+
+			}
+			reset($this->sets);
+		}
+
+		return $r ?? null;
 	}
 
 }

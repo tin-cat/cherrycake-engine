@@ -776,9 +776,14 @@ namespace Cherrycake {
 				reset($this->moduleLoadingHistory);
 			}
 
-			if ($this->isModuleLoaded("Actions")) {
+			if ($this->isModuleLoaded("Actions"))
 				$r["actions"] = $this->Actions->getStatus();
-			}
+			
+			if ($this->isModuleLoaded("Css"))
+				$r["css"] = $this->Css->getStatus();
+
+			if ($this->isModuleLoaded("Javascript"))
+				$r["javascript"] = $this->Javascript->getStatus();
 
 			return $r;
 		}
