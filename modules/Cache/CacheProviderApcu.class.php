@@ -16,7 +16,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class CacheProviderApcu extends CacheProvider implements CacheProviderInterface {
+class CacheProviderApcu extends CacheProvider implements CacheProviderInterface, CacheProviderInterfaceQueue {
 	/**
 	 * @var bool $isConnected Always set to true, since APCu cache doesn't requires an explicit connection
 	 */
@@ -120,6 +120,9 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface 
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function rPush($queueName, $value) {
+		$queue = $this->getQueueItems($queueName);
+		array_push($queue, $value);
+		return $this->setQueueItems($queueName, $queue);
 	}
 
 	/**
@@ -129,21 +132,60 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface 
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function lPush($queueName, $value) {
+		$queue = $this->getQueueItems($queueName);
+		array_unshift($queue, $value);
+		return $this->setQueueItems($queueName, $queue);
 	}
 
 	/**
-	 * Returns the element at the end of a queue, and removes it
+	 * Returns the item at the end of a queue, and removes it
 	 * @param string $queueName The name of the queue
-	 * @return mixed The stored value
+	 * @return mixed The stored value, or null if the queue was empty
 	 */
 	function rPop($queueName) {
+		$queue = $this->getQueueItems($queueName);
+		$item = array_pop($queue);
+		$this->setQueueItems($queueName, $queue);
+		return $item;
 	}
 
 	/**
 	 * Returns the element at the beggining of a queue, and removes it
 	 * @param string $queueName The name of the queue
-	 * @return mixed The stored value
+	 * @return mixed The stored value, or null if the queue was empty
 	 */
 	function lPop($queueName) {
+		$queue = $this->getQueueItems($queueName);
+		$item = array_shift($queue);
+		$this->setQueueItems($queueName, $queue);
+		return $item;
+	}
+
+	/**
+	 * @param string $queueName The name of the queue
+	 * @return string The key that identifies the given queue's items in the cache
+	 */
+	function getQueueKey($queueName) {
+		return "Queue_".$queueName;
+	}
+
+	/**
+	 * @param string $queueName The name of the queue
+	 * @return array The items in the given queue
+	 */
+	function getQueueItems($queueName) {
+		if ($value = $this->get($this->getQueueKey($queueName)))
+			return $this->unserialize($value);
+		else
+			return [];
+	}
+
+	/**
+	 * Sets the given queue to contain the given items
+	 * @param string $queueName The name of the queue
+	 * @param array The items of the given queue
+	 */
+	function setQueueItems($queueName, $items) {
+		return $this->set($this->getQueueKey($queueName), $this->serialize($items), 0);
 	}
 }

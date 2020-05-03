@@ -136,14 +136,14 @@ interface CacheProviderInterfaceQueue {
 	/**
 	 * Returns the element at the end of a queue, and removes it
 	 * @param string $queueName The name of the queue
-	 * @return mixed The stored value
+	 * @return mixed The stored value, or null if the queue was empty
 	 */
 	function rPop($queueName);
 
 	/**
 	 * Returns the element at the beggining of a queue, and removes it
 	 * @param string $queueName The name of the queue
-	 * @return mixed The stored value
+	 * @return mixed The stored value, or null if the queue was empty
 	 */
 	function lPop($queueName);
 }
