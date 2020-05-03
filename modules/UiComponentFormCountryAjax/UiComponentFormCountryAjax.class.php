@@ -16,7 +16,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFormCountryAjax extends \Cherrycake\UiComponent {
+class UiComponentFormCountryAjax extends \Cherrycake\UiComponentFormDatabaseQueryAjax {
 	function buildHtml($setup = false) {
 		$this->setProperties($setup);
 		$this->querySql = "

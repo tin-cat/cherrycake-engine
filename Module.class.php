@@ -134,14 +134,14 @@ class Module extends BasicObject {
 
 		if (is_array($this->dependentCoreModules)) {
 			foreach ($this->dependentCoreModules as $moduleName) {
-				if (!$e->loadCoreModule($moduleName, $this->getName()))
+				if (!$e->loadCoreModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}
 
 		if (is_array($this->dependentAppModules)) {
 			foreach ($this->dependentAppModules as $moduleName) {
-				if (!$e->loadAppModule($moduleName, $this->getName()))
+				if (!$e->loadAppModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}

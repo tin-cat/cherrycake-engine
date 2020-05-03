@@ -65,7 +65,7 @@ class UiComponentFormRadiosAjax extends \Cherrycake\UiComponent {
 			"value" => $this->value,
 		];
 
-		$r .= $e->UiComponentFormRadios->buildHtml($uiComponentFormRadiosSetup);
+		$r = $e->UiComponentFormRadios->buildHtml($uiComponentFormRadiosSetup);
 
 		$e->HtmlDocument->addInlineJavascript("
 			$('#".$this->domId."').UiComponentFormRadiosAjax({

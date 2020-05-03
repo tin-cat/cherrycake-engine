@@ -42,10 +42,12 @@ class UiComponentFormDatabaseQueryAjax extends \Cherrycake\UiComponent {
 
 	protected $config = [
 		"cacheProviderName" => "engine",
-		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
+		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
+		"databaseProviderName" => false
 	];
 
 	protected $dependentCoreModules = [
+		"Database",
 		"UiComponentFormSelectAjax",
 		"UiComponentFormRadiosAjax"
 	];
@@ -55,9 +57,9 @@ class UiComponentFormDatabaseQueryAjax extends \Cherrycake\UiComponent {
 	 *
 	 * @param array $setup A hash array with the setup keys. Refer to constructor to see what keys are available.
 	 */
-	function buildHtml($setup = false) {		
+	function buildHtml($setup = false) {
 		if (is_array($setup))
-			while (list($key, $value) = each($setup))
+			foreach ($setup as $key => $value)
 				$this->$key = $value;
 		
 		global $e;

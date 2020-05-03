@@ -20,6 +20,7 @@ class BasicObject {
 	 * @return BasicObject The object
 	 */
 	static function build($properties = false) {
+		global $e;
 		try {
 			$className = get_called_class();
 			$object = new $className($properties);
@@ -42,11 +43,15 @@ class BasicObject {
 	 * @param boolean $isOverwrite Whether to overwrite properties if already set
 	 */
 	function setProperties($properties, $isOverwrite = true) {
-		if (is_array($properties))
-			foreach ($properties as $key => $value)
-				if (!is_null($value))
-					if ((isset($this->$key) && $isOverwrite) || !isset($this->$key))
+		if (is_array($properties)) {
+			foreach ($properties as $key => $value) {
+				if (!is_null($value)) {
+					if ((isset($this->$key) && $isOverwrite) || !isset($this->$key)) {
 						$this->$key = $value;
+					}
+				}
+			}
+		}
 	}
 
 	/**

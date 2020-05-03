@@ -14,7 +14,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class UiComponentFormLocationAjax extends \Cherrycake\UiComponent {
+class UiComponentFormLocationAjax extends \Cherrycake\UiComponentFormMultilevelSelectAjax {
 	protected $dependentCoreModules = [
 		"UiComponentFormMultilevelSelectAjax"
 	];

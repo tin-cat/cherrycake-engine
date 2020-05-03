@@ -21,10 +21,12 @@ class UiComponentFormRadio extends \Cherrycake\UiComponent {
 	protected $name;
 	protected $value;
 	protected $isChecked = false;
+	protected $isAutoFocus = false;
 	protected $title;
 	protected $subTitle;
 	protected $isDisabled = false;
 	protected $onChange;
+	protected $error;
 
 	/**
 	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module

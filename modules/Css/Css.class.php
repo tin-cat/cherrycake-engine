@@ -200,7 +200,8 @@ class Css  extends \Cherrycake\Module {
 		}
 		else
 			$fileNames = [];
-		return md5(implode($fileNames));
+		$key = md5(json_encode($this->sets[$setName]));
+		return $key;
 	}
 
 	/**
@@ -216,8 +217,8 @@ class Css  extends \Cherrycake\Module {
 		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
 		foreach ($orderedSets as $setName => $set) {
-			$this->storeParsedSetInCache($setName);
 			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";			
+			$this->storeParsedSetInCache($setName);
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		
@@ -354,7 +355,7 @@ class Css  extends \Cherrycake\Module {
 				
 				if ($e->isDevel())
 					$develInformation .= $requestedSet["directory"]."/".$file."\n";
-				
+
 				$css .= $e->Patterns->parse(
 					$file,
 					[
@@ -418,7 +419,7 @@ class Css  extends \Cherrycake\Module {
 		
 		$css = "";
 
-		foreach($setPairs as $setPair) {
+		foreach ($setPairs as $setPair) {
 			list($setName, $setUniqueId) = explode(":", $setPair);
 			$cacheKey = $e->Cache->buildCacheKey([
 				"prefix" => "cssParsedSet",
@@ -426,10 +427,12 @@ class Css  extends \Cherrycake\Module {
 				"uniqueId" => $setUniqueId
 			]);
 			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-				$css .= $e->Cache->$cacheProviderName->get($cacheKey);
+				$css .=
+					($e->isDevel() ? "/* Css set \"".$setName."\" (cached) */\n" : null).
+					$e->Cache->$cacheProviderName->get($cacheKey);
 			else
 			if ($e->isDevel())
-				$css .= "/* Css set \"".$setName."\" not cached */\n";
+				$css .= "/* Css set \"".$setName."\" (not cached) */\n";
 		}
 		
 		$e->Output->setResponse(new \Cherrycake\ResponseTextCss([

@@ -189,8 +189,8 @@ class Javascript  extends \Cherrycake\Module {
 		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
 		foreach ($orderedSets as $setName => $set) {
-			$this->storeParsedSetInCache($setName);
 			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
+			$this->storeParsedSetInCache($setName);
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 		

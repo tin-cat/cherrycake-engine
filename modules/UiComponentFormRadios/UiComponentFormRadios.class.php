@@ -21,11 +21,13 @@ class UiComponentFormRadios extends \Cherrycake\UiComponent {
 	protected $name;
 	protected $title;
 	protected $value;
-
+	protected $error;
+	
 	/**
 	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
 	protected $dependentCoreModules = [
+		"UiComponentFormRadio",
 		"UiComponentTooltip"
 	];
 
@@ -80,15 +82,15 @@ class UiComponentFormRadios extends \Cherrycake\UiComponent {
 			">".
 			($this->title ? "<div class=\"title\">".$this->title."</div>" : null);
 
-		while (list($key, $data) = each($this->items)) {
+		foreach ($this->items as $key => $data) {
 			if (!is_array($data))
 				$data = ["title" => $data];
 			
 			$html .= $e->UiComponentFormRadio->buildHtml([
 				"name" => $this->name,
 				"value" => $key,
-				"title" => $data["title"],
-				"subTitle" => $data["subTitle"],
+				"title" => $data["title"] ?? false,
+				"subTitle" => $data["subTitle"] ?? false,
 				"isChecked" => $key == $this->value
 			]);
 		}

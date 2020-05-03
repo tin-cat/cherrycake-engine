@@ -17,7 +17,15 @@ namespace Cherrycake;
 class UiComponentItemAdmin extends \Cherrycake\UiComponent {
 	protected $dependentCoreModules = [
         "UiComponentAjax",
-        "UiComponentForm"
+		"UiComponentForm",
+		"UiComponentFormInputAjax",
+		"UiComponentFormTextAjax",
+		"UiComponentFormRadiosAjax",
+		"UiComponentFormSelectAjax",
+		"UiComponentFormDatabaseQueryAjax",
+		"UiComponentFormCountryAjax",
+		"UiComponentFormMultilevelSelectAjax",
+		"UiComponentFormLocationAjax"		
     ];
     
     /**
@@ -122,35 +130,35 @@ class UiComponentItemAdmin extends \Cherrycake\UiComponent {
 					unset($uiComponentFormItem);
 					switch ($itemFieldData["formItem"]["type"]) {
 						case \Cherrycake\FORM_ITEM_TYPE_NUMERIC:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormInputAjax($buildSetup);
 							break;
 							
 						case \Cherrycake\FORM_ITEM_TYPE_STRING:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormInputAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormInputAjax($buildSetup);
 							break;
 						
 						case \Cherrycake\FORM_ITEM_TYPE_TEXT:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormTextAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormTextAjax($buildSetup);
 							break;
 						
 						case \Cherrycake\FORM_ITEM_TYPE_RADIOS:
 							$buildSetup["items"] = $itemFieldData["formItem"]["items"];
-							$uiComponentFormItem = \Cherrycake\UiComponentFormRadiosAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormRadiosAjax($buildSetup);
 							break;
 						
 						case \Cherrycake\FORM_ITEM_TYPE_SELECT:
 							foreach ($itemFieldData["formItem"]["items"] as $key => $thisItem)
 								$buildSetup["items"][$key] = $thisItem["title"];
-							$uiComponentFormItem = \Cherrycake\UiComponentFormSelectAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormSelectAjax($buildSetup);
 							break;
 						
 						case \Cherrycake\FORM_ITEM_TYPE_DATABASE_QUERY:
-							$uiComponentFormItem = \Cherrycake\UiComponentFormDatabaseQueryAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormDatabaseQueryAjax($buildSetup);
 							break;
 						
 						case \Cherrycake\FORM_ITEM_TYPE_COUNTRY:
 							$buildSetup["selectionStyle"] = $itemFieldData["formItem"]["selectionStyle"];
-							$uiComponentFormItem = \Cherrycake\UiComponentFormCountryAjax::build($buildSetup);
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormCountryAjax($buildSetup);
 							break;
 					}
 				}
@@ -176,7 +184,7 @@ class UiComponentItemAdmin extends \Cherrycake\UiComponent {
 								$itemFieldData["formItem"]["levels"][$levelName]["value"] = $item->{$levelData["fieldName"]};
 							reset($itemFieldData["formItem"]["levels"]);
 
-							$uiComponentFormItem = \Cherrycake\UiComponentFormMultilevelSelectAjax::build(array_merge($buildSetup, [
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormMultilevelSelectAjax(array_merge($buildSetup, [
 								"levels" => $itemFieldData["formItem"]["levels"]
 							]));
 							break;
@@ -189,7 +197,7 @@ class UiComponentItemAdmin extends \Cherrycake\UiComponent {
 							}
 							reset($itemFieldData["formItem"]["levels"]);
 
-							$uiComponentFormItem = \Cherrycake\UiComponentFormLocationAjax::build(array_merge($buildSetup, [
+							$uiComponentFormItem = new \Cherrycake\UiComponentFormLocationAjax(array_merge($buildSetup, [
 								"levels" => $itemFieldData["formItem"]["levels"]
 							]));
 							break;

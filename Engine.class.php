@@ -26,6 +26,12 @@ namespace Cherrycake {
 	const ANSI_LIGHT_CYAN = "\033[1;36m";
 	const ANSI_WHITE = "\033[1;37m";
 
+	const MODULE_LOADING_ORIGIN_MANUAL = 0;
+	const MODULE_LOADING_ORIGIN_BASE = 1;
+	const MODULE_LOADING_ORIGIN_DEPENDENCY = 2;
+	const MODULE_LOADING_ORIGIN_AUTOLOAD = 3;
+	const MODULE_LOADING_ORIGIN_GETTER = 4;
+
 	/**
 	 * The main class that loads modules and configurations, and the entry point of the application.
 	 * Cherrycake uses global variables for configuring modules and global configuration, be sure to set "register_globals" to "off" in php.ini to avoid security issues.
@@ -177,12 +183,12 @@ namespace Cherrycake {
 					require APP_DIR."/config/".$additionalAppConfigFile;
 
 			foreach ($setup["baseCoreModules"] ?? ["Actions"] as $module)
-				if (!$this->loadCoreModule($module, false))
+				if (!$this->loadCoreModule($module, MODULE_LOADING_ORIGIN_BASE))
 					return false;
 			
 			if (isset($setup["baseAppModules"])) {
 				foreach ($setup["baseAppModules"] as $module)
-					if (!$this->loadAppModule($module, false))
+					if (!$this->loadAppModule($module, MODULE_LOADING_ORIGIN_BASE))
 						return false;
 			}
 
@@ -380,34 +386,37 @@ namespace Cherrycake {
 		 * Loads a Core module. Core modules are classes extending the module class that provide engine-specific functionalities.
 		 *
 		 * @param string $moduleName The name of the module to load
+		 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
 		 * @param string $requiredByModuleName The name of the module that required this module, if any.
 		 *
 		 * @return boolean Whether the module has been loaded ok
 		 */
-		function loadCoreModule($moduleName, $requiredByModuleName = null) {
-			return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__, $requiredByModuleName);
+		function loadCoreModule($moduleName, $origin = MODULE_LOADING_ORIGIN_MANUAL, $requiredByModuleName = false) {
+			return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__, $origin, $requiredByModuleName);
 		}
 
 		/**
 		 * Loads an App module. App modules are classes extending the module class that provide app-specific functionalities.
 		 *
 		 * @param string $moduleName The name of the module to load
+		 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
 		 * @param string $requiredByModuleName The name of the module that required this module, if any.
 		 *
 		 * @return boolean Whether the module has been loaded ok
 		 */
-		function loadAppModule($moduleName, $requiredByModuleName = false) {
-			return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace(), $requiredByModuleName);
+		function loadAppModule($moduleName, $origin = MODULE_LOADING_ORIGIN_MANUAL, $requiredByModuleName = false) {
+			return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace(), $origin, $requiredByModuleName);
 		}
 
 		/**
 		 * Loads a module when it's not known whether it's an app or a core module
 		 * 
 		 * @param string $moduleName The name of the module to load
+		 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
 		 * @param string $requiredByModuleName The name of the module that required this module, if any.
 		 * @return boolean Whether the module has been loaded ok
 		 */
-		function loadUnknownModule($moduleName, $requiredByModuleName = false) {
+		function loadUnknownModule($moduleName, $origin = MODULE_LOADING_ORIGIN_MANUAL, $requiredByModuleName = false) {
 			if ($this->isCoreModuleExists($moduleName))
 				return $this->loadCoreModule($moduleName, $requiredByModuleName);
 			return $this->loadAppModule($moduleName, $requiredByModuleName);
@@ -420,17 +429,19 @@ namespace Cherrycake {
 		 * @param string $configDirectory Directory where module configuration files are stored with the syntax [module name].config.php
 		 * @param string $moduleName The name of the module to load
 		 * @param string $namespace The namespace of the module
+		 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
 		 * @param string $requiredByModuleName The name of the module that required this module, if any.
 		 *
 		 * @return boolean Whether the module has been loaded and initted ok
 		 */
-		function loadModule($modulesDirectory, $configDirectory, $moduleName, $namespace, $requiredByModuleName = null) {
+		function loadModule($modulesDirectory, $configDirectory, $moduleName, $namespace, $origin = MODULE_LOADING_ORIGIN_MANUAL, $requiredByModuleName = false) {
 			if ($this->isDevel()) {
 				$moduleLoadingHistoryId = uniqid();
 				$this->moduleLoadingHistory[$moduleLoadingHistoryId] = [
 					"loadingStartHrTime" => hrtime(true),
 					"loadedModule" => $moduleName,
 					"namespace" => $namespace,
+					"origin" => $origin,
 					"requiredBy" => $requiredByModuleName
 				];
 			}
@@ -562,7 +573,7 @@ namespace Cherrycake {
 		// function __get($key) {
 		// 	// if (property_exists($this, $key))
 		// 	// 	return $this->$key;
-		// 	if ($this->loadUnknownModule($key))
+		// 	if ($this->loadUnknownModule($key, MODULE_LOADING_ORIGIN_GETTER))
 		// 		return $this->$key;
 		// 	return false;
 		// }
@@ -806,15 +817,13 @@ namespace Cherrycake {
 							$r[$key][] =
 								$historyItem["namespace"]."/".$historyItem["loadedModule"].
 								" / ".
-								($historyItem["requiredBy"] === null ?
-									"Loaded programmatically"
-								:
-									($historyItem["requiredBy"] === false ?
-										"Base module"
-									:
-										"Required by ".$historyItem["requiredBy"]
-									)
-								).
+								[
+									MODULE_LOADING_ORIGIN_MANUAL => "Manually loaded",
+									MODULE_LOADING_ORIGIN_BASE => "Base module",
+									MODULE_LOADING_ORIGIN_DEPENDENCY => "Required by ".$historyItem["requiredBy"],
+									MODULE_LOADING_ORIGIN_AUTOLOAD => "Autoloaded",
+									MODULE_LOADING_ORIGIN_GETTER => "Loaded in getter"
+								][$historyItem["origin"]].
 								" / loaded at ".number_format(($historyItem["loadingStartHrTime"] - $status["executionStartHrTime"]) / 1000000, 4)."ms".
 								($historyItem["initEndHrTime"] ?? false ?
 									" / init took ".number_format(($historyItem["initEndHrTime"] - $historyItem["initStartHrTime"]) / 1000000, 4)."ms"
@@ -881,6 +890,7 @@ namespace {
 			// If not, check if it exists as a module
 			else
 			if ($e->isCoreModuleExists($className)) {
+				// $e->loadCoreModule($className, \Cherrycake\MODULE_LOADING_ORIGIN_AUTOLOAD);
 				$e->loadCoreModuleClass($className, $className); // We just load the module class instead of initting the module. This solves object inheritance dependencies on modules without causing complex dependency problems
 			}
 			// If not, throw an error
@@ -898,6 +908,7 @@ namespace {
 			// If not, check if it exists as a module
 			else
 			if ($e->isAppModuleExists($className)) {
+				// $e->loadAppModule($className, \Cherrycake\MODULE_LOADING_ORIGIN_AUTOLOAD);
 				$e->loadAppModuleClass($className, $className); // We just load the module class instead of initting the module. This solves object inheritance dependencies on modules without causing complex dependency problems
 			}
 			// If not, throw an error
