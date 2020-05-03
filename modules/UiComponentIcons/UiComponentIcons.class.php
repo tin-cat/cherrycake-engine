@@ -40,6 +40,10 @@ class UiComponentIcons extends \Cherrycake\UiComponent {
 	 */
 	protected $isConfigFile = true;
 
+	var $dependentCoreModules = [
+		"UiComponentJquery"
+	];
+
 	/**
 	 * @var array $config Holds the default configuration for this UiComponent
 	 */

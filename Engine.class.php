@@ -554,24 +554,24 @@ namespace Cherrycake {
 			include_once($this->getAppModulesDir()."/".$moduleName."/".$className.".class.php");
 		}
 
-		/**
-		 * Magic get method that tries to load modules if the the requested property is not found
-		 * @param string $key The key of the property or module name to get.
-		 * @return mixed The data. Null if data with the given key is not set.
-		 */
-		function __get($key) {
-			// if (property_exists($this, $key))
-			// 	return $this->$key;
-			if ($this->loadUnknownModule($key))
-				return $this->$key;
-			return false;
-		}
+		// /**
+		//  * Magic get method that tries to load modules if the the requested property is not found
+		//  * @param string $key The key of the property or module name to get.
+		//  * @return mixed The data. Null if data with the given key is not set.
+		//  */
+		// function __get($key) {
+		// 	// if (property_exists($this, $key))
+		// 	// 	return $this->$key;
+		// 	if ($this->loadUnknownModule($key))
+		// 		return $this->$key;
+		// 	return false;
+		// }
 
 		/**
 		 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules
 		 * @param string $methodName The method name to call
 		 */
-		function callMethodOnAllModules($methodName) {
+		function callMethodOnAllModules($methodName) {			
 			// Call the static method
 			$codeModuleNames = $this->getAvailableCoreModuleNamesWithMethod($methodName);
 			if (is_array($codeModuleNames)) {
@@ -853,7 +853,7 @@ namespace Cherrycake {
 namespace {
 
 	/**
-	 * Autoloader for requested classes and modules, to allow the automatic inclusion of class files when they're needed. It distinguishes from Cherrycake classes and App classes by checking the namespace
+	 * Autoloader for requested classes, to allow the automatic inclusion of class files when they're needed. It distinguishes from Cherrycake classes and App classes by checking the namespace
 	 */
 	spl_autoload_register(function ($className) {
 		global $e;
@@ -868,15 +868,15 @@ namespace {
 		$fileName = $className.".class.php";
 
 		if ($namespace == "Cherrycake") {
-			// Core class or module
+			// Core class
 			// First check if it exists as a class
 			if (file_exists(ENGINE_DIR."/classes/".$fileName)) {
 				include ENGINE_DIR."/classes/".$fileName;
 			}
-				// If not, check if it exists as a module
+			// If not, check if it exists as a module
 			else
 			if ($e->isCoreModuleExists($className)) {
-				$e->loadCoreModule($className);
+				$e->loadCoreModuleClass($className, $className); // We just load the module class instead of initting the module. This solves object inheritance dependencies on modules without causing complex dependency problems
 			}
 			// If not, throw an error
 			else {
@@ -893,7 +893,7 @@ namespace {
 			// If not, check if it exists as a module
 			else
 			if ($e->isAppModuleExists($className)) {
-				$e->loadAppModule($className);
+				$e->loadAppModuleClass($className, $className); // We just load the module class instead of initting the module. This solves object inheritance dependencies on modules without causing complex dependency problems
 			}
 			// If not, throw an error
 			else {

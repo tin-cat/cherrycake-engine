@@ -199,7 +199,7 @@ class Css  extends \Cherrycake\Module {
 		}
 		else
 			$fileNames = [];
-		return sizeof($fileNames).")".md5(implode($fileNames));
+		return md5(implode($fileNames));
 	}
 
 	/**
@@ -246,7 +246,13 @@ class Css  extends \Cherrycake\Module {
 	 * @param string $fileName The name of the file
 	 */
 	function addFileToSet($setName, $fileName) {
-		if (!$this->sets[$setName] ?? false && is_array($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
+		if (
+			isset($this->sets[$setName])
+			&&
+			isset($this->sets[$setName]["files"])
+			&&
+			in_array($fileName, $this->sets[$setName]["files"])
+		)
 			return;
 		$this->sets[$setName]["files"][] = $fileName;
 	}
@@ -288,7 +294,7 @@ class Css  extends \Cherrycake\Module {
 	/**
 	 * Parses the given set
 	 * @param string $setName The name of the set
-	 * @return string The parsed set
+	 * @return string The parsed set, or false if something went wrong
 	 */
 	function parseSet($setName) {
 		global $e;

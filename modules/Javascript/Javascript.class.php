@@ -221,7 +221,13 @@ class Javascript  extends \Cherrycake\Module {
 	 * @param string $fileName The name of the file
 	 */
 	function addFileToSet($setName, $fileName) {
-		if (!($this->sets[$setName] ?? false) && isset($this->sets[$setName]["files"]) && in_array($fileName, $this->sets[$setName]["files"]))
+		if (
+			isset($this->sets[$setName])
+			&&
+			isset($this->sets[$setName]["files"])
+			&&
+			in_array($fileName, $this->sets[$setName]["files"])
+		)
 			return;
 		$this->sets[$setName]["files"][] = $fileName;
 	}
