@@ -19,7 +19,7 @@ class UiComponentFormLocationAjax extends \Cherrycake\UiComponentFormMultilevelS
 		"UiComponentFormMultilevelSelectAjax"
 	];
 
-	function addCssAndJavascript() {
+	static function mapActions() {
 		global $e;
 		// Adds an action to retrieve location data via ajax
 		$e->Actions->mapAction(

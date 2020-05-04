@@ -38,6 +38,17 @@ class Module extends BasicObject {
 	 */
 	protected $dependentAppModules;
 
+	// /**
+	//  * Returns a new instance of this module with the given optional configuration values.
+	//  * @param array $properties Optional properties for the cloned object, just like in the config method
+	//  * @return Module The module
+	//  */
+	// function clone($properties = false) {
+	// 	$cloned = clone $this;
+	// 	$cloned->setProperties($properties);
+	// 	return $cloned;
+	// }
+
 	/**
 	 * @return string This module's name
 	 */

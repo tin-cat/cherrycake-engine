@@ -22,6 +22,7 @@ class UiComponentFormSelectAjax extends \Cherrycake\UiComponent {
 	protected $isDisabled = false;
 	protected $onChange;
 	protected $items;
+	protected $value;
 
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;

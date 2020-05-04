@@ -547,7 +547,7 @@ class Security  extends \Cherrycake\Module {
 		$allowedCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
 		$extraAllowedCharacters = ".".$separator;
 
-		while(list($search, $replace) = each($toreplace))
+		foreach ($toreplace as $search => $replace)
 			$string = preg_replace($search, $replace, $string);
 
 		if ($isLowercase)

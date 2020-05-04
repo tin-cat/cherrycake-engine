@@ -22,6 +22,9 @@ class UiComponentFormRadiosAjax extends \Cherrycake\UiComponent {
 	protected $isDisabled = false;
 	protected $onChange;
 	protected $items;
+	protected $name;
+	protected $title;
+	protected $value;
 
 	protected $saveAjaxUrl;
 	protected $saveAjaxKey = false;
