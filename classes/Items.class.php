@@ -411,7 +411,7 @@ abstract class Items extends BasicObject implements \Iterator {
 		// If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters
 		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : $e->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
 
-		while ($cachedKey = $e->Cache->{$cacheProviderName}->pooqueueLPop($this->cachedKeysPoolName)) {
+		while ($cachedKey = $e->Cache->{$cacheProviderName}->poolPop($this->cachedKeysPoolName)) {
 			if (!$e->Cache->{$cacheProviderName}->delete($cachedKey))
 				$isErrors = true;
 		}

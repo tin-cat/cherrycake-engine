@@ -247,7 +247,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	 * @param string $poolName The name of the pool
 	 * @return mixed The stored value or false if it doesn't exists.
 	 */
-	function pooqueueLPop($poolName) {
+	function poolPop($poolName) {
 		$this->RequireConnection();
 		return $this->client->spop($poolName);
 	}

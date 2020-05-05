@@ -94,7 +94,7 @@ interface CacheProviderInterfacePool {
 	 * @param string $poolName The name of the pool
 	 * @return mixed The stored value or false if it doesn't exists.
 	 */
-	function pooqueueLPop($poolName);
+	function poolPop($poolName);
 
 	/**
 	 * Checks whether a value is stored or not in the pool.
