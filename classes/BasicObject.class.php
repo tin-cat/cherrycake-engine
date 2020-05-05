@@ -75,7 +75,7 @@ class BasicObject {
 			}
 
 			if (isset($parameterSetup["addArrayKeysIfNotExist"])) {
-				if (isset($parameters[$parameterName]) && !is_array($parameters[$parameterName]))
+				if (!isset($parameters[$parameterName]) || (isset($parameters[$parameterName]) && !is_array($parameters[$parameterName])))
 					$parameters[$parameterName] = [];
 				if (isset($parameters[$parameterName]))
 					$parameters[$parameterName] = array_replace($parameters[$parameterName], $parameterSetup["addArrayKeysIfNotExist"]);
