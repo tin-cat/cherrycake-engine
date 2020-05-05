@@ -106,7 +106,7 @@ class SystemLog  extends \Cherrycake\Module {
 	 */
 	function queueEventInCache($systemLogEvent) {
 		global $e;
-		return $e->Cache->{$this->getConfig("cacheProviderName")}->rPush($this->getCacheKey(), $systemLogEvent);
+		return $e->Cache->{$this->getConfig("cacheProviderName")}->queueRPush($this->getCacheKey(), $systemLogEvent);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class SystemLog  extends \Cherrycake\Module {
 		global $e;
 		$count = 0;
 		while (true) {
-			if (!$systemLogEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->lPop($this->getCacheKey()))
+			if (!$systemLogEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->queueLPop($this->getCacheKey()))
 				break;
 			$this->store($systemLogEvent);
 			$count ++;

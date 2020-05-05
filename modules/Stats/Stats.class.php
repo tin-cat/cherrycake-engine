@@ -89,7 +89,7 @@ class Stats  extends \Cherrycake\Module {
 	 */
 	function queueEventInCache($statsEvent) {
 		global $e;
-		return $e->Cache->{$this->getConfig("cacheProviderName")}->rPush($this->getCacheKey(), $statsEvent);
+		return $e->Cache->{$this->getConfig("cacheProviderName")}->queueRPush($this->getCacheKey(), $statsEvent);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Stats  extends \Cherrycake\Module {
 		global $e;
 		$count = 0;
 		while (true) {
-			if (!$statsEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->lPop($this->getCacheKey()))
+			if (!$statsEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->queueLPop($this->getCacheKey()))
 				break;
 			$statsEvent->store();
 			$count ++;

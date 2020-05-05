@@ -156,7 +156,7 @@ $(function() {
 	$('#UiComponentPopup').UiComponentPopup();
 });
 
-function openRegularPopupUrl(url, width, height) {
+function openRegulaqueueRPopupUrl(url, width, height) {
 	var top = Math.round((screen.height/2) - (height/2));
 	var left = Math.round((screen.width/2) - (width/2));
 

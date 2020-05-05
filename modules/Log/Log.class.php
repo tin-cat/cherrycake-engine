@@ -96,7 +96,7 @@ class Log  extends \Cherrycake\Module {
 	 */
 	function queueEventInCache($logEvent) {
 		global $e;
-		return $e->Cache->{$this->getConfig("cacheProviderName")}->rPush($this->getCacheKey(), $logEvent);
+		return $e->Cache->{$this->getConfig("cacheProviderName")}->queueRPush($this->getCacheKey(), $logEvent);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class Log  extends \Cherrycake\Module {
 		global $e;
 		$count = 0;
 		while (true) {
-			if (!$logEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->lPop($this->getCacheKey()))
+			if (!$logEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->queueLPop($this->getCacheKey()))
 				break;
 			$this->store($logEvent);
 			$count ++;

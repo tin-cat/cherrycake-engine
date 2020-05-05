@@ -94,7 +94,7 @@ interface CacheProviderInterfacePool {
 	 * @param string $poolName The name of the pool
 	 * @return mixed The stored value or false if it doesn't exists.
 	 */
-	function poolPop($poolName);
+	function pooqueueLPop($poolName);
 
 	/**
 	 * Checks whether a value is stored or not in the pool.
@@ -123,7 +123,7 @@ interface CacheProviderInterfaceQueue {
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function rPush($queueName, $value);
+	function queueRPush($queueName, $value);
 
 	/**
 	 * Puts a value to the beggining of a queue
@@ -131,28 +131,28 @@ interface CacheProviderInterfaceQueue {
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function lPush($queueName, $value);
+	function queueLPush($queueName, $value);
 
 	/**
 	 * Returns the element at the end of a queue, and removes it
 	 * @param string $queueName The name of the queue
 	 * @return mixed The stored value, or null if the queue was empty
 	 */
-	function rPop($queueName);
+	function queueRPop($queueName);
 
 	/**
 	 * Returns the element at the beggining of a queue, and removes it
 	 * @param string $queueName The name of the queue
 	 * @return mixed The stored value, or null if the queue was empty
 	 */
-	function lPop($queueName);
+	function queueLPop($queueName);
 }
 
 /**
  * Additional interface for all cache providers that additionally implement Hashed lists functionalities
  * Hashed lists allow you to store sets of items identified by a specific key, into a hash list identified also by its own key. You can then get or remove specific items from the list, or remove all items of a list at the same time.
  */
-interface CacheProviderInterfaceHash {
+interface CacheProviderInterfaceList {
 	/**
 	 * Adds an item with the given key with the given value to the given listName
 	 * @param string $listName The name of the hashed list
@@ -160,7 +160,7 @@ interface CacheProviderInterfaceHash {
 	 * @param mixed $value The value
 	 * @return integer 1 if the key wasn't on the hash list and it was added. 0 if the key already existed and it was updated.
 	 */
-	function hSet($listName, $key, $value);
+	function listSet($listName, $key, $value);
 
 	/**
 	 * Retrieves the stored value at the given key from the given listName
@@ -168,39 +168,39 @@ interface CacheProviderInterfaceHash {
 	 * @param string $key The key
 	 * @return mixed The stored value
 	 */
-	function hGet($listName, $key);
+	function listGet($listName, $key);
 
 	/**
 	 * Removes the item at the given key from the given listName
 	 * @param string $listName The name of the hashed list
 	 * @param string $key The key
 	 */
-	function hDel($listName, $key);
+	function listDel($listName, $key);
 
 	/**
 	 * @param string $listName The name of the hashed list
 	 * @param string $key The key
 	 * @return boolean Whether the item at the given key exists on the specified listName
 	 */
-	function hExists($listName, $key);
+	function listExists($listName, $key);
 
 	/**
 	 * @param string $listName The name of the hashed list
 	 * @return integer The number of items stored at the given listName
 	 */
-	function hLen($listName);
+	function listLen($listName);
 
 	/**
 	 * @param string $listName The name of the hashed list
 	 * @return array An array of all the items on the specified list. An empty array if the list was empty, or false if the list didn't exists.
 	 */
-	function hGetAll($listName);
+	function listGetAll($listName);
 
 	/**
 	 * @param string $listName The name of the hashed list
 	 * @return array An array containing all the keys on the specified list. An empty array if the list was empty, or false if the list didn't exists.
 	 */
-	function hGetKeys($listName);
+	function listGetKeys($listName);
 
 	/**
 	 * Increments the number stored at the given key in the given listName by the given increment
@@ -209,7 +209,7 @@ interface CacheProviderInterfaceHash {
 	 * @param integer $increment The amount to increment
 	 * @return integer The value after applying the increment
 	 */
-	function hIncrBy($listName, $key, $increment = 1);
+	function listIncrBy($listName, $key, $increment = 1);
 }
 
 /**

@@ -119,7 +119,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function rPush($queueName, $value) {
+	function queueRPush($queueName, $value) {
 		$queue = $this->getQueueItems($queueName);
 		array_push($queue, $value);
 		return $this->setQueueItems($queueName, $queue);
@@ -131,7 +131,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 * @param mixed $value The value to store
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function lPush($queueName, $value) {
+	function queueLPush($queueName, $value) {
 		$queue = $this->getQueueItems($queueName);
 		array_unshift($queue, $value);
 		return $this->setQueueItems($queueName, $queue);
@@ -142,7 +142,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 * @param string $queueName The name of the queue
 	 * @return mixed The stored value, or null if the queue was empty
 	 */
-	function rPop($queueName) {
+	function queueRPop($queueName) {
 		$queue = $this->getQueueItems($queueName);
 		$item = array_pop($queue);
 		$this->setQueueItems($queueName, $queue);
@@ -154,7 +154,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 * @param string $queueName The name of the queue
 	 * @return mixed The stored value, or null if the queue was empty
 	 */
-	function lPop($queueName) {
+	function queueLPop($queueName) {
 		$queue = $this->getQueueItems($queueName);
 		$item = array_shift($queue);
 		$this->setQueueItems($queueName, $queue);

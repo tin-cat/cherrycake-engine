@@ -31,7 +31,7 @@ namespace Cherrycake;
  * <code>
  * $SessionConfig = [
  * "cachePrefix" => "Session", // The cache prefix to use when storing sessions into cache
- * "sessionCacheProviderName" => "huge", // The name of the cache provider to use to store sessions and the counter of created sessions. Must support CacheProviderInterfaceHash
+ * "sessionCacheProviderName" => "huge", // The name of the cache provider to use to store sessions and the counter of created sessions. Must support CacheProviderInterfaceList
  * "sessionCacheTtl" => \Cherrycake\CACHE_TTL_SHORT, // The TTL of cached sessions. Should be small because if a session is removed from the database and the user keeps accessing the site with that session, his session will be accepted because it's still in cache.
  * "sessionDatabaseProviderName" => "main", // The name of the DatabaseProvider to use for storing sessions
  * "sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
@@ -394,7 +394,7 @@ class Session  extends \Cherrycake\Module {
 		$data = unserialize($row->getField("data"));
 		if (is_array($data)) {
 			foreach ($data as $key => $value)
-				$e->Cache->$cacheProviderName->hSet(
+				$e->Cache->$cacheProviderName->listSet(
 					$this->getSessionCacheKey($sessionId),
 					$key,
 					$value
@@ -416,7 +416,7 @@ class Session  extends \Cherrycake\Module {
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->hExists(
+		return $e->Cache->$cacheProviderName->listExists(
 			$this->getSessionCacheKey($this->getSessionId()),
 			$key
 		);
@@ -435,7 +435,7 @@ class Session  extends \Cherrycake\Module {
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->hGet(
+		return $e->Cache->$cacheProviderName->listGet(
 			$this->getSessionCacheKey($this->getSessionId()),
 			$key
 		);
@@ -464,12 +464,12 @@ class Session  extends \Cherrycake\Module {
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
 
 		if (is_null($value))
-			$e->Cache->$cacheProviderName->hDel(
+			$e->Cache->$cacheProviderName->listDel(
 				$this->getSessionCacheKey($this->getSessionId()),
 				$key
 			);
 		else
-			$e->Cache->$cacheProviderName->hSet(
+			$e->Cache->$cacheProviderName->listSet(
 				$this->getSessionCacheKey($this->getSessionId()),
 				$key,
 				$value
@@ -481,7 +481,7 @@ class Session  extends \Cherrycake\Module {
 			[
 				[
 					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
-					"value" => serialize($e->Cache->$cacheProviderName->hGetAll($this->getSessionCacheKey($this->getSessionId())))
+					"value" => serialize($e->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId())))
 				],
 				[
 					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
@@ -603,7 +603,7 @@ class Session  extends \Cherrycake\Module {
 		
 		// Loops through all the session keys
 		$poolPrefix = "_pool_".$pool."_";
-		$data = $e->Cache->$cacheProviderName->hGetAll($this->getSessionCacheKey($this->getSessionId()));
+		$data = $e->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId()));
 		while (list($key, ) = each($data)) {
 			if (substr($key, 0, strlen($poolPrefix)) == $poolPrefix)
 				if (!$this->removeSessionData($key))
