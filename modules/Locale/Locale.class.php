@@ -7,7 +7,7 @@
 namespace Cherrycake;
 
 /**
- * Module that provides localization functionalities for a multilingual site: Database-based multilingual texts, currency and dates formatting, timezones and other locale settings
+ * The Locale module provides localization functionalities for multilingual web sites with automatic detection, plus the handling of currencies, dates, timezones and more.
  *
  * @package Cherrycake
  * @category Modules
@@ -23,6 +23,15 @@ class Locale  extends \Cherrycake\Module
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"availableLocales" => null, // A hash array of available localisations the app supports, where each key is the locale name, and each value a hash array with the following keys:
+			// domains: An array of domains that will trigger this localization when the request to the app comes from one of them.
+			// language: The language used in this localization, one of the available LANGUAGE_? constants.
+			// dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
+			// temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
+			// currency: The currency used in this localization, one of the available CURRENCY_? constants.
+			// decimalMark: The type character used when separating decimal digits in this localization, one of the available DECIMAL_MARK_? constants.
+			// measurementSystem: The measurement system used in this localization, one of the available MEASUREMENT_SYSTEM_? constants.
+			// timeZone: The timezone id used in this localization, from the cherrycake_location_timezones table of the Cherrycake skeleton database.
 		"defaultLocale" => false, // The locale name to use when it can not be autodetected.
 		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
 		"availableLanguages" => false, // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available LANGUAGE_? constants.

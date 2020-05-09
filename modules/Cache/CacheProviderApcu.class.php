@@ -16,7 +16,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class CacheProviderApcu extends CacheProvider implements CacheProviderInterface, CacheProviderInterfaceQueue {
+class CacheProviderApcu extends CacheProvider implements CacheProviderInterface, CacheProviderInterfaceQueue, CacheProviderInterfaceList {
 	/**
 	 * @var bool $isConnected Always set to true, since APCu cache doesn't requires an explicit connection
 	 */
@@ -183,9 +183,124 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	/**
 	 * Sets the given queue to contain the given items
 	 * @param string $queueName The name of the queue
-	 * @param array The items of the given queue
+	 * @param array The items for the given queue
 	 */
 	function setQueueItems($queueName, $items) {
 		return $this->set($this->getQueueKey($queueName), $this->serialize($items), 0);
+	}
+
+	/**
+	 * Adds an object to a list
+	 * @param string $listName The name of the hashed list
+	 * @param string $key The key
+	 * @param mixed $value The value
+	 * @return integer True if the key wasn't on the hash list and it was added. False if the key already existed and it was updated.
+	 */
+	function listSet($listName, $key, $value) {
+		$list = $this->getListItems($listName);
+		$isExists = in_array($key, $list);
+		$list[$key] = $value;
+		$this->setListItems($listName, $list);
+		return $isExists;
+	}
+
+	/**
+	 * Retrieves an object from a list
+	 * @param string $listName The name of the hashed list
+	 * @param string $key The key
+	 * @return mixed The stored value, or null if it doesn't exists.
+	 */
+	function listGet($listName, $key) {
+		$list = $this->getListItems($listName);		
+		return $list[$key] ?? null;
+	}
+
+	/**
+	 * Removes the item at the given key from the given listName
+	 * @param string $listName The name of the hashed list
+	 * @param string $key The key
+	 */
+	function listDel($listName, $key) {
+		$list = $this->getListItems($listName);
+		if (in_array($key, $list))
+			unset($list[$key]);
+		$this->setListItems($listName, $list);
+	}
+
+	/**
+	 * @param string $listName The name of the hashed list
+	 * @param string $key The key
+	 * @return boolean Whether the item at the given key exists on the specified listName
+	 */
+	function listExists($listName, $key) {
+		$list = $this->getListItems($listName);
+		return in_array($key, $list);
+	}
+
+	/**
+	 * @param string $listName The name of the hashed list
+	 * @return integer The number of items stored at the given listName
+	 */
+	function listLen($listName) {
+		return sizeof($this->getListItems($listName));
+	}
+
+	/**
+	 * @param string $listName The name of the hashed list
+	 * @return array An array of all the items on the specified list. An empty array if the list was empty, or false if the list didn't exists.
+	 */
+	function listGetAll($listName) {
+		return $this->getListItems($listName);
+	}
+
+	/**
+	 * @param string $listName The name of the hashed list
+	 * @return array An array containing all the keys on the specified list. An empty array if the list was empty, or false if the list didn't exists.
+	 */
+	function listGetKeys($listName) {
+		return array_keys($this->listGetAll($listName));
+	}
+
+	/**
+	 * Increments the number stored at the given key in the given listName by the given increment
+	 * @param string $listName The name of the hashed list
+	 * @param string $key The key
+	 * @param integer $increment The amount to increment
+	 * @return integer The value after applying the increment
+	 */
+	function listIncrBy($listName, $key, $increment = 1) {
+		$list = $this->getListItems($listName);
+		$isExists = in_array($key, $list);
+		$list[$key] += $increment;
+		$this->setListItems($listName, $list);
+		return $list[$key];
+	}
+
+	/**
+	 * @param string $listName The name of the list
+	 * @return string The key that identified the given list's items in the cache
+	 */
+	function getListKey($listName) {
+		return "List_".$listName;
+	}
+
+	/**
+	 * @param string $listName The name of the list
+	 * @return array The items in the given list
+	 */
+	function getListItems($listName) {
+		if ($value = $this->get($this->getListKey($listName)))
+			return $this->unserialize($value);
+		else
+			return [];
+	}
+
+	/**
+	 * Sets the given list to contain the given items
+	 * @param string $listName The name of the list
+	 * @param array The items dor the given list
+	 */
+	function setListItems($listName, $items) {
+		return $this->set($this->getListKey($listName), $this->serialize($items), 0);
 	}
 }
