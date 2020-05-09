@@ -364,7 +364,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	}
 
 	/**
-	 * Clears the cache for the query represented by the given $p parameters, just as they were passed to buildCacheKeyNamingOptions (most probably passed first to fillFromParameters)
+	 * Clears the cache for the query represented by the given p parameters, just as they were passed to buildCacheKeyNamingOptions, the constructor or, most probably, the fillFromParameters method.
 	 * @param array $p A hash array of parameters that will be used to build the cache key to clear, so it has to be the same as the parameters passed to buildCacheKeyNamingOptions (and also to fillFromParameters, and to the constructor, if that's the case)
 	 * @return boolean True if the cache could be cleared, false otherwise
 	 */

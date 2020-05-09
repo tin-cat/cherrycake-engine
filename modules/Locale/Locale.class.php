@@ -1,91 +1,13 @@
 <?php
 
 /**
- * Locale
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake;
 
-const LANGUAGE_SPANISH = 1;
-const LANGUAGE_ENGLISH = 2;
-
-const DATE_FORMAT_LITTLE_ENDIAN = 1;  // Almost all the world, like "20/12/2010", "9 November 2003", "Sunday, 9 November 2003", "9 November 2003"
-const DATE_FORMAT_BIG_ENDIAN = 2; // Asian countries, Hungary and Sweden, like "2010/12/20", "2003 November 9", "2003-Nov-9, Sunday"
-const DATE_FORMAT_MIDDLE_ENDIAN = 3; // United states and Canada, like "12/20/2010", "Sunday, November 9, 2003", "November 9, 2003", "Nov. 9, 2003", "Nov/9/2003"
-
-const TEMPERATURE_UNITS_FAHRENHEIT = 1;
-const TEMPERATURE_UNITS_CELSIUS = 2;
-
-const CURRENCY_USD = 1;
-const CURRENCY_EURO = 2;
-
-const DECIMAL_MARK_POINT = 0;
-const DECIMAL_MARK_COMMA = 1;
-
-const MEASUREMENT_SYSTEM_IMPERIAL = 1;
-const MEASUREMENT_SYSTEM_METRIC = 2;
-
-const HOURS_FORMAT_12H = 1;
-const HOURS_FORMAT_24H = 2;
-
-const TIMESTAMP_FORMAT_BASIC = 0;
-const TIMESTAMP_FORMAT_HUMAN = 1;
-const TIMESTAMP_FORMAT_RELATIVE_HUMAN = 2;
-
-const ORDINAL_GENDER_MALE = 0;
-const ORDINAL_GENDER_FEMALE = 1;
-
-const LOCALE_GEOLOCATION_METHOD_CLOUDFLARE = 0;
-
 /**
- * Locale
- *
  * Module that provides localization functionalities for a multilingual site: Database-based multilingual texts, currency and dates formatting, timezones and other locale settings
- *
- * Configuration example for locale.config.php:
- * <code>
- * $localeConfig = [
- * 	"availableLocales" => [ // An array of possible different localizations based on the domain requested
- * 		"main" => [
- * 			"domains" => ["movefy.devel.zumodered.com", "www.movefy.devel.zumodered.com"], // An array of domains that will trigger this localization
- * 			"language" => LANGUAGE_ENGLISH, // The default language
- * 			"dateFormat" => DATE_FORMAT_LITTLE_ENDIAN, // The default date format
- * 			"temperatureUnits" => TEMPERATURE_UNITS_FAHRENHEIT, // The default temperature units
- * 			"currency" => CURRENCY_USD, // The default currency
- * 			"decimalMark" => DECIMAL_MARK_POINT,
- * 			"measurementSystem" => MEASUREMENT_SYSTEM_IMPERIAL,
- * 			"timeZone" => 216 // The default timezone id, from the cherrycake_location_timezones table (216 = "America/New_York")
- * 		),
- * 		"es" => [
- * 			"domains" => ["es.movefy.devel.zumodered.com"],
- * 			"language" => LANGUAGE_SPANISH,
- * 			"dateFormat" => DATE_FORMAT_LITTLE_ENDIAN,
- * 			"temperatureUnits" => TEMPERATURE_UNITS_CELSIUS,
- * 			"currency" => CURRENCY_EURO,
- * 			"decimalMark" => DECIMAL_MARK_POINT,
- * 			"measurementSystem" => MEASUREMENT_SYSTEM_IMPERIAL,
- * 			"timeZone" => 216 // The default timezone id, from the cherrycake_location_timezones table (216 = "America/New_York")
- * 		),
- *		"defaultLocale" => "main", // The locale to use if none could have been guessed
- * 		"canonicalLocale" => "main", // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
- * 		"availableLanguages" => [LANGUAGE_ENGLISH, LANGUAGE_SPANISH], // An array of the languages that are available for the APP. The textsTableName should contain at least this languages.
- * 		"geolocationMethod" => LOCALE_GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_*
- *		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
- *		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored
- * 		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored
- *		"textCacheProviderName" => "engine", // The name of the cache provider that will be used to cache localized multilingual texts
- *		"textCacheKeyPrefix" => "LocaleText", // The prefix of the keys when storing texts into cache
- *		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
- *		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
- *		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored
- *		"timeZonesCacheProviderName" => "engine", // The name of the cache provider that will be user to cache timezones
- *		"timeZonesCacheKeyPrefix" => "LocaleTimeZone", // The prefix of the keys when storing timezones into cache
- *		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
- * 	]
- * ];
- * </code>
  *
  * @package Cherrycake
  * @category Modules
@@ -101,16 +23,21 @@ class Locale  extends \Cherrycake\Module
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"geolocationMethod" => \Cherrycake\LOCALE_GEOLOCATION_METHOD_CLOUDFLARE,
-		"textsTableName" => "cherrycake_locale_texts",
-		"textCategoriesTableName" => "cherrycake_locale_textCategories",
-		"textCacheProviderName" => "engine",
-		"textCacheKeyPrefix" => "LocaleText",
-		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
-		"timeZonesTableName" => "cherrycake_location_timezones",
-		"timeZonesCacheProviderName" => "engine",
-		"timeZonesCacheKeyPrefix" => "LocaleTimeZone",
-		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL
+		"defaultLocale" => false, // The locale name to use when it can not be autodetected.
+		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
+		"availableLanguages" => false, // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available LANGUAGE_? constants.
+		"geolocationMethod" => \Cherrycake\GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
+		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored. See the cherrycake_locale_texts table in the Cherrycake skeleton database.
+		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
+		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored. See the cherrycake_locale_textCategories table in the Cherrycake skeleton database.
+		"textCacheProviderName" => "engine", // The name of the cache provider that will be used to cache localized multilingual texts
+		"textCacheKeyPrefix" => "LocaleText", // The prefix of the keys when storing texts into cache
+		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
+		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
+		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored. See the cherrycake_location_timezones table in the Cherrycake skeleton database.
+		"timeZonesCacheProviderName" => "engine", // The name of the cache provider that will be user to cache timezones
+		"timeZonesCacheKeyPrefix" => "LocaleTimeZone", // The prefix of the keys when storing timezones into cache
+		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
 	];
 
 	/**
@@ -858,12 +785,12 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
-	 * This method tries to detect the user's location using the configured geolocationMethod. If contry-only methods like LOCALE_GEOLOCATION_METHOD_CLOUDFLARE are configured, only the country will be set in the returned Location object.
+	 * This method tries to detect the user's location using the configured geolocationMethod. If contry-only methods like GEOLOCATION_METHOD_CLOUDFLARE are configured, only the country will be set in the returned Location object.
 	 * @return mixed A Location object specifying the user's location, or false if it could not be determined.
 	 */
 	function guessLocation() {
 		switch ($this->getConfig("geolocationMethod")) {
-			case LOCALE_GEOLOCATION_METHOD_CLOUDFLARE:
+			case GEOLOCATION_METHOD_CLOUDFLARE:
 				if (!isset($_SERVER["HTTP_CF_IPCOUNTRY"]))
 					return false;
 				$location = new \Cherrycake\Location;

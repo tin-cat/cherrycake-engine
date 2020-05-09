@@ -1,8 +1,6 @@
 <?php
 
 /**
- * Css
- *
  * @package Cherrycake
  */
 
@@ -17,60 +15,8 @@ const CSS_MEDIAQUERY_PHONE_LANDSCAPE = 5; // Matches phones in landscape orienta
 const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any other small-screen devices (tablets, phones and similar) in all orientations
 
 /**
- * Css
- *
  * Module that manages Css code.
- *
- * * It works nicely in conjunction with HtmlDocument module.
- * * Css code minifying.
- * * Multiple Css files are loaded in just one request.
- * * Treats Css files as patterns in conjunction with Patterns module, allowing the use of calls to the engine within Css code, PHP programming structures, variables, etc.
- * * Implements Css code caching in conjunction with Cache module.
- * * Implements "file sets"
- * * Implements a simple code version mechanism that helps avoiding client-side caching problems.
- *
- * Configuration example for css.config.php:
- * <code>
- * $cssConfig = [
- * 	"defaultDirectory" => "res/css", // The default directory where CSS files in each CSS set will be searched
- *  "cachePrefix" => "Css", // The prefix to use for storing CSS on the cache
- * 	"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The cache TTL for CSS sets
- * 	"cacheProviderName" => "engine", // The cache provider for CSS sets
- * 	"lastModifiedTimestamp" => 1, // The last modified timestamp of CSS, to handle caches and http cache
- *  "isCache" => false, // Whether to use cache or not
- *  "isHttpCache" => false, // Whether to send HTTP Cache headers or not
- *  "httpCacheMaxAge" => false, // The maximum age in seconds for HTTP Cache
- *  "isMinify" => true, // Whether to minify the resulting CSS or not
- *  "responsiveWidthBreakpoints" => [ // The different considered responsive widths
- *      "tiny" => 500,
- *      "small" => 700,
- *      "normal" => 980,
- *      "big" => 1300,
- *      "huge" => 1700
- *  ],
- * 	"sets" => [] // The CSS sets available to be included in HTML documents
- * 		"main" => [
- * 			"order" => 20, // An optional numeric order to control the order on which the files inside this set are dumped
- * 			"directory" => "res/css/main", // The specific directory where the CSS files for this set reside
- * 			"variablesFile" => "res/css/cssvariables.php", // A file to include whenever parsing this set files, usually for defining variables that can be later used inside the css files
- * 			"isIncludeAllFilesInDirectory" => false, // Whether to automatically include in the set all the files found in directory or not
- * 			"files" => [ // The files that this CSS set contain
- * 				"main.css",
- * 				"header.css",
- * 				"content.css"
- * 			]
- * 		],
- *		"appUiComponents" => [ // This set must be declared when working with Ui module
- *			"order" => 20, // An optional numeric order to control the order on which the files inside this set are dumped
- *			"version" => 1,
- *			"directory" => "res/css/UiComponents",
- *			"files" => [ // The default Ui-related Css files, these are normally the ones that are not bonded to an specific UiComponent, since any other required file is automatically added here by the specific UiComponent object.
- *			]
- *		]
- * 	]
- * ];
- * </code>
- *
+ * 
  * @package Cherrycake
  * @category Modules
  */
@@ -85,13 +31,12 @@ class Css  extends \Cherrycake\Module {
 	 */
 	var $config = [
 		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
-		"cachePrefix" => "Css",
-		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL for CSS sets
-		"cacheProviderName" => "engine", // The cache provider for CSS sets
-		"lastModifiedTimestamp" => false, // The global version
+		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL to use for the cache
+		"cacheProviderName" => "engine", // The name of the cache provider to use
+		"lastModifiedTimestamp" => false, // The timestamp of the last modification to the CSS files, or any other string that will serve as a unique identifier to force browser cache reloading when needed.
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
-		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST,
-		"isMinify" => false,
+		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL of the HTTP Cache
+		"isMinify" => false, // Whether to minify the CSS code or not
 		"responsiveWidthBreakpoints" => [
 			"tiny" => 500,
 			"small" => 700,
@@ -189,27 +134,39 @@ class Css  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Builds a unique id that identifies the specified set with its current files, in a way that it doesn't matters the order of the files
+	 * Builds a unique id that uniquely identifies the specified set with its current files and its contents.
+	 * Unique ids for sets change if the list of files in a set changes, or if the contents of any of the files changes.
+	 * Set unique ids are stored in shared memory, and generated when they're not found there.
+	 * Set unique ids are stored with a TTL of 1 if the app is in development mode.
+	 * This ultimately causes the browser to easily cache the requests because the URL uniquely identifies versions, automatically causing a cache miss when the contents have changed, avoiding any need to keep track of cache versions manually.
 	 * @param string $setName The name of the set
 	 * @return string A uniq id
 	 */
 	function getSetUniqueId($setName) {
-		if ($this->sets[$setName]["files"] ?? false && is_array($this->sets[$setName]["files"])) {
-			$fileNames = $this->sets[$setName]["files"];
-			asort($fileNames);
-		}
-		else
-			$fileNames = [];
-		$key = md5(json_encode($this->sets[$setName]));
-		return $key;
+		global $e;
+
+		$cacheProviderName = $this->GetConfig("cacheProviderName");
+		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheKey = $e->Cache->buildCacheKey([
+			"prefix" => "cssSetUniqueId",
+			"uniqueId" => $setName
+		]);
+
+		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
+			return $e->Cache->$cacheProviderName->get($cacheKey);
+		
+		$uniqId = md5($this->parseSet($setName));
+
+		$e->Cache->$cacheProviderName->set($cacheKey, $uniqId, $cacheTtl);
+		return $uniqId;
 	}
 
 	/**
 	 * Builds a URL to request the given set contents.
-	 * Also stores the parsed set in cache for further retrieval by the dump method
+	 * Also stores the parsed set in cache for retrieval by the dump method in another request.
 	 * 
 	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
-	 * @return string The Url of the Css set
+	 * @return string The Url of the Css requested sets
 	 */
 	function getSetUrl($setNames = false) {
 		global $e;
@@ -258,8 +215,8 @@ class Css  extends \Cherrycake\Module {
 	/**
 	 * Adds a file to a Css set
 	 *
-	 * @param string $setName The name of the set
-	 * @param string $fileName The name of the file
+	 * @param string $setName The name of the set.
+	 * @param string $fileName The file name, relative to the set's configured directory.
 	 */
 	function addFileToSet($setName, $fileName) {
 		if (
@@ -287,24 +244,57 @@ class Css  extends \Cherrycake\Module {
 
 	/**
 	 * Parses the given set and stores it into cache.
+	 * If we're in development mode, it is stored into cache with a TTL of 1 second.
 	 * @param string $setName The name of the set
 	 */
 	function storeParsedSetInCache($setName) {
 		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $this->GetConfig("cacheTtl");
+		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
 			"setName" => $setName,
 			"uniqueId" => $this->getSetUniqueId($setName)
 		]);
-		if ($e->isDevel() || !$e->Cache->$cacheProviderName->isKey($cacheKey))
+		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$this->parseSet($setName),
 				$cacheTtl
 			);
+	}
+
+	/*
+	* Builds a list of the files on the specified set.
+	* @param string $setName The name of the set
+	* @return array The names of the files on the set, or false if no files
+	*/
+	function getSetFiles($setName) {
+		global $e;
+
+		$requestedSet = $this->sets[$setName];
+
+		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
+			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
+					"errorDescription" => "Couldn't open CSS directory",
+					"errorVariables" => [
+						"setName" => $setName,
+						"directory" => $requestedSet["directory"]
+					]
+				]);
+			}
+			if ($handler = opendir($requestedSet["directory"])) {
+				while (false !== ($entry = readdir($handler))) {
+					if (substr($entry, -4) == ".css")
+						$requestedSet["files"][] = $entry;
+				}
+				closedir($handler);
+			}
+		}
+
+		return $requestedSet["files"] ?? false;
 	}
 
 	/**
@@ -323,31 +313,13 @@ class Css  extends \Cherrycake\Module {
 		
 		$requestedSet = $this->sets[$setName];
 
-		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
-			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Couldn't open CSS directory",
-					"errorVariables" => [
-						"setName" => $setName,
-						"directory" => $requestedSet["directory"]
-					]
-				]);
-			}
-			if ($handler = opendir($requestedSet["directory"])) {
-				while (false !== ($entry = readdir($handler))) {
-					if (substr($entry, -4) == ".css") {
-						$requestedSet["files"][] = $entry;
-					}
-				}
-				closedir($handler);
-			}
-		}
-
 		$css = "";
 
-		if (isset($requestedSet["files"])) {
+		$files = $this->getSetFiles($setName);
+
+		if ($files) {
 			$parsed = [];
-			foreach ($requestedSet["files"] as $file) {
+			foreach ($files as $file) {
 				if (in_array($file, $parsed))
 					continue;
 				else
@@ -413,6 +385,11 @@ class Css  extends \Cherrycake\Module {
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 		
+		if (!$request->set) {
+			$e->Output->setResponse(new \Cherrycake\ResponseTextCss());
+			return;
+		}
+
 		$setPairs = explode("-", $request->set);
 
 		$cacheProviderName = $this->GetConfig("cacheProviderName");

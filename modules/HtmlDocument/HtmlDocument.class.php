@@ -1,71 +1,13 @@
 <?php
 
 /**
- * HtmlDocument
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake;
 
-const HTML_RESPONSE_CODE_NOT_FOUND = 404;
-const HTML_RESPONSE_CODE_NO_PERMISSION = 403;
-const HTML_RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;
-
 /**
- * HtmlDocument
- *
  * Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
- *
- * Configuration example for htmldocument.config.php:
- * <code>
- * $htmlDocumentConfig = [
- * 	"title" => "Cherrycake test", // The default page title
- * 	"description" => "A test application built with the Cherrycake engine", // The default page description
- * 	"copyright" => "Copyright Cherrycake ".date("Y"), // The default page copyright info
- * 	"keywords" => ["Cherrycake", "Engine", "Test"], // The default page keywords
- * 	"isAllowRobotsIndex" => false, // Whether to allow robots to index the document
- * 	"isAllowRobotsFollow" => false, // Whether to allow robots to follow links on the document
- *  "googleAnalyticsTrackingId" => false, // Set it to the Google Analytics Tracking Id (UA-999999-99) to setup GA Statistics. Leave it to false to not use Google Analytics. Only added when not in devel environment.
- *  "matomoTrackingId" => false, // Set it to the Matomo Analytics Tracking Id. Leave it to false to not use Matomo. Only added when not in devel environment.
- *  "matomoServerUrl" => false, // When using Matomo, set it to the Matomo¡s server url  
- *  "mobileViewport" => [ // Configuration for the site when viewed in a mobile device, via the viewport meta
- *      "width" => 500, // The width of the viewport: A number of pixels, or "device-width"
- *      "userScalable" => false, // Optional, whether or not to let the user pinch to zoom in/out
- *      "initialScale" => 1, // Optional, the initial scale
- *      "maximumScale" => 2 // Optional, the maximum scale
- *  ],
- *  "isNoticeForOlderInternetExplorer" => false, // When set to true, adds a warning on the page for users visiting with an old Internet Explorer browser
- *  "isDeferJavascript" => false // Whether to defer javascript sets loading
- *  // Most of the following information and images can be automatically generated with http://realfavicongenerator.net/
- *  "microsoftApplicationInfo" => [ // Application info for Microsoft standards (i.e: When adding the web as a shortcut in Windows 8)
- *      "name" => "", // The name of the app
- *      "tileColor" => "", // The color of the tile on Windows 8, in HTML hexadecimal format (i.e: #dd2153)
- *      "tileImage" => "", // Path to an image to use as a tile image for Windows 8. Must be in png format
- *  ],
- *  "appleApplicationInfo" => [ // Application info for Apple standards (i.e: When adding the web as a shortcut in iOs devices, or to hint the users about the App store APP for this site)
- *      "name" => "", // The name of the app
- *      "iTunesAppId" => "", // The id of the related application on iTunes, if any
- *      "icons" => [ // Image SRCs for common icon sizes. Must be in png format
- *          "57x57" => "",
- *          "114x114" => "",
- *          "72x72" => "",
- *          "144x144" => "",
- *          "60x60" => "",
- *          "120x120" => "",
- *          "76x76" => "",
- *          "152x152" => ""
- *      ]
- *  ],
- *  "favIcons" => [ // Image SRCs for common favicon files. Must be in png format
- *      "196x196" => "",
- *      "160x160" => "",
- *      "96x96" => "",
- *      "16x16" => "",
- *      "32x32" => ""
- *  ]
- * );
- * </code>
  *
  * @package Cherrycake
  * @category Modules
@@ -82,49 +24,39 @@ class HtmlDocument  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"title" => false,  // The default page title
-		"description" => false,  // The default page description
-		"copyright" => false, // The default page copyright info
-		"keywords" => false, // The default page keywords
+		"title" => false,  // The page title
+		"description" => false,  // The page description
+		"copyright" => false, // The page copyright info
+		"keywords" => false, // The page keywords
+		"languageCode" => "en", // The language code of the page, from the ISO 639-1 standard (https://www.w3schools.com/tags/ref_language_codes.asp)
 		"charset" => "utf-8",
 		"bodyAdditionalCssClasses" => false,
 		"isAllowRobotsIndex" => true, // Whether to allow robots to index the document
 		"isAllowRobotsFollow" => true, // Whether to allow robots to follow links on the document
-		"isDeferJavascript" => false,
-		"isNoticeForOlderInternetExplorer" => false,
+		"isDeferJavascript" => false, // Whether to defer loading of JavaScript or not.
 		"mobileViewport" => [ // Configuration for the site when viewed in a mobile device, via the viewport meta
 			"width" => "device-width", // The width of the viewport: A number of pixels, or "device-width"
-			"userScalable" => true, // Optional, whether or not to let the user pinch to zoom in/out
+			"userScalable" => true, // Whether or not to let the user pinch to zoom in/out
 			"initialScale" => 1, // Optional, the initial scale
 			"maximumScale" => 2 // Optional, the maximum scale
 		],
 		"microsoftApplicationInfo" => [ // Application info for Microsoft standards (i.e: When adding the web as a shortcut in Windows 8)
 			"name" => false, // The name of the app
 			"tileColor" => false, // The color of the tile on Windows 8, in HTML hexadecimal format (i.e: #dd2153)
-			"tileImage" => false, // Path to an image to use as a tile image for Windows 8. Must be in png format
+			"tileImage" => false, // URL of an image to use as a tile image for Windows 8. Must be in png format
 		],
+		"iTunesAppId" => false, // The id of a corresponding App in the Apple store.
 		"appleApplicationInfo" => [ // Application info for Apple standards (i.e: When adding the web as a shortcut in iOs devices, or to hint the users about the App store APP for this site)
 			"name" => false, // The name of the app
-			"icons" => [ // Image SRCs for common icon sizes. Must be in png format
-				"180x180" => false
-			]
+			"icons" => false // A hash array of icon sizes where the key is in the [width]x[height] syntax and the value is the icon URL in png format. The standard keys to use here are:57x57 ,114x114 ,72x72 ,144x144 ,60x60 ,120x120 ,76x76 and 152x152.
 		],
-		"favIcons" => [ // Image SRCs for common favicon files. Must be in png format
-			"16x16" => false,
-			"32x32" => false		],
-		"matomoServerUrl" => false,
-		"matomoTrackingId" => false
+		"favIcons" => false, // A hash array of icon sizes where the key is in the [width]x[height] syntax and the value is the icon URL in png format. The standard keys to use here are:196x196, 160x160, 96x96, 16x16 and 32x32.
+		"matomoServerUrl" => false, // The Matomo (Piwik) server URL, if any.
+		"matomoTrackingId" => false, // The Matomo (Piwik) tracking id, if any.
+		"googleAnalyticsTrackingId" => false, // The Google Analytics id, if any.
+		"cssSets" => false, // An array of the Css set names to link in the HTML document in a single request, or, to add different Css requests instead of one, an array where each item represents a single request, and is an array of Css set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
+		"javascriptSets" => false // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
 	];
-
-	/**
-	 * @var array $cssSets An array of Css sets that must be requested on this HTML document
-	 */
-	private $cssSets;
-
-	/**
-	 * @var array $javascriptSets An array of Javascript sets that must be requested on this HTML document
-	 */
-	private $javascriptSets;
 
 	/**
 	 * @var string $inlineJavascript Javascript code that must be executed inline from the HTML
@@ -180,16 +112,6 @@ class HtmlDocument  extends \Cherrycake\Module {
 			$this->setConfig("keywords", array_merge($this->getConfig("keywords"), [$keywords]));
 	}
 
-	function addCssSet($setName) {
-		if (!is_array($this->cssSets) || !in_array($setName, $this->cssSets))
-			$this->cssSets[] = $setName;
-	}
-
-	function addJavascriptSet($setName) {
-		if (!is_array($this->javascriptSets) || !in_array($setName, $this->javascriptSets))
-			$this->javascriptSets[] = $setName;
-	}
-
 	/**
 	 * addInlineJavascript
 	 *
@@ -218,19 +140,18 @@ class HtmlDocument  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * header
-	 *
-	 * Returns a properly built HTML header
+	 * Builds a standard HTML header, from the <html ... > to the <body ...> tags. It works with the Css and Javascript modules to include the proper CSS/JavaScript calls.
 	 *
 	 * @param array $setup Setup options to configure the HTML header, with possible keys:
 	 * "bodyAdditionalCssClasses" => false // Additional CSS classes for the body element
+	 * @return string The HTML header
 	 */
 	function header($setup = false) {
 		global $e;
 
 		$r = "<!DOCTYPE html>\n";
 
-		$r .= "<html lang=\"en\">\n";
+		$r .= "<html lang=\"".$this->getConfig("languageCode")."\">\n";
 
 		$r .= "<head>\n";
 
@@ -260,12 +181,34 @@ class HtmlDocument  extends \Cherrycake\Module {
 			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
 			
 		// Css
-		if ($e->Css)
-			$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($this->cssSets)."\" />\n";
+		if ($e->Css) {
+			if (!$cssSets = $this->getConfig("cssSets")) {
+				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl()."\" />\n";
+			}
+			else
+			if (is_array($cssSets[0])) {
+				foreach ($cssSets as $cssSet)
+					$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSet)."\" />\n";
+			}
+			else
+			if (is_array($cssSets))
+				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSets)."\" />\n";
+		}
 
 		// Javascript
-		if ($e->Javascript)
-			$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($this->javascriptSets)."\"></script>\n";
+		if ($e->Javascript) {
+			if (!$javascriptSets = $this->getConfig("javascriptSets")) {
+				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl()."\"></script>\n";
+			}
+			else
+			if (is_array($javascriptSets[0])) {
+				foreach ($javascriptSets as $javascriptSet)
+					$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSet)."\"></script>\n";
+			}
+			else
+			if (is_array($javascriptSets))
+				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSets)."\"></script>\n";
+		}
 
 		// Mobile viewport
 		if ($mobileViewport = $this->getConfig("mobileViewport")) {
@@ -318,9 +261,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * footer
-	 *
-	 * Returns a properly built HTML footer
+	 * Builds a standard HTML footer, from the </body> to the </html> tags. Works with the Javascript module to implement deferred JavaScript capabilities.
 	 *
 	 * @todo Inlined Javascript should be minimized
 	 */
@@ -338,22 +279,30 @@ class HtmlDocument  extends \Cherrycake\Module {
 		if ($this->getFooterAdditionalHtml())
 			$r .= $this->getFooterAdditionalHtml();
 
-		if ($this->getConfig("isNoticeForOlderInternetExplorer"))
-			$r .=
-				"<!--[if lt IE 9]>\n".
-					"<div style=\"position: fixed; bottom: 0; left: 0; right: 0; background: #fa0; color: #fff; font-size: 13pt; font-weight: bold; padding: 15px; float: left; width: 100%; text-align: center; z-index: 10000;\">You are using a really outdated browser, get <a href=\"http://www.google.com/chrome\">Chrome</a> or <a href=\"http://www.getfirefox.com\">Firefox</a> to enjoy our site (and the rest of the Internet) at its best!</div>\n".
-				"<![endif]-->\n";
-
 		// Javascript
 		if ($e->Javascript) {
-			if (is_array($this->javascriptSets)) {
-				if($this->getConfig("isDeferJavascript")) {
+
+			if ($this->getConfig("isDeferJavascript") && $javascriptSets = $this->getConfig("javascriptSets")) {
+				if (is_array($javascriptSets[0])) {
+					foreach ($javascriptSets as $javascriptSet) {
+						$r .=
+							"<script type=\"text/javascript\">
+								var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
+								DOMReady(function () {
+									var element = document.createElement(\"script\");
+									element.src = \"".$e->Javascript->getSetUrl($javascriptSet)."\";
+									document.body.appendChild(element);
+								});
+							</script>";
+					}
+				}
+				else {
 					$r .=
 						"<script type=\"text/javascript\">
 							var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
 							DOMReady(function () {
 								var element = document.createElement(\"script\");
-								element.src = \"".$e->Javascript->getSetUrl($this->javascriptSets)."\";
+								element.src = \"".$e->Javascript->getSetUrl($javascriptSets)."\";
 								document.body.appendChild(element);
 							});
 						</script>";
@@ -422,50 +371,5 @@ class HtmlDocument  extends \Cherrycake\Module {
 					"g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);\n".
 				"})();\n".
 			"</script>";
-	}
-
-	/**
-	 * responseCode
-	 *
-	 * Sends a response code to the client, and optionally redirects to the specified location.
-	 *
-	 * @param integer $code The code, from one of the available HTML_RESPONSE_CODE_NOT_* consts
-	 * @param string $location The Url to redirect
-	 * @param string $location An optional additional location to redirect the client after the code has been sent
-	 */
-	function responseCode($code, $location = false) {
-		switch ($code) {
-			case HTML_RESPONSE_CODE_NOT_FOUND:
-				header("HTTP/1.0 404 Not Found");
-				break;
-			case HTML_RESPONSE_CODE_NO_PERMISSION:
-				header("HTTP/1.0 403 Not Found");
-				break;
-			case HTML_RESPONSE_CODE_INTERNAL_SERVER_ERROR:
-				header("HTTP/1.1 500 Internal Server Error");
-				break;
-			case HTML_RESPONSE_CODE_MOVED_PERMANENTLY:
-				header("HTTP/1.1 301 Moved Permanently");
-				break;
-			case HTML_RESPONSE_CODE_FOUND_REDIRECT:
-				header("HTTP/1.1 302 Found");
-				break;
-		}
-
-		if ($location)
-			header ("Location: ".$location);
-	}
-
-	/**
-	 * Redirects to the given URL via the specified HTTP response code and ends execution
-	 *
-	 * @param integer $code The code, from one of the available HTML_RESPONSE_CODE_NOT_* consts
-	 * @param string $location The Url to redirect
-	 * @param string $location A location to redirect the client after the code has been sent
-	 */
-	function Xredirect($code, $location) {
-		global $e;
-		$this->responseCode($code, $location);
-		$e->end();
 	}
 }
