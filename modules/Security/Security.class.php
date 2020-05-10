@@ -445,26 +445,41 @@ class Security  extends \Cherrycake\Module {
 
 			// Check csrf token
 			if (!$request->isParameterReceived("csrfToken")) {
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
-					"subType" => "Csrf",
-					"description" => "CSRF Attack detected: No token parameter received"
-				]));
+				if ($e->isModuleLoaded("SystemLog"))
+					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+						"subType" => "Csrf",
+						"description" => "CSRF Attack detected: No token parameter received"
+					]));
+				else
+					$e->Errors->trigger(\Cherrycake\ERROR_APP, [
+						"errorDescription" => "CSRF Attack detected: No token parameter received"
+					]);
 				return false;
 			}
 
 			if (!$this->isCsrfTokenInSession()) {
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
-					"subType" => "Csrf",
-					"description" => "CSRF Attack detected: No token in session"
-				]));
+				if ($e->isModuleLoaded("SystemLog"))
+					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+						"subType" => "Csrf",
+						"description" => "CSRF Attack detected: No token in session"
+					]));
+				else
+					$e->Errors->trigger(\Cherrycake\ERROR_APP, [
+						"errorDescription" => "CSRF Attack detected: No token in session"
+					]);
 				return false;
 			}
 
 			if (!hash_equals($this->getCsrfTokenInSession(), $request->csrfToken)) {
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
-					"subType" => "Csrf",
-					"description" => "CSRF Attack detected: Token parameter does not matches token in session"
-				]));
+				if ($e->isModuleLoaded("SystemLog"))
+					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+						"subType" => "Csrf",
+						"description" => "CSRF Attack detected: Token parameter does not matches token in session"
+					]));
+				else
+					$e->Errors->trigger(\Cherrycake\ERROR_APP, [
+						"errorDescription" => "CSRF Attack detected: Token parameter does not matches token in session"
+					]);
 				return false;
 			}
 		}

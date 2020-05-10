@@ -275,7 +275,7 @@ function handleError(
 		// Check specific error for pattern parsing in order to show later the pattern itself
 		if (
 			(
-				strstr($errFile, "patterns.class.php") !== false
+				strstr($errFile, "Patterns.class.php") !== false
 				||
 				strstr($errFile, "eval()'d") !== false
 			)

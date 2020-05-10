@@ -1,59 +1,50 @@
 <?php
 
 /**
- * LoginUser
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake;
 
 /**
- * LoginUser
- *
- * An interface to be implemented by the App class that represents a user when interacting with the Login module
+ * An abstract class to be extended by the App class that represents a user when interacting with the Login module
  *
  * @package Cherrycake
  * @category Modules
  */
-interface LoginUser
-{
+abstract class LoginUser extends Item {
 	/**
-	 * loadFromId
-	 *
-	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.
-	 * Loads a user with the given $userId
-	 *
-	 * @param integer $userId The user id of the user to load
-	 * @return boolean True if the user could be loaded ok, or false if the load failed, or the user does not exists.
+	 * @var $userNameFieldName The field name that holds the username user to identify this user in the Login process
 	 */
-	public function loadFromId($userId);
+	protected $userNameFieldName = false;
+	/**
+	 * @var $encryptedPasswordFieldName The field name that holds the encrypted password to identify this user in the Login process
+	 */
+	protected $encryptedPasswordFieldName = false;
 
 	/**
-	 * loadFromUserIdField
-	 *
-	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.
 	 * Loads a user with the given $userName. $userName is whatever is required to the user as username; normally, an email or a username.
 	 *
 	 * @param string $userName The username of the user to load. Usually, an email or a username.
 	 * @return boolean True if the user could be loaded ok, or false if the load failed, or the user does not exists.
 	 */
-	public function loadFromUserNameField($userName);
+	public function loadFromUserNameField($userName) {
+		return $this->loadFromId($userName, $this->userNameFieldName);
+	}
 
 	/**
-	 * getEncryptedPassword
-	 *
-	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.
 	 * Returns the loaded user's encrypted password to be checked by the Login module.
 	 *
 	 * @return string The user's encrypted password, false if doesn't has one or if the user can't login.
 	 */
-	public function getEncryptedPassword();
+	public function getEncryptedPassword() {
+		return $this->{$this->encryptedPasswordFieldName};
+	}
 
 	/**
-	 * Interfaced method to be implemented by the App class that represents a user when interacting with the Login module.
-	 * It performs any initialization needed for the user object when it represents a successfully logged in user.
+	 * Performs any initialization needed for the user object when it represents a successfully logged in user.
+	 * 
 	 * @return boolean True if success, false otherwise
 	 */
-	public function afterLoginInit();
+	public function afterLoginInit() {}
 }

@@ -234,7 +234,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 */
 	function listExists($listName, $key) {
 		$list = $this->getListItems($listName);
-		return in_array($key, $list);
+		return isset($list[$key]);
 	}
 
 	/**

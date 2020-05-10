@@ -50,7 +50,7 @@ class Request {
 	 * @param string $with How to populate the created Request object. Leave to false for unpopulated request.
 	 */
 	function __construct($setup = false) {
-		$this->isSecurityCsrf = isset($setup["isSecurityCsrf"]) ? $setup["isSecurityCsrf"] : false;
+		$this->isSecurityCsrf = $setup["isSecurityCsrf"] ?? false;
 
 		if ($this->isSecurityCsrf()) {			
 			global $e;
@@ -299,10 +299,10 @@ class Request {
 			}
 		}
 
-		if ($this->isSecurityCsrf()) {
-			global $e;
-			$url .= ($count > 0 ? "&" : "?")."csrfToken=".$e->Security->getCsrfToken();
-		}
+		// if ($this->isSecurityCsrf()) {
+		// 	global $e;
+		// 	$url .= ($count > 0 ? "&" : "?")."csrfToken=".$e->Security->getCsrfToken();
+		// }
 
 		if (isset($setup["anchor"]))
 			$url .= "#".$setup["anchor"];
@@ -329,8 +329,9 @@ class Request {
 	 * @return string A string that represents uniquely this request, to be used as a cache key
 	 */
 	function getCacheKey($prefix, $parameterValues = null) {
+		$key = "";
 		if (is_array($this->pathComponents)) {
-			while (list($index, $pathComponent) = each($this->pathComponents)) {
+			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
 					case REQUEST_PATH_COMPONENT_TYPE_FIXED:
 						$key .= "_".$pathComponent->string;

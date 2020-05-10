@@ -52,8 +52,7 @@ define("HASH_PBKDF2_INDEX", 3);
  * @category Classes
  */
 class Pbkdf2 {
-	function createHash($password)
-	{
+	function createHash($password) {
 		// format: algorithm:iterations:salt:hash
 		$salt = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
 		return PBKDF2_HASH_ALGORITHM . ":" . PBKDF2_ITERATIONS . ":" .  $salt . ":" .
@@ -67,10 +66,9 @@ class Pbkdf2 {
 			));
 	}
 
-	function checkPassword($password, $correct_hash)
-	{
+	function checkPassword($password, $correct_hash) {
 		$params = explode(":", $correct_hash);
-		if(count($params) < HASH_SECTIONS)
+		if (count($params) < HASH_SECTIONS)
 			return false;
 		$pbkdf2 = base64_decode($params[HASH_PBKDF2_INDEX]);
 		return $this->slowEquals(
@@ -87,11 +85,9 @@ class Pbkdf2 {
 	}
 
 	// Compares two strings $a and $b in length-constant time.
-	function slowEquals($a, $b)
-	{
+	function slowEquals($a, $b) {
 		$diff = strlen($a) ^ strlen($b);
-		for($i = 0; $i < strlen($a) && $i < strlen($b); $i++)
-		{
+		for ($i = 0; $i < strlen($a) && $i < strlen($b); $i++) {
 			$diff |= ord($a[$i]) ^ ord($b[$i]);
 		}
 		return $diff === 0;
@@ -112,12 +108,11 @@ class Pbkdf2 {
 	 * This implementation of PBKDF2 was originally created by https://defuse.ca
 	 * With improvements by http://www.variations-of-shadow.com
 	 */
-	function pbkdf2($algorithm, $password, $salt, $count, $key_length, $raw_output = false)
-	{
+	function pbkdf2($algorithm, $password, $salt, $count, $key_length, $raw_output = false) {
 		$algorithm = strtolower($algorithm);
-		if(!in_array($algorithm, hash_algos(), true))
+		if (!in_array($algorithm, hash_algos(), true))
 			die('PBKDF2 ERROR: Invalid hash algorithm.');
-		if($count <= 0 || $key_length <= 0)
+		if ($count <= 0 || $key_length <= 0)
 			die('PBKDF2 ERROR: Invalid parameters.');
 
 		if (function_exists("hash_pbkdf2")) {
@@ -132,7 +127,7 @@ class Pbkdf2 {
 		$block_count = ceil($key_length / $hash_length);
 
 		$output = "";
-		for($i = 1; $i <= $block_count; $i++) {
+		for ($i = 1; $i <= $block_count; $i++) {
 			// $i encoded as 4 bytes, big endian.
 			$last = $salt . pack("N", $i);
 			// first iteration
@@ -144,7 +139,7 @@ class Pbkdf2 {
 			$output .= $xorsum;
 		}
 
-		if($raw_output)
+		if ($raw_output)
 			return substr($output, 0, $key_length);
 		else
 			return bin2hex(substr($output, 0, $key_length));

@@ -239,7 +239,7 @@ class Javascript  extends \Cherrycake\Module {
 		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "javascriptParsedSet",
 			"setName" => $setName,

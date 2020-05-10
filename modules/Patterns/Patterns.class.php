@@ -117,9 +117,9 @@ class Patterns  extends \Cherrycake\Module {
 				||
 				$setup["isCache"]
 			) {
-				$cacheProviderName = $setup["cacheProviderName"] ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?: $this->getConfig("defaultCacheProviderName");
+				$cacheProviderName = $setup["cacheProviderName"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?? false ?: $this->getConfig("defaultCacheProviderName");
 				$cacheKey = \Cherrycake\Cache::buildCacheKey([
-					"prefix" => $setup["cachePrefix"] ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?: $this->getConfig("defaultCachePrefix"),
+					"prefix" => $setup["cachePrefix"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?? false ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
 				]);
 				if ($buffer = $e->Cache->$cacheProviderName->get($cacheKey))
@@ -160,7 +160,7 @@ class Patterns  extends \Cherrycake\Module {
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$buffer,
-				$setup["cacheTtl"] ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?: $this->getConfig("defaultCacheTtl")
+				$setup["cacheTtl"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?? false ?: $this->getConfig("defaultCacheTtl")
 			);
 		
 		return $buffer;

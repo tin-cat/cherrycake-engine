@@ -1,8 +1,6 @@
 <?php
 
 /**
- * Login
- *
  * @package Cherrycake
  */
 
@@ -19,21 +17,7 @@ const LOGOUT_RESULT_OK = 0;
 const LOGOUT_RESULT_FAILED = 1;
 
 /**
- * Login
- *
- * Implements a login/logout mechanism based on the Session module.
- *
- * It takes configuration from the App-layer configuration file. See there to find available configuration options.
- *
- * Configuration example for login.config.php:
- * <code>
- * $loginConfig = [
- *  "userClassName" => "", // The name of the class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
- *  "passwordAuthenticationMethod" => LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 by default
- *  "isLoadUserOnInit" => true, // Whether to check for a logged user and get it on this module's init sequence. Defaults to true.
- *  "sleepOnErrorSeconds" => 1 // Seconds to delay execution when wrong login specified, to make things difficult for bombing attacks
- * ];
- * </code>
+ * Provides a standardized method for implementing secure user identification workflows for web apps.
  *
  * @package Cherrycake
  * @category Modules
@@ -45,9 +29,10 @@ class Login  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
+		"userClassName" => "\CherrycakeApp\User", // The name of the app class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
 		"isLoadUserOnInit" => true, // Whether to check for a logged user and get it on this module's init sequence. Defaults to true.
 		"passwordAuthenticationMethod" => LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
-		"sleepOnErrorSeconds" => 1  // Seconds to delay execution when wrong login specified, to make things difficult for bombing attacks
+		"sleepOnErrorSeconds" => 1  // Seconds to delay execution when a wrong login is requested, to make things difficult for bombing attacks
 	];
 
 	/**
@@ -154,9 +139,7 @@ class Login  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * isLogged
-	 *
-	 * Determines whether there is a logged user or not
+	 * Checks whether there is a logged user or not
 	 *
 	 * @return bool True if there is a logged user, false otherwise.
 	 */
@@ -168,16 +151,13 @@ class Login  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * doLogin
-	 *
-	 * Logs in the user with the given $userName and $password.
-	 * Locates the user on the database and checks the given password against the stored one.
+	 * Checks the given userName and password credentials in the database, and logs in the user if they're found to be correct.
 	 *
 	 * @param string $userName The string field that uniquely identifies the user on the database, the one used by the user to login. Usually, an email or a username.
 	 * @param string $password The password entered by the user to login.
 	 * @return integer One of the LOGIN_RESULT_* consts
 	 */
-	function doLogin($userName, $password) {
+	function doLogin($userName, $password) {		
 		eval("\$user = new ".$this->getConfig("userClassName")."();");
 
 		if (!$user->loadFromUserNameField($userName)) {

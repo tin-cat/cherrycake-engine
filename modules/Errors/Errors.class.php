@@ -133,15 +133,17 @@ class Errors  extends \Cherrycake\Module {
 		if (
 			$e->isModuleLoaded("SystemLog")
 			&&			
-			($errorType == ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
-			||
-			($errorType == ERROR_APP && $this->getConfig("isLogAppErrors"))
-			||
-			($errorType == ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
-			||
-			($errorType == ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
-			||
-			isset($setup["isForceLog"]) && $setup["isForceLog"] == true
+			(
+				($errorType == ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
+				||
+				($errorType == ERROR_APP && $this->getConfig("isLogAppErrors"))
+				||
+				($errorType == ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
+				||
+				($errorType == ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
+				||
+				isset($setup["isForceLog"]) && $setup["isForceLog"] == true
+			)
 		)
 			$e->SystemLog->event(new \Cherrycake\SystemLogEventError([
 				"subType" => isset($setup["errorSubType"]) ? $setup["errorSubType"] : false,
@@ -242,9 +244,11 @@ class Errors  extends \Cherrycake\Module {
 
 							$errorVariables = "";
 
-							if (isset($setup["errorVariables"]))
-								foreach ($setup["errorVariables"] as $key => $value)
-									$errorVariables .= "<br><b>".$key."</b>: ".$value;
+							if (isset($setup["errorVariables"])) {
+								foreach ($setup["errorVariables"] as $key => $value) {
+									$errorVariables .= "<br><b>".$key."</b>: ".(is_array($value) ? json_encode($value) : $value);
+								}
+							}
 
 							trigger_error(
 								$setup["errorDescription"].$errorVariables,

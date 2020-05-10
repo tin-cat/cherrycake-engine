@@ -244,14 +244,13 @@ class Css  extends \Cherrycake\Module {
 
 	/**
 	 * Parses the given set and stores it into cache.
-	 * If we're in development mode, it is stored into cache with a TTL of 1 second.
 	 * @param string $setName The name of the set
 	 */
 	function storeParsedSetInCache($setName) {
 		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
+		$cacheTtl = $this->GetConfig("cacheTtl");
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
 			"setName" => $setName,
