@@ -46,5 +46,5 @@ abstract class LoginUser extends Item {
 	 * 
 	 * @return boolean True if success, false otherwise
 	 */
-	public function afterLoginInit() {}
+	public function afterLoginInit() { return true; }
 }

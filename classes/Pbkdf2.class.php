@@ -1,8 +1,6 @@
 <?php
 
 /**
- * Pbkdf2
- *
  * @package Cherrycake
  */
 
@@ -21,10 +19,9 @@ define("HASH_SALT_INDEX", 2);
 define("HASH_PBKDF2_INDEX", 3);
 
 /**
- * Pbkdf2
- *
  * Implements Password-Based Key Derivation Function 2 (PBFDK2: http://en.wikipedia.org/wiki/PBKDF2)
  * Based on "Password Hashing With PBKDF2" (http://crackstation.net/hashing-security.htm), implementation by Taylor Hornby (Copyright (c) 2013, All rights reserved), original: https://defuse.ca/php-pbkdf2.htm / https://github.com/defuse/password-hashing
+ * Modified formatting and changed to support PHP 7 without mcrypt dependency by https://tin.cat)
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -54,7 +51,12 @@ define("HASH_PBKDF2_INDEX", 3);
 class Pbkdf2 {
 	function createHash($password) {
 		// format: algorithm:iterations:salt:hash
-		$salt = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
+		if (function_exists('random_bytes')) {
+            $salt_raw = random_bytes(PBKDF2_SALT_BYTE_SIZE);
+        } else {
+            $salt_raw = mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM);
+        }
+		$salt = base64_encode($salt_raw);
 		return PBKDF2_HASH_ALGORITHM . ":" . PBKDF2_ITERATIONS . ":" .  $salt . ":" .
 			base64_encode($this->pbkdf2(
 				PBKDF2_HASH_ALGORITHM,

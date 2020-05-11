@@ -222,7 +222,7 @@ class CacheProviderApcu extends CacheProvider implements CacheProviderInterface,
 	 */
 	function listDel($listName, $key) {
 		$list = $this->getListItems($listName);
-		if (in_array($key, $list))
+		if (isset($list[$key]))
 			unset($list[$key]);
 		$this->setListItems($listName, $list);
 	}

@@ -151,7 +151,7 @@ class Login  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Checks the given userName and password credentials in the database, and logs in the user if they're found to be correct.
+	 * Checks the given credentials in the database, and logs in the user if they're found to be correct.
 	 *
 	 * @param string $userName The string field that uniquely identifies the user on the database, the one used by the user to login. Usually, an email or a username.
 	 * @param string $password The password entered by the user to login.
@@ -191,7 +191,7 @@ class Login  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Logs in the current client as the specified $userId
+	 * Logs in the current user as the specified $userId
 	 * @param integer $userId The user id to log in
 	 * @return bool Whether the session info to log the user could be set or not
 	 */
@@ -201,7 +201,7 @@ class Login  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Logs out the current client
+	 * Logs out the current user
 	 */
 	function logoutUser() {
 		global $e;
