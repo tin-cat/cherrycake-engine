@@ -23,7 +23,7 @@ class Locale  extends \Cherrycake\Module {
 	 */
 	var $config = [
 		/*
-			A hash array of available localisations the app supports, where each key is the locale name, and each value a hash array with the following keys:
+			A hash array of available localizations the app supports, where each key is the locale name, and each value a hash array with the following keys:
 				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
 				language: The language used in this localization, one of the available LANGUAGE_? constants.
 				dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
@@ -166,8 +166,6 @@ class Locale  extends \Cherrycake\Module {
 	];
 
 	/**
-	 * init
-	 *
 	 * Initializes the module. Detects and assigns the locale depending on the requested domain.
 	 *
 	 * @return boolean Whether the module has been initted ok
@@ -180,17 +178,29 @@ class Locale  extends \Cherrycake\Module {
 			return true;
 
 		if (isset($_SERVER["SERVER_NAME"])) {
-			foreach ($this->getConfig("availableLocales") as $locale) {
-				if ($locale["domains"] && in_array($_SERVER["SERVER_NAME"], $locale["domains"])) {
-					$this->locale = $locale;
+			foreach ($this->getConfig("availableLocales") as $localeName => $locale) {
+				if ($locale["domains"] ?? false && in_array($_SERVER["SERVER_NAME"], $locale["domains"])) {
+					$this->setLocale($localeName);
 					break;
 				}
 			}
 		}
 		
 		if (!$this->locale)
-			$this->locale = $this->getConfig("availableLocales")[$this->getConfig("defaultLocale")];
+			$this->setLocale($this->getConfig("defaultLocale"));
 
+		return true;
+	}
+
+	/**
+	 * Sets the locale to use
+	 * @param string $localeName The name of the locale to use, as specified in the availableLocales config key.
+	 * @return boolean True if the locale could be set, false if the locale wasn't configured in the availableLocales config key.
+	 */
+	function setLocale($localeName) {
+		if (!isset($this->getConfig("availableLocales")[$localeName]))
+			return false;
+		$this->locale = $this->getConfig("availableLocales")[$localeName];
 		return true;
 	}
 
@@ -318,10 +328,10 @@ class Locale  extends \Cherrycake\Module {
 	 *
 	 * @param array $data The data hash-array to get the field from
 	 * @param int $forceLanguage If specified, forces the retrieval of the specified language instead of the Locale language
-	 * @return mixed The contents of the localized data
+	 * @return mixed The contents of the localized data, or false if no contents for the specified language.
 	 */
 	function getFromArray($data, $forceLanguage = false) {
-		return $data[($forceLanguage ? $forceLanguage : $this->getLanguage())];
+		return $data[($forceLanguage ? $forceLanguage : $this->getLanguage())] ?? false;
 	}
 
 	/**
@@ -423,7 +433,7 @@ class Locale  extends \Cherrycake\Module {
 		global $e;
 
 		if (!$timezone)
-			$timezone = $e->getTimezoneId();
+			$timezone = $this->getTimeZone();
 
 		$cacheKey = $e->Cache->buildCacheKey([
 			"prefix" => $this->getConfig("timeZonesCacheKeyPrefix"),
@@ -677,12 +687,12 @@ class Locale  extends \Cherrycake\Module {
 
 					if ($hoursAgo < 24) {
 						$r =
-							$this->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							$this->getFromArray($this->texts["agoPrefix"], $setup["language"] ?? false).
 							$hoursAgo.
 							" ".
-							($hoursAgo == 1 ? $this->getFromArray($this->texts["hour"], $setup["language"]) : $this->getFromArray($this->texts["hours"], $setup["language"])).
+							($hoursAgo == 1 ? $this->getFromArray($this->texts["hour"], $setup["language"] ?? false) : $this->getFromArray($this->texts["hours"], $setup["language"] ?? false)).
 							" ".
-							$this->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							$this->getFromArray($this->texts["agoSuffix"], $setup["language"] ?? false);
 						break;
 					}
 
@@ -733,25 +743,26 @@ class Locale  extends \Cherrycake\Module {
 	 * @param float $timestamp The number
 	 * @param array $setup An optional hash array with setup options, with the following possible keys:
 	 * * decimals: The number of decimals to show. Default: 0
+	 * * showDecimalsForWholeNumbers: Whether to show the decimal part when the number is whole. Default: false
 	 * * decimalMark: The decimal mark to use, DECIMAL_MARK_POINT or DECIMAL_MARK_COMMA. Defaults to the current Locale setting.
 	 * * isSeparateThousands: Whether to separate thousands or not. Default: false
 	 * * multiplier: A multiplier, or false if no multiplier should be applied. Default: false
 	 * @return string The formatted number.
 	 */
 	function formatNumber($number, $setup = false) {
-		if (!isset($setup["decimals"]))
-			$setup["decimals"] = 0;
-		if (!isset($setup["decimalMark"]))
-			$setup["decimalMark"] = $this->locale["decimalMark"];
-		if (!isset($setup["isSeparateThousands"]))
-			$setup["isSeparateThousands"] = false;
+		self::treatParameters($setup, [
+            "decimals" => ["default" => 0],
+			"showDecimalsForWholeNumbers" => ["default" => false],
+			"decimalMark" => ["default" => $this->locale["decimalMark"]],
+			"isSeparateThousands" => ["default" => false]
+        ]);
 
-		if ($setup["multiplier"])
+		if ($setup["multiplier"] ?? false)
 			$number *= $setup["multiplier"];
 
 		return number_format(
 			$number,
-			$setup["decimals"],
+			(round($number) == $number && $setup["showDecimalsForWholeNumbers"]) || round($number) != $number ? $setup["decimals"] : 0,
 			[DECIMAL_MARK_POINT => ".", DECIMAL_MARK_COMMA => ","][$setup["decimalMark"]],
 			$setup["isSeparateThousands"] ? [DECIMAL_MARK_POINT => ",", DECIMAL_MARK_COMMA => "."][$setup["decimalMark"]] : false
 		);
@@ -767,10 +778,16 @@ class Locale  extends \Cherrycake\Module {
 	function formatCurrency($amount, $setup = false) {
 		switch ($this->getCurrency()) {
 			case CURRENCY_USD:
-				return "USD".$this->formatNumber($amount);
+				return "USD".$this->formatNumber($amount, [
+					"isSeparateThousands" => true,
+					"decimals" => 2
+				]);
 				break;
 			case CURRENCY_EURO:
-				return $this->formatNumber($amount)."€";
+				return $this->formatNumber($amount, [
+					"isSeparateThousands" => true,
+					"decimals" => 2
+				])."€";
 				break;
 		}
 	}

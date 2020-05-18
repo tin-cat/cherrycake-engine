@@ -28,9 +28,9 @@ const MEASUREMENT_SYSTEM_METRIC = 2;
 const HOURS_FORMAT_12H = 1;
 const HOURS_FORMAT_24H = 2;
 
-const TIMESTAMP_FORMAT_BASIC = 0;
-const TIMESTAMP_FORMAT_HUMAN = 1;
-const TIMESTAMP_FORMAT_RELATIVE_HUMAN = 2;
+const TIMESTAMP_FORMAT_BASIC = 0; // Basic formatting, like "5/18/2020"
+const TIMESTAMP_FORMAT_HUMAN = 1; // Human readable formatting, like "may 18th, 2020"
+const TIMESTAMP_FORMAT_RELATIVE_HUMAN = 2; // Formatting relative to now, like "10 hours ago"
 
 const ORDINAL_GENDER_MALE = 0;
 const ORDINAL_GENDER_FEMALE = 1;
@@ -38,3 +38,4 @@ const ORDINAL_GENDER_FEMALE = 1;
 const GEOLOCATION_METHOD_CLOUDFLARE = 0;
 
 const TIMEZONE_ID_ETC_UTC = 532; // The id of the timezone in the cherrycake_location_timezones
+const TIMEZONE_ID_EUROPE_MADRID = 390;
