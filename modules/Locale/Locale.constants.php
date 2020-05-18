@@ -36,3 +36,5 @@ const ORDINAL_GENDER_MALE = 0;
 const ORDINAL_GENDER_FEMALE = 1;
 
 const GEOLOCATION_METHOD_CLOUDFLARE = 0;
+
+const TIMEZONE_ID_ETC_UTC = 532; // The id of the timezone in the cherrycake_location_timezones

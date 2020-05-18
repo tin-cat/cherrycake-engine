@@ -12,8 +12,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Modules
  */
-class Locale  extends \Cherrycake\Module
-{
+class Locale  extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
@@ -23,18 +22,33 @@ class Locale  extends \Cherrycake\Module
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"availableLocales" => null, // A hash array of available localisations the app supports, where each key is the locale name, and each value a hash array with the following keys:
-			// domains: An array of domains that will trigger this localization when the request to the app comes from one of them.
-			// language: The language used in this localization, one of the available LANGUAGE_? constants.
-			// dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
-			// temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
-			// currency: The currency used in this localization, one of the available CURRENCY_? constants.
-			// decimalMark: The type character used when separating decimal digits in this localization, one of the available DECIMAL_MARK_? constants.
-			// measurementSystem: The measurement system used in this localization, one of the available MEASUREMENT_SYSTEM_? constants.
-			// timeZone: The timezone id used in this localization, from the cherrycake_location_timezones table of the Cherrycake skeleton database.
-		"defaultLocale" => false, // The locale name to use when it can not be autodetected.
+		/*
+			A hash array of available localisations the app supports, where each key is the locale name, and each value a hash array with the following keys:
+				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
+				language: The language used in this localization, one of the available LANGUAGE_? constants.
+				dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
+				temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
+				currency: The currency used in this localization, one of the available CURRENCY_? constants.
+				decimalMark: The type character used when separating decimal digits in this localization, one of the available DECIMAL_MARK_? constants.
+				measurementSystem: The measurement system used in this localization, one of the available MEASUREMENT_SYSTEM_? constants.
+				timeZone: The timezone id used in this localization, from the cherrycake_location_timezones table of the Cherrycake skeleton database.
+		*/
+		"availableLocales" =>
+		[ 
+			"main" => [
+				"domains" => false,
+				"language" => LANGUAGE_ENGLISH,
+				"dateFormat" => DATE_FORMAT_MIDDLE_ENDIAN,
+				"temperatureUnits" => TEMPERATURE_UNITS_FAHRENHEIT,
+				"currency" => CURRENCY_USD,
+				"decimalMark" => DECIMAL_MARK_POINT,
+				"measurementSystem" => MEASUREMENT_SYSTEM_IMPERIAL,
+				"timeZone" => TIMEZONE_ID_ETC_UTC
+			]
+		],
+		"defaultLocale" => "main", // The locale name to use when it can not be autodetected.
 		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
-		"availableLanguages" => false, // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available LANGUAGE_? constants.
+		"availableLanguages" => [LANGUAGE_ENGLISH], // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available LANGUAGE_? constants.
 		"geolocationMethod" => \Cherrycake\GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
 		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored. See the cherrycake_locale_texts table in the Cherrycake skeleton database.
 		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
@@ -165,29 +179,26 @@ class Locale  extends \Cherrycake\Module
 		if (!$this->isConfig("availableLocales"))
 			return true;
 
-		if (isset($_SERVER["SERVER_NAME"]))
-			$domain = $_SERVER["SERVER_NAME"];
-
-		foreach ($this->getConfig("availableLocales") as $locale) {
-			if ($locale["domains"] && in_array($domain, $locale["domains"])) {
-				$this->locale = $locale;
-				break;
+		if (isset($_SERVER["SERVER_NAME"])) {
+			foreach ($this->getConfig("availableLocales") as $locale) {
+				if ($locale["domains"] && in_array($_SERVER["SERVER_NAME"], $locale["domains"])) {
+					$this->locale = $locale;
+					break;
+				}
 			}
 		}
-
-		if (!$this->locale) {
-			$availableLocales = $this->getConfig("availableLocales");
-			$this->locale = $availableLocales[$this->getConfig("defaultLocale")];
-		}
+		
+		if (!$this->locale)
+			$this->locale = $this->getConfig("availableLocales")[$this->getConfig("defaultLocale")];
 
 		return true;
 	}
 
 	/**
-	 * Gets a language's name
+	 * Gets the name of a language.
 	 * @param integer $language The language
 	 * @param boolean $setup A hash array of setup options, from the following possible keys:
-	 *                       - forceLanguage: Use this specific language. Otherwise, the detected language is used.
+	 *                       - forceLanguage: Use this language instead of the passed in $language
 	 * @return mixed The language name, false if the specified language is not configured.
 	 */
 	function getLanguageName($language, $setup = false) {
@@ -197,8 +208,9 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
+	 * Gets the code of a language
 	 * @param integer $language The language
-	 * @return mixed The language code, or false if the specified language is not configured
+	 * @return mixed The language code, or false if the specified language is not configured.
 	 */
 	function getLanguageCode($language = false) {
 		if (!$language)
@@ -211,19 +223,14 @@ class Locale  extends \Cherrycake\Module
 	/**
 	 * getText
 	 *
-	 * Returns a text from the multilingual texts database
+	 * Gets a text from the multilingual texts database
 	 *
 	 * @param string $code The code of the text. Can also be specified as <category code>/<text code> in order to discern texts that are stored with the same code in different categories.
 	 * @param array $setup Additional setup with the following possible keys:
-	 * * variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {<key>} will be replaced with its corresponding value on this array, in the syntax:
-	 * 	[
-	 * 		"key" => "value",
-	 * 		"key" => [LANGUAGE_SPANISH => "spanish value", LANGUAGE_ENGLISH => "english value"],
-	 * 		...
-	 * 	]
-	 * * forceLanguage: Force the retrieval of the text on this language. Otherwise, the detected language is used.
-	 * * forceTextCacheTtl: Use this Ttl for the text cache instead of the module configuration variable textCacheDefaultTtl
-	 * * isPurifyVariables: True. Whether to purify values from specified variables for security purposes or not.
+	 * * variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {<key>} will be replaced with the matching value, where the value can be a string, or a hash array of values for different languages, where each key is one of the available LANGUAGE_? constants.
+	 * * forceLanguage: Force the retrieval of the text on this language. If not specified, the detected language is used.
+	 * * forceTextCacheTtl: Use this TTL for the text cache instead of the module configuration variable textCacheDefaultTtl
+	 * * isPurifyVariables: Whether to purify values from specified variables for security purposes or not. Defaults to true.
 	 * @return string The text
 	 */
 	function getText($code, $setup = false) {
@@ -449,14 +456,11 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
-	 * convertTimestamp
-	 *
 	 * Converts a given timestamp from one timezone to another.
-	 * The passed $timestamp is considered to be in $toTimezone, the equivalent timestamp for the given $toTimezone is returned
 	 *
-	 * @param integer $timestamp The timestamp to convert. Expected to be in the given $fromTimezone. The default cherrycake TIMEZONE configuration is considered as $fromTimezone if not specified (Usually Etc/UTC)
+	 * @param integer $timestamp The timestamp to convert. Expected to be in the given $fromTimezone.
 	 * @param integer $toTimeZone The desired timezone, one of the PHP constants as specified in http://php.net/manual/en/timezones.php. If none specified, the current Locale timezone is used.
-	 * @param bool $fromTimeZone The timezone on which the given $timestamp is considered to be in. If not specified the default cherrycake TIMEZONE configuration is used. (Usually Etc/UTC)
+	 * @param bool $fromTimeZone The timezone on which the given $timestamp is considered to be in. If not specified the default cherrycake timezone is used, as set in Engine::init
 	 * @return mixed The converted timestamp, or false if it couldn't be converted.
 	 */
 	function convertTimestamp($timestamp, $toTimeZone = false, $fromTimeZone = false) {
@@ -485,11 +489,10 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
-	 * Given a timestamp that represents a date, meaning the hour information should not be taken into account, and thus there won't be any timezone conversion. It formats it with the formatTimestamp method.
-	 * Intended to format timestamps where the hour information is not to be taken into account, like timestamps coming from a DATABASE_FIELD_TYPE_DATE type field on the database.
+	 * Formats the given date.
 	 * 
-	 * @param int $timestamp The timestamp to use, in UNIX timestamp format. The hours, minutes and seconds are considered irrelevant.
-	 * @param array $setup A hash array with setup options, just like the formatTimestamp method
+	 * @param int $dateTimestamp The timestamp to use, in UNIX timestamp format. The hours, minutes and seconds are considered irrelevant.
+	 * @param array $setup A hash array with setup options, just like the Locale::formatTimestamp method
 	 * @return string The formatted date
 	 */
 	function formatDate($dateTimestamp, $setup = false) {
@@ -501,14 +504,23 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
-	 * Given a timestamp, returns a formatted date/time according to current locale settings.
-	 * The given timestamp will be converted to the configured "toTimeZone" config key, or to the current locale timestamp if not given, except if fromTimeZone setup key is set to false.
-	 * The given timestamp is considered to be in the engine's default timezone configured in cherrycake config as TIMEZONE const, except if the "fromTimeZone" is given via $setup.
-	 * To format date fields (without hour information), use the formatDate method.
+	 * Formats the given date/time according to current locale settings.
+	 * The given timestamp is considered to be in the engine's default timezone configured in Engine::init, except if the "fromTimeZone" is given via setup.
 	 *
-	 * @param int $timestamp The timestamp to use, in UNIX timestamp format
+	 * @param int $timestamp The timestamp to use, in UNIX timestamp format. Considered to be in the engine's default timezone configured in Engine::init, except if the "fromTimeZone" is given via setup.
 	 * @param array $setup A hash array of setup options with the following possible keys
-	 * * language: If specified, this language will be used instead of the detected one.
+	 * * fromTimezone: Considers the given timestamp to be in this timezone. If not specified, the timestamp is considered to be in the current Locale timestamp.
+	 * * toTimezone: Converts the given timestamp to this timezone. If not specified, the given timestamp is converted to the current Locale timestamp except if the fromTimeZone setup key has been set to false.
+	 * * language: If specified, this language will be used instead of the detected one. One of the available LANGUAGE_?
+	 * * style: The formatting style, one of the available TIMESTAMP_FORMAT_? constants.
+	 * * isShortYear: Whether to abbreviate the year whenever possible. For example: 17 instead of 2017. Default: true
+	 * * isDay: Whether to include the day. Default: true
+	 * * isHours: Whether to include hours and minutes. Default: false
+	 * * hoursFormat: The format of the hours. One of the available HOURS_FORMAT_?. Default: HOURS_FORMAT_24
+	 * * isSeconds: Whether to include seconds. Default: false
+	 * * isAvoidYearIfCurrent: Whether to avoid the year if it's the current one. Default: false.
+	 * * isBrief: Whether to use a brief formatting whenever possible. Default: false.
+	 * * format: If specified this format as used in the date PHP function is used instead of internal formatting. Default: false.
 	 * @return string The formatted timestamp
 	 */
 	function formatTimestamp($timestamp, $setup = false) {
@@ -716,15 +728,15 @@ class Locale  extends \Cherrycake\Module
 	}
 
 	/**
-	 * Formats the given number according to the current locale settings, and the given setup
+	 * Formats the given number
 	 *
-	 * @param int $timestamp The number
-	 * @param array $setup A hash array with setup options, from the following:
-	 *                     - decimals: The number of decimals to show. Defaults to zero.
-	 *                     - decimalMark: The decimal mark to use, DECIMAL_MARK_POINT or DECIMAL_MARK_COMMA. Defaults to the current locale setting.
-	 *                     - isSeparateThousands: Whether to separate thousands or not. Defaults to false.
-	 *                     - multiplier: A multiplier, or false if no multiplier should be applied. Defaults to false.
-	 * @return string The formatted number
+	 * @param float $timestamp The number
+	 * @param array $setup An optional hash array with setup options, with the following possible keys:
+	 * * decimals: The number of decimals to show. Default: 0
+	 * * decimalMark: The decimal mark to use, DECIMAL_MARK_POINT or DECIMAL_MARK_COMMA. Defaults to the current Locale setting.
+	 * * isSeparateThousands: Whether to separate thousands or not. Default: false
+	 * * multiplier: A multiplier, or false if no multiplier should be applied. Default: false
+	 * @return string The formatted number.
 	 */
 	function formatNumber($number, $setup = false) {
 		if (!isset($setup["decimals"]))
@@ -745,7 +757,14 @@ class Locale  extends \Cherrycake\Module
 		);
 	}
 
-	function formatCurrency($amount) {
+	/**
+	 * Formats the given amount as a currency
+	 * 
+	 * @param float $amount
+	 * @param array $setup An optional hash array with setup options, with the following possible keys:
+	 * * currency: The currency to format the given amount to. One of the available CURRENCY_?. If not specified, the current Locale setting is used.
+	 */
+	function formatCurrency($amount, $setup = false) {
 		switch ($this->getCurrency()) {
 			case CURRENCY_USD:
 				return "USD".$this->formatNumber($amount);
@@ -787,6 +806,7 @@ class Locale  extends \Cherrycake\Module
 				break;
 
 			case LANGUAGE_SPANISH:
+				$r = $number."º";
 				break;
 		}
 
