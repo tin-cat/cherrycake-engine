@@ -61,9 +61,6 @@ class Login  extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		global $e;
-		$e->loadCoreModuleClass("Login", "LoginUser");
-
 		if ($this->getConfig("isLoadUserOnInit") && $e->Session->isSession() && $e->Session->getSessionData("userId"))
 			return $this->loadUser();
 

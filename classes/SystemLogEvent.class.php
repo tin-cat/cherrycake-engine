@@ -70,7 +70,7 @@ class SystemLogEvent extends Item {
 	 * @return boolean True on success, false on error
 	 */
 	function loadInline($data = false) {
-		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
+		$this->type = get_called_class();
 		$this->class = debug_backtrace()[2]["class"];
 
 		if (isset($data["dateAdded"]))

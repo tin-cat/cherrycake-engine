@@ -9,27 +9,7 @@
 namespace Cherrycake;
 
 /**
- * SystemLog
- *
  * Stores system's log
- *
- * Configuration example for systemlog.config.php:
- * <code>
- * $systemLogConfig = [
- *	"errorsToLog" => [ // An array of strings of the class names corresponding to the system log event types that must be logged
- *		"SystemLogEvenInfo",
- *		"SystemLogEvenWarning",
- *		"SystemLogEvenError",
- *		"SystemLogEvenCritical",
- *		"SystemLogEvenHack"
- *	 ],
- *	"databaseProviderName" => "main", // The name of the database provider where the system log table is found
- *	"tableName" => "cherrycake_systemLog" // The name of the table, defaulted to this
- *	"cacheProviderName" => "engine", // The name of the cache provider that will be used to temporally store log events as they happen, to be later added to the database by the JanitorTaskSystemLog
- *  "cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache. Defaults to "QueuedSystemLogEvents"
- *  "isQueueInCache" => true, // Whether to store the log events into cache (queue it) in order to be later processed by JanitorTaskSystemLog, or directly store it on the database. Defaults to true.
- * ];
- * </code>
  *
  * @package Cherrycake
  * @category Modules
@@ -44,19 +24,12 @@ class SystemLog  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"errorsToLog" => [
-			"SystemLogEventInfo",
-			"SystemLogEventWarning",
-			"SystemLogEventError",
-			"SystemLogEventCritical",
-			"SystemLogEventHack"
-		],
-		"tableName" => "cherrycake_systemLog",
-		"cacheKeyUniqueId" => "QueuedSystemLogEvents",
-		"cacheProviderName" => "engine",
-		"databaseProviderName" => "main",
-		"cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache. Defaults to "QueuedSystemLogEvents"
-		"isQueueInCache" => true
+		"eventsToLog" => false, // An array of the SystemLogEvent class names to be stored in the log. The events not listed here will not be logged even if they're triggered. Set it to false to log all events.
+		"tableName" => "cherrycake_systemLog", // The name of the table in the database where the log events will be stored.
+		"cacheProviderName" => "engine", // The name of the cache provider to use.
+		"databaseProviderName" => "main", // The name of the database provider to use.
+		"cacheKeyUniqueId" => "QueuedSystemLogEvents", // The unique cache key to use when storing events into cache.
+		"isQueueInCache" => true // Whether to store events in a buffer using cache for improved performance instead of storing them in the database straightaway. 
 	];
 
 	/**
@@ -87,7 +60,7 @@ class SystemLog  extends \Cherrycake\Module {
 	 * @return boolean Whether the event has been logged or not
 	 */
 	function event($systemLogEvent) {
-		if (!in_array($systemLogEvent->type, $this->getConfig("errorsToLog")))
+		if ($this->getConfig("eventsToLog") && !in_array($systemLogEvent->type, $this->getConfig("eventsToLog")))
 			return false;
 
 		return

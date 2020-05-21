@@ -68,12 +68,8 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * Constructor, allows to create an instance object which automatically fills itself in one of the available forms
 	 *
 	 * @param array $setup Specifications on how to create the Items object, or an array of objects to fill the list with
-	 * @return boolean Whether the object could be initialized ok or not
 	 */
 	function __construct($setup = false) {
-		if (!$setup)
-			return true;
-
 		if ($setup["itemClassName"] ?? false)
 			$this->itemClassName = $setup["itemClassName"];
 
@@ -90,6 +86,9 @@ abstract class Items extends BasicObject implements \Iterator {
 			$setup["fillMethod"] = "fromArray";
 			$setup["items"] = $setup;
 		}
+		else
+		if (isset($setup["p"]))
+			$setup["fillMethod"] = "fromParameters";
 		
 		switch($setup["fillMethod"]) {
 			case "fromParameters":
@@ -108,7 +107,7 @@ abstract class Items extends BasicObject implements \Iterator {
 				break;
 		}
 
-		return true;
+		return;
 	}
 
 	/**

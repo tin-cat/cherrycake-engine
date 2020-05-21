@@ -28,7 +28,7 @@ class StatsEvent extends Item {
 	];
 
 	/**
-	 * The time resolution on which to store this events on the database. One of the available \Cherrycake\STATS_EVENT_TIME_RESOLUTION_*
+	 * The time frame resolution used by this event. One of the available STATS_EVENT_TIME_RESOLUTION_? constants.
 	 * @var timeResolution
 	 */
 	protected $timeResolution = \Cherrycake\STATS_EVENT_TIME_RESOLUTION_DAY;
@@ -66,9 +66,9 @@ class StatsEvent extends Item {
 	 */
 	function loadInline($data = false) {
 		global $e;
-		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
-		$this->subType = $data["subType"] ?? false;
-		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : $e->Locale->convertTimestamp(time());
+		$this->type = get_called_class();
+		$this->subType = $data["subType"] ?? null;
+		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : time();
 		$this->resolution = $this->timeResolution;
 		return parent::loadInline($data);
 	}
@@ -188,7 +188,7 @@ class StatsEvent extends Item {
 			];
 
 		if (!$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
-			"
+			$sql = "
 				select
 					".$this->tableName.".*
 				from

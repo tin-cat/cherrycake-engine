@@ -14,17 +14,7 @@ const STATS_EVENT_TIME_RESOLUTION_YEAR = 4;
 
 /**
  * Stores and manages statistical information
- *
- * Configuration example for stats.config.php:
- * <code>
- * $statsConfig = [
- *	"databaseProviderName" => "main", // The name of the database provider.
- *	"cacheProviderName" => "huge", // The name of the cache provider used to temporarily store stats events. Must support queueing.
- *	"cacheKeyUniqueId" => "QueuedStats", // The unique cache key to use when storing stat events into cache. Defaults to "QueuedStats"
- *	"isQueueInCache" => true, // Whether to store the stats events into cache (queue it) in order to be later processed by JanitorTaskStats, or directly store it on the database. Defaults to true.
- * ];
- * </code>
- *
+ * 
  * @package Cherrycake
  * @category Modules
  */
@@ -38,10 +28,10 @@ class Stats  extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"databaseProviderName" => "main", // The name of the database provider.
-		"cacheProviderName" => "huge", // The name of the cache provider used to temporarily store stats events. Must support queueing.
+		"databaseProviderName" => "main", // The name of the database provider to use.
+		"cacheProviderName" => "engine", // The name of the cache provider used to temporarily store stats events. Must support queueing.
 		"cacheKeyUniqueId" => "QueuedStats", // The unique cache key to use when storing stat events into cache. Defaults to "QueuedStats"
-		"isQueueInCache" => true // Whether to store the stats events into cache (queue it) in order to be later processed by JanitorTaskStats, or directly store it on the database. Defaults to true.
+		"isQueueInCache" => true // Whether to store stats events in a buffer using cache for improved performance instead of storing them in the database straightaway.
 	];
 
 	/**
@@ -69,7 +59,7 @@ class Stats  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Triggers an stats event. This is the method that should be called whenever a statistical event happens.
+	 * Triggers a stats event.
 	 * @param StatsEvent $statsEvent The StatsEvent object to trigger
 	 * @return boolean True if everything went ok, false otherwise
 	 */

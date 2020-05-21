@@ -7,27 +7,24 @@
 namespace Cherrycake;
 
 /**
- * Class that represents a list of SystemLogEvent objects
+ * Class that represents a list of StatsEvent objects
  *
  * @package Cherrycake
  * @category Classes
  */
-class SystemLogEvents extends \Cherrycake\Items {
-    protected $tableName = "cherrycake_systemLog";
-    protected $itemClassName = "\Cherrycake\SystemLogEvent";
-
-    function getItemClassName($databaseRow = false) {
+class StatsEvents extends \Cherrycake\Items {
+    protected $tableName = "cherrycake_stats";
+	protected $itemClassName = "\Cherrycake\StatsEvent";
+	
+	function getItemClassName($databaseRow = false) {
 		return $databaseRow->getField("type");
 	}
 
     /**
-     * Overloads the Items::fillFromParameters method to provide an easy way to load SystemLogEvent items on instantiating this class.
-     * 
-	 * @param array $setup Specifications on how to fill the SystemLogEvents object, with the possible keys below plus any other setup keys from Items::fillFromParameters, or an array of SystemLogEvent objects to fill the list with.
-     * * type: The class name of the SystemLogEvent objects to get.
-     * * fromTimestamp: Get SystemLogEvent items added starting on this timestamp.
-     * * toTimestamp: Get SystemLogEvent items added up to this timestamp.
-     * @return boolean True if everything went ok, false otherwise.
+	 * @param array $setup Specifications on how to fill the StatsEvents object, with the possible keys below plus any other setup keys from Items::fillFromParameters, or an array of StatsEvent objects to fill the list with.
+     * * type: The class name of the StatsEvent objects to get.
+     * * fromTimestamp: The starting timestamp for the time frame to get StatsEvent objects from.
+     * * toTimestamp: The finishing timestamp for the time frame to get StatsEvent objects from.
 	 */
     function fillFromParameters($p = false) {
 		self::treatParameters($p, [
@@ -54,7 +51,7 @@ class SystemLogEvents extends \Cherrycake\Items {
         
         if ($p["fromTimestamp"] ?? false)
             $p["wheres"][] = [
-				"sqlPart" => "dateAdded >= ?",
+				"sqlPart" => "timestamp >= ?",
 				"values" => [
 					[
 						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
@@ -65,7 +62,7 @@ class SystemLogEvents extends \Cherrycake\Items {
         
         if ($p["toTimestamp"] ?? false)
             $p["wheres"][] = [
-				"sqlPart" => "dateAdded >= ?",
+				"sqlPart" => "timestamp >= ?",
 				"values" => [
 					[
 						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,

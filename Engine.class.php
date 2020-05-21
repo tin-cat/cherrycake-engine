@@ -928,7 +928,7 @@ namespace {
 	function prettyprint($var, $isReturn = false, $isHtml = true) {
 		$pretty =
 			($isHtml ? "<pre>" : null).
-			json_encode($var, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_LINE_TERMINATORS).
+			print_r($var, true). //json_encode($var, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_LINE_TERMINATORS).
 			($isHtml ? "<pre>" : null);
 		
 		if ($isReturn)

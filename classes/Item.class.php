@@ -355,7 +355,7 @@ class Item extends BasicObject {
 			else
 				continue;
 			
-			if (isset($fieldData["isMultiLanguage"]) && $fieldData["isMultiLanguage"]) { // If this field is multilanguage
+			if ($fieldData["isMultiLanguage"] ?? false) { // If this field is multilanguage
 				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
 					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
 						$fieldsData[$fieldName."_".$e->Locale->getLanguageCode($language)] = $value[$language];
