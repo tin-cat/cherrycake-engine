@@ -203,7 +203,7 @@ class JavascriptMinifier
 				default:
 					switch ($this->b) {
 						case "\n":
-							if (strpos('}])+-"\'', $this->a) !== false) {
+							if (@strpos('}])+-"\'', $this->a) !== false) {
 								echo $this->a;
 								$this->saveString();
 								break;
@@ -235,7 +235,7 @@ class JavascriptMinifier
 			// do reg check of doom
 			$this->b = $this->getReal();
 
-			if(($this->b == '/' && strpos('(,=:[!&|?', $this->a) !== false))
+			if(($this->b == '/' && @strpos('(,=:[!&|?', $this->a) !== false))
 				$this->saveRegex();
 		}
 	}
@@ -414,7 +414,7 @@ class JavascriptMinifier
 	protected function getNext($string)
 	{
 		// Find the next occurrence of "string" after the current position.
-		$pos = strpos($this->input, $string, $this->index);
+		$pos = @strpos($this->input, $string, $this->index);
 
 		// If it's not there return false.
 		if($pos === false)
