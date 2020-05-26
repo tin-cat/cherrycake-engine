@@ -321,10 +321,10 @@ class Errors  extends \Cherrycake\Module {
 								ERROR_NOT_FOUND => "Not found",
 								ERROR_NO_PERMISSION => "No permission"
 							][$errorType]."\n".
-							($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."\n" : null).
-							($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."\n" : null).
-							($setup["errorVariables"] ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
-							"Backtrace:\n".strip_tags(implode($backtrace_info, "\n"))
+							($setup["errorSubType"] ?? false ? "Subtype: ".$setup["errorSubType"]."\n" : null).
+							($setup["errorDescription"] ?? false ? "Description: ".$setup["errorDescription"]."\n" : null).
+							($setup["errorVariables"] ?? false ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
+							"Backtrace:\n".strip_tags(implode("\n", $backtrace_info))
 					]));
 				}
 				else {

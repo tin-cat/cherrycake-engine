@@ -38,7 +38,7 @@ class Action {
 	/**
 	 * @var string $responseClass The name of the Response class this Action is expected to return
 	 */
-	private $responseClass;
+	protected $responseClass;
 
 	/**
 	 * @var Request $request The Request that triggers this Action
@@ -71,9 +71,14 @@ class Action {
 	private $isSensibleToBruteForceAttacks;
 
 	/**
-	 * @var integer $timeout When set, this action must have this specific timeout.
+	 * @var mixed $timeout When set, this action must have this specific timeout.
 	 */
 	private $timeout = false;
+
+	/**
+	 * @var boolean $isCli When set to true, this action will only be able to be executed via the command line CLI interface
+	 */
+	protected $isCli = false;
 
 	/**
 	 * Request
@@ -119,6 +124,11 @@ class Action {
 	 */
 	function run() {
 		global $e;
+
+		if ($this->isCli && !$e->isCli()) {
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "This action only runs on the CLI interface"]);
+			return true;
+		}
 
 		if ($this->isCache) {
 			$cacheKey = $this->request->getCacheKey($this->cachePrefix);

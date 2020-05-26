@@ -15,8 +15,7 @@ namespace Cherrycake;
  * @package Movefy
  * @category Classes
  */
-class JanitorTaskLogCommit extends JanitorTask
-{
+class JanitorTaskLogCommit extends JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

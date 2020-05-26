@@ -1,30 +1,18 @@
 <?php
 
 /**
- * JanitorTask
- *
  * @package Cherrycake
  */
 
 namespace Cherrycake;
 
 /**
- * JanitorTask
- *
  * Base class for Janitor tasks.
- *
- * Configuration example for <taskname>.config.php:
- * <code>
- * $<taskname>Config = [
- *  "executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
- * ];
- * </code>
  *
  * @package Cherrycake
  * @category Classes
  */
-class JanitorTask
-{
+class JanitorTask {
 	/**
 	 * @var bool $isConfig Sets whether this JanitorTask has its own configuration file. Defaults to false.
 	 */
@@ -34,7 +22,11 @@ class JanitorTask
 	 * @var array $config Holds the default configuration for this JanitorTask
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL
+		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL, // The periodicity for this task execution. One of the available JANITORTASK_EXECUTION_PERIODICITY_? constants.
+		"periodicityEachSeconds" => false, // When executionPeriodicity is set to JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, this is the number of seconds between each execution.
+		"periodicityMinutes" => false, // When executionPeriodicity is set to JANITORTASK_EXECUTION_PERIODICITY_MINUTES, this is an array specifying the minutes within each hour when this task will be executed, in the syntax: [0, 15, 30, 45, ...]
+		"periodicityHours" => false, // When executionPeriodicity is set to JANITORTASK_EXECUTION_PERIODICITY_HOURS, this is an array specifying the hours and minutes within each day when this task will be executed, in the syntax: ["hour:minute", "hour:minute", "hour:minute", ...]
+		"periodicityDaysOfMonth" => false, // When executionPeriodicity is set to JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH, this is an array specifying the days, hours and minutes within each month this task will be executed, in the syntax: ["day@hour:minute", "day@hour:minute", "day@hour:minute", ...]
 	];
 
 	/**
@@ -56,7 +48,10 @@ class JanitorTask
 		if ($this->isConfigFile) {
 			global $e;
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-			include $e->getConfigDir()."/Janitor/".$className.".config.php";
+			$fileName = $e->getConfigDir()."/Janitor/".$className.".config.php";
+			if (!file_exists($fileName))
+				return;
+			include $fileName;
 			if (isset(${$className."Config"}))
 				$this->config(${$className."Config"});
 		}
@@ -65,7 +60,7 @@ class JanitorTask
 	/**
 	 * config
 	 *
-	 * Sets the ui component configuration
+	 * Sets the configuration
 	 *
 	 * @param array $config An array of configuration options for this janitor task. It merges them with the hard coded default values configured in the overloaded janitor task class.
 	 */
@@ -100,8 +95,7 @@ class JanitorTask
 	 *
 	 * @param string $key The configuration key
 	 */
-	function getConfig($key)
-	{
+	function getConfig($key) {
 		return $this->config[$key];
 	}
 
@@ -111,7 +105,9 @@ class JanitorTask
 	 * Performs the tasks for what this JanitorTask is meant. Must be overloaded by a higher level JanitorTask class.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array An array with the following values:
+	 * * One of the JANITORTASK_EXECUTION_RETURN_? available constants indicating the result of the task execution.
+	 * * The description of the task result, or a hash array of information on the result of the task execution.
 	 */
 	function run($baseTimestamp) {
 	}

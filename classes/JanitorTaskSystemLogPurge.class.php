@@ -13,8 +13,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class JanitorTaskSystemLogPurge extends JanitorTask
-{
+class JanitorTaskSystemLogPurge extends JanitorTask {
 	/**
 	 * @var bool $isConfig Sets whether this JanitorTask has its own configuration file. Defaults to false.
 	 */

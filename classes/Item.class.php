@@ -193,7 +193,7 @@ class Item extends BasicObject {
 	/**
 	 * loadInline
 	 *
-	 * Loads the item when no loadMethod has been provided on construction. Should be overloaded.
+	 * Loads the item when no loadMethod has been provided on construction. Intended to be overloaded when needed.
 	 *
 	 * @param array $data A hash array with the data
 	 * @return boolean True on success, false on error

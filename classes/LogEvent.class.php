@@ -45,17 +45,17 @@ class LogEvent extends Item {
 	/**
 	 * @var string $typeDescription The description of the log event type. Intended to be overloaded.
 	 */
-	private $typeDescription;
+	protected $typeDescription;
 
 	/**
 	 * @var string $outherIdDescription The description of the outher_id field contents for this log event type. Intended to be overloaded when needed.
 	 */
-	private $outherIdDescription;
+	protected $outherIdDescription;
 
 	/**
-	 * @var string $secondaryOutherIdDescription The description of the outher_id field contents for this log event type. Intended to be overloaded when needed.
+	 * @var string $secondaryOutherIdDescription The description of the secondaryOuther_id field contents for this log event type. Intended to be overloaded when needed.
 	 */
-	private $secondaryOutherIdDescription;
+	protected $secondaryOutherIdDescription;
 
 	/**
 	 * Loads the item when no loadMethod has been provided on construction. This is the usual way of creating LogEvent objects for logging
@@ -64,7 +64,7 @@ class LogEvent extends Item {
 	 * @return boolean True on success, false on error
 	 */
 	function loadInline($data = false) {
-		$this->type = substr(get_called_class(), strpos(get_called_class(), "\\")+1);
+		$this->type = get_called_class();
 		$this->subType = $data["subType"] ?? false;
 
 		if ($data["ip"] ?? false)
@@ -89,7 +89,13 @@ class LogEvent extends Item {
 		else
 			$this->timestamp = time();
 		
-		if ($data["additionalData"] ?? false)
+		if (isset($data["outher_id"]))
+			$this->outher_id = $data["outher_id"];
+		
+		if (isset($data["secondaryOuther_id"]))
+			$this->secondaryOuther_id = $data["secondaryOuther_id"];
+		
+		if (isset($data["additionalData"]))
 			$this->additionalData = $data["additionalData"];
 
 		return parent::loadInline($data);

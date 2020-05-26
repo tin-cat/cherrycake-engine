@@ -107,7 +107,7 @@ class SystemLogEvent extends Item {
 		if (isset($data["data"]))
 			$this->data = $data["data"];
 
-		return parent::loadInline();
+		return parent::loadInline($data);
 	}
 
 	/**
