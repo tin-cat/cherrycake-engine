@@ -48,7 +48,7 @@ class JanitorTask {
 		if ($this->isConfigFile) {
 			global $e;
 			$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-			$fileName = $e->getConfigDir()."/Janitor/".$className.".config.php";
+			$fileName = $e->getConfigDir()."/".$className.".config.php";
 			if (!file_exists($fileName))
 				return;
 			include $fileName;

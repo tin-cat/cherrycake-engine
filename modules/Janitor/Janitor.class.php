@@ -109,10 +109,10 @@ class Janitor  extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"janitorStatus",
-			new \Cherrycake\ActionHtml([
+			new \Cherrycake\ActionCli([
 				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Janitor",
-				"methodName" => "status",
+				"methodName" => "showPlainStatus",
 				"request" => new \Cherrycake\Request([
 					"pathComponents" => [
 						new \Cherrycake\RequestPathComponent([
@@ -304,18 +304,45 @@ class Janitor  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * status
-	 *
-	 * Presents a page with Janitor's current status
+	 * Shows the status of the Janitor tasks in plain text
 	 */
-	function status($request) {
+	function showPlainStatus($request) {
 		global $e;
-		$e->loadCoreModule("HtmlDocument");
-		$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
-			"payload" =>
-				$e->HtmlDocument->header().
-				$this->getStatusHtml().
-				$e->HtmlDocument->footer()
+		$this->loadTasks();
+
+		$r = "";
+		foreach ($this->janitorTasks as $janitorTaskName => $janitorTask) {
+			$taskStatus = $janitorTask->getStatus();
+
+			$r .=
+				"Task: ".$janitorTask->getName()."\n".
+				"Description: ".$janitorTask->getDescription()."\n".
+				"Result: ".$this->getJanitorTaskReturnCodeDescription($taskStatus["lastExecutionResultCode"] ?? false)."\n".
+				"Periodicity: ".$janitorTask->getPeriodicityDebugInfo()."\n";
+
+			if (!$taskStatus)
+				$r .= "Never executed\n";
+			else {
+				$r .=
+					"Last execution: ".
+					date("j/n/Y H:i:s", $taskStatus["lastExecutionTimestamp"])." (".date_default_timezone_get().") took ".number_format($taskStatus["lastExecutionSeconds"]*1000)." ms.\n";
+					
+					if (isset($taskStatus["lastExecutionResultDescription"])) {
+						if (is_array($taskStatus["lastExecutionResultDescription"])) {
+							foreach ($taskStatus["lastExecutionResultDescription"] as $key => $value)
+								$r .= ". ".$key.": ".$value."\n";
+						}
+						else
+							$r .= ". ".$taskStatus["lastExecutionResultDescription"];
+					}
+					else
+						$r .= "No report\n";
+				$r .= "\n";
+			}
+		}
+
+		$e->Output->setResponse(new \Cherrycake\ResponseTextPlain([
+			"payload" => $r
 		]));
 	}
 
@@ -327,7 +354,8 @@ class Janitor  extends \Cherrycake\Module {
 	 * @return array An (n-dimensional hash array containing status info for janitor tasks
 	 */
 	function getStatus() {
-		while (list($janitorTaskName, $janitorTask) = each($this->janitorTasks)) {
+		$this->loadTasks();
+		foreach ($this->janitorTasks as $janitorTaskName => $janitorTask) {
 			$r[$janitorTaskName] = $janitorTask->getStatus();
 		}
 		reset($this->janitorTasks);
@@ -383,7 +411,7 @@ class Janitor  extends \Cherrycake\Module {
 					"<th colspan=2>".
 						"<h2>".$janitorTask->getName()."</h2>".
 						"<h3>".$janitorTask->getDescription()."</h3>".
-						$this->getJanitorTaskReturnCodeDescription($taskStatus["lastExecutionResultCode"]).
+						$this->getJanitorTaskReturnCodeDescription($taskStatus["lastExecutionResultCode"] ?? false).
 					"</th>".
 				"</tr>".
 				"<tr>".
