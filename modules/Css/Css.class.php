@@ -20,7 +20,7 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
  * @package Cherrycake
  * @category Modules
  */
-class Css  extends \Cherrycake\Module {
+class Css extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */

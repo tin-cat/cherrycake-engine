@@ -100,7 +100,7 @@ class Cache  extends \Cherrycake\Module {
 	 */
 	static function buildCacheKey($cacheKeyNamingOptions) {
 		global $e;
-		$key = $e->getAppNamespace();
+		$key = $e->getAppName();
 
 		if (isset($cacheKeyNamingOptions["prefix"]))
 			$key .= "_".$cacheKeyNamingOptions["prefix"];
