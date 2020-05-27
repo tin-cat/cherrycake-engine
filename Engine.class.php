@@ -147,7 +147,7 @@ namespace Cherrycake {
 				$setup["isCli"] = defined("STDIN");
 			
 			if (!isset($setup["appName"]))
-				$setup["appName"] = md5($_SERVER["HOSTNAME"].$_SERVER["DOCUMENT_ROOT"]);
+				$setup["appName"] = md5(($_SERVER["HOSTNAME"] ?? false ?: "").$_SERVER["DOCUMENT_ROOT"]);
 			
 			foreach ([
 				"appName",
