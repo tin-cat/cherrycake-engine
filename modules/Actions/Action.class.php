@@ -91,7 +91,7 @@ class Action {
 		$this->moduleType = isset($setup["moduleType"]) ? $setup["moduleType"] : false;
 		$this->moduleName = isset($setup["moduleName"]) ? $setup["moduleName"] : false;
 		$this->methodName = isset($setup["methodName"]) ? $setup["methodName"] : false;
-		$this->request = isset($setup["request"]) ? $setup["request"] : false;
+		$this->request = isset($setup["request"]) ? $setup["request"] : new Request;
 		$this->isCache = isset($setup["isCache"]) ? $setup["isCache"] : false;
 		$this->isSensibleToBruteForceAttacks = isset($setup["isSensibleToBruteForceAttacks"]) ? $setup["isSensibleToBruteForceAttacks"] : false;
 		$this->timeout = isset($setup["timeout"]) ? $setup["timeout"] : false;
