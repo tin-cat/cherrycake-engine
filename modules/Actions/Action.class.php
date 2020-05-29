@@ -117,6 +117,13 @@ class Action {
 	}
 
 	/**
+	 * @return boolean Whether this Action is intended for a command line request or not
+	 */
+	function isCli() {
+		return $this->isCli;
+	}
+
+	/**
 	 * run
 	 *
 	 * Executes this action by loading the corresponding module and calling the proper method. Manages the cache for this action if needed.
