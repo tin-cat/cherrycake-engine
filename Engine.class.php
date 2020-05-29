@@ -703,9 +703,8 @@ namespace Cherrycake {
 			// If it has get parameters, parse them and put them in $_GET
 			$_GET = $this->parseCommandLineArguments(array_slice($argv, 2));
 
-			if (!$action->request->retrieveParameterValues()) {
+			if (!$action->request->retrieveParameterValues())
 				die;
-			}
 
 			$action->run();
 		}

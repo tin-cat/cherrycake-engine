@@ -11,6 +11,7 @@ namespace Cherrycake;
 const REQUEST_PARAMETER_TYPE_GET = 0;
 const REQUEST_PARAMETER_TYPE_POST = 1;
 const REQUEST_PARAMETER_TYPE_FILE = 2;
+const REQUEST_PARAMETER_TYPE_CLI = 3;
 
 /**
  * RequestParameter
@@ -53,6 +54,7 @@ class RequestParameter {
 		global $e;
 		switch ($this->type) {
 			case REQUEST_PARAMETER_TYPE_GET:
+			case REQUEST_PARAMETER_TYPE_CLI:
 				if (isset($_GET[$this->name]))
 					$this->setValue($_GET[$this->name]);
 				break;

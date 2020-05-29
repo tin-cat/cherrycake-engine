@@ -136,7 +136,7 @@ class DatabaseProvider {
 	 */
 	function requireConnection() {
 		if (!$this->isConnected)
-			return $this->Connect();
+			return $this->connect();
 		return true;
 	}
 
