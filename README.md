@@ -1,4 +1,5 @@
-# <img src="https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.gitbook/assets/cherrycake-logo.svg" style="height: 1.8em; vertical-align: middle; margin: -13px 5px 0 0;">Cherrycake engine
+![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.gitbook/assets/cherrycake-logo.svg)
+# Cherrycake engine
 https://cherrycake.io
 
 ### What is Cherrycake?
