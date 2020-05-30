@@ -4,16 +4,12 @@ https://cherrycake.io
 
 ### What is Cherrycake?
 
-Cherrycake is a low level programming framework for developing modular, efficient and secure PHP web applications.
+Cherrycake is a low-level programming framework for developing modular, efficient and secure PHP web applications. Instead of a comprehensive, all-in-one web app building environment, Cherrycake aims only to provide a strong foundational layer and methodology that feels comfortable, rational and easy to use while prioritizing modularity, performance and security.
 
-Unlike content management systems and fully-featured frameworks like AngularJS, React or Laravel, Cherrycake sits only as a foundation layer upon which you can build virtually any kind of application.
-
-The aim of Cherrycake is to provide you with a methodology that feels comfortable, rational and easy to use while reaching only the fundamental structural layers of your application, so you keep complete freedom on the fun layers.
-
-### Other Cherrycake repositories
+### Official Cherrycake links
 
 * **Cherrycake Documentation** Documentation is available here: https://cherrycake.io
-* **Example project** The https://cherrycake.io documentation web has been built itself with Cherrycake and also open sourced, you can use it as a reference: [Cherrycake documentation](https://github.com/tin-cat/cherrycake-documentation)
+* **Examples** All the examples from the documentation at https://cherrycake.io are compiled in this Cherrycake app, you can use it as a reference: [Cherrycake documentation examples](https://github.com/tin-cat/cherrycake-documentation-examples)
 * **Cherrycake engine** The Cherrycake engine repository is available at [Cherrycake Engine](https://github.com/tin-cat/cherrycake)
 * **Cherrycake Skeleton** Clone or download the [Cherrycake Skeleton](https://github.com/tin-cat/cherrycake-skeleton) repository to use it as the starting point for your project.
 * **Cherrycake Docker** The [Cherrycake Docker](https://github.com/tin-cat/cherrycake-docker) sets up a complete server with Cherrycake running and a skeleton installed ready for you to start your project straightaway.
