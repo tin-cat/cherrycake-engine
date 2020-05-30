@@ -18,7 +18,7 @@ const RESPONSE_REDIRECT_FOUND = 302;
 /**
  * Output
  *
- * Manages the final output produced by the App.
+ * Manages the final output produced by the app.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
  *
  * @package Cherrycake

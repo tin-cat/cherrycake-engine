@@ -16,8 +16,7 @@ const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permis
 /**
  * Errors
  *
- * Module to manage application errors in a neat way.
- * It takes configuration from the App-layer configuration file.
+ * Module to manage application and core errors.
  * Errors will be shown on screen if isDevel is set to true or if client's IP is on underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
  *
  * Configuration example for patterns.config.php:

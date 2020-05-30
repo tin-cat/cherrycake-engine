@@ -11,7 +11,8 @@ namespace Cherrycake;
 /**
  * TableAdmin
  *
- * A module to admin tables. Works in conjunction with the UiComponentTableAdmin Ui component.
+ * A module to admin database tables.
+ * Works in conjunction with the UiComponentTableAdmin Ui component.
  *
  * @package Cherrycake
  * @category Modules

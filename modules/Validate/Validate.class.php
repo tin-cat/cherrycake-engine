@@ -7,7 +7,7 @@
 namespace Cherrycake;
 
 /**
- * Module that validates many kinds of data
+ * Module to validate different types of data.
  *
  * Configuration example for security.config.php:
  * <code>

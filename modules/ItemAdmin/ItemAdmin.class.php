@@ -23,7 +23,7 @@ const FORM_ITEM_META_TYPE_LOCATION = 1;
 /**
  * ItemAdmin
  *
- * A module to admin items.
+ * A module to admin Items.
  * It allows the creation of HTML forms in conjunction with the UiComponentItemAdmin, and also simplifies the process of receiving data for an Item via a request, validating the values and storing them.
  *
  * @package Cherrycake

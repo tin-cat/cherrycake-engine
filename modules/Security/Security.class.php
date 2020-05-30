@@ -34,7 +34,7 @@ const SECURITY_FILTER_JSON = 3; // Decodes json data
 namespace Cherrycake;
 
 /**
- * Provides security measures.
+ * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
  *
  * @package Cherrycake
