@@ -99,13 +99,13 @@
     left: 0;
     bottom: 0;
     width: <?= $e->UiComponentPanel->getConfig("mainSmallWidth") ?>px;
-    height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     border-right: solid rgba(0, 0, 0, 0.07) 1px;
     background: #272727;
     transition: all <?= $e->UiComponentPanel->getConfig("transitionTime") ?>s ease-in-out;
     box-sizing: border-box;
+	padding-bottom: 40px;
 }
 
 #UiComponentPanel > .main .UiComponentMenuOption {
