@@ -364,18 +364,23 @@ function handleError(
 					global $e;
 					$patternFileName = $e->Patterns->getPatternFileName($stackItem["args"][0]);
 					
-					$sourceLines = explode("<br />", highlight_string(file_get_contents($patternFileName), true));
+					if (is_readable($patternFileName)) {
+						$sourceLines = explode("<br />", highlight_string(file_get_contents($patternFileName), true));
 
-					$highlightedSource = "<div class='source'>\n";
-					$lineNumber = 1;
-					foreach ($sourceLines as $line) {
-						if ($lineNumber >= $errLine - 10 && $lineNumber <= $errLine + 10)
-							$highlightedSource .= "<div class='line".($lineNumber == $errLine ? " highlighted" : "")."'>\n<div class='number'>".$lineNumber."</div>\n<div class='code'>".$line."</div>\n</div>\n";
-						$lineNumber ++;
+						$highlightedSource = "<div class='source'>\n";
+						$lineNumber = 1;
+						foreach ($sourceLines as $line) {
+							if ($lineNumber >= $errLine - 10 && $lineNumber <= $errLine + 10)
+								$highlightedSource .= "<div class='line".($lineNumber == $errLine ? " highlighted" : "")."'>\n<div class='number'>".$lineNumber."</div>\n<div class='code'>".$line."</div>\n</div>\n";
+							$lineNumber ++;
+						}
+						$highlightedSource .= "</div>\n";
+
+						$html .= $highlightedSource;
 					}
-					$highlightedSource .= "</div>\n";
-
-					$html .= $highlightedSource;
+					else {
+						$html .= "Could not open file \"".$patternFileName."\" for debugging.";
+					}
 				}
 
 			$html .=
@@ -427,7 +432,7 @@ function handleError(
 
 			case "Cherrycake\ActionHtml":
 				$response = new \Cherrycake\ResponseTextHtml([
-					"payload" => $html
+					"payload" => $e->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
 				]);
 				break;
 
