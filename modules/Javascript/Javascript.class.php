@@ -119,7 +119,7 @@ class Javascript  extends \Cherrycake\Module {
 	function addSet($setName, $setConfig) {
 		$this->sets[$setName] = $setConfig;
 	}
-	
+
 	/**
 	 * Builds a unique id that uniquely identifies the specified set with its current files and its contents.
 	 * Unique ids for sets change if the list of files in a set changes, or if the contents of any of the files changes.
@@ -141,7 +141,7 @@ class Javascript  extends \Cherrycake\Module {
 
 		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
 			return $e->Cache->$cacheProviderName->get($cacheKey);
-		
+
 		$uniqId = md5($this->parseSet($setName));
 
 		$e->Cache->$cacheProviderName->set($cacheKey, $uniqId, $cacheTtl);
@@ -165,7 +165,7 @@ class Javascript  extends \Cherrycake\Module {
 			$this->storeParsedSetInCache($setName);
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
-		
+
 		return $e->Actions->getAction("javascript")->request->buildUrl([
 			"parameterValues" => [
 				"set" => $parameterSetNames,
@@ -185,7 +185,7 @@ class Javascript  extends \Cherrycake\Module {
 
 		if (!is_array($setNames))
 			$setNames = [$setNames];
-		
+
 		foreach ($setNames as $setName)
 			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
 		ksort($orderedSetNames);
@@ -295,10 +295,10 @@ class Javascript  extends \Cherrycake\Module {
 
 		if (!isset($this->sets[$setName]))
 			return null;
-		
+
 		if ($e->isDevel())
 			$develInformation = "\nSet \"".$setName."\":\n";
-		
+
 		$requestedSet = $this->sets[$setName];
 
 		$js = "";
@@ -312,10 +312,10 @@ class Javascript  extends \Cherrycake\Module {
 					continue;
 				else
 					$parsed[] = $file;
-				
+
 				if ($e->isDevel())
 					$develInformation .= $requestedSet["directory"]."/".$file."\n";
-				
+
 				$js .= $e->Patterns->parse(
 					$file,
 					[
@@ -341,7 +341,7 @@ class Javascript  extends \Cherrycake\Module {
 
 		if($this->getConfig("isMinify"))
 			$js = $this->minify($js);
-		
+
 		if ($e->isDevel())
 			$js = "/*\n".$develInformation."\n*/\n\n".$js;
 
@@ -369,11 +369,11 @@ class Javascript  extends \Cherrycake\Module {
 			$e->Output->setResponse(new \Cherrycake\ResponseTextCss());
 			return;
 		}
-		
+
 		$setPairs = explode("-", $request->set);
 
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		
+
 		$js = "";
 
 		foreach($setPairs as $setPair) {
@@ -392,7 +392,7 @@ class Javascript  extends \Cherrycake\Module {
 
 		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
 		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
-		
+
 		$e->Output->setResponse(new \Cherrycake\ResponseApplicationJavascript([
 			"payload" => $js
 		]));
@@ -408,6 +408,7 @@ class Javascript  extends \Cherrycake\Module {
 	 * @return string The minified Javascript
 	 */
 	function minify($javascript) {
+		return $javascript;
 		return \Cherrycake\JavascriptMinifier::minify($javascript);
 	}
 
@@ -437,7 +438,7 @@ class Javascript  extends \Cherrycake\Module {
 
 				if (isset($set["variablesFile"]))
 					$r[$setName]["variablesFile"] = implode(", ", $set["variablesFile"]);
-				
+
 				if ($set["isIncludeAllFilesInDirectory"] ?? false)
 				$r[$setName]["files"][] = $set["directory"]."/*.js";
 

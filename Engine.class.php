@@ -145,10 +145,10 @@ namespace Cherrycake {
 
 			if (!isset($setup["isCli"]))
 				$setup["isCli"] = defined("STDIN");
-			
+
 			if (!isset($setup["appName"]))
 				$setup["appName"] = md5(($_SERVER["HOSTNAME"] ?? false ?: "").$_SERVER["DOCUMENT_ROOT"]);
-			
+
 			foreach ([
 				"appName",
 				"isDevel",
@@ -162,12 +162,12 @@ namespace Cherrycake {
 			] as $key)
 				if (isset($setup[$key]))
 					$this->$key = $setup[$key];
-				
+
 			if ($this->isDevel())
 				$this->executionStartHrTime = hrtime(true);
-			
+
 			$this->engineCache = new EngineCache;
-			
+
 			$this->loadConstants();
 
 			if ($this->isUnderMaintenance()) {
@@ -175,7 +175,7 @@ namespace Cherrycake {
 				echo file_get_contents("errors/maintenance.html");
 				die;
 			}
-			
+
 			date_default_timezone_set($this->getTimezoneName());
 
 			require ENGINE_DIR."/Module.class.php";
@@ -188,7 +188,7 @@ namespace Cherrycake {
 			foreach ($setup["baseCoreModules"] ?? ["Actions"] as $module)
 				if (!$this->loadCoreModule($module, MODULE_LOADING_ORIGIN_BASE))
 					return false;
-			
+
 			if (isset($setup["baseAppModules"])) {
 				foreach ($setup["baseAppModules"] as $module)
 					if (!$this->loadAppModule($module, MODULE_LOADING_ORIGIN_BASE))
@@ -209,7 +209,7 @@ namespace Cherrycake {
 
 			if ($this->engineCache->isKeyExistsInBucket($cacheBucketName, $cacheKey))
 				return $this->engineCache->getFromBucket($cacheBucketName, $cacheKey);
-			
+
 			if (!is_dir($directory)) {
 				$this->engineCache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
 				return false;
@@ -257,10 +257,10 @@ namespace Cherrycake {
 		 * @param string $methodName the name of the method
 		 * @return array The App module names that implement the specified method
 		 */
-		function getAvailableAppModuleNamesWithMethod($methodName) {		
+		function getAvailableAppModuleNamesWithMethod($methodName) {
 			return $this->getAvailableModuleNamesWithMethod($this->getAppNamespace(), $this->getAppModulesDir(), $methodName);
 		}
-		
+
 		/*
 		* @param string $nameSpace The namespace to use
 		* @param string $modulesDirectory The directory where the specified module is stored
@@ -271,10 +271,10 @@ namespace Cherrycake {
 			$cacheBucketName = "AvailableModuleNamesWithMethod";
 			$cacheKey = [$nameSpace, $modulesDirectory, $methodName];
 			$cacheTtl = $this->isDevel() ? 2 : 600;
-		
+
 			if ($this->engineCache->isKeyExistsInBucket($cacheBucketName, $cacheKey))
 				return $this->engineCache->getFromBucket($cacheBucketName, $cacheKey);
-		
+
 			if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
 				$this->engineCache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
 				return false;
@@ -413,7 +413,7 @@ namespace Cherrycake {
 
 		/**
 		 * Loads a module when it's not known whether it's an app or a core module
-		 * 
+		 *
 		 * @param string $moduleName The name of the module to load
 		 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
 		 * @param string $requiredByModuleName The name of the module that required this module, if any.
@@ -585,7 +585,7 @@ namespace Cherrycake {
 		 * Calls the specified static method on all the available Cherrycake and App modules where it's implemented, and then loads those modules
 		 * @param string $methodName The method name to call
 		 */
-		function callMethodOnAllModules($methodName) {			
+		function callMethodOnAllModules($methodName) {
 			// Call the static method
 			$codeModuleNames = $this->getAvailableCoreModuleNamesWithMethod($methodName);
 			if (is_array($codeModuleNames)) {
@@ -604,7 +604,7 @@ namespace Cherrycake {
 				}
 				reset($appModuleNames);
 			}
-			
+
 			// Load the modules
 			// if (is_array($coreModuleNames)) {
 			// 	foreach ($coreModuleNames as $coreModuleName) {
@@ -638,9 +638,9 @@ namespace Cherrycake {
 			$cacheTtl = $this->isDevel() ? 2 : 600;
 			if ($this->engineCache->exists($cacheKey))
 				return $this->engineCache->get($cacheKey);
-			
+
 			$constantsFiles = [];
-			
+
 			$coreModuleNames = $this->getAvailableCoreModuleNames();
 			if (is_array($coreModuleNames)) {
 				foreach ($coreModuleNames as $moduleName) {
@@ -658,7 +658,7 @@ namespace Cherrycake {
 						$constantsFiles[] = $constantsFileName;
 				}
 			}
-			
+
 			$this->engineCache->set($cacheKey, $constantsFiles, $cacheTtl);
 
 			return $constantsFiles;
@@ -742,11 +742,11 @@ namespace Cherrycake {
 			}
 			return $result;
 		}
-		
+
 		/**
 		 * Returns information about the engine and its current status, including the loaded modules, the mapped actions and some benchmarks.
 		 * Note that some information on the return array will be missing if the isDevel option has not been activated when initializing the engine.
-		 * 
+		 *
 		 * @return array A hash array with the information
 		 */
 		function getStatus() {
@@ -774,7 +774,7 @@ namespace Cherrycake {
 				"host" => $_SERVER["HTTP_HOST"] ?? false,
 				"ip" => $_SERVER["REMOTE_ADDR"] ?? false,
 				"os" => PHP_OS,
-				"phpVersion" => phpversion(),			
+				"phpVersion" => phpversion(),
 				"serverSoftware" => $_SERVER["SERVER_SOFTWARE"],
 				"serverGatewayInterface" => $_SERVER["GATEWAY_INTERFACE"],
 				"serverApi" => PHP_SAPI
@@ -791,7 +791,7 @@ namespace Cherrycake {
 
 			if ($this->isModuleLoaded("Actions"))
 				$r["actions"] = $this->Actions->getStatus();
-			
+
 			if ($this->isModuleLoaded("Css"))
 				$r["css"] = $this->Css->getStatus();
 
@@ -932,7 +932,7 @@ namespace {
 			($isHtml ? "<pre>" : null).
 			print_r($var, true). //json_encode($var, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_LINE_TERMINATORS).
 			($isHtml ? "<pre>" : null);
-		
+
 		if ($isReturn)
 			return $pretty;
 		else

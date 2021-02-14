@@ -30,7 +30,7 @@ class Actions  extends \Cherrycake\Module {
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
 	var $dependentCoreModules = [
-		"Output",		
+		"Output",
 		"Errors",
 		"Security"
 	];
@@ -86,7 +86,7 @@ class Actions  extends \Cherrycake\Module {
 	 * mapAction
 	 *
 	 * Maps an action for a module (either an App or a Core module). Should be called within the mapActions method of your module, like this:
-	 * 
+	 *
 	 * $e->Actions->mapAction(
 	 * 	"TableAdminGetRows",
 	 * 	new \Cherrycake\ActionHtml([

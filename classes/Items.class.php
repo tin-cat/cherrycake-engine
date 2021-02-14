@@ -59,7 +59,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * When a cachedKeyPoolsName is specified, all the cache keys for queries performed by this Items object will be remembered in an internal pool. So, when executing the clearCachedKeysPool (executes also on the clearCache method), all the cached queries performed by this Items object will be cleared.
 	 * For example, when we have an Items object that gets certain items lists by accepting a page parameter for paged results, we don't know in advance how many pages will be cached, nor which pages will be cached, hence preventing us from easily clearing all the cached queries (since each cached items set will have an uncertain cache key that should contain the page number). The CachedKeysPool mechanism adds all the used cache keys to the pool as soon as they're used, so we end having a list of all the used cache keys. The clearCachedKeysPool method loops through that list and removes all the cache entries corresponding to each stored key from cache, effectively clearing all the cached queries related to this Items object.
 	 * It uses the same cacheProviderName as the rest of the Items functionalities.
-	 * 
+	 *
 	 * @var string The name of the cachedKeys pool to use. False if no pool of cache keys is to be used.
 	 */
 	protected $cachedKeysPoolName = false;
@@ -89,7 +89,7 @@ abstract class Items extends BasicObject implements \Iterator {
 		else
 		if (isset($setup["p"]))
 			$setup["fillMethod"] = "fromParameters";
-		
+
 		switch($setup["fillMethod"]) {
 			case "fromParameters":
 				return $this->fillFromParameters($setup["p"] ?? false);
@@ -197,7 +197,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * Stores the results on the following object variables, so they can be later used by other methods:
 	 * *	items: An array of objects containing the matched items, if isFillItems has been set to true.
 	 * *	totalNumberOf: The total number of matching items found, whether paging has been used or not (it takes into account the specified limit, if specified), if isBuildTotalNumberOfItems has been set to true.
-	 * 
+	 *
 	 * @return boolean True if everything went ok, false otherwise.
 	 */
 	function fillFromParameters($p = false) {
@@ -378,7 +378,7 @@ abstract class Items extends BasicObject implements \Iterator {
 
 	/**
 	 * Adds the given cache key to the pool of cached keys.
-	 * 
+	 *
 	 * @param string $cachedKey The cached key name to add to the CachedKeysPool
 	 * @return boolean True if the operation went well, false otherwise.
 	 */
@@ -396,7 +396,7 @@ abstract class Items extends BasicObject implements \Iterator {
 
 	/**
 	 * When using the CachedKeysPool mechanism, this method removes all the cache entries corresponding to each stored key from cache, effectively clearing all the cached queries related to this Items object.
-	 * 
+	 *
 	 * @return boolean True if the cachedKeysPool could be cleared, false otherwise
 	 */
 	function clearCachedKeysPool() {
@@ -481,7 +481,7 @@ abstract class Items extends BasicObject implements \Iterator {
 
 	/**
 	 * Finds the item with the given key
-	 * 
+	 *
 	 * @param mixed $key The key to find
 	 * @return mixed The found Item, or false if it wasn't found
 	 */
@@ -520,7 +520,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	/**
 	 * @return mixed Rewinds the internal Items pointer to the first element and returns it. Returns the first element or false if the list is empty.
 	 */
-	function rewind() {	
+	function rewind() {
 		return $this->isAny() ? reset($this->items) : false;
 	}
 
