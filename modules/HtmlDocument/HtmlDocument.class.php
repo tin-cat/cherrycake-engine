@@ -19,7 +19,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
 	protected $isConfigFile = true;
-	
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -55,7 +55,8 @@ class HtmlDocument  extends \Cherrycake\Module {
 		"matomoTrackingId" => false, // The Matomo (Piwik) tracking id, if any.
 		"googleAnalyticsTrackingId" => false, // The Google Analytics id, if any.
 		"cssSets" => false, // An array of the Css set names to link in the HTML document in a single request, or, to add different Css requests instead of one, an array where each item represents a single request, and is an array of Css set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
-		"javascriptSets" => false // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
+		"javascriptSets" => false, // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
+		"googleFonts" => false // An array of the Google fonts to include, where each item is a hash array containing the following keys: "family": The font family (i.e.: "Duru Sans"), "subset" The subset (i.e.: "latin")
 	];
 
 	/**
@@ -125,7 +126,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 
 	/**
 	 * Adds HTML code to the end of the document body
-	 * 
+	 *
 	 * @param string $html The HTML to add to the end of the body
 	 */
 	function addFooterAdditionalHtml($html) {
@@ -179,7 +180,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
 			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
-			
+
 		// Css
 		if ($e->Css) {
 			if (!$cssSets = $this->getConfig("cssSets")) {
@@ -253,6 +254,12 @@ class HtmlDocument  extends \Cherrycake\Module {
 					$r .= "<link rel=\"icon\" type=\"image/png\" href=\"".$src."\" sizes=\"".$size."\" />\n";
 		}
 
+		if ($googleFonts = $this->getConfig("googleFonts")) {
+			if (is_array($googleFonts))
+				foreach ($googleFonts as $googleFont)
+					$r .= "<link href=\"//fonts.googleapis.com/css?family=".$googleFont["family"]."&subset=".$googleFont["subset"]."\" rel=\"stylesheet\" type=\"text/css\" />\n";
+		}
+
 		$r .= "</head>\n";
 
 		$r .= "<body".(isset($setup["bodyAdditionalCssClasses"]) ? " class=\"".$setup["bodyAdditionalCssClasses"]."\"" : "").">\n";
@@ -275,7 +282,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 
 		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !$e->isDevel())
 			$r .= $this->getMatomoCode($this->getConfig("matomoServerUrl"), $this->getConfig("matomoTrackingId"));
-		
+
 		if ($this->getFooterAdditionalHtml())
 			$r .= $this->getFooterAdditionalHtml();
 
@@ -318,7 +325,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 							}
 						</script>";
 				}
-				else {					
+				else {
 					$r .=
 						"<script type=\"text/javascript\">
 							".$this->inlineJavascript."
@@ -326,7 +333,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 				}
 			}
 		}
-		
+
 		$r .=
 			"</body>\n</html>";
 

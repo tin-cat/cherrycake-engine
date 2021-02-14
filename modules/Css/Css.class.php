@@ -16,7 +16,7 @@ const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any othe
 
 /**
  * Module that manages Css code.
- * 
+ *
  * @package Cherrycake
  * @category Modules
  */
@@ -154,7 +154,7 @@ class Css extends \Cherrycake\Module {
 
 		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
 			return $e->Cache->$cacheProviderName->get($cacheKey);
-		
+
 		$uniqId = md5($this->parseSet($setName));
 
 		$e->Cache->$cacheProviderName->set($cacheKey, $uniqId, $cacheTtl);
@@ -164,7 +164,7 @@ class Css extends \Cherrycake\Module {
 	/**
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for retrieval by the dump method in another request.
-	 * 
+	 *
 	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
 	 * @return string The Url of the Css requested sets
 	 */
@@ -174,11 +174,11 @@ class Css extends \Cherrycake\Module {
 		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
 		foreach ($orderedSets as $setName => $set) {
-			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";			
+			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
 			$this->storeParsedSetInCache($setName);
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
-		
+
 		return $e->Actions->getAction("css")->request->buildUrl([
 			"parameterValues" => [
 				"set" => $parameterSetNames,
@@ -198,7 +198,7 @@ class Css extends \Cherrycake\Module {
 
 		if (!is_array($setNames))
 			$setNames = [$setNames];
-		
+
 		foreach ($setNames as $setName)
 			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
 		ksort($orderedSetNames);
@@ -303,13 +303,13 @@ class Css extends \Cherrycake\Module {
 	 */
 	function parseSet($setName) {
 		global $e;
-		
+
 		if (!isset($this->sets[$setName]))
 			return null;
-		
+
 		if ($e->isDevel())
 			$develInformation = "\nSet \"".$setName."\":\n";
-		
+
 		$requestedSet = $this->sets[$setName];
 
 		$css = "";
@@ -323,7 +323,7 @@ class Css extends \Cherrycake\Module {
 					continue;
 				else
 					$parsed[] = $file;
-				
+
 				if ($e->isDevel())
 					$develInformation .= $requestedSet["directory"]."/".$file."\n";
 
@@ -358,10 +358,10 @@ class Css extends \Cherrycake\Module {
 
 		if (isset($requestedSet["isGenerateBackgroundGradientsCssHelpers"]) && isset($gradients))
 			$css .= $this->generateCssHelperBackgroundGradients($gradients);
-		
+
 		if($this->getConfig("isMinify"))
 			$css = $this->minify($css);
-		
+
 		if ($e->isDevel())
 			$css = "/*\n".$develInformation."\n*/\n\n".$css;
 
@@ -383,7 +383,7 @@ class Css extends \Cherrycake\Module {
 
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
-		
+
 		if (!$request->set) {
 			$e->Output->setResponse(new \Cherrycake\ResponseTextCss());
 			return;
@@ -392,7 +392,7 @@ class Css extends \Cherrycake\Module {
 		$setPairs = explode("-", $request->set);
 
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		
+
 		$css = "";
 
 		foreach ($setPairs as $setPair) {
@@ -410,7 +410,7 @@ class Css extends \Cherrycake\Module {
 			if ($e->isDevel())
 				$css .= "/* Css set \"".$setName."\" (not cached) */\n";
 		}
-		
+
 		$e->Output->setResponse(new \Cherrycake\ResponseTextCss([
 			"payload" => $css
 		]));
@@ -575,7 +575,7 @@ class Css extends \Cherrycake\Module {
 		if ($baseParameter == "border-bottom-right-radius")
 			$baseParameterForGecko = "border-radius-bottomright";
 
-		
+
 		$baseParameterForWebkit = $baseParameter;
 		$baseParameterForGecko = $baseParameter;
 		$baseParameterForPresto = $baseParameter;
@@ -737,7 +737,7 @@ class Css extends \Cherrycake\Module {
 
 				if (isset($set["variablesFile"]))
 					$r[$setName]["variablesFile"] = implode(", ", $set["variablesFile"]);
-				
+
 				if ($set["isIncludeAllFilesInDirectory"] ?? false)
 				$r[$setName]["files"][] = $set["directory"]."/*.css";
 
