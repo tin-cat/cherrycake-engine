@@ -26,7 +26,7 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
 		$e->Javascript->addFileToSet("coreUiComponents", "UiComponentTableAdmin.js");
 		return true;
     }
-    
+
     /**
      * @param string $mapName The name of the TableAdmin map to use. Must've been defined previously by calling TableAdmin::map
 	 * @param array $setup A hash array of setup keys for the building of the table, available keys:
@@ -40,10 +40,10 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
 
         if (!$map = $e->TableAdmin->getMap($mapName))
             return false;
-        
+
         if (!is_array($map["columns"]))
             return false;
-		
+
 		$this->treatParameters($setup, [
             "domId" => ["default" => uniqid()],
             "style" => ["default" => $map["style"]],
@@ -58,7 +58,7 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
         $itemFields = $itemProbe->getFields();
 
         // Build columns
-        while (list($columnName, $columnData) = each($map["columns"])) {
+		foreach ($map["columns"] as $columnName => $columnData) {
             if ($columnData["fieldName"]) {
                 if (!$itemField = $itemFields[$columnData["fieldName"]])
                     continue;
@@ -73,7 +73,7 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
         reset($map["columns"]);
 
         $html = "<div id=\"".$this->domId."\"></div>";
-        
+
         $e->HtmlDocument->addInlineJavascript("$('#".$setup["domId"]."').UiComponentTableAdmin({
             title: '".$this->title."',
             style: '".(is_array($this->style) ? implode(" ", $this->style) : $this->style)."',
@@ -92,7 +92,7 @@ class UiComponentTableAdmin extends \Cherrycake\UiComponent {
 
 		return $html;
     }
-    
+
     /**
      * Determines the best alignment for an Item field on a table, depending on its type
      * @param integer $fieldType One of the \Cherrycake\DATABASE_FIELD_TYPE_*

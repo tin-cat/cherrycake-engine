@@ -46,7 +46,7 @@ class UiComponentMenu extends \Cherrycake\UiComponent {
 	 * @param array $options A hash array with one or more items in the form of $key => $optionSetup, as expected by the addOption method
 	 */
 	function addOptions($options) {
-		while (list($key, $optionSetup) = each($options))
+		foreach ($options as $key => $optionSetup)
 			$this->addOption($key, $optionSetup);
 	}
 
@@ -89,7 +89,7 @@ class UiComponentMenu extends \Cherrycake\UiComponent {
 	 * @param array $options A hash array with one or more items in the form of $key => $optionSetup, as expected by the addOption method
 	 */
 	function addSecondLevelOptions($firstLevelKey, $options) {
-		while (list($key, $optionSetup) = each($options))
+		foreach ($options as $key => $optionSetup)
 			$this->addSecondLevelOption($firstLevelKey, $key, $optionSetup);
 	}
 
@@ -136,7 +136,7 @@ class UiComponentMenu extends \Cherrycake\UiComponent {
 	 */
 	function buildHtml($setup = false) {
 		$this->setProperties($setup);
-		
+
 		if (!is_array($this->options))
 			return "";
 
@@ -165,7 +165,7 @@ class UiComponentMenu extends \Cherrycake\UiComponent {
 		}
 
 		ksort($orderedOptions);
-		
+
 		foreach ($orderedOptions as $optionSetup)
 			$r .= $this->buildOptionHtml($optionSetup);
 
@@ -222,11 +222,11 @@ class UiComponentMenu extends \Cherrycake\UiComponent {
 
 			ksort($secondLevelOrderedOptions);
 
-			while (list(, $optionSetup) = each($secondLevelOrderedOptions))
+			foreach ($secondLevelOrderedOptions as $optionSetup)
 				$r .= $this->buildOptionHtml($optionSetup, true);
 
 			$r .= "</div>";
-		}	
+		}
 
 		return $r;
 	}

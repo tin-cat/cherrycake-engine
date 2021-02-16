@@ -16,7 +16,7 @@ namespace Cherrycake;
  * * Can create the multiple size images from a given file.
  * * All jpg images are considered with the extension ".jpg", not ".jpeg".
  * * Any resizing of animated gif images will result on losing the animation, use the "copy" resize method to preserve the original file.
- * * By specifying a fileNameObfuscationSalt, the file names (and the directory structure if fileDirectoryDeepness is set) will be obfuscated to avoid file scrapping. 
+ * * By specifying a fileNameObfuscationSalt, the file names (and the directory structure if fileDirectoryDeepness is set) will be obfuscated to avoid file scrapping.
  * * * Attention: If you set fileNameObfuscationSalt, be sure to never change it. If salt ever changes, the names of the files that have been already saved to disk with a different salt won't match the ones generated with the previous salt. If you lose the original salt, you might lose the connection between a given file id and its file on disk.
  * * * If such catastrophe happens, you might still be able to recover the original file names: Since the file names are obfuscated by adding a dot and a hash to the base file name, removing this dot and hash from the file names will leave you with the original files as if they weren't obfuscated.
  * * * It's recommended that you backup the salts you use in your projects in a safe place.
@@ -78,7 +78,7 @@ class Image {
 	 * Attention: If you set fileNameObfuscationSalt, be sure to never change it. If salt ever changes, the names of the files that have been already saved to disk with a different salt won't match the ones generated with the previous salt. If you lose the original salt, you might lose the connection between a given file id and its file on disk, which would be catastrophic.
 	 * If such catastrophe happens, you might still be able to recover the original file names: Since the file names are obfuscated by adding a dot and a hash to the base file name, removing this dot and hash from the file names will leave you with the original files as if they weren't obfuscated.
 	 * It's recommended that you backup the salts you use in your projects in a safe place.
-	 * 
+	 *
 	 * @var string $fileNameObfuscationSalt A salt for the hashing algorithm that will be used to obfuscate file names on disk to prevent file scrapping attacks.
 	 */
 	protected $fileNameObfuscationSalt = false;
@@ -153,7 +153,7 @@ class Image {
 
 	/**
 	 * Sets the file name that will be used to save this image to disk, and all its size variants if any.
-	 * 
+	 *
 	 * @param string $fileName The file name, without extension
 	 */
 	function setFileName($fileName) {
@@ -162,11 +162,11 @@ class Image {
 
 	/**
 	 * Sets the base file name without extension. The actual file name will vary depending on the size, and file obfuscation settings.
-	 * 
+	 *
 	 * If fileNameObfuscationSalt is set, the file name will be obfuscated with it to prevent file scrapping attacks.
 	 * To obfuscate the file name, a dot and a hash based on the original file name, the size name (if any) and the fileNameObfuscationSalt is used.
 	 * We use md4 because it seems to be the fastest, and we're using it for creating a salted one-way hash, so no need for cryptographic strength.
-	 * 
+	 *
 	 * @param string $sizeName The size name
 	 * @return string The file name, without extension
 	 */
@@ -176,7 +176,7 @@ class Image {
 
 		return $this->fileName.".".hash("md4", $this->fileName.$sizeName.$this->fileNameObfuscationSalt);
 	}
-	
+
 	/**
 	 * @param string $fileDirectory The file directory
 	 */
@@ -186,9 +186,9 @@ class Image {
 
 	/**
 	 * Sets the base directory to store the file. The actual directory name will vary depending on the size, and file obfuscation settings.
-	 * 
+	 *
 	 * If fileDirectoryDeepness is set, the directory will be added a subdirectory structure based on the first characters of the filename to improve disk efficiency.
-	 * 
+	 *
 	 * @param string $sizeName The size name
 	 * @return string The directory where this image with the given $sizeName is stored
 	 */
@@ -198,7 +198,7 @@ class Image {
 
 		return $this->fileDirectory."/".self::buildDeepSubdirectoryName($this->getFileName($sizeName), $this->fileDirectoryDeepness);
 	}
-	
+
 
 	/**
 	 * buildDeepSubdirectoryName
@@ -221,7 +221,7 @@ class Image {
 
 	/**
 	 * Checks if the directory where this image should be stored exists on the disk, including the deep directory structure if specified. Creates it if it doesn't exists.
-	 * 
+	 *
 	 * @param string $sizeName The size name
 	 * @return boolean True if the creation went ok, or if the directory already existed.
 	 */
@@ -346,7 +346,7 @@ class Image {
 	function isFilesExists($isCheckOnlyFirstSize = false) {
 		$isAllFilesExist = true;
 		if ($this->sizes) {
-			while (list($sizeName) = each($this->sizes)) {
+			foreach (array_keys($this->sizes) as $sizeName) {
 				if (!$this->isFileExists($sizeName))
 					$isAllFilesExist = false;
 				if ($isCheckOnlyFirstSize)
@@ -429,7 +429,7 @@ class Image {
 			return false;
 		}
 
-		while (list($sizeName, $sizeSetup) = each($this->sizes)) {
+		foreach ($this->sizes as $sizeName => $sizeSetup) {
 			$finalWidth = false;
 			$finalHeight = false;
 			if($isDebug) echo "Size ".$sizeName." source size: ".$sourceWidth."x".$sourceHeight." ";

@@ -96,7 +96,7 @@ class Gradient
 	 * @param array $colorSteps an array of Colors and its positions in the gradient, in the form of [<position> => <Color>, ...]
 	 */
 	function addColorSteps($colorSteps) {
-		while(list($position, $color) = each($colorSteps))
+		foreach ($colorSteps as $position => $color)
 			$this->addColorStep($color, $position);
 	}
 
@@ -152,7 +152,7 @@ class Gradient
 					($this->style == STYLE_DIAGONAL_DOWN ? "-45deg" : null).
 					",";
 
-		while (list($position, $color) = each($this->colorSteps))
+		foreach ($this->colorSteps as $position => $color)
 			$gradientValues .= $color->getCssRgba()." ".$e->Css->unit($position, "%").", ";
 		reset($this->colorSteps);
 		$gradientValues = substr($r, 0, -2);
@@ -202,7 +202,7 @@ class Gradient
 	 * @param $amount Amount of light to add
 	 */
 	function lighten($amount) {
-		while (list($position) = each($this->colorSteps))
+		foreach ($this->colorSteps as $position)
 			$this->colorSteps[$position]->lighten($amount);
 		reset($this->colorSteps);
 	}
@@ -227,7 +227,7 @@ class Gradient
 	 * @param $amount Amount of light to substract
 	 */
 	function darken($amount) {
-		while (list($position) = each($this->colorSteps))
+		foreach ($this->colorSteps as $position)
 			$this->colorSteps[$position]->darken($amount);
 		reset($this->colorSteps);
 	}

@@ -33,7 +33,7 @@ class TableAdmin  extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
-		
+
 		global $e;
 		$e->callMethodOnAllModules("mapTableAdmin");
 
@@ -111,7 +111,7 @@ class TableAdmin  extends \Cherrycake\Module {
      * ]
      *]);
      * </code>
-     * 
+     *
      * @param string $name The name of the admin map
      * @param array $setup A hash array of the following options for the admin:
      * * itemsClassName: The name of the class in your project that extends the Item object
@@ -162,7 +162,7 @@ class TableAdmin  extends \Cherrycake\Module {
      * @param Request $request The request object
      * @return boolean True if the action could be attended, false otherwise
      */
-    function getRows($request) {    
+    function getRows($request) {
         if (!$map = $this->getMap($request->mapName))
             return false;
 
@@ -170,18 +170,18 @@ class TableAdmin  extends \Cherrycake\Module {
             if (!$map["preCheckCallback"]())
                 return false;
         }
-        
+
         $itemsProbe = $map["itemsClassName"]::build();
         $itemProbe = $itemsProbe->getItemClassName()::build();
         $idFieldName = $itemProbe->idFieldName;
 
         $fillFromParameters = $map["fillFromParameters"];
 
-        // Gets additional fillFromParameters based on the requested additionalFillFromParameters and the additionalFillFromRequestParameters configured on the admin map 
+        // Gets additional fillFromParameters based on the requested additionalFillFromParameters and the additionalFillFromRequestParameters configured on the admin map
         if ($request->additionalFillFromParameters && is_array($map["additionalFillFromRequestParameters"])) {
             $additionalFillFromParameters = json_decode($request->additionalFillFromParameters, true);
             if (is_array($additionalFillFromParameters)) {
-                while (list($parameterKey, $parameterValue) = each($additionalFillFromParameters)) {
+				foreach ($additionalFillFromParameters as $parameterKey => $parameterValue) {
                     $isFound = false;
                     foreach ($map["additionalFillFromRequestParameters"] as $requestParameter) {
                         if ($requestParameter->name == $parameterKey) {
@@ -218,7 +218,7 @@ class TableAdmin  extends \Cherrycake\Module {
             foreach ($items as $item) {
                 unset($row);
                 $row["id"] = $item->$idFieldName;
-                while (list($columnName, $columnData) = each($map["columns"])) {
+				foreach ($map["columns"] as $columnName => $columnData) {
                     // If the column must contain an Item's field
                     if ($columnData["fieldName"]) {
                         if (!isset($item->getFields()[$columnData["fieldName"]]))

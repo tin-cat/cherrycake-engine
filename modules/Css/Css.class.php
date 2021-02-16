@@ -438,7 +438,8 @@ class Css extends \Cherrycake\Module {
 	 * @return string Text colors Css helper code
 	 */
 	function generateCssHelperTextColors($colors) {
-		while (list($colorName, $color) = each($colors))
+		$r = "";
+		foreach ($colors as $colorName => $color)
 			$r .= ".textColor_".$colorName." { color: ".$color." !important; }\n";
 
 		return $r;
@@ -451,7 +452,8 @@ class Css extends \Cherrycake\Module {
 	 * @return string Background colors Css helper code
 	 */
 	function generateCssHelperBackgroundColors($colors) {
-		while (list($colorName, $color) = each($colors))
+		$r = "";
+		foreach ($colors as $colorName => $color)
 			$r .= ".backgroundColor_".$colorName." { background-color: ".$color." !important; }\n";
 
 		return $r;
@@ -464,7 +466,8 @@ class Css extends \Cherrycake\Module {
 	 * @return string Background gradients Css helper code
 	 */
 	function generateCssHelperBackgroundGradients($gradients) {
-		while (list($gradientName, $gradient) = each($gradients))
+		$r = "";
+		foreach ($gradients as $gradientName => $gradient)
 			$r .= ".backgroundGradient_".$gradientName." { ".$gradient->getCssBackground()." }\n";
 
 		return $r;

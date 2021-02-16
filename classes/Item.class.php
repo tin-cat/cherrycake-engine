@@ -125,7 +125,7 @@ class Item extends BasicObject {
 	 *  - fromData: Loads the item by calling the loadFromData method passing the value of the "data" setup key as the parameter
 	 *
 	 * Throws an exception if the object could not be constructed
-	 * 
+	 *
 	 * @param array $setup Specifications on how to create the Item object
 	 */
 	function __construct($setup = false) {
@@ -204,7 +204,7 @@ class Item extends BasicObject {
 
 	/**
 	 * Retrieves the item data on the database corresponding to the specified $value for the given $fieldName and fills this Item's with it.
-	 * 
+	 *
 	 * @param mixed $id The value to match the $fieldName to.
 	 * @param string $fieldName The name of the id field, as defined on this Item's $fields. Should be a field that uniquely identifies a row on the database.
 	 * @param mixed $loadMethod The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
@@ -227,7 +227,7 @@ class Item extends BasicObject {
 
 	/**
 	 * Returns a DatabaseRow object containing the query result of the Item identified by the given id
-	 * 
+	 *
 	 * @param string $fieldName The name of the id field, as defined on this Item's $fields. Should be a field that uniquely identifies a row on the database.
 	 * @param mixed $id The value to match the $fieldName to.
 	 * @param mixed $method The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
@@ -321,7 +321,7 @@ class Item extends BasicObject {
 		foreach ($this->fields as $fieldName => $fieldData) {
 			if ($fieldName == $this->idFieldName)
 				continue;
-			
+
 			if (isset($data[$fieldName]))
 				$value = $data[$fieldName];
 			else
@@ -354,7 +354,7 @@ class Item extends BasicObject {
 			}
 			else
 				continue;
-			
+
 			if ($fieldData["isMultiLanguage"] ?? false) { // If this field is multilanguage
 				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
 					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
@@ -378,7 +378,7 @@ class Item extends BasicObject {
 
 		if (!$result = $e->Database->{$this->databaseProviderName}->insert($this->tableName, $fieldsData))
 			return false;
-		
+
 		if ($this->idFieldName)
 			$data[$this->idFieldName] = $result->getInsertId();
 
@@ -401,7 +401,7 @@ class Item extends BasicObject {
 
 	/**
 	 * Finds a random available url short code
-	 * 
+	 *
 	 * @var string $fieldName The name of the field that holds url short codes for this item
 	 */
 	function getRandomAvailableUrlShortCode($fieldName, $numberOfCharacters = false) {
@@ -415,7 +415,7 @@ class Item extends BasicObject {
 			$code = "";
 			for ($i = 0; $i < $numberOfCharacters; $i ++)
 				$code .= substr($this->urlShortCodeCharacters, rand(0, strlen($this->urlShortCodeCharacters) - 1), 1);
-			
+
 			if ($this->isAvailableUrlShortCode($fieldName, $code))
 				return $code;
 
@@ -423,7 +423,7 @@ class Item extends BasicObject {
 
 			if ($tries >= $this->maxUrlShortCodeTriesForCodeLength)
 				return $this->getRandomAvailableUrlShortCode($fieldName, ++$numberOfCharacters);
-			
+
 		}
 
 		return $code;
@@ -466,7 +466,7 @@ class Item extends BasicObject {
 	/**
 	 * Updates the data on the database for this Item
 	 * @param array An optional hash array where each key is the field name to update, and each value the new data to store on that field for this item. If not passed or left to false, the current data stored in the object is used. Default: false.
-	 * * For multilanguage fields, a hash array where the keys are language codes and the values are the value in that language can be passed. If a non-array value is passed the currently detected language will be used.	
+	 * * For multilanguage fields, a hash array where the keys are language codes and the values are the value in that language can be passed. If a non-array value is passed the currently detected language will be used.
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function update($data = false) {
@@ -492,7 +492,7 @@ class Item extends BasicObject {
 			if ($this->fields[$fieldName]["isMultiLanguage"] ?? false) {
 				global $e;
 				if (is_array($fieldData)) {
-					
+
 					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
 
 						$this->{$fieldName."_".$e->Locale->getLanguageCode($language)} = $fieldData[$language];
@@ -575,7 +575,7 @@ class Item extends BasicObject {
 	 * Magic get method to return the Item's data corresponding to the specified $key
 	 * If the key is for a database field that is language dependant as specified by $this->fields, the proper language data according to the current Locale language will be returned
 	 * If the key is for a timezone dependant field as specified by $this->fields, the proper timezone adjusted timestamp will be returned according to the current Locale timezone
-	 * 
+	 *
 	 * @param string $key The key of the data to get, matches the database field name.
 	 * @return mixed The data. Null if data with the given key is not set.
 	 */
@@ -651,7 +651,7 @@ class Item extends BasicObject {
 	 * * iconNameEmpty: The icon name to represent empty values. Defaults to "empty".
 	 * * iconVariantEmpty: The icon variant to represent empty values. Defaults to "grey".
 	 * @param boolean $isHtml Whehter to use HTML to help make the data readable by a human
-	 * @return string The HTML representing 
+	 * @return string The HTML representing
 	 */
 	function getHumanized($key, $setup = false) {
 		global $e;
@@ -786,7 +786,7 @@ class Item extends BasicObject {
 				}
 
 				break;
-			
+
 			case \Cherrycake\DATABASE_FIELD_TYPE_YEAR:
 				$r = $e->Locale->formatTimestamp(
 					$r,
@@ -806,7 +806,7 @@ class Item extends BasicObject {
 				break;
 			case \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED:
 				$value = $r;
-				
+
 				if (!$value) {
 					$r = false;
 					break;
@@ -818,7 +818,7 @@ class Item extends BasicObject {
 				}
 
 				$table = "<table class=\"panel\">";
-					while (list($k1, $v1) = each($value)) 
+					foreach ($value as $k1 => $v1)
 						$table .=
 							"<tr>".
 								"<td>".$k1."</td>".
@@ -840,7 +840,7 @@ class Item extends BasicObject {
 				}
 				break;
 		}
-		
+
 		if ($this->fields[$key]["prefix"])
 			$r = $this->fields[$key]["prefix"].$r;
 

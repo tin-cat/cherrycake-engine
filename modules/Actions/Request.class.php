@@ -52,7 +52,7 @@ class Request {
 	function __construct($setup = false) {
 		$this->isSecurityCsrf = $setup["isSecurityCsrf"] ?? false;
 
-		if ($this->isSecurityCsrf()) {			
+		if ($this->isSecurityCsrf()) {
 			global $e;
 			$setup["parameters"][] = new \Cherrycake\RequestParameter([
 				"name" => "csrfToken",
@@ -287,7 +287,7 @@ class Request {
 			$url .= "/";
 
 		$count = 0;
-		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {			
+		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {
 			foreach ($this->parameters as $parameter) {
 				if ($setup["parameterValues"] ?? false) {
 					if ($setup["parameterValues"][$parameter->name] ?? false)
@@ -362,7 +362,7 @@ class Request {
 		}
 
 		if (is_array($this->additionalCacheKeys)) {
-			while (list($additionalCacheKey, $value) = each($this->additionalCacheKeys)) {
+			foreach ($this->additionalCacheKeys as $additionalCacheKey => $value) {
 				if (isset($parameterValues))
 					$key .= "_".$additionalCacheKey."=".$parameterValues[$key];
 				else
@@ -414,7 +414,7 @@ class Request {
 			$r["brief"] .= "(".implode(" ", $parametersStatus).")";
 			reset($this->parameters);
 		}
-		
+
 		if (is_array($this->additionalCacheKeys))
 			$r["additionalCacheKeys"] = $this->additionalCacheKeys;
 

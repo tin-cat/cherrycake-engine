@@ -368,7 +368,7 @@ class JanitorTask {
 		$debugInfo = $this->getDebugInfo();
 
 		$r .= "<table class=\"".($setup["tableClass"] ? $setup["tableClass"] : "debugInfo")."\"><tr><th colspan=2><h2>".$this->getName()."</h2><h3>".$this->getDescription()."</h3></th></tr>";
-		while (list($key, $value) = each($debugInfo))
+		foreach ($debugInfo as $key => $value)
 			if ($key != "Name" && $key != "Description")
 				$r .= "<tr class=\"keyValue\"><td>".$key."</td><td>".$value."</td></tr>";
 		$r .= "</table>";

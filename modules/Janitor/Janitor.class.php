@@ -198,7 +198,7 @@ class Janitor  extends \Cherrycake\Module {
 		$isForceRun = $request->isForceRun;
 
 		$this->loadTasks();
-		
+
 		global $e;
 		$r = "Janitor run\n";
 
@@ -326,7 +326,7 @@ class Janitor  extends \Cherrycake\Module {
 				$r .=
 					"Last execution: ".
 					date("j/n/Y H:i:s", $taskStatus["lastExecutionTimestamp"])." (".date_default_timezone_get().") took ".number_format($taskStatus["lastExecutionSeconds"]*1000)." ms.\n";
-					
+
 					if (isset($taskStatus["lastExecutionResultDescription"])) {
 						if (is_array($taskStatus["lastExecutionResultDescription"])) {
 							foreach ($taskStatus["lastExecutionResultDescription"] as $key => $value)
@@ -455,8 +455,8 @@ class Janitor  extends \Cherrycake\Module {
 	 * This method expects that the engine has been loaded with the following modules:
 	 * * Database
 	 * * Ui
-	 * * UiComponentTable 
-	 * 
+	 * * UiComponentTable
+	 *
 	 * @param array $setup Setup parameters
 	 * @return string The HTML
 	 */
@@ -486,7 +486,7 @@ class Janitor  extends \Cherrycake\Module {
 
 	/**
 	 * Gets debug information in HTML format
-	 * 
+	 *
 	 * @setup array $setup Setup options, available keys:
 	 *  - tableClass: The CSS class to use for the table
 	 * @return string Debug info for all configured tasks in HTML format
@@ -494,9 +494,10 @@ class Janitor  extends \Cherrycake\Module {
 	function getDebugInfoHtml($setup = false) {
 		$this->loadTasks();
 
-		while (list($janitorTaskName, $janitorTask) = each($this->janitorTasks))
+		$r = "";
+		foreach ($this->janitorTasks as $janitorTaskName => $janitorTask)
 			$r .= $janitorTask->getDebugInfoHtml();
-				
+
 		reset($this->janitorTasks);
 		return $r;
 	}

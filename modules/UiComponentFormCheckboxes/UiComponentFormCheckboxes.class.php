@@ -68,7 +68,7 @@ class UiComponentFormCheckboxes extends \Cherrycake\UiComponent {
 				});
 			");
 		}
-		
+
 		$html =
 			"<div ".
 				"class=\"".
@@ -80,7 +80,7 @@ class UiComponentFormCheckboxes extends \Cherrycake\UiComponent {
 			">".
 			($this->title ? "<div class=\"title\">".$this->title."</div>" : null);
 
-		while (list($key, $item) = each($this->items))
+		foreach ($this->items as $key => $item)
 			$html .=
 				"<div class=\"item\">".
 					"<input ".

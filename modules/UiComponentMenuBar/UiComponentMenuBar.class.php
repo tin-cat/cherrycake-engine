@@ -10,7 +10,7 @@ namespace Cherrycake;
 
 /**
  * A Ui component to show a Menu Bar
- * 
+ *
  * Configuration example for UiComponentMenuBar.config.php:
  * <code>
  * $UiComponentMenuBarConfig = [
@@ -29,7 +29,7 @@ namespace Cherrycake;
  * 	"logoLinkUrl" => "/" // To make the logo a link, set this to the link url
  * ];
  * </code>
- * 
+ *
  * @package Cherrycake
  * @category Classes
  */
@@ -38,7 +38,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	 * @var bool $isConfig Sets whether this UiComponent has its own configuration file. Defaults to false.
 	 */
 	protected $isConfigFile = true;
-	
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -56,7 +56,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 		],
 		"logoLinkUrl" => "/"
 	];
-    
+
 	/**
 	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module
 	 */
@@ -64,17 +64,17 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 		"UiComponentJquery",
 		"UiComponentIcons"
     ];
-    
+
     /**
 	 * @var array $options The menu options
 	 */
     protected $options;
-    
+
     /**
 	 * @var string $selectedOption The selected option key
 	 */
     protected $selectedOption;
-    
+
     /**
 	 * @var string $selectedSecondLevelOption The second level selected option key
 	 */
@@ -92,7 +92,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	 * @param array $options A hash array with one or more items in the form of $key => $optionSetup, as expected by the addOption method
 	 */
 	function addOptions($options) {
-		while (list($key, $optionSetup) = each($options))
+		foreach ($options as $key => $optionSetup)
 			$this->addOption($key, $optionSetup);
 	}
 
@@ -118,7 +118,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 		if ($optionSetup["isSelected"])
 			$this->setSelectedOption($key);
     }
-    
+
     /**
 	 * Sets the selected option of the menu
 	 *
@@ -135,7 +135,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	 * @param array $options A hash array with one or more items in the form of $key => $optionSetup, as expected by the addOption method
 	 */
 	function addSecondLevelOptions($firstLevelKey, $options) {
-		while (list($key, $optionSetup) = each($options))
+		foreach ($options as $key => $optionSetup)
 			$this->addSecondLevelOption($firstLevelKey, $key, $optionSetup);
 	}
 
@@ -171,7 +171,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	function setSecondLevelSelectedOption($key) {
 		$this->selectedSecondLevelOption = $key;
 	}
-    
+
     /**
 	 * Builds the HTML of the menu bar and returns it.
 	 *
@@ -181,7 +181,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 	 */
 	function buildHtml($setup = false) {
 		global $e;
-		
+
 		$this->treatParameters($setup, [
 			"isLogo" => ["default" => true]
 		]);
@@ -197,9 +197,9 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 					($this->isLogo ? " withLogo" : null).
 				"\"".
 			">";
-			
+
 		$r .= "<div class=\"wrapper\">";
-		
+
 		if ($this->isLogo) {
 			$logoImageUrl = $this->getConfig("logoImageUrl")[$this->getConfig("theme")];
 			$isLogoText = !$logoImageUrl && $this->getConfig("logoText");
@@ -211,7 +211,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 					">".
 						($isLogoText ?
 							$this->getConfig("logoText")
-						: 
+						:
 							"<img src=\"".$logoImageUrl."\" />"
 						).
 					($this->getConfig("logoLinkUrl") ? "</a>" : "</div>");
@@ -221,7 +221,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
         if (is_array($this->options)) {
             // Order the options
             $autoOrder = 0;
-            while (list($key, $optionSetup) = each($this->options)) {
+			foreach ($this->options as $key => $optionSetup) {
                 if ($order = $optionSetup["order"]) {
                     $autoOrder = $optionSetup["order"];
                 }
@@ -236,18 +236,18 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
             ksort($orderedOptions);
 
             $r .= "<nav class=\"options\">";
-                while (list(, $optionSetup) = each($orderedOptions))
+				foreach ($orderedOptions as $optionSetup)
                     $r .= $this->buildOptionHtml($optionSetup);
                 reset ($orderedOptions);
             $r .= "</nav>";
 
             $smallScreenMenuHtml .= "<div class=\"smallScreenMenu\">";
-                while (list(, $optionSetup) = each($orderedOptions))
+				foreach ($orderedOptions as $optionSetup)
                     $smallScreenMenuHtml .= $this->buildOptionHtml($optionSetup);
                 reset ($orderedOptions);
             $smallScreenMenuHtml .= "</div>";
 		}
-		
+
 		$r .= "</div>";
 
 		$r .= $smallScreenMenuHtml;
@@ -257,7 +257,7 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
             "<div class=\"buttonSmallScreenMenu close UiComponentIcon ".$this->getConfig("iconsVariant")." close\"></div>";
 
         $r .= "</div>";
-        
+
         $e->HtmlDocument->addInlineJavascript("$('#UiComponentMenuBar').UiComponentMenuBar();");
 
 		return $r;
@@ -305,18 +305,18 @@ class UiComponentMenuBar extends \Cherrycake\UiComponent {
 			$r .= "<div class=\"secondLevelOptions\">";
 
 			// Order the options
-			while (list($secondLevelKey, $secondLevelOptionSetup) = each($optionSetup["secondLevelOptions"])) {
+			foreach ($optionSetup["secondLevelOptions"] as $secondLevelKey => $secondLevelOptionSetup) {
 				$secondLevelOptionSetup["key"] = $secondLevelKey;
 				$secondLevelOrderedOptions[$secondLevelOptionSetup["order"]] = $secondLevelOptionSetup;
 			}
 
 			ksort($secondLevelOrderedOptions);
 
-			while (list(, $optionSetup) = each($secondLevelOrderedOptions))
+			foreach ($secondLevelOrderedOptions as $optionSetup)
 				$r .= $this->buildOptionHtml($optionSetup, true);
 
 			$r .= "</div>";
-		}	
+		}
 
 		return $r;
     }
