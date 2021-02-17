@@ -18,7 +18,7 @@ const EMAIL_SMTP_ENCRYPTION_SSL = 1;
  * Email
  *
  * Sends emails
- * 
+ *
  * Configuration example for email.config.php:
  * <code>
  * $emailConfig = [
@@ -31,7 +31,7 @@ const EMAIL_SMTP_ENCRYPTION_SSL = 1;
  *  "SMTPPassword" => "" // The password for authenticating on the SMTP server
  * ];
  * </code>
- * 
+ *
  * @todo Implement an email queueing system
  *
  * @package Cherrycake
@@ -57,10 +57,10 @@ class Email  extends \Cherrycake\Module {
      */
 	function send($tos, $subject, $setup) {
         set_time_limit(30);
-        require_once ENGINE_DIR."/vendor/autoload.php";
+        require_once APP_DIR."/vendor/autoload.php";
         $this->phpMailer = new \PHPMailer\PHPMailer\PHPMailer(true);
         try {
-            
+
             $this->phpMailer->CharSet = "UTF-8";
             if ($this->getConfig("method") == "internal")
                 $this->phpMailer->isMail();
@@ -94,7 +94,7 @@ class Email  extends \Cherrycake\Module {
             if (isset($setup["attachments"]) && is_array($setup["attachments"]))
                 foreach ($setup["attachments"] as $attachment)
                     $this->phpMailer->addAttachment($attachment[0], $attachment[1]);
-            
+
             $this->phpMailer->Subject = $subject;
 
             if (isset($setup["contentHTML"])) {

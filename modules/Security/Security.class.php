@@ -45,7 +45,7 @@ class Security  extends \Cherrycake\Module {
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
 	protected $isConfigFile = true;
-	
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -180,7 +180,7 @@ class Security  extends \Cherrycake\Module {
 
 			$ruleParameter = false;
 
-			if (is_array($rule)) { 
+			if (is_array($rule)) {
 				$ruleParameter = $rule[1];
 				$rule = $rule[0];
 			}
@@ -254,7 +254,7 @@ class Security  extends \Cherrycake\Module {
 					$isError = true;
 					$description[] = "Parameter is not a slug";
 				}
-			
+
 			if ($rule == \Cherrycake\SECURITY_RULE_URL_SHORT_CODE)
 				if (preg_match("/[^0-9A-Za-z]/", $value)) {
 					$isError = true;
@@ -266,7 +266,7 @@ class Security  extends \Cherrycake\Module {
 					$isError = true;
 					$description[] = "Parameter is not an URL route";
 				}
-			
+
 			if ($rule == \Cherrycake\SECURITY_RULE_LIMITED_VALUES) {
 				$isError = true;
 				foreach ($ruleParameter as $possibleValue)
@@ -298,17 +298,17 @@ class Security  extends \Cherrycake\Module {
 
 		if (!is_array($rules))
 			$rules = [];
-		
+
 		if (!$rules)
 			return new \Cherrycake\ResultOk;
-		
+
 		$isError = false;
 
 		foreach ($rules as $rule) {
 
 			$ruleParameter = false;
 
-			if (is_array($rule)) { 
+			if (is_array($rule)) {
 				$ruleParameter = $rule[1];
 				$rule = $rule[0];
 			}
@@ -382,7 +382,7 @@ class Security  extends \Cherrycake\Module {
 
 			$filterParameter = false;
 
-			if (is_array($filter)) { 
+			if (is_array($filter)) {
 				$filterParameter = $filter[1];
 				$filter = $filter[0];
 			}
@@ -390,11 +390,11 @@ class Security  extends \Cherrycake\Module {
 			if ($filter == \Cherrycake\SECURITY_FILTER_XSS) {
 				$value = $this->stripXss($value);
 			}
-			
+
 			if ($filter == \Cherrycake\SECURITY_FILTER_STRIP_TAGS) {
 				$value = strip_tags($value);
 			}
-			
+
 			if ($filter == \Cherrycake\SECURITY_FILTER_TRIM) {
 				$value = trim($value);
 			}
@@ -414,7 +414,7 @@ class Security  extends \Cherrycake\Module {
 	 */
 	function checkRequest($request) {
 		global $e;
-		
+
 		if ($request->isSecurityCsrf()) {
 			// Check host
 			if ($this->getConfig("isRequestServerNameCheck")) {
@@ -492,7 +492,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return string The token
 	 */
 	function getCsrfToken() {
-		if ($this->isCsrfTokenInSession()) 
+		if ($this->isCsrfTokenInSession())
 			return $this->getCsrfTokenInSession();
 		$token = $this->generateCsrfToken();
 		$this->setCsrfTokenInSession($token);
@@ -698,7 +698,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return string The cleaned string
 	 */
 	function clean($string) {
-		require_once ENGINE_DIR."/vendor/autoload.php";
+		require_once APP_DIR."/vendor/autoload.php";
 		$config = \HTMLPurifier_Config::createDefault();
 
 		$config->set('Core.Encoding', 'UTF-8');
@@ -775,7 +775,7 @@ class Security  extends \Cherrycake\Module {
 
 		if ($setup["allowedImageTypes"])
 			$setup["isRequireImage"] = true;
-		
+
 		// If allowedImageTypes is not specified, but isRequireImage is, generate an allowedImageTypes array with all the image types supported by GD
 		if (!isset($setup["allowedImageTypes"]) && $setup["isRequireImage"]) {
 			foreach (array_keys($imageTypes) as $imageType) {

@@ -22,7 +22,7 @@ class Pdf  extends \Cherrycake\Module {
     function init() {
         if (!parent::init())
             return false;
-        require_once ENGINE_DIR."/vendor/autoload.php";
+        require_once APP_DIR."/vendor/autoload.php";
         return true;
     }
 }
