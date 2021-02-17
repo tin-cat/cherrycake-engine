@@ -43,7 +43,7 @@ abstract class LoginUser extends Item {
 
 	/**
 	 * Performs any initialization needed for the user object when it represents a successfully logged in user.
-	 * 
+	 *
 	 * @return boolean True if success, false otherwise
 	 */
 	public function afterLoginInit() { return true; }

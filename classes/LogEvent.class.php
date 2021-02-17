@@ -88,13 +88,13 @@ class LogEvent extends Item {
 			$this->timestamp = $data["timestamp"];
 		else
 			$this->timestamp = time();
-		
+
 		if (isset($data["outher_id"]))
 			$this->outher_id = $data["outher_id"];
-		
+
 		if (isset($data["secondaryOuther_id"]))
 			$this->secondaryOuther_id = $data["secondaryOuther_id"];
-		
+
 		if (isset($data["additionalData"]))
 			$this->additionalData = $data["additionalData"];
 

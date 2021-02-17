@@ -32,6 +32,7 @@ class UiComponentFormInput extends \Cherrycake\UiComponent {
 	protected $onChange;
 	protected $title;
 	protected $isSubmitOnEnter;
+	protected $error;
 
 	/**
 	 * @var array $dependentCoreModules Cherrycake UiComponent names that are required by this module

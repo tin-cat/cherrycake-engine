@@ -147,7 +147,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		}
 
 		$result = $this->createDatabaseResultObject();
-		$result->init($resultHandler, $setup);		
+		$result->init($resultHandler, $setup);
 		return $result;
 	}
 
@@ -169,7 +169,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
 			return false;
 		}
-		
+
 		return [
 			"sql" => $sql,
 			"statement" => $statement
@@ -198,8 +198,6 @@ class DatabaseProviderMysql extends DatabaseProvider {
 				$types .= $this->fieldTypes[$parameter["type"]]["stmtBindParamType"];
 			reset($parameters);
 
-			$callUserFuncParametersArray[] = $types;
-
 			foreach ($parameters as $parameter) {
 				switch ($parameter["type"]) {
 					case DATABASE_FIELD_TYPE_INTEGER:
@@ -225,7 +223,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 						$value = date("H:i:s", $parameter["value"]);
 						break;
 					case DATABASE_FIELD_TYPE_IP:
-						$value = inet_pton($parameter["value"]);
+						$value = ip2long($parameter["value"]);
 						break;
 					case DATABASE_FIELD_TYPE_SERIALIZED:
 						$value = json_encode($parameter["value"], JSON_FORCE_OBJECT);
@@ -234,21 +232,11 @@ class DatabaseProviderMysql extends DatabaseProvider {
 						$value = $parameter["value"]->getHex();
 						break;
 				}
-				$callUserFuncParametersArray[] = $value;
+				$values[] = $value;
 			}
 			reset($parameters);
 
-			if (!call_user_func_array([$prepareResult["statement"], "bind_param"], $this->convertArrayValuesToRefForCallUserFuncArray($callUserFuncParametersArray))) {
-				global $e;
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Error MySQL binding query statement parameters (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
-					"errorVariables" => [
-						"sql" => $prepareResult["sql"],
-						"parameters" => "\"".implode("\" / \"", $callUserFuncParametersArray)."\""
-					]
-				]);
-				return false;
-			}
+			$prepareResult["statement"]->bind_param($types, ...$values);
 		}
 
 		if (!$prepareResult["statement"]->execute()) {
@@ -257,7 +245,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 				"errorDescription" => "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
 				"errorVariables" => [
 					"sql" => $prepareResult["sql"],
-					"parameters" => "\"".implode("\" / \"", $callUserFuncParametersArray)."\""
+					"values" => "\"".implode("\" / \"", $values)."\""
 				]
 			]);
 			return false;

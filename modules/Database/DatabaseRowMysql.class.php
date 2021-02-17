@@ -43,7 +43,7 @@ class DatabaseRowMysql extends DatabaseRow {
 				return strtotime($data);
 				break;
 			case \Cherrycake\DATABASE_FIELD_TYPE_IP:
-				return $data ? inet_ntop($data) : false;
+				return $data ? long2ip($data) : false;
 				break;
 			case \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED:
 				return json_decode($data, true);
