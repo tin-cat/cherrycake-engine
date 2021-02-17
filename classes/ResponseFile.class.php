@@ -66,6 +66,7 @@ class ResponseFile extends Response {
 	function getPayloadForClient() {
 		$handler = @fopen(realpath(".".$this->filePath)."/".$this->fileName, "r");
 
+		$payload = null;
 		while (!feof($handler)) {
 			$payload .= fread($handler, 1024*8);
 			flush();
