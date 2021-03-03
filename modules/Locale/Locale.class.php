@@ -34,7 +34,7 @@ class Locale  extends \Cherrycake\Module {
 				timeZone: The timezone id used in this localization, from the cherrycake_location_timezones table of the Cherrycake skeleton database.
 		*/
 		"availableLocales" =>
-		[ 
+		[
 			"main" => [
 				"domains" => false,
 				"language" => LANGUAGE_ENGLISH,
@@ -94,7 +94,8 @@ class Locale  extends \Cherrycake\Module {
 	 */
 	private $languageCodes = [
 		LANGUAGE_SPANISH => "es",
-		LANGUAGE_ENGLISH => "en"
+		LANGUAGE_ENGLISH => "en",
+		LANGUAGE_CATALAN => "cat"
 	];
 
 	/**
@@ -173,7 +174,7 @@ class Locale  extends \Cherrycake\Module {
 	function init() {
 		if (!parent::init())
 			return false;
-		
+
 		if (!$this->isConfig("availableLocales"))
 			return true;
 
@@ -185,7 +186,7 @@ class Locale  extends \Cherrycake\Module {
 				}
 			}
 		}
-		
+
 		if (!$this->locale)
 			$this->setLocale($this->getConfig("defaultLocale"));
 
@@ -476,7 +477,7 @@ class Locale  extends \Cherrycake\Module {
 	function convertTimestamp($timestamp, $toTimeZone = false, $fromTimeZone = false) {
 		if (!$timestamp)
 			return false;
-		
+
 		if (!$fromTimeZone) {
 			global $e;
 			$fromTimeZone = $e->getTimezoneId();
@@ -500,7 +501,7 @@ class Locale  extends \Cherrycake\Module {
 
 	/**
 	 * Formats the given date.
-	 * 
+	 *
 	 * @param int $dateTimestamp The timestamp to use, in UNIX timestamp format. The hours, minutes and seconds are considered irrelevant.
 	 * @param array $setup A hash array with setup options, just like the Locale::formatTimestamp method
 	 * @return string The formatted date
@@ -560,7 +561,7 @@ class Locale  extends \Cherrycake\Module {
 
 		if (!isset($setup["isAvoidYearIfCurrent"]))
 			$setup["isAvoidYearIfCurrent"] = false;
-		
+
 		if (!isset($setup["isBrief"]))
 			$setup["isBrief"] = false;
 
@@ -601,7 +602,7 @@ class Locale  extends \Cherrycake\Module {
 				$r = date($dateFormat, $timestamp);
 
 				break;
-			
+
 			case \Cherrycake\TIMESTAMP_FORMAT_HUMAN:
 
 				if ($setup["isDay"]) {
@@ -627,7 +628,7 @@ class Locale  extends \Cherrycake\Module {
 								$this->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
 								" ".
 								date("j", $timestamp);
-								
+
 							break;
 						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
@@ -770,7 +771,7 @@ class Locale  extends \Cherrycake\Module {
 
 	/**
 	 * Formats the given amount as a currency
-	 * 
+	 *
 	 * @param float $amount
 	 * @param array $setup An optional hash array with setup options, with the following possible keys:
 	 * * currency: The currency to format the given amount to. One of the available CURRENCY_?. If not specified, the current Locale setting is used.

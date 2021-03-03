@@ -8,6 +8,7 @@ namespace Cherrycake;
 
 const LANGUAGE_SPANISH = 1;
 const LANGUAGE_ENGLISH = 2;
+const LANGUAGE_CATALAN = 3;
 
 const DATE_FORMAT_LITTLE_ENDIAN = 1;  // Almost all the world, like "20/12/2010", "9 November 2003", "Sunday, 9 November 2003", "9 November 2003"
 const DATE_FORMAT_BIG_ENDIAN = 2; // Asian countries, Hungary and Sweden, like "2010/12/20", "2003 November 9", "2003-Nov-9, Sunday"
