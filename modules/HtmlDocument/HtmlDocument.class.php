@@ -56,7 +56,7 @@ class HtmlDocument  extends \Cherrycake\Module {
 		"googleAnalyticsTrackingId" => false, // The Google Analytics id, if any.
 		"cssSets" => false, // An array of the Css set names to link in the HTML document in a single request, or, to add different Css requests instead of one, an array where each item represents a single request, and is an array of Css set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
 		"javascriptSets" => false, // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
-		"googleFonts" => false // An array of the Google fonts to include, where each item is a hash array containing the following keys: "family": The font family (i.e.: "Duru Sans"), "subset" The subset (i.e.: "latin")
+		"googleFonts" => false // An array of the Google fonts to include, where each item is a hash array containing the following keys: "family": The font family (i.e.: "Duru Sans"), "subset" The subset (i.e.: "latin"), "weight" The font weight (i.e.: 300)
 	];
 
 	/**
@@ -255,9 +255,27 @@ class HtmlDocument  extends \Cherrycake\Module {
 		}
 
 		if ($googleFonts = $this->getConfig("googleFonts")) {
-			if (is_array($googleFonts))
+			if (is_array($googleFonts)) {
+				$families = [];
 				foreach ($googleFonts as $googleFont)
-					$r .= "<link href=\"//fonts.googleapis.com/css?family=".$googleFont["family"]."&subset=".$googleFont["subset"]."\" rel=\"stylesheet\" type=\"text/css\" />\n";
+					$families[] .=
+						"family=".
+						urlencode($googleFont["family"]).
+						(isset($googleFont["weight"]) ? ":wght@".$googleFont["weight"] : null);
+
+				$r .=
+					"<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\">".
+					"<link".
+						" href=\"".
+							"https://fonts.googleapis.com".
+							"/css2?".
+							implode("&", $families).
+							"&subset=".$googleFont["subset"].
+							"&display=swap".
+						"\"".
+						" rel=\"stylesheet\"".
+					">\n";
+			}
 		}
 
 		$r .= "</head>\n";
