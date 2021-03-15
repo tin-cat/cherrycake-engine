@@ -12,7 +12,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Modules
  */
-class Locale  extends \Cherrycake\Module {
+class Locale extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
@@ -81,11 +81,18 @@ class Locale  extends \Cherrycake\Module {
 	private $languageNames = [
 		LANGUAGE_SPANISH => [
 			LANGUAGE_SPANISH => "Español",
-			LANGUAGE_ENGLISH => "Spanish"
+			LANGUAGE_ENGLISH => "Spanish",
+			LANGUAGE_CATALAN => "Espanyol"
 		],
 		LANGUAGE_ENGLISH => [
 			LANGUAGE_SPANISH => "Inglés",
-			LANGUAGE_ENGLISH => "English"
+			LANGUAGE_ENGLISH => "English",
+			LANGUAGE_CATALAN => "Anglès"
+		],
+		LANGUAGE_CATALAN => [
+			LANGUAGE_SPANISH => "Catalán",
+			LANGUAGE_ENGLISH => "Catalan",
+			LANGUAGE_CATALAN => "Català"
 		],
 	];
 
