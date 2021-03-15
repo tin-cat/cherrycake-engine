@@ -226,6 +226,7 @@ class Request {
 	 * Returns a URL that represents a call to this request, including the given path components and parameter values
 	 *
 	 * @param array $setup An option setup two-dimensional array containing:
+	 * * locale: An optional string indicating the locale name for which to build the Url. If not specified, the current locale's domain will be used when isAbsolute is true. When specified, returned Url will be absolute.
 	 * * parameterValues: An optional hash array containing the values for the variable path components and for the GET parameters, if any. (not additionalCacheKeys, since they're not represented on the Url itself).
 	 * * isIncludeUrlParameters: Includes the GET parameters in the URL. The passed parameterValues will be used, or the current request's parameters if no parameterValues are specified. Defaults to true.
 	 * * isAbsolute: Whether to generate an absolute url containing additionally http(s):// and the domain of the App. Defaults to false
@@ -238,6 +239,9 @@ class Request {
 	function buildUrl($setup = false) {
 		if (!isset($setup["isIncludeUrlParameters"]))
 			$setup["isIncludeUrlParameters"] = true;
+
+		if (isset($setup["locale"]))
+			$setup["isAbsolute"] = true;
 
 		if (!isset($setup["isAbsolute"]))
 			$setup["isAbsolute"] = false;
@@ -261,7 +265,17 @@ class Request {
 				else
 					$url = "http://";
 			}
-			$url .= $_SERVER["SERVER_NAME"];
+
+			// Determine the domain
+			// If we haven't a forced locale, use the current domain
+			if (!isset($setup["locale"]))
+				$url .= $_SERVER["HTTP_HOST"];
+			else {
+				// If we have a forced locale, use its domain. Requires the Locale module to be available.
+				global $e;
+				$e->loadAppModule("Locale");
+				$url .= $e->Locale->getMainDomain($setup["locale"]);
+			}
 		}
 		else
 			$url = "";

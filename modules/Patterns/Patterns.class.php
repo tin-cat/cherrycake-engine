@@ -23,7 +23,7 @@ class Patterns  extends \Cherrycake\Module {
 	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
 	 */
 	protected $isConfigFile = true;
-	
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -72,7 +72,7 @@ class Patterns  extends \Cherrycake\Module {
 
 	/**
 	 * Determines whether a given Pattern exists and can be read
-	 * 
+	 *
 	 * @param string $patternName The name of the pattern
 	 * @param array $setup Additional setup with the following possible keys:
 	 * directoryOverride: When specified, the pattern is taken from this directory instead of the default configured directory.
@@ -143,7 +143,7 @@ class Patterns  extends \Cherrycake\Module {
 			foreach ($setup["variables"] as $variableName => $variable)
 				eval("\$".$variableName." = \$variable;");
 		}
-		
+
 		$this->lastTreatedFile = $patternFile;
 		$this->lastEvaluatedCode = file_get_contents($patternFile);
 		ob_start();
@@ -162,7 +162,7 @@ class Patterns  extends \Cherrycake\Module {
 				$buffer,
 				$setup["cacheTtl"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?? false ?: $this->getConfig("defaultCacheTtl")
 			);
-		
+
 		return $buffer;
 	}
 

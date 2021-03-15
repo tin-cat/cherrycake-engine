@@ -178,9 +178,9 @@ class Locale  extends \Cherrycake\Module {
 		if (!$this->isConfig("availableLocales"))
 			return true;
 
-		if (isset($_SERVER["SERVER_NAME"])) {
+		if (isset($_SERVER["HTTP_HOST"])) {
 			foreach ($this->getConfig("availableLocales") as $localeName => $locale) {
-				if ($locale["domains"] ?? false && in_array($_SERVER["SERVER_NAME"], $locale["domains"])) {
+				if (($locale["domains"] ?? false) && in_array($_SERVER["HTTP_HOST"], $locale["domains"])) {
 					$this->setLocale($localeName);
 					break;
 				}
@@ -203,6 +203,17 @@ class Locale  extends \Cherrycake\Module {
 			return false;
 		$this->locale = $this->getConfig("availableLocales")[$localeName];
 		return true;
+	}
+
+	/**
+	 * Gets the main domain name for the current locale, or for the specified locale
+	 * @param string $localeName The name of the locale for which to get the main domain
+	 * @return string The main domain for the specified locale, or for the current locale if no $locale specified. False if the locale was not found.
+	 */
+	function getMainDomain($localeName = false) {
+		if (!isset($this->getConfig("availableLocales")[$localeName]))
+			return false;
+		return $this->getConfig("availableLocales")[$localeName]["domains"][0];
 	}
 
 	/**

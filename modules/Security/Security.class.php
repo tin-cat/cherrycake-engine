@@ -425,7 +425,7 @@ class Security  extends \Cherrycake\Module {
 					$origin = $_SERVER["HTTP_REFERER"];
 				if ($origin) {
 					if ($parsedOrigin = parse_url($origin)) {
-						if (strcmp($parsedOrigin["host"], $_SERVER["SERVER_NAME"]) !== 0) {
+						if (strcmp($parsedOrigin["host"], $_SERVER["HTTP_HOST"]) !== 0) {
 							if ($e->isModuleLoaded("SystemLog"))
 								$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 									"subType" => "Csrf",
@@ -434,7 +434,7 @@ class Security  extends \Cherrycake\Module {
 										"HTTP_ORIGIN" => $_SERVER["HTTP_ORIGIN"],
 										"HTTP_REFERER" => $_SERVER["HTTP_REFERER"],
 										"parsedOrigin Host" => $parsedOrigin["host"],
-										"SERVER_NAME" => $_SERVER["SERVER_NAME"]
+										"SERVER_NAME" => $_SERVER["HTTP_HOST"]
 									]
 								]));
 							return false;
