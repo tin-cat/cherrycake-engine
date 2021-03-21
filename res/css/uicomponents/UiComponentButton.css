@@ -40,8 +40,8 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
-	
-	background: linear-gradient( 
+
+	background: linear-gradient(
             transparent,
             transparent 5px,
             rgba(255, 255, 255, .3) 5px,
@@ -55,7 +55,7 @@
 	-moz-animation: UiComponentButtonLoadingPercent .5s linear infinite;
 	animation: UiComponentButtonLoadingPercent .5s linear infinite;
 }
- 
+
 @-webkit-keyframes UiComponentButtonLoadingPercent {
     0% { background-position: 0 0 }
     100% { background-position: 0 -10px }
@@ -80,7 +80,7 @@
 
 .UiComponentButton.maxWidth {
 	width: 100%;
-} 
+}
 
 .UiComponentButton:hover {
 }
@@ -106,7 +106,6 @@
 	line-height: 1em;
 	color: #fff;
 	white-space: nowrap;
-	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
@@ -137,7 +136,7 @@
 }
 
 .UiComponentButton.small > .UiComponentIcon {
-	
+
 }
 
 
