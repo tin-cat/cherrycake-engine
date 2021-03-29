@@ -82,18 +82,27 @@ class Locale extends \Cherrycake\Module {
 		LANGUAGE_SPANISH => [
 			LANGUAGE_SPANISH => "Español",
 			LANGUAGE_ENGLISH => "Spanish",
-			LANGUAGE_CATALAN => "Espanyol"
+			LANGUAGE_CATALAN => "Espanyol",
+			LANGUAGE_FRENCH => "Espagnol"
 		],
 		LANGUAGE_ENGLISH => [
 			LANGUAGE_SPANISH => "Inglés",
 			LANGUAGE_ENGLISH => "English",
-			LANGUAGE_CATALAN => "Anglès"
+			LANGUAGE_CATALAN => "Anglès",
+			LANGUAGE_FRENCH => "Anglaise"
 		],
 		LANGUAGE_CATALAN => [
 			LANGUAGE_SPANISH => "Catalán",
 			LANGUAGE_ENGLISH => "Catalan",
-			LANGUAGE_CATALAN => "Català"
+			LANGUAGE_CATALAN => "Català",
+			LANGUAGE_FRENCH => "Catalan"
 		],
+		LANGUAGE_FRENCH => [
+			LANGUAGE_SPANISH => "Francés",
+			LANGUAGE_ENGLISH => "French",
+			LANGUAGE_CATALAN => "Francès",
+			LANGUAGE_FRENCH => "Française"
+		]
 	];
 
 	/**
@@ -102,7 +111,8 @@ class Locale extends \Cherrycake\Module {
 	private $languageCodes = [
 		LANGUAGE_SPANISH => "es",
 		LANGUAGE_ENGLISH => "en",
-		LANGUAGE_CATALAN => "cat"
+		LANGUAGE_CATALAN => "cat",
+		LANGUAGE_FRENCH => "fr"
 	];
 
 	/**
@@ -112,20 +122,28 @@ class Locale extends \Cherrycake\Module {
 		"justNow" => [
 			LANGUAGE_SPANISH => "justo ahora",
 			LANGUAGE_ENGLISH => "just now",
+			LANGUAGE_CATALAN => "just ara",
+			LANGUAGE_FRENCH => "juste maintenant"
 		],
 		"agoPrefix" => [
-			LANGUAGE_SPANISH => "hace "
+			LANGUAGE_SPANISH => "hace ",
+			LANGUAGE_CATALAN => "fa ",
+			LANGUAGE_FRENCH => "il y a "
 		],
 		"agoSuffix" => [
 			LANGUAGE_ENGLISH => " ago"
 		],
 		"minute" => [
 			LANGUAGE_SPANISH => "minuto",
-			LANGUAGE_ENGLISH => "minute"
+			LANGUAGE_ENGLISH => "minute",
+			LANGUAGE_CATALAN => "minut",
+			LANGUAGE_FRENCH => "minute"
 		],
 		"minutes" => [
 			LANGUAGE_SPANISH => "minutos",
-			LANGUAGE_ENGLISH => "minutes"
+			LANGUAGE_ENGLISH => "minutes",
+			LANGUAGE_CATALAN => "minuts",
+			LANGUAGE_FRENCH => "minutes"
 		],
 		"hour" => [
 			LANGUAGE_SPANISH => "hora",
@@ -133,43 +151,63 @@ class Locale extends \Cherrycake\Module {
 		],
 		"hours" => [
 			LANGUAGE_SPANISH => "horas",
-			LANGUAGE_ENGLISH => "hours"
+			LANGUAGE_ENGLISH => "hours",
+			LANGUAGE_CATALAN => "hores",
+			LANGUAGE_FRENCH => "heures"
 		],
 		"day" => [
 			LANGUAGE_SPANISH => "día",
-			LANGUAGE_ENGLISH => "day"
+			LANGUAGE_ENGLISH => "day",
+			LANGUAGE_CATALAN => "dia",
+			LANGUAGE_FRENCH => "journée"
 		],
 		"days" => [
 			LANGUAGE_SPANISH => "días",
-			LANGUAGE_ENGLISH => "days"
+			LANGUAGE_ENGLISH => "days",
+			LANGUAGE_CATALAN => "dies",
+			LANGUAGE_FRENCH => "jours"
 		],
 		"month" => [
 			LANGUAGE_SPANISH => "mes",
-			LANGUAGE_ENGLISH => "month"
+			LANGUAGE_ENGLISH => "month",
+			LANGUAGE_CATALAN => "mes",
+			LANGUAGE_FRENCH => "mois"
 		],
 		"months" => [
 			LANGUAGE_SPANISH => "meses",
-			LANGUAGE_ENGLISH => "months"
+			LANGUAGE_ENGLISH => "months",
+			LANGUAGE_CATALAN => "mesos",
+			LANGUAGE_FRENCH => "mois"
 		],
 		"yesterday" => [
 			LANGUAGE_SPANISH => "ayer",
-			LANGUAGE_ENGLISH => "yesterday"
+			LANGUAGE_ENGLISH => "yesterday",
+			LANGUAGE_CATALAN => "ahir",
+			LANGUAGE_FRENCH => "hier"
 		],
 		"monthsLong" => [
 			LANGUAGE_SPANISH => ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
-			LANGUAGE_ENGLISH => ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+			LANGUAGE_ENGLISH => ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
+			LANGUAGE_CATALAN => ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"],
+			LANGUAGE_FRENCH => ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
 		],
 		"monthsShort" => [
 			LANGUAGE_SPANISH => ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
-			LANGUAGE_ENGLISH => ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+			LANGUAGE_ENGLISH => ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+			LANGUAGE_CATALAN => ["gen", "feb", "mar", "abr", "mai", "jun", "jul", "ago", "set", "oct", "nov", "des"],
+			LANGUAGE_FRENCH => ["jan", "fév", "mar", "avr", "mai", "jun", "jul", "aoû", "sep", "oct", "nov", "déc"]
 		],
 		"prepositionOf" => [
 			LANGUAGE_SPANISH => "de",
-			LANGUAGE_ENGLISH => "of"
+			LANGUAGE_ENGLISH => "of",
+			LANGUAGE_CATALAN => "de",
+			LANGUAGE_FRENCH => "sur"
 		],
 		"prepositionAt" => [
 			LANGUAGE_SPANISH => "a las",
-			LANGUAGE_ENGLISH => "at"
+			LANGUAGE_ENGLISH => "at",
+			LANGUAGE_CATALAN => "a les",
+			LANGUAGE_FRENCH => "à"
 		]
 	];
 

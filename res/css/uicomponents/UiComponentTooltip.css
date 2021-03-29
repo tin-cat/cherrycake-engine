@@ -229,7 +229,7 @@
 
 .UiComponentTooltip > .tooltip > .content > .option:hover {
 	text-decoration: none;
-	background: <?= $colorPalette["defaultAccentColor"] ?? false ?>;
+	background: <?= $colorPalette["mainBackgroundColor"] ?? false ?>;
 	color: #fff;
 }
 
