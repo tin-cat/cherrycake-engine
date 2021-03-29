@@ -60,14 +60,14 @@ class UiComponentTable extends \Cherrycake\UiComponent {
 	 * * style: An additional style name
 	 * * additionalCssClasses: Additional css classes
 	 * * domId: Optional dom Id
-	 * 
+	 *
 	 * * columns: A hash array for the columns of the table, where the key is a unique column identifier and the value is an array as follows:
 	 * * * title: The title of the column
 	 * * * style
 	 * * * additionalCssClasses
 	 * * rows: A hash array for the rows of the table, where each item has a unique key identified and each value is a hash array where each key matched the column's key, and the value is an array as follows:
 	 * * * value: The value for the cell
-	 * 
+	 *
 	 *  @return string The HTML of the table. Null if no table could be generated.
 	 */
 	function buildHtml($setup = false) {
@@ -77,7 +77,7 @@ class UiComponentTable extends \Cherrycake\UiComponent {
 			"domId" => ["default" => uniqid()],
 			"style" => ["default" => false],
 			"additionalCssClasses" => ["default" => false],
-			"title" => ["default" => false],
+			"title" => ["default" => false]
 		]);
 		$this->setProperties($setup);
 

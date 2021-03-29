@@ -258,6 +258,12 @@ class Locale extends \Cherrycake\Module {
 	function getMainDomain($localeName = false) {
 		if (!isset($this->getConfig("availableLocales")[$localeName]))
 			return false;
+		if (
+			!isset($this->getConfig("availableLocales")[$localeName]["domains"])
+			||
+			!is_array($this->getConfig("availableLocales")[$localeName]["domains"])
+		)
+			return $_SERVER["HTTP_HOST"];
 		return $this->getConfig("availableLocales")[$localeName]["domains"][0];
 	}
 
