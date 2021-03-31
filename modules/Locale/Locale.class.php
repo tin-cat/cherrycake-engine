@@ -101,7 +101,7 @@ class Locale extends \Cherrycake\Module {
 			LANGUAGE_SPANISH => "Francés",
 			LANGUAGE_ENGLISH => "French",
 			LANGUAGE_CATALAN => "Francès",
-			LANGUAGE_FRENCH => "Française"
+			LANGUAGE_FRENCH => "Français"
 		]
 	];
 
