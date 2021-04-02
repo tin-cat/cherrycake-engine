@@ -247,7 +247,7 @@ class Request {
 			$setup["isAbsolute"] = false;
 
 		if (!isset($setup["isHttps"]))
-			$setup["isHttps"] = $_SERVER['HTTPS'] ? true : false;
+			$setup["isHttps"] = $_SERVER["HTTPS"] ?? false ? true : false;
 
 		if (!isset($setup["parameterValues"]) && $setup["isIncludeUrlParameters"])
 			$this->retrieveParameterValues();
