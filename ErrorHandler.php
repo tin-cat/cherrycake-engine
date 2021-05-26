@@ -28,7 +28,7 @@ function logError(
 		case E_USER_WARNING:
 		case E_USER_NOTICE:
 		default:
-		
+
 			handleError(
 				$errNo,
 				$errStr,
@@ -126,7 +126,7 @@ function handleError(
 				align-items: top;
 				margin: 5pt 8pt;
 			}
-			.errorReport > table.error th.head > .headMosaic > .logo {	
+			.errorReport > table.error th.head > .headMosaic > .logo {
 				flex-grow: 0;
 				flex-basis: 50px;
 				width: 50px;
@@ -168,10 +168,10 @@ function handleError(
 			.errorReport .stack .call > .type {
 			}
 			.errorReport .stack .call > .function {
-				
+
 			}
 			.errorReport .stack .call > .args {
-				
+
 			}
 			.errorReport .stack .call > .args > .arg {
 				color: pink;
@@ -263,7 +263,7 @@ function handleError(
 							"
 						</div>
 						<div class='subTitle'>
-							".nl2br($errStr)."	
+							".nl2br($errStr)."
 						</div>
 					</div>
 				</div>
@@ -271,7 +271,7 @@ function handleError(
 	";
 
 	if ($errFile) {
-		
+
 		// Check specific error for pattern parsing in order to show later the pattern itself
 		if (
 			(
@@ -363,7 +363,7 @@ function handleError(
 
 					global $e;
 					$patternFileName = $e->Patterns->getPatternFileName($stackItem["args"][0]);
-					
+
 					if (is_readable($patternFileName)) {
 						$sourceLines = explode("<br />", highlight_string(file_get_contents($patternFileName), true));
 
@@ -427,7 +427,7 @@ function handleError(
 	}
 	// If we have the engine and the current Action class, dump the error using it
 	else if ($currentActionClass) {
-		
+
 		switch ($currentActionClass) {
 
 			case "Cherrycake\ActionHtml":
@@ -475,11 +475,11 @@ function handleError(
 					$response = $ajaxResponseJson->getResponse();
 				}
 				break;
-			
+
 			default:
 				if ($e->isDevel()) {
 					$response = new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -506,7 +506,7 @@ function handleError(
 				}
 				else {
 					$response = new \Cherrycake\ResponseTextHtml([
-						"code" => \Cherrycake\RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]);
 				}
