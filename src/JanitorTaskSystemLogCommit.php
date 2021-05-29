@@ -7,7 +7,7 @@
  * @package Cherrycake
  * @category Classes
  */
-class JanitorTaskSystemLogCommit extends JanitorTask {
+class JanitorTaskSystemLogCommit extends \Cherrycake\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake\Janitor;
+
 /**
  * Class that represents janitor log item
  *

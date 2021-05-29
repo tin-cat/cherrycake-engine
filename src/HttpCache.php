@@ -3,8 +3,6 @@
 namespace Cherrycake;
 
 /**
- * HttpCache
- *
  * Class that sends HTTP Cache-related headers to let the client browser recognize cached elements
  *
  * @package Cherrycake

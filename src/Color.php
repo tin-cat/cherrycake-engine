@@ -1,8 +1,8 @@
 <?php
 
+namespace Cherrycake;
+
 /**
- * Color
- *
  * Class that represents a color.
  *
  * @package Cherrycake

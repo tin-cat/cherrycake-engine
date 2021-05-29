@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 /**
  * JanitorTaskJanitorPurge
  *
@@ -9,7 +11,7 @@
  * @package Cherrycake
  * @category Classes
  */
-class JanitorTaskJanitorPurge extends JanitorTask {
+class JanitorTaskJanitorPurge extends \Cherrycake\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

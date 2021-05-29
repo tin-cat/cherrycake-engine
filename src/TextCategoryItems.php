@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 /**
  * Class to work with text category items
  *

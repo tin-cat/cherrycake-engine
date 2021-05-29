@@ -86,11 +86,11 @@ class Actions extends \Cherrycake\Module {
 	 * 			"isSecurityCsrf" => true,
 	 * 			"pathComponents" => [
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "TableAdmin"
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
 	 * 					"name" => "mapName",
 	 * 					"securityRules" => [
 	 * 						SECURITY_RULE_NOT_EMPTY,
@@ -98,7 +98,7 @@ class Actions extends \Cherrycake\Module {
 	 * 					]
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "getRows"
 	 * 				])
 	 * 			],

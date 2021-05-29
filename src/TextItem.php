@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 /**
  * Class that represents a text
  *

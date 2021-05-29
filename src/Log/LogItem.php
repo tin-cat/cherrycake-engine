@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake\Log;
+
 /**
  * Class that represents a log item
  *

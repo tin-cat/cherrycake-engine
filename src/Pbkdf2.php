@@ -1,5 +1,6 @@
 <?php
 
+namespace Cherrycake;
 
 // These constants may be changed without breaking existing hashes.
 define("PBKDF2_HASH_ALGORITHM", "sha512");

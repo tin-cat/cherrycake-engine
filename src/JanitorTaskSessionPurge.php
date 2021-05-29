@@ -10,7 +10,7 @@
  * @package Cherrycake
  * @category Classes
  */
-class JanitorTaskSessionPurge extends JanitorTask {
+class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

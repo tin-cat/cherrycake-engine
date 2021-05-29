@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake\Janitor;
+
 /**
  * Base class for Janitor tasks.
  *

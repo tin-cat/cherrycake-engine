@@ -1,8 +1,14 @@
 <?php
 
+namespace Cherrycake;
+
+const GRADIENT_STYLE_HORIZONTAL = 0;
+const GRADIENT_STYLE_VERTICAL = 1;
+const GRADIENT_STYLE_RADIAL = 2;
+const GRADIENT_STYLE_DIAGONAL_UP = 3;
+const GRADIENT_STYLE_DIAGONAL_DOWN = 4;
+
 /**
- * Gradient
- *
  * Class that represents a color gradient.
  *
  * @package Cherrycake
@@ -10,16 +16,11 @@
  */
 class Gradient
 {
-	const STYLE_HORIZONTAL = 0;
-	const STYLE_VERTICAL = 1;
-	const STYLE_RADIAL = 2;
-	const STYLE_DIAGONAL_UP = 3;
-	const STYLE_DIAGONAL_DOWN = 4;
 
 	/**
 	 * @var $style The gradient style
 	 */
-	private $style = STYLE_VERTICAL;
+	private $style = GRADIENT_STYLE_VERTICAL;
 
 	/**
 	 * @var $steps The color steps
@@ -62,7 +63,7 @@ class Gradient
 	 *
 	 * Sets the gradient style
 	 *
-	 * @param int $style The style of the gradient, one of the defined constants STYLE_*
+	 * @param int $style The style of the gradient, one of the defined constants GRADIENT_STYLE_*
 	 */
 	function setStyle($style) {
 		$this->style = $style;
@@ -124,7 +125,7 @@ class Gradient
 	 *
 	 * Gets the Css definition of this gradient
 	 *
-	 * @param int $style The gradient style one of the defined consts with the syntax STYLE_*. If not passed, it uses the default gradient style
+	 * @param int $style The gradient style one of the defined consts with the syntax GRADIENT_STYLE_*. If not passed, it uses the default gradient style
 	 * @return string Css gradient definition
 	 */
 	function getCss($style = false) {
@@ -133,15 +134,15 @@ class Gradient
 		if (!$style)
 			$style = $this->style;
 
-		if ($style == STYLE_RADIAL)
+		if ($style == GRADIENT_STYLE_RADIAL)
 			$baseParameter = "radial-gradient(center, ellipse cover,";
 		else
 			$baseParameter =
 				"linear-gradient(".
-					($this->style == STYLE_HORIZONTAL ? "left" : null).
-					($this->style == STYLE_VERTICAL ? "top" : null).
-					($this->style == STYLE_DIAGONAL_UP ? "45deg" : null).
-					($this->style == STYLE_DIAGONAL_DOWN ? "-45deg" : null).
+					($this->style == GRADIENT_STYLE_HORIZONTAL ? "left" : null).
+					($this->style == GRADIENT_STYLE_VERTICAL ? "top" : null).
+					($this->style == GRADIENT_STYLE_DIAGONAL_UP ? "45deg" : null).
+					($this->style == GRADIENT_STYLE_DIAGONAL_DOWN ? "-45deg" : null).
 					",";
 
 		foreach ($this->colorSteps as $position => $color)
@@ -161,7 +162,7 @@ class Gradient
 	 *
 	 * Gets the Css definition for a background using this gradient. Also adds the default fallback color for browsers not supporting Css gradients
 	 *
-	 * @param int $style The gradient style one of the defined consts with the syntax STYLE_*. If not passed, it uses the default gradient style
+	 * @param int $style The gradient style one of the defined consts with the syntax GRADIENT_STYLE_*. If not passed, it uses the default gradient style
 	 * @return string Css background gradient definition
 	 */
 	function getCssBackground($style = false) {

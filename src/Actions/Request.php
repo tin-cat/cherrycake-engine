@@ -277,11 +277,11 @@ class Request {
 		if (is_array($this->pathComponents)) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
-					case REQUEST_PATH_COMPONENT_TYPE_FIXED:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 						$url .= "/".$pathComponent->string;
 						break;
-					case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
-					case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 						if ($setup["parameterValues"])
 							$url .= "/".$setup["parameterValues"][$pathComponent->name];
 						else
@@ -341,11 +341,11 @@ class Request {
 		if (is_array($this->pathComponents)) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
-					case REQUEST_PATH_COMPONENT_TYPE_FIXED:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 						$key .= "_".$pathComponent->string;
 						break;
-					case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
-					case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
+					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 						if (is_array($parameterValues))
 							$key .= "_".$parameterValues[$pathComponent->name];
 						else
