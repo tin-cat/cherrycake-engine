@@ -34,7 +34,7 @@ class DatabaseResult {
 	 * @return DatabaseRow The higher-level DatabaseRow object type
 	 */
 	function createDatabaseRowObject() {
-		eval("\$result = new \\Cherrycake\\".$this->rowClassName."();");
+		eval("\$result = new \\Cherrycake\\Database\\".$this->rowClassName."();");
 		return $result;
 	}
 

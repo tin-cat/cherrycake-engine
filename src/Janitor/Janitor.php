@@ -136,7 +136,7 @@ class Janitor extends \Cherrycake\Module {
 	 */
 	function addCherrycakeJanitorTask($janitorTaskName) {
 		if (!isset($this->janitorTasks[$janitorTaskName])) {
-			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\Cherrycake\\".$janitorTaskName."();");
+			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\Cherrycake\\Janitor\\".$janitorTaskName."();");
 			$this->janitorTasks[$janitorTaskName]->init();
 		}
 	}

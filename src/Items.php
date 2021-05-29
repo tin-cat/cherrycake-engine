@@ -187,7 +187,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * * isBuildTotalNumberOfItems: <true|false> Default: false. Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account limit, if specified.
 	 * * isFillItems: <true|false> Default: true. Whether to return the matching items or not in the "items" results key.
 	 * * isForceNoCache: <true|false> Default: false. If set to true, the query won't use cache, even if the object is configured to do so.
-	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
+	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache\Cache::buildCacheKey
 	 * * isStoreInCacheWhenNoResults: <boolean> Default: true. Whether to store results in cache even when there are no results.
 	 *
 	 * Stores the results on the following object variables, so they can be later used by other methods:
@@ -294,7 +294,7 @@ abstract class Items extends BasicObject implements \Iterator {
 				);
 
 				if ($this->cachedKeysPoolName)
-					$this->addCachedKey(\Cherrycake\Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
+					$this->addCachedKey(\Cherrycake\Cache\Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
 			}
 			else
 				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(

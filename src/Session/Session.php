@@ -310,7 +310,7 @@ class Session extends \Cherrycake\Module {
 	 * @return string The cache key to use when accessing or storing the given session id to cache
 	 */
 	function getSessionCacheKey($sessionId) {
-		return \Cherrycake\Cache::buildCacheKey([
+		return \Cherrycake\Cache\Cache::buildCacheKey([
 			"prefix" => $this->getConfig("cachePrefix"),
 			"uniqueId" => $sessionId
 		]);

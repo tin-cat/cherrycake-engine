@@ -109,7 +109,7 @@ class Patterns extends \Cherrycake\Module {
 				$setup["isCache"]
 			) {
 				$cacheProviderName = $setup["cacheProviderName"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?? false ?: $this->getConfig("defaultCacheProviderName");
-				$cacheKey = \Cherrycake\Cache::buildCacheKey([
+				$cacheKey = \Cherrycake\Cache\Cache::buildCacheKey([
 					"prefix" => $setup["cachePrefix"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?? false ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
 				]);

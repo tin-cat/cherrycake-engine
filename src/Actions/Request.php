@@ -385,7 +385,7 @@ class Request {
 		global $e;
 		$cacheKeyNamingOptions["prefix"] = $prefix;
 		$cacheKeyNamingOptions["key"] = $key;
-		return \Cherrycake\Cache::buildCacheKey($cacheKeyNamingOptions);
+		return \Cherrycake\Cache\Cache::buildCacheKey($cacheKeyNamingOptions);
 	}
 
 	/**
