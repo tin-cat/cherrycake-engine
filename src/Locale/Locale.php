@@ -17,7 +17,7 @@ class Locale extends \Cherrycake\Module {
 			A hash array of available localizations the app supports, where each key is the locale name, and each value a hash array with the following keys:
 				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
 				language: The language used in this localization, one of the available \Cherrycake\LANGUAGE_? constants.
-				dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
+				dateFormat: The date format used in this localization, one of the available \Cherrycake\DATE_FORMAT_? constants.
 				temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
 				currency: The currency used in this localization, one of the available CURRENCY_? constants.
 				decimalMark: The type character used when separating decimal digits in this localization, one of the available DECIMAL_MARK_? constants.
@@ -404,7 +404,7 @@ class Locale extends \Cherrycake\Module {
 
 	/**
 	 * Sets the date format to use
-	 * @param integer $dateFormat The desired dateFormat, one of the available DATE_FORMAT_*
+	 * @param integer $dateFormat The desired dateFormat, one of the available \Cherrycake\DATE_FORMAT_*
 	 */
 	function setDateFormat($dateFormat) {
 		$this->locale["dateFormat"] = $dateFormat;
@@ -632,13 +632,13 @@ class Locale extends \Cherrycake\Module {
 					$isCurrentYear = (date("Y", $timestamp) == date("Y"));
 
 					switch ($this->locale["dateFormat"]) {
-						case DATE_FORMAT_LITTLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_LITTLE_ENDIAN:
 							$dateFormat = "j/n".((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? "/".($setup["isShortYear"] ? "y" : "Y") : "");
 							break;
-						case DATE_FORMAT_BIG_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_BIG_ENDIAN:
 							$dateFormat = ((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? ($setup["isShortYear"] ? "y" : "Y")."/" : "")."n/j";
 							break;
-						case DATE_FORMAT_MIDDLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$dateFormat = "n/j".((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ? "/".($setup["isShortYear"] ? "y" : "Y") : "");
 							break;
 					}
@@ -662,7 +662,7 @@ class Locale extends \Cherrycake\Module {
 					$isCurrentYear = (date("Y", $timestamp) == date("Y"));
 
 					switch ($this->locale["dateFormat"]) {
-						case DATE_FORMAT_LITTLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_LITTLE_ENDIAN:
 							$r =
 								date("j", $timestamp).
 								($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
@@ -672,7 +672,7 @@ class Locale extends \Cherrycake\Module {
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
 								: null);
 							break;
-						case DATE_FORMAT_BIG_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_BIG_ENDIAN:
 							$r =
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp).
@@ -683,7 +683,7 @@ class Locale extends \Cherrycake\Module {
 								date("j", $timestamp);
 
 							break;
-						case DATE_FORMAT_MIDDLE_ENDIAN:
+						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
 								$this->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
 								" ".
@@ -817,8 +817,8 @@ class Locale extends \Cherrycake\Module {
 		return number_format(
 			$number,
 			(round($number) == $number && $setup["showDecimalsForWholeNumbers"]) || round($number) != $number ? $setup["decimals"] : 0,
-			[DECIMAL_MARK_POINT => ".", DECIMAL_MARK_COMMA => ","][$setup["decimalMark"]],
-			$setup["isSeparateThousands"] ? [DECIMAL_MARK_POINT => ",", DECIMAL_MARK_COMMA => "."][$setup["decimalMark"]] : false
+			[\Cherrycake\DECIMAL_MARK_POINT => ".", \Cherrycake\DECIMAL_MARK_COMMA => ","][$setup["decimalMark"]],
+			$setup["isSeparateThousands"] ? [\Cherrycake\DECIMAL_MARK_POINT => ",", \Cherrycake\DECIMAL_MARK_COMMA => "."][$setup["decimalMark"]] : false
 		);
 	}
 
@@ -831,13 +831,13 @@ class Locale extends \Cherrycake\Module {
 	 */
 	function formatCurrency($amount, $setup = false) {
 		switch ($this->getCurrency()) {
-			case CURRENCY_USD:
+			case \Cherrycake\CURRENCY_USD:
 				return "USD".$this->formatNumber($amount, [
 					"isSeparateThousands" => true,
 					"decimals" => 2
 				]);
 				break;
-			case CURRENCY_EURO:
+			case \Cherrycake\CURRENCY_EURO:
 				return $this->formatNumber($amount, [
 					"isSeparateThousands" => true,
 					"decimals" => 2
