@@ -105,7 +105,7 @@ class Actions extends \Cherrycake\Module {
 	 * 			"parameters" => [
 	 * 				new \Cherrycake\RequestParameter([
 	 * 					"name" => "additionalFillFromParameters",
-	 * 					"type" => REQUEST_PARAMETER_TYPE_GET
+	 * 					"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 	 * 				])
 	 * 			]
 	 * 		])

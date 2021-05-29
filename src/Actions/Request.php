@@ -50,7 +50,7 @@ class Request {
 			global $e;
 			$setup["parameters"][] = new \Cherrycake\Actions\RequestParameter([
 				"name" => "csrfToken",
-				"type" => REQUEST_PARAMETER_TYPE_GET,
+				"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET,
 				"value" => $e->Security->getCsrfToken()
 			]);
 		}
