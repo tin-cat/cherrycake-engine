@@ -431,15 +431,15 @@ function handleError(
 		switch ($currentActionClass) {
 
 			case "Cherrycake\ActionHtml":
-				$response = new \Cherrycake\ResponseTextHtml([
+				$response = new \Cherrycake\Actions\ResponseTextHtml([
 					"payload" => $e->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
 				]);
 				break;
 
 			case "Cherrycake\ActionAjax":
 				if ($e->isDevel()) {
-					$ajaxResponseJson = new \Cherrycake\ActionsAjaxResponseJson([
-						"code" => \Cherrycake\Actions\AJAXRESPONSEJSON_ERROR,
+					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
 						"description" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -462,15 +462,15 @@ function handleError(
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
 							"Backtrace:<br>".implode("<br>", $backtrace_info),
-						"messageType" => \Cherrycake\Actions\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
 				else {
 					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\Actions\AJAXRESPONSEJSON_ERROR,
+						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
 						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\Actions\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
@@ -478,7 +478,7 @@ function handleError(
 
 			default:
 				if ($e->isDevel()) {
-					$response = new \Cherrycake\ResponseTextHtml([
+					$response = new \Cherrycake\Actions\ResponseTextHtml([
 						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
@@ -505,7 +505,7 @@ function handleError(
 					]);
 				}
 				else {
-					$response = new \Cherrycake\ResponseTextHtml([
+					$response = new \Cherrycake\Actions\ResponseTextHtml([
 						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]);

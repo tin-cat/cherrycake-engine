@@ -295,7 +295,7 @@ class Errors  extends \Cherrycake\Module {
 
 			case "plain":
 				if ($e->isDevel()) {
-					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
+					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
 						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
@@ -311,7 +311,7 @@ class Errors  extends \Cherrycake\Module {
 					]));
 				}
 				else {
-					$e->Output->setResponse(new \Cherrycake\ResponseTextHtml([
+					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
 						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]));

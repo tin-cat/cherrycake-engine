@@ -357,7 +357,7 @@ class Javascript extends \Cherrycake\Module {
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if (!$request->set) {
-			$e->Output->setResponse(new \Cherrycake\ResponseTextCss());
+			$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss());
 			return;
 		}
 
@@ -384,7 +384,7 @@ class Javascript extends \Cherrycake\Module {
 		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
 		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
 
-		$e->Output->setResponse(new \Cherrycake\ResponseApplicationJavascript([
+		$e->Output->setResponse(new \Cherrycake\Actions\ResponseApplicationJavascript([
 			"payload" => $js
 		]));
 		return;
