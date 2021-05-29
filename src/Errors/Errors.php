@@ -128,7 +128,7 @@ class Errors  extends \Cherrycake\Module {
 				isset($setup["isForceLog"]) && $setup["isForceLog"] == true
 			)
 		)
-			$e->SystemLog->event(new \Cherrycake\SystemLogEventError([
+			$e->SystemLog->event(new \Cherrycake\SystemLog\SystemLogEventError([
 				"subType" => isset($setup["errorSubType"]) ? $setup["errorSubType"] : false,
 				"description" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
 				"data" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false

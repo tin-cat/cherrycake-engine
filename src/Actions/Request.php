@@ -282,7 +282,7 @@ class Request {
 						break;
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
-						if ($setup["parameterValues"])
+						if ($setup["parameterValues"] ?? false)
 							$url .= "/".$setup["parameterValues"][$pathComponent->name];
 						else
 							$url .= "/".$this->{$pathComponent->name};
