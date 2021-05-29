@@ -214,10 +214,10 @@ class Errors  extends \Cherrycake\Module {
 							]
 						],
 						[
-							\Cherrycake\ERROR_SYSTEM => RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_APP => RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_NOT_FOUND => RESPONSE_NOT_FOUND,
-							\Cherrycake\ERROR_NO_PERMISSION => RESPONSE_NO_PERMISSION
+							\Cherrycake\ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+							\Cherrycake\ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+							\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
+							\Cherrycake\ERROR_NO_PERMISSION => \Cherrycake\Output\RESPONSE_NO_PERMISSION
 						][$errorType]
 					);
 				}
@@ -278,7 +278,7 @@ class Errors  extends \Cherrycake\Module {
 							($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."<br>" : null).
 							($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."<br>" : null).
 							($setup["errorVariables"] ? "Variables:<br>".print_r($setup["errorVariables"], true)."<br>" : null).
-							"Backtrace:<br>".strip_tags(implode($backtrace_info, "<br>")),
+							"Backtrace:<br>".strip_tags(implode("<br>", $backtrace_info)),
 						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$ajaxResponse->output();
@@ -296,7 +296,7 @@ class Errors  extends \Cherrycake\Module {
 			case "plain":
 				if ($e->isDevel()) {
 					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								\Cherrycake\ERROR_SYSTEM => "System error",
@@ -312,7 +312,7 @@ class Errors  extends \Cherrycake\Module {
 				}
 				else {
 					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => RESPONSE_INTERNAL_SERVER_ERROR,
+						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
 						"payload" => "Error"
 					]));
 				}
