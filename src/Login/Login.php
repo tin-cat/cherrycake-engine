@@ -15,7 +15,7 @@ class Login extends \Cherrycake\Module {
 	var $config = [
 		"userClassName" => "\CherrycakeApp\User", // The name of the app class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
 		"isLoadUserOnInit" => true, // Whether to check for a logged user and get it on this module's init sequence. Defaults to true.
-		"passwordAuthenticationMethod" => \Cherrycake\Login\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. \Cherrycake\Login\LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
+		"passwordAuthenticationMethod" => \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. \Cherrycake\Login\LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
 		"sleepOnErrorSeconds" => 1  // Seconds to delay execution when a wrong login is requested, to make things difficult for bombing attacks
 	];
 
@@ -92,7 +92,7 @@ class Login extends \Cherrycake\Module {
 	 */
 	function encryptPassword($password) {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
-			case \Cherrycake\Login\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
+			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
 				return $pbkdf2->createHash($password);
 				break;
@@ -112,7 +112,7 @@ class Login extends \Cherrycake\Module {
 	 */
 	function checkPassword($passwordToCheck, $encryptedPassword) {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
-			case \Cherrycake\Login\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
+			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
 				return $pbkdf2->checkPassword($passwordToCheck, $encryptedPassword);
 				break;
@@ -138,7 +138,7 @@ class Login extends \Cherrycake\Module {
 	 *
 	 * @param string $userName The string field that uniquely identifies the user on the database, the one used by the user to login. Usually, an email or a username.
 	 * @param string $password The password entered by the user to login.
-	 * @return integer One of the \Cherrycake\Login\LOGIN_RESULT_* consts
+	 * @return integer One of the \Cherrycake\LOGIN_RESULT_* consts
 	 */
 	function doLogin($userName, $password) {
 		eval("\$user = new ".$this->getConfig("userClassName")."();");
@@ -146,20 +146,20 @@ class Login extends \Cherrycake\Module {
 		if (!$user->loadFromUserNameField($userName)) {
 			if ($this->getConfig("sleepOnErrorSeconds"))
 				sleep($this->getConfig("sleepOnErrorSeconds"));
-			return \Cherrycake\Login\LOGIN_RESULT_FAILED_UNKNOWN_USER;
+			return \Cherrycake\LOGIN_RESULT_FAILED_UNKNOWN_USER;
 		}
 
 		if (!$this->checkPassword($password, $user->getEncryptedPassword())) {
 			if ($this->getConfig("sleepOnErrorSeconds")) {
 				sleep($this->getConfig("sleepOnErrorSeconds"));
 			}
-			return \Cherrycake\Login\LOGIN_RESULT_FAILED_WRONG_PASSWORD;
+			return \Cherrycake\LOGIN_RESULT_FAILED_WRONG_PASSWORD;
 		}
 
 		if (!$this->logInUserId($user->id))
-			return \Cherrycake\Login\LOGIN_RESULT_FAILED;
+			return \Cherrycake\LOGIN_RESULT_FAILED;
 		$this->loadUser();
-		return \Cherrycake\Login\LOGIN_RESULT_OK;
+		return \Cherrycake\LOGIN_RESULT_OK;
 	}
 
 	/**
@@ -167,7 +167,7 @@ class Login extends \Cherrycake\Module {
 	 *
 	 * Logs out the user
 	 *
-	 * @return integer One of the \Cherrycake\Login\LOGOUT_RESULT_* consts
+	 * @return integer One of the \Cherrycake\LOGOUT_RESULT_* consts
 	 */
 	function doLogout() {
 		return $this->logoutUser();
@@ -189,8 +189,8 @@ class Login extends \Cherrycake\Module {
 	function logoutUser() {
 		global $e;
 		if (!$e->Session->removeSessionData("userId"))
-			return \Cherrycake\Login\LOGOUT_RESULT_FAILED;
-		return \Cherrycake\Login\LOGOUT_RESULT_OK;
+			return \Cherrycake\LOGOUT_RESULT_FAILED;
+		return \Cherrycake\LOGOUT_RESULT_OK;
 	}
 
 	/**
