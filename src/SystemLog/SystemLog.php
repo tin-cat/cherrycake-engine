@@ -10,11 +10,6 @@ namespace Cherrycake\SystemLog;
  */
 class SystemLog extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
@@ -127,7 +122,7 @@ class SystemLog extends \Cherrycake\Module {
 			"select count(*) as numberOf from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 					"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 				]
 			]
@@ -147,7 +142,7 @@ class SystemLog extends \Cherrycake\Module {
 				"delete from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 				[
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 					]
 				]

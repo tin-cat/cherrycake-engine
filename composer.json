@@ -23,7 +23,7 @@
         "php": "^7.0",
         "predis/predis": "^1.1",
         "ezyang/htmlpurifier": "^4.10",
-        "phpmailer/phpmailer": "^6.0",
+        "phpmailer/phpmailer": "6.4.1",
         "webonyx/graphql-php": "^14.7"
     },
     "suggest": {

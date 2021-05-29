@@ -39,32 +39,32 @@ class TableAdmin extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"TableAdminGetRows",
 			new \Cherrycake\Actions\ActionAjax([
-				"moduleType" => ACTION_MODULE_TYPE_CORE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "TableAdmin",
 				"methodName" => "getRows",
 				"request" => new \Cherrycake\Actions\Request([
 					"pathComponents" => [
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "TableAdmin"
                         ]),
                         new \Cherrycake\Actions\RequestPathComponent([
-                            "type" => REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
+                            "type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
                             "name" => "mapName",
                             "securityRules" => [
-                                SECURITY_RULE_NOT_EMPTY,
-                                SECURITY_RULE_SLUG
+                                \Cherrycake\SECURITY_RULE_NOT_EMPTY,
+                                \Cherrycake\SECURITY_RULE_SLUG
                             ]
                         ]),
                         new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "getRows"
                         ])
                     ],
                     "parameters" => [
 						new \Cherrycake\Actions\RequestParameter([
 							"name" => "additionalFillFromParameters",
-                            "type" => REQUEST_PARAMETER_TYPE_GET
+                            "type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
                         ])
 					]
 				])
@@ -100,7 +100,7 @@ class TableAdmin extends \Cherrycake\Module {
      *  "additionalFillFromRequestParameters" => [
      *      new \Cherrycake\RequestParameter([
      *          "name" => "nominatedByHumanId",
-     *          "securityRules" => [SECURITY_RULE_TYPICAL_ID]
+     *          "securityRules" => [\Cherrycake\SECURITY_RULE_TYPICAL_ID]
      *      ])
      * ]
      *]);
@@ -184,7 +184,7 @@ class TableAdmin extends \Cherrycake\Module {
                             $result = $requestParameter->checkValueSecurity();
                             if (!$result->isOk) {
                                 global $e;
-                                $e->Errors->trigger(ERROR_SYSTEM, [
+                                $e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
                                     "errorDescription" => "From TableAdmin: ".implode(" / ", $result->description),
                                     "errorVariables" => [
                                         "mapName" => $request->mapName,

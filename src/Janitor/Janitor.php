@@ -18,11 +18,6 @@ namespace Cherrycake\Janitor;
  */
 class Janitor extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
 	protected $config = [
@@ -63,28 +58,28 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorRun",
 			new \Cherrycake\Actions\ActionCli([
-				"moduleType" => ACTION_MODULE_TYPE_CORE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Janitor",
 				"methodName" => "run",
 				"request" => new \Cherrycake\Actions\Request([
 					"pathComponents" => [
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "janitor"
 						]),
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "run"
 						])
 					],
 					"parameters" => [
 						new \Cherrycake\Actions\RequestParameter([
 							"name" => "task",
-							"type" => REQUEST_PARAMETER_TYPE_GET
+							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 						]),
 						new \Cherrycake\Actions\RequestParameter([
 							"name" => "isForceRun",
-							"type" => REQUEST_PARAMETER_TYPE_GET
+							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 						])
 					]
 				])
@@ -94,17 +89,17 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorStatus",
 			new \Cherrycake\Actions\ActionCli([
-				"moduleType" => ACTION_MODULE_TYPE_CORE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Janitor",
 				"methodName" => "showPlainStatus",
 				"request" => new \Cherrycake\Actions\Request([
 					"pathComponents" => [
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "janitor"
 						]),
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "status"
 						])
 					]
@@ -219,23 +214,23 @@ class Janitor extends \Cherrycake\Module {
 						"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
 						[
 							[
-								"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 								"value" => $baseTimestamp
 							],
 							[
-								"type" => \Cherrycake\DATABASE_FIELD_TYPE_FLOAT,
+								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT,
 								"value" => $executionSeconds
 							],
 							[
-								"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 								"value" => $janitorTask->getName()
 							],
 							[
-								"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 								"value" => $resultCode
 							],
 							[
-								"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 								"value" => json_encode($resultDescription)
 							]
 						]
@@ -250,10 +245,10 @@ class Janitor extends \Cherrycake\Module {
 					$r .= $this->getJanitorTaskReturnCodeDescription($resultCode).". ";
 
 
-					if ($resultCode != \Cherrycake\JANITORTASK_EXECUTION_RETURN_OK) {
+					if ($resultCode != \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
 						$e->Errors->trigger(
-							ERROR_SYSTEM,
+							\Cherrycake\ERROR_SYSTEM,
 							[
 								"errorDescription" => "JanitorTask failed",
 								"errorVariables" => [
@@ -353,16 +348,16 @@ class Janitor extends \Cherrycake\Module {
 	 */
 	static function getJanitorTaskReturnCodeDescription($returnCode) {
 		switch ($returnCode) {
-			case JANITORTASK_EXECUTION_RETURN_WARNING:
+			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_WARNING:
 				return "Warning";
 				break;
-			case JANITORTASK_EXECUTION_RETURN_ERROR:
+			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR:
 				return "Error";
 				break;
-			case JANITORTASK_EXECUTION_RETURN_CRITICAL:
+			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_CRITICAL:
 				return "Critical";
 				break;
-			case JANITORTASK_EXECUTION_RETURN_OK:
+			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK:
 				return "Ok";
 				break;
 			default:

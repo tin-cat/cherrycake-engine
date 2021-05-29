@@ -36,11 +36,6 @@ namespace Cherrycake\Database;
  */
 class Database extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
 	protected $isConfigFileRequired = true;
@@ -89,7 +84,7 @@ class Database extends \Cherrycake\Module {
 		$this->$key->config($config);
 
 		// if (!$this->$key->init()) {
-		// 	$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error while Initting database provider"]);
+		// 	$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error while Initting database provider"]);
 		// 	return;
 		// }
 	}

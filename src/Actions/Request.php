@@ -48,7 +48,7 @@ class Request {
 
 		if ($this->isSecurityCsrf()) {
 			global $e;
-			$setup["parameters"][] = new \Cherrycake\RequestParameter([
+			$setup["parameters"][] = new \Cherrycake\Actions\RequestParameter([
 				"name" => "csrfToken",
 				"type" => REQUEST_PARAMETER_TYPE_GET,
 				"value" => $e->Security->getCsrfToken()
@@ -122,15 +122,15 @@ class Request {
 		if (is_array($this->pathComponents)) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				if(
-					$pathComponent->type == REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING
+					$pathComponent->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING
 					||
-					$pathComponent->type == REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
+					$pathComponent->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 				) {
 					$this->pathComponents[$index]->setValue($e->Actions->currentRequestPathComponentStrings[$index]);
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						$e->Errors->trigger(ERROR_SYSTEM, [
+						$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 							"errorDescription" => implode(" / ", $result->description),
 							"errorVariables" => [
 								"pathComponent name" => $pathComponent->name,
@@ -152,7 +152,7 @@ class Request {
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					$e->Errors->trigger(ERROR_SYSTEM, [
+					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 						"errorDescription" => implode(" / ", $result->description),
 						"errorVariables" => [
 							"parameter name" => $parameter->name,

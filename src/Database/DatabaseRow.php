@@ -90,9 +90,9 @@ class DatabaseRow {
 	}
 
 	/**
-	 * Returns a treated version of the given data according to the given \Cherrycake\DATABASE_FIELD_TYPE_* fieldType. $data contains data as is came out from the database.
+	 * Returns a treated version of the given data according to the given \Cherrycake\Database\DATABASE_FIELD_TYPE_* fieldType. $data contains data as is came out from the database.
 	 * @param mixed $data The data to treat, as it came out of the database
-	 * @param integer $fieldType The field type, one of \Cherrycake\DATABASE_FIELD_TYPE_*
+	 * @param integer $fieldType The field type, one of \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * @return mixed The treated data
 	 */
 	function treatFieldData($data, $fieldType) {

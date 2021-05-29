@@ -13,52 +13,52 @@ namespace Cherrycake\Database;
  */
 class DatabaseProviderMysql extends DatabaseProvider {
 	/**
-	 * @var array Configuration about fieldtypes (\Cherrycake\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
+	 * @var array Configuration about fieldtypes (\Cherrycake\Database\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
 	 */
 	protected $fieldTypes = [
-		DATABASE_FIELD_TYPE_INTEGER => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER => [
 			"stmtBindParamType" => "i"
 		],
-		DATABASE_FIELD_TYPE_TINYINT => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT => [
 			"stmtBindParamType" => "i"
 		],
-		DATABASE_FIELD_TYPE_FLOAT => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT => [
 			"stmtBindParamType" => "d"
 		],
-		DATABASE_FIELD_TYPE_DATE => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_DATE => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_DATETIME => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_TIMESTAMP => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP => [
 			"stmtBindParamType" => "i"
 		],
-		DATABASE_FIELD_TYPE_TIME => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_TIME => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_YEAR => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR => [
 			"stmtBindParamType" => "i"
 		],
-		DATABASE_FIELD_TYPE_STRING => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_STRING => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_TEXT => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_BLOB => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_BOOLEAN =>  [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN =>  [
 			"stmtBindParamType" => "i"
 		],
-		DATABASE_FIELD_TYPE_IP => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_IP => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_SERIALIZED => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED => [
 			"stmtBindParamType" => "s"
 		],
-		DATABASE_FIELD_TYPE_COLOR => [
+		\Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR => [
 			"stmtBindParamType" => "s"
 		]
 	];
@@ -89,13 +89,13 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (mysqli_connect_error()) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
 			return false;
 		}
 
 		if (!$this->connectionHandler->set_charset($this->getConfig("charset"))) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"]);
 			return false;
 		}
 
@@ -114,7 +114,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$this->connectionHandler->close())
 		{
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
 			return false;
 		}
 		$this->isConnected = false;
@@ -136,7 +136,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (!$resultHandler = $this->connectionHandler->query($sql, MYSQLI_STORE_RESULT)) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error querying MySQL (".$this->connectionHandler->error.")"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error querying MySQL (".$this->connectionHandler->error.")"]);
 			return false;
 		}
 
@@ -160,7 +160,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		$this->requireConnection();
 		if (!$statement = $this->connectionHandler->prepare($sql)) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
 			return false;
 		}
 
@@ -178,7 +178,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
 	 *
-	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\DATABASE_FIELD_TYPE_*
+	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
 	 *
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
@@ -194,35 +194,35 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 			foreach ($parameters as $parameter) {
 				switch ($parameter["type"]) {
-					case DATABASE_FIELD_TYPE_INTEGER:
-					case DATABASE_FIELD_TYPE_TINYINT:
-					case DATABASE_FIELD_TYPE_YEAR:
-					case DATABASE_FIELD_TYPE_FLOAT:
-					case DATABASE_FIELD_TYPE_TIMESTAMP:
-					case DATABASE_FIELD_TYPE_STRING:
-					case DATABASE_FIELD_TYPE_TEXT:
-					case DATABASE_FIELD_TYPE_BLOB:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB:
 						$value = $parameter["value"];
 						break;
-					case DATABASE_FIELD_TYPE_BOOLEAN:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN:
 						$value = $parameter["value"] ? 1 : 0;
 						break;
-					case DATABASE_FIELD_TYPE_DATE:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
 						$value = date("Y-n-j", $parameter["value"]);
 						break;
-					case DATABASE_FIELD_TYPE_DATETIME:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
 						$value = date("Y-n-j H:i:s", $parameter["value"]);
 						break;
-					case DATABASE_FIELD_TYPE_TIME:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
 						$value = date("H:i:s", $parameter["value"]);
 						break;
-					case DATABASE_FIELD_TYPE_IP:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_IP:
 						$value = ip2long($parameter["value"]);
 						break;
-					case DATABASE_FIELD_TYPE_SERIALIZED:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED:
 						$value = json_encode($parameter["value"], JSON_FORCE_OBJECT);
 						break;
-					case DATABASE_FIELD_TYPE_COLOR:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR:
 						$value = $parameter["value"]->getHex();
 						break;
 				}
@@ -235,7 +235,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (!$prepareResult["statement"]->execute()) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
 				"errorVariables" => [
 					"sql" => $prepareResult["sql"],

@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 /**
  * Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method
  *
@@ -173,7 +175,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * * wheres: <array|false> Default: false. An array of where SQL clauses, where each item is a hash array containing the following keys:
 	 * * * sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
 	 * * * values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
-	 * * * * type: The type of the value, must be one of the \Cherrycake\DATABASE_FIELD_TYPE_*
+	 * * * * type: The type of the value, must be one of the \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * * * * value: The value
 	 * * limit: <integer|false> Default: false. Maximum number of items returned
 	 * * order <array|false> Default: false: An ordered array of orders to apply to results, on which each item can be one of the configured in the "orders" parameter
@@ -264,7 +266,7 @@ abstract class Items extends BasicObject implements \Iterator {
 			if ($p["limit"]) {
 				$sql .= " limit ? ";
 				$fields[] = [
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["limit"]
 				];
 			}
@@ -272,11 +274,11 @@ abstract class Items extends BasicObject implements \Iterator {
 			if ($p["isPaging"]) {
 				$sql .= " limit ?,? ";
 				$fields[] = [
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["page"] * $p["itemsPerPage"]
 				];
 				$fields[] = [
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $p["itemsPerPage"]
 				];
 			}

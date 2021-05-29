@@ -1,58 +1,60 @@
 <?php
 
+namespace Cherrycake\SystemLog;
+
 /**
  * Base class to represent system log events for the SystemLog module
  *
  * @package Cherrycake
  * @category Classes
  */
-class SystemLogEvent extends Item {
+class SystemLogEvent extends \Cherrycake\Item {
 	protected $tableName = "cherrycake_systemLog";
 	protected $cacheSpecificPrefix = "SystemLog";
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Id"
 		],
 		"dateAdded" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 			"title" => "Date added"
 		],
 		"type" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Type"
 		],
 		"class" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Class"
 		],
 		"subType" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Subtype"
 		],
 		"ip" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_IP,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
 			"title" => "IP"
 		],
 		"httpHost" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Host"
 		],
 		"requestUri" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Uri"
 		],
 		"browserString" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Browser string"
 		],
 		"description" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Description"
 		],
 		"data" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED,
 			"title" => "Data"
 		]
 	];

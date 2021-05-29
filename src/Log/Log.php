@@ -11,11 +11,6 @@ namespace Cherrycake\Log;
 
 class Log extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
 	protected $config = [

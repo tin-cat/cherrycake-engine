@@ -10,20 +10,15 @@ namespace Cherrycake\Javascript;
  */
 class Javascript extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
 		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
 		"cacheProviderName" => "engine", // The name of the cache provider to use
-		"cacheTtl" => CACHE_TTL_LONGEST,
+		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
 		"lastModifiedTimestamp" => false, // The timestamp of the last modification to the JavaScript files, or any other string that will serve as a unique identifier to force browser cache reloading when needed
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
-		"httpCacheMaxAge" => CACHE_TTL_LONGEST, //  The TTL of the HTTP Cache
+		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST, //  The TTL of the HTTP Cache
 		"isMinify" => false // Whether to minify the JavaScript code or not
 	];
 
@@ -81,24 +76,24 @@ class Javascript extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"javascript",
 			new \Cherrycake\Actions\ActionJavascript([
-				"moduleType" => ACTION_MODULE_TYPE_CORE,
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "Javascript",
 				"methodName" => "dump",
 				"request" => new \Cherrycake\Actions\Request([
 					"pathComponents" => [
 						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "js"
 						])
 					],
 					"parameters" => [
 						new \Cherrycake\Actions\RequestParameter([
 							"name" => "set",
-							"type" => REQUEST_PARAMETER_TYPE_GET
+							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 						]),
 						new \Cherrycake\Actions\RequestParameter([
 							"name" => "version",
-							"type" => REQUEST_PARAMETER_TYPE_GET
+							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 						])
 					]
 				])
@@ -261,7 +256,7 @@ class Javascript extends \Cherrycake\Module {
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
 			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
-				$e->Errors->trigger(ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Couldn't open JavaScript directory",
 					"errorVariables" => [
 						"setName" => $setName,

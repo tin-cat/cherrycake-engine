@@ -10,11 +10,6 @@ namespace Cherrycake;
  */
 class Module extends BasicObject {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = false;
-
-	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
 	protected $isConfigFileRequired = false;
@@ -58,18 +53,23 @@ class Module extends BasicObject {
 	 * Loads the configuration file for this module, if there's one
 	 */
 	function loadConfigFile() {
-		if ($this->isConfigFile) {
-			global $e;
-			$className = $this->getName();
-			$fileName = $e->getConfigDir()."/".$className.".config.php";
-			if (!file_exists($fileName)) {
-				if ($this->isConfigFileRequired)
-					trigger_error("Configuration file $fileName required");
-				return;
-			}
-			include $fileName;
-			$this->config(${$className."Config"});
+		global $e;
+		$className = $this->getName();
+		$fileName = $e->getConfigDir()."/".$className.".config.php";
+		if (!file_exists($fileName)) {
+			if ($this->isConfigFileRequired)
+				trigger_error("Configuration file $fileName required");
+			return;
 		}
+		include $fileName;
+		$this->config(${$className."Config"});
+	}
+
+	function loadConstantsFile() {
+		$fileName = dirname(__FILE__)."/".$this->getName()."/".$this->getName().".constants.php";
+		if (!file_exists($fileName))
+			return;
+		include $fileName;
 	}
 
 	/**
@@ -200,6 +200,7 @@ class Module extends BasicObject {
 	function init() {
 		if (!$this->loadDependencies())
 			return false;
+		$this->loadConstantsFile();
 		$this->loadConfigFile();
 		return true;
 	}

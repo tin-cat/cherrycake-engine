@@ -17,12 +17,12 @@ class DatabaseProvider {
 	 */
 	protected $config = [
 		"cacheKeyPrefix" => "Database",
-		"cacheDefaultTtl" => CACHE_TTL_NORMAL,
+		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"cacheProviderName" => "engine"
 	];
 
 	/**
-	 * @var array Configuration about fieldtypes (\Cherrycake\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
+	 * @var array Configuration about fieldtypes (\Cherrycake\Database\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
 	 */
 	protected $fieldTypes;
 
@@ -127,7 +127,7 @@ class DatabaseProvider {
 	 * <code>
 	 * $result = $e->Database->main->QueryCache(
 	 * 	"select * from stuff order by rand() limit 3", // The query
-	 * 	CACHE_TTL_MINIMAL, // The TTL
+	 * 	\Cherrycake\CACHE_TTL_MINIMAL, // The TTL
 	 * 	[ // A key naming options array
 	 * 		"cacheSpecificPrefix" => "TestQuery"
 	 * 	],
@@ -220,7 +220,7 @@ class DatabaseProvider {
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
 	 *
-	 * * type: One of the prepared statement variable type consts, i.e.: DATABASE_FIELD_TYPE_*
+	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
 	 *
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
@@ -361,7 +361,7 @@ class DatabaseProvider {
 	function updateByUniqueField($tableName, $idFieldName, $idFieldValue, $fields) {
 		$query = "update ".$tableName." set ".implode(" = ?, ",array_keys($fields))." = ? where ".$idFieldName." = ?;";
 		$fields[$idFieldName] = [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 			"value" => $idFieldValue
 		];
 		if ($this->prepareAndExecute(
@@ -386,7 +386,7 @@ class DatabaseProvider {
 			$query,
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 					"value" => $idFieldValue
 				]
 			]

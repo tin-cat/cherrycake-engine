@@ -12,32 +12,32 @@ class LogItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"timestamp" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_TIMESTAMP,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP,
 			"title" => "Timestamp",
 		],
 		"type" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Type"
 		],
 		"subType" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "Sub type"
 		],
 		"ip" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_IP,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
 			"title" => "IP"
 		],
 		"user_id" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
 			"title" => "User id"
 		],
 		"username" => [
-			"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 			"title" => "User name"
 		]
 	];

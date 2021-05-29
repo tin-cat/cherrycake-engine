@@ -11,15 +11,10 @@
  */
 class JanitorTaskJanitorPurge extends JanitorTask {
 	/**
-	 * @var bool $isConfig Sets whether this JanitorTask has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Default configuration options
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
 		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
 	];
@@ -53,7 +48,7 @@ class JanitorTaskJanitorPurge extends JanitorTask {
 	 * Performs the tasks for what this JanitorTask is meant.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
 		global $e;
@@ -68,7 +63,7 @@ class JanitorTaskJanitorPurge extends JanitorTask {
 			"select count(*) as numberOf from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds"))
 				]
 			]
@@ -76,7 +71,7 @@ class JanitorTaskJanitorPurge extends JanitorTask {
 
 		if (!$result)
 			return [
-				\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -88,7 +83,7 @@ class JanitorTaskJanitorPurge extends JanitorTask {
 				"delete from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
 				[
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds"))
 					]
 				]
@@ -96,13 +91,13 @@ class JanitorTaskJanitorPurge extends JanitorTask {
 
 			if (!$result)
 				return [
-					\Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
 					"Could not delete log entries from the database"
 				];
 		}
 
 		return [
-			\Cherrycake\JANITORTASK_EXECUTION_RETURN_OK,
+			\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK,
 			[
 				"Log entries older than ".$this->getConfig("purgeLogsOlderThanSeconds")." seconds purged" => $numberOfLogEntriesToPurge
 			]

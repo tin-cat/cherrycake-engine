@@ -10,14 +10,12 @@ namespace Cherrycake\Actions;
  * @category Modules
  */
 class Actions extends \Cherrycake\Module {
-	protected $isConfigFile = true;
-
 	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use.
-		"defaultCacheTtl" => CACHE_TTL_NORMAL, // De default TTL to use.
+		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // De default TTL to use.
 		"defaultCachePrefix" => "Actions",
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3] // An array containing the minimum and maximum number of seconds to wait when an action marked as sensible to brute force attacks has been executed and failed.
 	];
@@ -161,7 +159,7 @@ class Actions extends \Cherrycake\Module {
 		global $e;
 
 		if ($e->isDevel() && !is_array($this->actions)) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "No mapped actions"
 			]);
 		}
@@ -179,7 +177,7 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$e->Errors->trigger(ERROR_NOT_FOUND, [
+			$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
 				"errorDescription" => "No mapped action found for this request"
 			]);
 			return false;
@@ -198,7 +196,7 @@ class Actions extends \Cherrycake\Module {
 				return;
 		}
 
-		$e->Errors->trigger(ERROR_NOT_FOUND, [
+		$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
 			"errorDescription" => "No matching actions were productive",
 			"errorVariables" => [
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions

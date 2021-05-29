@@ -12,7 +12,7 @@ class JanitorTaskLogCommit extends JanitorTask {
 	 * @var array $config Default configuration options
 	 */
 	protected $config = [
-		"executionPeriodicity" => \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 60
 	];
 
@@ -32,7 +32,7 @@ class JanitorTaskLogCommit extends JanitorTask {
 	 * Performs the tasks for what this JanitorTask is meant.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
 		global $e;
@@ -42,7 +42,7 @@ class JanitorTaskLogCommit extends JanitorTask {
 
 		$result = $e->Log->commit();
 		return [
-			$result[0] ? \Cherrycake\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\JANITORTASK_EXECUTION_RETURN_ERROR,
+			$result[0] ? \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK : \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
 			isset($result[1]) ? $result[1] : false
 		];
 	}

@@ -90,33 +90,33 @@ class ItemAdmin extends \Cherrycake\Module {
 			if (isset($setup["fields"][$fieldName]))
 				$fieldData = array_merge($setup["fields"][$fieldName], is_array($fieldData) ? $fieldData : []);
             $parameters[] =
-                new \Cherrycake\RequestParameter([
+                new \Cherrycake\Actions\RequestParameter([
                     "name" => $fieldName,
-                    "type" => REQUEST_PARAMETER_TYPE_POST,
-                    "securityRules" => $fieldData["requestSecurityRules"] ?? false ?: [SECURITY_RULE_SQL_INJECTION],
+                    "type" => \Cherrycake\REQUEST_PARAMETER_TYPE_POST,
+                    "securityRules" => $fieldData["requestSecurityRules"] ?? false ?: [\Cherrycake\SECURITY_RULE_SQL_INJECTION],
                     "filters" => $fieldData["requestFilters"] ?? false
                 ]);
         }
 
         $e->Actions->mapAction(
 			"ItemAdminSave".ucfirst($name),
-			new \Cherrycake\ActionAjax([
-				"moduleType" => ACTION_MODULE_TYPE_CORE,
+			new \Cherrycake\Actions\ActionAjax([
+				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
 				"moduleName" => "ItemAdmin",
 				"methodName" => "save",
-				"request" => new \Cherrycake\Request([
+				"request" => new \Cherrycake\Actions\Request([
                     "isSecurityCsrf" => true,
 					"pathComponents" => [
-						new \Cherrycake\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+						new \Cherrycake\Actions\RequestPathComponent([
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "ItemAdmin"
                         ]),
-                        new \Cherrycake\RequestPathComponent([
-                            "type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+                        new \Cherrycake\Actions\RequestPathComponent([
+                            "type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => $name
                         ]),
-                        new \Cherrycake\RequestPathComponent([
-							"type" => REQUEST_PATH_COMPONENT_TYPE_FIXED,
+                        new \Cherrycake\Actions\RequestPathComponent([
+							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
 							"string" => "save"
                         ])
                     ],

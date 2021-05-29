@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 // General
 const ANSI_NOCOLOR = "\033[0m";
 const ANSI_BLACK = "\033[0;30m";
@@ -24,14 +26,6 @@ const MODULE_LOADING_ORIGIN_BASE = 1;
 const MODULE_LOADING_ORIGIN_DEPENDENCY = 2;
 const MODULE_LOADING_ORIGIN_AUTOLOAD = 3;
 const MODULE_LOADING_ORIGIN_GETTER = 4;
-
-// Output
-const RESPONSE_OK = 200;
-const RESPONSE_NOT_FOUND = 404;
-const RESPONSE_NO_PERMISSION = 403;
-const RESPONSE_INTERNAL_SERVER_ERROR = 500;
-const RESPONSE_REDIRECT_MOVED_PERMANENTLY = 301;
-const RESPONSE_REDIRECT_FOUND = 302;
 
 // Errors
 const ERROR_SYSTEM = 0; // Errors caused by bad programming
@@ -88,89 +82,6 @@ const SECURITY_FILTER_STRIP_TAGS = 1; // HTML tags are removed from the value
 const SECURITY_FILTER_TRIM = 2; // Spaces at the beggining and at the end of the value are trimmed
 const SECURITY_FILTER_JSON = 3; // Decodes json data
 
-// Email
-const EMAIL_SMTP_ENCRYPTION_TLS = 0;
-const EMAIL_SMTP_ENCRYPTION_SSL = 1;
-
-// Css
-const CSS_MEDIAQUERY_TABLET = 0; // Matches tablets in all orientations
-const CSS_MEDIAQUERY_TABLET_PORTRAIT = 1; // Matches tablets in portrait orientation
-const CSS_MEDIAQUERY_TABLET_LANDSCAPE = 2; // Matches tablets in landscape orientation
-const CSS_MEDIAQUERY_PHONE = 3; // Matches phones in all orientations
-const CSS_MEDIAQUERY_PHONE_PORTRAIT = 4; // Matches phones in portrait orientation
-const CSS_MEDIAQUERY_PHONE_LANDSCAPE = 5; // Matches phones in landscape orientation
-const CSS_MEDIAQUERY_PORTABLES = 6; // Matches all portable devices and any other small-screen devices (tablets, phones and similar) in all orientations
-
-// Database
-const DATABASE_FIELD_TYPE_INTEGER = 0;
-const DATABASE_FIELD_TYPE_TINYINT = 1;
-const DATABASE_FIELD_TYPE_FLOAT = 2;
-const DATABASE_FIELD_TYPE_DATE = 3;
-const DATABASE_FIELD_TYPE_DATETIME = 4;
-const DATABASE_FIELD_TYPE_TIMESTAMP = 5;
-const DATABASE_FIELD_TYPE_TIME = 6;
-const DATABASE_FIELD_TYPE_YEAR = 7;
-const DATABASE_FIELD_TYPE_STRING = 8;
-const DATABASE_FIELD_TYPE_TEXT = 9;
-const DATABASE_FIELD_TYPE_BLOB = 10;
-const DATABASE_FIELD_TYPE_BOOLEAN = 11;
-const DATABASE_FIELD_TYPE_IP = 12;
-const DATABASE_FIELD_TYPE_SERIALIZED = 13;
-const DATABASE_FIELD_TYPE_COLOR = 14;
-
-const DATABASE_FIELD_DEFAULT_VALUE = 0;
-const DATABASE_FIELD_DEFAULT_VALUE_DATE = 1;
-const DATABASE_FIELD_DEFAULT_VALUE_DATETIME = 2;
-const DATABASE_FIELD_DEFAULT_VALUE_TIMESTAMP = 3;
-const DATABASE_FIELD_DEFAULT_VALUE_TIME = 4;
-const DATABASE_FIELD_DEFAULT_VALUE_YEAR = 5;
-const DATABASE_FIELD_DEFAULT_VALUE_IP = 6;
-const DATABASE_FIELD_DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE = 7;
-
-// Itemadmin
-const FORM_ITEM_TYPE_NUMERIC = 0;
-const FORM_ITEM_TYPE_STRING = 1;
-const FORM_ITEM_TYPE_TEXT = 2;
-const FORM_ITEM_TYPE_BOOLEAN = 3;
-const FORM_ITEM_TYPE_RADIOS = 4;
-const FORM_ITEM_TYPE_SELECT = 5;
-const FORM_ITEM_TYPE_DATABASE_QUERY = 6;
-const FORM_ITEM_TYPE_COUNTRY = 7;
-
-const FORM_ITEM_META_TYPE_MULTILEVEL_SELECT = 0;
-const FORM_ITEM_META_TYPE_LOCATION = 1;
-
-// Janitor
-const JANITORTASK_EXECUTION_RETURN_WARNING = 0; // Return code for JanitorTask run when task returned a warning.
-const JANITORTASK_EXECUTION_RETURN_ERROR = 1; // Return code for JanitorTask run when task returned an error.
-const JANITORTASK_EXECUTION_RETURN_CRITICAL = 2; // Return code for JanitorTask run when task returned a critical error.
-const JANITORTASK_EXECUTION_RETURN_OK = 3; // Return code for JanitorTask run when task was executed without errors.
-
-const JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL = 0; // The task can only be executed when calling the Janitor run process with an specific task parameter.
-const JANITORTASK_EXECUTION_PERIODICITY_ALWAYS = 1; // The task will be executed every time Janitor run is called.
-const JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS = 2; // The task will be executed every specified seconds. Seconds are specified in "periodicityEachSeconds" config key.
-const JANITORTASK_EXECUTION_PERIODICITY_MINUTES = 3; // The task will be executed on the given minutes of each hour. Desired minutes are specified as an array in the "periodicityMinutes" config key. For example: [0, 15, 30, 45]
-const JANITORTASK_EXECUTION_PERIODICITY_HOURS = 4; // The task will be executed on the given hours of each day. Desired hours/minute are specified as an array in the "periodicityHours" config key in the syntax ["hour:minute", ...] For example: ["00:00", "10:45", "20:15"]
-const JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH = 5; // The task will be executed on the given days of each month. Desired days/hour/minute are specified as an array in the "periodicityDaysOfMonth" config key in the syntax ["day@hour:minute", ...] For example: ["1@12:00", "15@18:30", "20@00:00"] (Take into account days of month that do not exist)
-
-// Login
-const LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 = 0;
-
-const LOGIN_RESULT_OK = 0;
-const LOGIN_RESULT_FAILED = 1;
-const LOGIN_RESULT_FAILED_UNKNOWN_USER = 2;
-const LOGIN_RESULT_FAILED_WRONG_PASSWORD = 3;
-
-const LOGOUT_RESULT_OK = 0;
-const LOGOUT_RESULT_FAILED = 1;
-
-// Stats
-const STATS_EVENT_TIME_RESOLUTION_MINUTE = 0;
-const STATS_EVENT_TIME_RESOLUTION_HOUR = 1;
-const STATS_EVENT_TIME_RESOLUTION_DAY = 2;
-const STATS_EVENT_TIME_RESOLUTION_MONTH = 3;
-const STATS_EVENT_TIME_RESOLUTION_YEAR = 4;
-
 // Actions
 const ACTION_MODULE_TYPE_CORE = 0;
 const ACTION_MODULE_TYPE_APP = 1;
@@ -183,6 +94,15 @@ const REQUEST_PARAMETER_TYPE_CLI = 3;
 const REQUEST_PATH_COMPONENT_TYPE_FIXED = 0;
 const REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING = 1;
 const REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC = 2;
+
+const AJAXRESPONSEJSON_SUCCESS = 0;
+const AJAXRESPONSEJSON_ERROR = 1;
+
+const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NONE = 0;
+const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NOTICE = 1;
+const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP = 2;
+const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL = 3;
+const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_CONSOLE = 4;
 
 // Locale
 const LANGUAGE_SPANISH = 1;

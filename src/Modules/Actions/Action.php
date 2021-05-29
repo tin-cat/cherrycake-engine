@@ -124,7 +124,7 @@ class Action {
 		global $e;
 
 		if ($this->isCli && !$e->isCli()) {
-			$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "This action only runs on the CLI interface"]);
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "This action only runs on the CLI interface"]);
 			return true;
 		}
 
@@ -154,7 +154,7 @@ class Action {
 			case ACTION_MODULE_TYPE_CORE:
 			case ACTION_MODULE_TYPE_APP:
 				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
-					$e->Errors->trigger(ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
+					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
 					return true;
 				}
 				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");

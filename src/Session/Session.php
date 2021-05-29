@@ -19,8 +19,6 @@ namespace Cherrycake\Session;
  * @category Modules
  */
 class Session extends \Cherrycake\Module {
-	protected $isConfigFile = true;
-
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -28,7 +26,7 @@ class Session extends \Cherrycake\Module {
 		"sessionDatabaseProviderName" => "main", // The name of the database provider to use for storing sessions
 		"sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
 		"sessionCacheProviderName" => "engine", // The name of the cache provider to use to store sessions and the counter of created sessions
-		"sessionCacheTtl" => CACHE_TTL_SHORT, // The TTL of cached sessions.
+		"sessionCacheTtl" => \Cherrycake\CACHE_TTL_SHORT, // The TTL of cached sessions.
 		"cachePrefix" => "Session", // The cache prefix to use when storing sessions into cache
 		"cookieName" => "cherrycake", // The name of the cookie. Recommended to be changed.
 		"cookiePath" => "/", // The path of the cookie. If set to "/", it will be available within the entire domain
@@ -142,26 +140,26 @@ class Session extends \Cherrycake\Module {
 			"insert into ".$this->getConfig("sessionTableName")." (id, creationDate, ip, browserString, data) values (?, ?, ?, ?, null)",
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => $sessionId
 				],
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 					"value" => time()
 				],
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_IP,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
 					"value" => $this->getClientIp()
 				],
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => $this->getClientBrowserString()
 				],
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Could not create the session into the DB"
 			]);
 			return false;
@@ -218,7 +216,7 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "The session cookie could not be sent"
 			]);
 			return false;
@@ -261,7 +259,7 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "The session cookie could not be sent"
 			]);
 			return false;
@@ -281,7 +279,7 @@ class Session extends \Cherrycake\Module {
 	function generateNewSessionId($attemptsCounter = 0) {
 		if (!function_exists("openssl_random_pseudo_bytes")) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Session module needs function openssl_random_pseudo_bytes()"
 			]);
 			return false;
@@ -289,7 +287,7 @@ class Session extends \Cherrycake\Module {
 
 		if ($attemptsCounter > 10) {
 			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Maximum attempts to generate a unique session id had been reached"
 			]);
 			return false;
@@ -350,7 +348,7 @@ class Session extends \Cherrycake\Module {
 			"select data from ".$this->getConfig("sessionTableName")." where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => $sessionId
 				]
 			]
@@ -425,7 +423,7 @@ class Session extends \Cherrycake\Module {
 			return false;
 
 		if (!$this->isSession()) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Couldn't set session data because no session is present."
 			]);
 			return false;
@@ -450,18 +448,18 @@ class Session extends \Cherrycake\Module {
 			"update ".$this->getConfig("sessionTableName")." set data = ? where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => serialize($e->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId())))
 				],
 				[
-					"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 					"value" => $this->getSessionId()
 				]
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
+			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				"errorDescription" => "Couldn't update session data in DB"
 			]);
 			return false;

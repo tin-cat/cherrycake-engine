@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake;
+
 /**
  * Item
  *
@@ -46,9 +48,9 @@ class Item extends BasicObject {
 
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
-	 * * type: The type of the field, one of the available \Cherrycake\DATABASE_FIELD_TYPE_*
+	 * * type: The type of the field, one of the available \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
-	 * * * type: The type of the form item, one of the available \Cherrycake\FORM_ITEM_TYPE_*
+	 * * * type: The type of the form item, one of the available \Cherrycake\ItemAdmin\FORM_ITEM_TYPE_*
 	 * * * selectType: For FORM_ITEM_TYPE_SELECT type: The select type: either FORM_ITEM_SELECT_TYPE_RADIOS or FORM_ITEM_SELECT_TYPE_COMBO
 	 * * * items: For FORM_ITEM_TYPE_SELECT type: A hash array of the items for the selection, where each key is the value
 	 * * * * title
@@ -323,22 +325,22 @@ class Item extends BasicObject {
 			if (isset($fieldData["defaultValue"])) {
 
 				switch ($fieldData["defaultValue"]) {
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE:
 						$value = $fieldData["value"];
 						break;
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_DATE:
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_DATETIME:
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_TIMESTAMP:
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_TIME:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_DATE:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_DATETIME:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_TIMESTAMP:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_TIME:
 						$value = time();
 						break;
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_YEAR:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_YEAR:
 						$value = date("Y");
 						break;
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_IP:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_IP:
 						$value = $this->getClientIp();
 						break;
-					case \Cherrycake\DATABASE_FIELD_DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
+					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
 						$value = $this->getRandomAvailableUrlShortCode($fieldName);
 						break;
 				}
@@ -614,9 +616,9 @@ class Item extends BasicObject {
 	 */
 	function getForTimezone($key, $timeZone = false) {
 		if (!$this->fields || (
-			$this->fields[$key]["type"] !== \Cherrycake\DATABASE_FIELD_TYPE_DATETIME
+			$this->fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME
 			&&
-			$this->fields[$key]["type"] !== \Cherrycake\DATABASE_FIELD_TYPE_TIME
+			$this->fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME
 		))
 			return false;
 
@@ -712,8 +714,8 @@ class Item extends BasicObject {
 		}
 
 		switch ($this->fields[$key]["type"]) {
-			case \Cherrycake\DATABASE_FIELD_TYPE_INTEGER:
-			case \Cherrycake\DATABASE_FIELD_TYPE_TINYINT:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
@@ -724,7 +726,7 @@ class Item extends BasicObject {
 					]
 				);
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_FLOAT:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT:
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
@@ -735,10 +737,10 @@ class Item extends BasicObject {
 					]
 				);
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_DATE:
-			case \Cherrycake\DATABASE_FIELD_TYPE_DATETIME:
-			case \Cherrycake\DATABASE_FIELD_TYPE_TIMESTAMP:
-			case \Cherrycake\DATABASE_FIELD_TYPE_TIME:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
 
 				if (!$r) {
 					$r = $rEmpty;
@@ -746,7 +748,7 @@ class Item extends BasicObject {
 				}
 
 				switch ($this->fields[$key]["type"]) {
-					case \Cherrycake\DATABASE_FIELD_TYPE_DATE:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -755,8 +757,8 @@ class Item extends BasicObject {
 							]
 						);
 						break;
-					case \Cherrycake\DATABASE_FIELD_TYPE_DATETIME:
-					case \Cherrycake\DATABASE_FIELD_TYPE_TIMESTAMP:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -765,7 +767,7 @@ class Item extends BasicObject {
 							]
 						);
 						break;
-					case \Cherrycake\DATABASE_FIELD_TYPE_TIME:
+					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -779,7 +781,7 @@ class Item extends BasicObject {
 
 				break;
 
-			case \Cherrycake\DATABASE_FIELD_TYPE_YEAR:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR:
 				$r = $e->Locale->formatTimestamp(
 					$r,
 					[
@@ -787,16 +789,16 @@ class Item extends BasicObject {
 					]
 				);
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_BOOLEAN:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN:
 				$r = $r ? $rBooleanTrue : $rBooleanFalse;
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_IP:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_IP:
 				if (!$r) {
 					$r = $rEmpty;
 					break;
 				}
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_SERIALIZED:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED:
 				$value = $r;
 
 				if (!$value) {
@@ -821,10 +823,10 @@ class Item extends BasicObject {
 				$table .= "</table>";
 				$r = $table;
 				break;
-			case \Cherrycake\DATABASE_FIELD_TYPE_STRING:
-			case \Cherrycake\DATABASE_FIELD_TYPE_TEXT:
-			case \Cherrycake\DATABASE_FIELD_TYPE_BLOB:
-			case \Cherrycake\DATABASE_FIELD_TYPE_COLOR:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB:
+			case \Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR:
 			default:
 				if (!$r) {
 					$r = $rEmpty;

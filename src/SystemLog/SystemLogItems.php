@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake\SystemLog;
+
 /**
  * Class to work with user items
  *
@@ -38,7 +40,7 @@ class SystemLogItems extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded > ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["fromDate"]
 					]
 				]
@@ -49,7 +51,7 @@ class SystemLogItems extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded <= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["toDate"]
 					]
 				]

@@ -45,7 +45,7 @@ class LogItems extends \Cherrycake\Items {
 				"sqlPart" => "type = ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 						"value" => $p["type"]
 					]
 				]
@@ -56,7 +56,7 @@ class LogItems extends \Cherrycake\Items {
 				"sqlPart" => "subType = ?",
 				"values" => [
 					[
-						"subType" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+						"subType" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 						"value" => $p["subType"]
 					]
 				]
@@ -67,7 +67,7 @@ class LogItems extends \Cherrycake\Items {
 				"sqlPart" => "timestamp > ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["fromTimestamp"]
 					]
 				]
@@ -78,7 +78,7 @@ class LogItems extends \Cherrycake\Items {
 				"sqlPart" => "timestamp <= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["toTimestamp"]
 					]
 				]

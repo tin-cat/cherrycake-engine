@@ -49,15 +49,15 @@ class RequestPathComponent {
 	 */
 	function isMatchesString($string) {
 		switch ($this->type) {
-			case REQUEST_PATH_COMPONENT_TYPE_FIXED:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 				return (strcasecmp($string, $this->string) == 0 ? true : false);
 				break;
 
-			case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
 				return true;
 				break;
 
-			case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 				return is_numeric($string);
 				break;
 		}
@@ -70,13 +70,13 @@ class RequestPathComponent {
 	 */
 	function getTypeName() {
 		switch ($this->type) {
-			case REQUEST_PATH_COMPONENT_TYPE_FIXED:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 				return "Fixed";
 				break;
-			case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
 				return "String";
 				break;
-			case REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 				return "Numeric";
 				break;
 		}
@@ -85,7 +85,7 @@ class RequestPathComponent {
 	/**
 	 * getValue
 	 *
-	 * @return string Returns the value passed for this path component, if its type is either REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING or REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
+	 * @return string Returns the value passed for this path component, if its type is either \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING or \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 	 */
 	function getValue() {
 		return $this->value;
@@ -94,7 +94,7 @@ class RequestPathComponent {
 	/**
 	 * setValue
 	 *
-	 * Sets the value for this path component. Intented to apply only for REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING and REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC types
+	 * Sets the value for this path component. Intented to apply only for \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING and \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC types
 	 *
 	 * @param mixed $value The value for this path component
 	 */
@@ -119,7 +119,7 @@ class RequestPathComponent {
 	 * @return array Status information
 	 */
 	function getStatus() {
-		$r["brief"] = ($this->type == REQUEST_PATH_COMPONENT_TYPE_FIXED ? $this->string : "[".$this->getTypeName()."]");
+		$r["brief"] = ($this->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED ? $this->string : "[".$this->getTypeName()."]");
 		$r["name"] = $this->name ?? "unnamed";
 		$r["value"] = $this->getValue();
 		$r["type"] = $this->getTypeName();

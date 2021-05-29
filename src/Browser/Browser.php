@@ -164,7 +164,7 @@ class Browser extends \Cherrycake\Module {
 			if (isset($this->engines[$browser]))
 				return $this->engines[$browser];
 
-		return ENGINE_OTHERS;
+		return self::ENGINE_OTHERS;
 	}
 
 	/**
@@ -181,8 +181,8 @@ class Browser extends \Cherrycake\Module {
 		if ($r = $data[$this->getEngine()])
 			return $r;
 		else
-			if (isset($data[ENGINE_OTHERS]))
-				return $data[ENGINE_OTHERS];
+			if (isset($data[self::ENGINE_OTHERS]))
+				return $data[self::ENGINE_OTHERS];
 			else
 				return false;
 	}

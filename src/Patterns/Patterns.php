@@ -16,17 +16,12 @@ namespace Cherrycake\Patterns;
  */
 class Patterns extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
 		"directory" => "patterns", // The directory where patterns are stored
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use for cached patterns.
-		"defaultCacheTtl" => CACHE_TTL_NORMAL, // The default TTL to use for cached patterns.
+		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use for cached patterns.
 		"defaultCachePrefix" => "Patterns" // The default prefix to use for cached patterns.
 	];
 

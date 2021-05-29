@@ -10,18 +10,13 @@ namespace Cherrycake\Locale;
  */
 class Locale extends \Cherrycake\Module {
 	/**
-	 * @var bool $isConfig Sets whether this module has its own configuration file. Defaults to false.
-	 */
-	protected $isConfigFile = true;
-
-	/**
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
 		/*
 			A hash array of available localizations the app supports, where each key is the locale name, and each value a hash array with the following keys:
 				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
-				language: The language used in this localization, one of the available LANGUAGE_? constants.
+				language: The language used in this localization, one of the available \Cherrycake\LANGUAGE_? constants.
 				dateFormat: The date format used in this localization, one of the available DATE_FORMAT_? constants.
 				temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
 				currency: The currency used in this localization, one of the available CURRENCY_? constants.
@@ -33,30 +28,30 @@ class Locale extends \Cherrycake\Module {
 		[
 			"main" => [
 				"domains" => false,
-				"language" => LANGUAGE_ENGLISH,
-				"dateFormat" => DATE_FORMAT_MIDDLE_ENDIAN,
-				"temperatureUnits" => TEMPERATURE_UNITS_FAHRENHEIT,
-				"currency" => CURRENCY_USD,
-				"decimalMark" => DECIMAL_MARK_POINT,
-				"measurementSystem" => MEASUREMENT_SYSTEM_IMPERIAL,
-				"timeZone" => TIMEZONE_ID_ETC_UTC
+				"language" => \Cherrycake\LANGUAGE_ENGLISH,
+				"dateFormat" => \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN,
+				"temperatureUnits" => \Cherrycake\TEMPERATURE_UNITS_FAHRENHEIT,
+				"currency" => \Cherrycake\CURRENCY_USD,
+				"decimalMark" => \Cherrycake\DECIMAL_MARK_POINT,
+				"measurementSystem" => \Cherrycake\MEASUREMENT_SYSTEM_IMPERIAL,
+				"timeZone" => \Cherrycake\TIMEZONE_ID_ETC_UTC
 			]
 		],
 		"defaultLocale" => "main", // The locale name to use when it can not be autodetected.
 		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
-		"availableLanguages" => [LANGUAGE_ENGLISH], // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available LANGUAGE_? constants.
-		"geolocationMethod" => GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
+		"availableLanguages" => [\Cherrycake\LANGUAGE_ENGLISH], // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available \Cherrycake\LANGUAGE_? constants.
+		"geolocationMethod" => \Cherrycake\GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
 		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored. See the cherrycake_locale_texts table in the Cherrycake skeleton database.
 		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
 		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored. See the cherrycake_locale_textCategories table in the Cherrycake skeleton database.
 		"textCacheProviderName" => "engine", // The name of the cache provider that will be used to cache localized multilingual texts
 		"textCacheKeyPrefix" => "LocaleText", // The prefix of the keys when storing texts into cache
-		"textCacheDefaultTtl" => CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
+		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
 		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
 		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored. See the cherrycake_location_timezones table in the Cherrycake skeleton database.
 		"timeZonesCacheProviderName" => "engine", // The name of the cache provider that will be user to cache timezones
 		"timeZonesCacheKeyPrefix" => "LocaleTimeZone", // The prefix of the keys when storing timezones into cache
-		"timeZonesCacheDefaultTtl" => CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
+		"timeZonesCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL // The default TTL for timezones stored into cache
 	];
 
 	/**
@@ -75,29 +70,29 @@ class Locale extends \Cherrycake\Module {
 	var $locale;
 
 	private $languageNames = [
-		LANGUAGE_SPANISH => [
-			LANGUAGE_SPANISH => "Español",
-			LANGUAGE_ENGLISH => "Spanish",
-			LANGUAGE_CATALAN => "Espanyol",
-			LANGUAGE_FRENCH => "Espagnol"
+		\Cherrycake\LANGUAGE_SPANISH => [
+			\Cherrycake\LANGUAGE_SPANISH => "Español",
+			\Cherrycake\LANGUAGE_ENGLISH => "Spanish",
+			\Cherrycake\LANGUAGE_CATALAN => "Espanyol",
+			\Cherrycake\LANGUAGE_FRENCH => "Espagnol"
 		],
-		LANGUAGE_ENGLISH => [
-			LANGUAGE_SPANISH => "Inglés",
-			LANGUAGE_ENGLISH => "English",
-			LANGUAGE_CATALAN => "Anglès",
-			LANGUAGE_FRENCH => "Anglaise"
+		\Cherrycake\LANGUAGE_ENGLISH => [
+			\Cherrycake\LANGUAGE_SPANISH => "Inglés",
+			\Cherrycake\LANGUAGE_ENGLISH => "English",
+			\Cherrycake\LANGUAGE_CATALAN => "Anglès",
+			\Cherrycake\LANGUAGE_FRENCH => "Anglaise"
 		],
-		LANGUAGE_CATALAN => [
-			LANGUAGE_SPANISH => "Catalán",
-			LANGUAGE_ENGLISH => "Catalan",
-			LANGUAGE_CATALAN => "Català",
-			LANGUAGE_FRENCH => "Catalan"
+		\Cherrycake\LANGUAGE_CATALAN => [
+			\Cherrycake\LANGUAGE_SPANISH => "Catalán",
+			\Cherrycake\LANGUAGE_ENGLISH => "Catalan",
+			\Cherrycake\LANGUAGE_CATALAN => "Català",
+			\Cherrycake\LANGUAGE_FRENCH => "Catalan"
 		],
-		LANGUAGE_FRENCH => [
-			LANGUAGE_SPANISH => "Francés",
-			LANGUAGE_ENGLISH => "French",
-			LANGUAGE_CATALAN => "Francès",
-			LANGUAGE_FRENCH => "Français"
+		\Cherrycake\LANGUAGE_FRENCH => [
+			\Cherrycake\LANGUAGE_SPANISH => "Francés",
+			\Cherrycake\LANGUAGE_ENGLISH => "French",
+			\Cherrycake\LANGUAGE_CATALAN => "Francès",
+			\Cherrycake\LANGUAGE_FRENCH => "Français"
 		]
 	];
 
@@ -105,10 +100,10 @@ class Locale extends \Cherrycake\Module {
 	 * @var array $languageCodes A hash array of ISO 639-1 language codes
 	 */
 	private $languageCodes = [
-		LANGUAGE_SPANISH => "es",
-		LANGUAGE_ENGLISH => "en",
-		LANGUAGE_CATALAN => "cat",
-		LANGUAGE_FRENCH => "fr"
+		\Cherrycake\LANGUAGE_SPANISH => "es",
+		\Cherrycake\LANGUAGE_ENGLISH => "en",
+		\Cherrycake\LANGUAGE_CATALAN => "cat",
+		\Cherrycake\LANGUAGE_FRENCH => "fr"
 	];
 
 	/**
@@ -116,94 +111,94 @@ class Locale extends \Cherrycake\Module {
 	 */
 	private $texts = [
 		"justNow" => [
-			LANGUAGE_SPANISH => "justo ahora",
-			LANGUAGE_ENGLISH => "just now",
-			LANGUAGE_CATALAN => "just ara",
-			LANGUAGE_FRENCH => "juste maintenant"
+			\Cherrycake\LANGUAGE_SPANISH => "justo ahora",
+			\Cherrycake\LANGUAGE_ENGLISH => "just now",
+			\Cherrycake\LANGUAGE_CATALAN => "just ara",
+			\Cherrycake\LANGUAGE_FRENCH => "juste maintenant"
 		],
 		"agoPrefix" => [
-			LANGUAGE_SPANISH => "hace ",
-			LANGUAGE_CATALAN => "fa ",
-			LANGUAGE_FRENCH => "il y a "
+			\Cherrycake\LANGUAGE_SPANISH => "hace ",
+			\Cherrycake\LANGUAGE_CATALAN => "fa ",
+			\Cherrycake\LANGUAGE_FRENCH => "il y a "
 		],
 		"agoSuffix" => [
-			LANGUAGE_ENGLISH => " ago"
+			\Cherrycake\LANGUAGE_ENGLISH => " ago"
 		],
 		"minute" => [
-			LANGUAGE_SPANISH => "minuto",
-			LANGUAGE_ENGLISH => "minute",
-			LANGUAGE_CATALAN => "minut",
-			LANGUAGE_FRENCH => "minute"
+			\Cherrycake\LANGUAGE_SPANISH => "minuto",
+			\Cherrycake\LANGUAGE_ENGLISH => "minute",
+			\Cherrycake\LANGUAGE_CATALAN => "minut",
+			\Cherrycake\LANGUAGE_FRENCH => "minute"
 		],
 		"minutes" => [
-			LANGUAGE_SPANISH => "minutos",
-			LANGUAGE_ENGLISH => "minutes",
-			LANGUAGE_CATALAN => "minuts",
-			LANGUAGE_FRENCH => "minutes"
+			\Cherrycake\LANGUAGE_SPANISH => "minutos",
+			\Cherrycake\LANGUAGE_ENGLISH => "minutes",
+			\Cherrycake\LANGUAGE_CATALAN => "minuts",
+			\Cherrycake\LANGUAGE_FRENCH => "minutes"
 		],
 		"hour" => [
-			LANGUAGE_SPANISH => "hora",
-			LANGUAGE_ENGLISH => "hour"
+			\Cherrycake\LANGUAGE_SPANISH => "hora",
+			\Cherrycake\LANGUAGE_ENGLISH => "hour"
 		],
 		"hours" => [
-			LANGUAGE_SPANISH => "horas",
-			LANGUAGE_ENGLISH => "hours",
-			LANGUAGE_CATALAN => "hores",
-			LANGUAGE_FRENCH => "heures"
+			\Cherrycake\LANGUAGE_SPANISH => "horas",
+			\Cherrycake\LANGUAGE_ENGLISH => "hours",
+			\Cherrycake\LANGUAGE_CATALAN => "hores",
+			\Cherrycake\LANGUAGE_FRENCH => "heures"
 		],
 		"day" => [
-			LANGUAGE_SPANISH => "día",
-			LANGUAGE_ENGLISH => "day",
-			LANGUAGE_CATALAN => "dia",
-			LANGUAGE_FRENCH => "journée"
+			\Cherrycake\LANGUAGE_SPANISH => "día",
+			\Cherrycake\LANGUAGE_ENGLISH => "day",
+			\Cherrycake\LANGUAGE_CATALAN => "dia",
+			\Cherrycake\LANGUAGE_FRENCH => "journée"
 		],
 		"days" => [
-			LANGUAGE_SPANISH => "días",
-			LANGUAGE_ENGLISH => "days",
-			LANGUAGE_CATALAN => "dies",
-			LANGUAGE_FRENCH => "jours"
+			\Cherrycake\LANGUAGE_SPANISH => "días",
+			\Cherrycake\LANGUAGE_ENGLISH => "days",
+			\Cherrycake\LANGUAGE_CATALAN => "dies",
+			\Cherrycake\LANGUAGE_FRENCH => "jours"
 		],
 		"month" => [
-			LANGUAGE_SPANISH => "mes",
-			LANGUAGE_ENGLISH => "month",
-			LANGUAGE_CATALAN => "mes",
-			LANGUAGE_FRENCH => "mois"
+			\Cherrycake\LANGUAGE_SPANISH => "mes",
+			\Cherrycake\LANGUAGE_ENGLISH => "month",
+			\Cherrycake\LANGUAGE_CATALAN => "mes",
+			\Cherrycake\LANGUAGE_FRENCH => "mois"
 		],
 		"months" => [
-			LANGUAGE_SPANISH => "meses",
-			LANGUAGE_ENGLISH => "months",
-			LANGUAGE_CATALAN => "mesos",
-			LANGUAGE_FRENCH => "mois"
+			\Cherrycake\LANGUAGE_SPANISH => "meses",
+			\Cherrycake\LANGUAGE_ENGLISH => "months",
+			\Cherrycake\LANGUAGE_CATALAN => "mesos",
+			\Cherrycake\LANGUAGE_FRENCH => "mois"
 		],
 		"yesterday" => [
-			LANGUAGE_SPANISH => "ayer",
-			LANGUAGE_ENGLISH => "yesterday",
-			LANGUAGE_CATALAN => "ahir",
-			LANGUAGE_FRENCH => "hier"
+			\Cherrycake\LANGUAGE_SPANISH => "ayer",
+			\Cherrycake\LANGUAGE_ENGLISH => "yesterday",
+			\Cherrycake\LANGUAGE_CATALAN => "ahir",
+			\Cherrycake\LANGUAGE_FRENCH => "hier"
 		],
 		"monthsLong" => [
-			LANGUAGE_SPANISH => ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
-			LANGUAGE_ENGLISH => ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
-			LANGUAGE_CATALAN => ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"],
-			LANGUAGE_FRENCH => ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+			\Cherrycake\LANGUAGE_SPANISH => ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+			\Cherrycake\LANGUAGE_ENGLISH => ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"],
+			\Cherrycake\LANGUAGE_CATALAN => ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"],
+			\Cherrycake\LANGUAGE_FRENCH => ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
 		],
 		"monthsShort" => [
-			LANGUAGE_SPANISH => ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
-			LANGUAGE_ENGLISH => ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
-			LANGUAGE_CATALAN => ["gen", "feb", "mar", "abr", "mai", "jun", "jul", "ago", "set", "oct", "nov", "des"],
-			LANGUAGE_FRENCH => ["jan", "fév", "mar", "avr", "mai", "jun", "jul", "aoû", "sep", "oct", "nov", "déc"]
+			\Cherrycake\LANGUAGE_SPANISH => ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+			\Cherrycake\LANGUAGE_ENGLISH => ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+			\Cherrycake\LANGUAGE_CATALAN => ["gen", "feb", "mar", "abr", "mai", "jun", "jul", "ago", "set", "oct", "nov", "des"],
+			\Cherrycake\LANGUAGE_FRENCH => ["jan", "fév", "mar", "avr", "mai", "jun", "jul", "aoû", "sep", "oct", "nov", "déc"]
 		],
 		"prepositionOf" => [
-			LANGUAGE_SPANISH => "de",
-			LANGUAGE_ENGLISH => "of",
-			LANGUAGE_CATALAN => "de",
-			LANGUAGE_FRENCH => "sur"
+			\Cherrycake\LANGUAGE_SPANISH => "de",
+			\Cherrycake\LANGUAGE_ENGLISH => "of",
+			\Cherrycake\LANGUAGE_CATALAN => "de",
+			\Cherrycake\LANGUAGE_FRENCH => "sur"
 		],
 		"prepositionAt" => [
-			LANGUAGE_SPANISH => "a las",
-			LANGUAGE_ENGLISH => "at",
-			LANGUAGE_CATALAN => "a les",
-			LANGUAGE_FRENCH => "à"
+			\Cherrycake\LANGUAGE_SPANISH => "a las",
+			\Cherrycake\LANGUAGE_ENGLISH => "at",
+			\Cherrycake\LANGUAGE_CATALAN => "a les",
+			\Cherrycake\LANGUAGE_FRENCH => "à"
 		]
 	];
 
@@ -296,7 +291,7 @@ class Locale extends \Cherrycake\Module {
 	 *
 	 * @param string $code The code of the text. Can also be specified as <category code>/<text code> in order to discern texts that are stored with the same code in different categories.
 	 * @param array $setup Additional setup with the following possible keys:
-	 * * variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {<key>} will be replaced with the matching value, where the value can be a string, or a hash array of values for different languages, where each key is one of the available LANGUAGE_? constants.
+	 * * variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {<key>} will be replaced with the matching value, where the value can be a string, or a hash array of values for different languages, where each key is one of the available \Cherrycake\LANGUAGE_? constants.
 	 * * forceLanguage: Force the retrieval of the text on this language. If not specified, the detected language is used.
 	 * * forceTextCacheTtl: Use this TTL for the text cache instead of the module configuration variable textCacheDefaultTtl
 	 * * isPurifyVariables: Whether to purify values from specified variables for security purposes or not. Defaults to true.
@@ -347,7 +342,7 @@ class Locale extends \Cherrycake\Module {
 
 			$result = $e->Database->$databaseProviderName->query($sql);
 			if (!$result->isAny()) {
-				$e->Errors->trigger(ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Requested text code not found",
 					"errorVariables" => ["code" => $code],
 					"isSilent" => true
@@ -456,14 +451,14 @@ class Locale extends \Cherrycake\Module {
 	}
 
 	/**
-	 * @return integer The language that is being currently used, one of the LANGUAGE_*
+	 * @return integer The language that is being currently used, one of the \Cherrycake\LANGUAGE_*
 	 */
 	function getLanguage() {
 		return $this->locale["language"];
 	}
 
 	/**
-	 * @return integer The language that is being currently used, one of the LANGUAGE_*
+	 * @return integer The language that is being currently used, one of the \Cherrycake\LANGUAGE_*
 	 */
 	function getCurrency() {
 		return $this->locale["currency"];
@@ -506,7 +501,7 @@ class Locale extends \Cherrycake\Module {
 
 			$result = $e->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".$e->Database->$databaseProviderName->safeString($timezone));
 			if (!$result->isAny()) {
-				$e->Errors->trigger(ERROR_SYSTEM, [
+				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 					"errorDescription" => "Requested timezone not found",
 					"errorVariables" => ["timezone" => $timezone],
 					"isSilent" => true
@@ -580,7 +575,7 @@ class Locale extends \Cherrycake\Module {
 	 * @param array $setup A hash array of setup options with the following possible keys
 	 * * fromTimezone: Considers the given timestamp to be in this timezone. If not specified, the timestamp is considered to be in the current Locale timestamp.
 	 * * toTimezone: Converts the given timestamp to this timezone. If not specified, the given timestamp is converted to the current Locale timestamp except if the fromTimeZone setup key has been set to false.
-	 * * language: If specified, this language will be used instead of the detected one. One of the available LANGUAGE_?
+	 * * language: If specified, this language will be used instead of the detected one. One of the available \Cherrycake\LANGUAGE_?
 	 * * style: The formatting style, one of the available TIMESTAMP_FORMAT_? constants.
 	 * * isShortYear: Whether to abbreviate the year whenever possible. For example: 17 instead of 2017. Default: true
 	 * * isDay: Whether to include the day. Default: true
@@ -863,7 +858,7 @@ class Locale extends \Cherrycake\Module {
 			$setup["language"] = $this->getLanguage();
 
 		switch ($setup["language"]) {
-			case LANGUAGE_ENGLISH:
+			case \Cherrycake\LANGUAGE_ENGLISH:
 				$r = $number;
 				switch($number) {
 					case 1:
@@ -881,7 +876,7 @@ class Locale extends \Cherrycake\Module {
 				}
 				break;
 
-			case LANGUAGE_SPANISH:
+			case \Cherrycake\LANGUAGE_SPANISH:
 				$r = $number."º";
 				break;
 		}

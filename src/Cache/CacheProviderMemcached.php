@@ -40,7 +40,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		if (!$this->memcached->addServers($this->GetConfig("servers")))
 		{
 			global $e;
-			$e->Errors->Trigger(ERROR_SYSTEM, ["errorDescription" => "Error connecting to Memcached"]);
+			$e->Errors->Trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error connecting to Memcached"]);
 			return false;
 		}
 		$this->isConnected = true;
@@ -57,7 +57,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 			if (!$this->memcached->quit())
 			{
 				global $e;
-				$e->Errors->Trigger(ERROR_SYSTEM, ["errorDescription" => "Error disconnecting from Memcached"]);
+				$e->Errors->Trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error disconnecting from Memcached"]);
 				return false;
 			}
 

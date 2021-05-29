@@ -1,5 +1,7 @@
 <?php
 
+namespace Cherrycake\Stats;
+
 /**
  * Class that represents a list of StatsEvent objects
  *
@@ -37,7 +39,7 @@ class StatsEvents extends \Cherrycake\Items {
 				"sqlPart" => "type = ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
 						"value" => $p["type"]
 					]
 				]
@@ -48,7 +50,7 @@ class StatsEvents extends \Cherrycake\Items {
 				"sqlPart" => "timestamp >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["fromTimestamp"]
 					]
 				]
@@ -59,7 +61,7 @@ class StatsEvents extends \Cherrycake\Items {
 				"sqlPart" => "timestamp >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
 						"value" => $p["toTimestamp"]
 					]
 				]

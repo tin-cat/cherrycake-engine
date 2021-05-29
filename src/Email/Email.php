@@ -29,7 +29,6 @@ use \PHPMailer\PHPMailer\Exception;
  * @category Modules
  */
 class Email extends \Cherrycake\Module {
-    protected $isConfigFile = true;
     private $phpMailer;
 
     /**

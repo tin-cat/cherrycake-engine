@@ -438,8 +438,8 @@ function handleError(
 
 			case "Cherrycake\ActionAjax":
 				if ($e->isDevel()) {
-					$ajaxResponseJson = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+					$ajaxResponseJson = new \Cherrycake\ActionsAjaxResponseJson([
+						"code" => \Cherrycake\Actions\AJAXRESPONSEJSON_ERROR,
 						"description" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -462,15 +462,15 @@ function handleError(
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
 							"Backtrace:<br>".implode("<br>", $backtrace_info),
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"messageType" => \Cherrycake\Actions\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
 				else {
-					$ajaxResponseJson = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Actions\AJAXRESPONSEJSON_ERROR,
 						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"messageType" => \Cherrycake\Actions\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}

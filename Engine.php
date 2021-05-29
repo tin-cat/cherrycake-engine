@@ -480,34 +480,6 @@ class Engine {
 		return $this->isModuleExists($this->getAppModulesDir(), $moduleName);
 	}
 
-	/**
-	 * Loads a Cherrycake-specific class. Cherrycake classes are any other classes that are not modules, nor related to any Core module.
-	 *
-	 * @param $className The name of the class to load, must be stored in ENGINE_DIR/[class name].class.php
-	 */
-	function loadCherrycakeClass($className) {
-		include_once(ENGINE_DIR."/".$className.".class.php");
-	}
-
-	/**
-	 * Loads an app-specific class. App classes are any other classes that are not directly related to a module.
-	 *
-	 * @param string $className The name of the class to load, must be stored in appClassesDir/[class name].class.php
-	 */
-	function loadAppClass($className) {
-		include_once($this->getAppClassesDir()."/".$className.".class.php");
-	}
-
-	/**
-	 * Loads an app-module specific class. App module classes are classes that do not extend the module class but provide functionalities related to a module.
-	 *
-	 * @param string $moduleName The name of the module to which the class belongs
-	 * @param string $className The name of the class
-	 */
-	function loadAppModuleClass($moduleName, $className) {
-		include_once($this->getAppModulesDir()."/".$moduleName."/".$className.".class.php");
-	}
-
 	// /**
 	//  * Magic get method that tries to load modules if the the requested property is not found
 	//  * @param string $key The key of the property or module name to get.
