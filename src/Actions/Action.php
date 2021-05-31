@@ -72,6 +72,11 @@ class Action {
 	protected $isCli = false;
 
 	/**
+	 * @var boolean $isRequireMappedMethod When set to true, actions of this class will require a mapped moduleName and methodName to exist
+	 */
+	protected $isRequireMappedMethod = true;
+
+	/**
 	 * Request
 	 *
 	 * Constructor factory
@@ -79,13 +84,13 @@ class Action {
 	 * @param string $setup The configuration for the request
 	 */
 	function __construct($setup) {
-		$this->moduleType = isset($setup["moduleType"]) ? $setup["moduleType"] : false;
-		$this->moduleName = isset($setup["moduleName"]) ? $setup["moduleName"] : false;
-		$this->methodName = isset($setup["methodName"]) ? $setup["methodName"] : false;
-		$this->request = isset($setup["request"]) ? $setup["request"] : new Request;
-		$this->isCache = isset($setup["isCache"]) ? $setup["isCache"] : false;
-		$this->isSensibleToBruteForceAttacks = isset($setup["isSensibleToBruteForceAttacks"]) ? $setup["isSensibleToBruteForceAttacks"] : false;
-		$this->timeout = isset($setup["timeout"]) ? $setup["timeout"] : false;
+		$this->moduleType = $setup["moduleType"] ?? false;
+		$this->moduleName = $setup["moduleName"] ?? false;
+		$this->methodName = $setup["methodName"] ?? false;
+		$this->request = $setup["request"] ?? new Request;
+		$this->isCache = $setup["isCache"] ?? false;
+		$this->isSensibleToBruteForceAttacks = $setup["isSensibleToBruteForceAttacks"] ?? false;
+		$this->timeout = $setup["timeout"] ?? false;
 
 		if ($this->isCache) {
 			global $e;
@@ -150,16 +155,19 @@ class Action {
 		if (!$this->request->securityCheck())
 			return false;
 
-		switch ($this->moduleType) {
-			case \Cherrycake\ACTION_MODULE_TYPE_CORE:
-			case \Cherrycake\ACTION_MODULE_TYPE_APP:
-				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
-					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
-					return true;
-				}
-				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
-				break;
+		if ($this->isRequireMappedMethod) {
+			switch ($this->moduleType) {
+				case \Cherrycake\ACTION_MODULE_TYPE_CORE:
+				case \Cherrycake\ACTION_MODULE_TYPE_APP:
+					if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
+						$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Mapped method ".$this->moduleName."::".$this->methodName." not found"]);
+						return true;
+					}
+					break;
+			}
 		}
+
+		$return = $this->getResult($this->request);
 
 		if ($this->isCache) {
 			// Store the current result into cache
@@ -177,6 +185,16 @@ class Action {
 			));
 
 		return $return;
+	}
+
+	/**
+	 * Returns the result of this action
+	 * @param Request $request
+	 * @return mixed The result
+	 */
+	function getResult($request) {
+		global $e;
+		eval("return \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
 	}
 
 	/**
