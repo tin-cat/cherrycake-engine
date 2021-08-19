@@ -55,10 +55,7 @@ class Actions extends \Cherrycake\Module {
 	public $currentActionName;
 
 	/**
-	 * init
-	 *
 	 * Initializes the module
-	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init() {
@@ -72,8 +69,6 @@ class Actions extends \Cherrycake\Module {
 	}
 
 	/**
-	 * mapAction
-	 *
 	 * Maps an action for a module (either an App or a Core module). Should be called within the mapActions method of your module, like this:
 	 *
 	 * $e->Actions->mapAction(
@@ -120,8 +115,6 @@ class Actions extends \Cherrycake\Module {
 	}
 
 	/**
-	 * isAction
-	 *
 	 * Checks if an action with the given actionName has been set
 	 *
 	 * @param $actionName string The action name
@@ -135,8 +128,6 @@ class Actions extends \Cherrycake\Module {
 	}
 
 	/**
-	 * getAction
-	 *
 	 * @param $actionName string The action name
 	 * @return Action The requested action. False if doesn't exists.
 	*/
@@ -148,10 +139,7 @@ class Actions extends \Cherrycake\Module {
 	}
 
 	/**
-	 * run
-	 *
 	 * Parses the received query to find the corresponding action and runs it
-	 *
 	 * @param string $requestUri The request URI to run.
 	 * @return bool Returns false if an error occurred when executing the action or if the requested action is not coded and ACTION_NOT_FOUND has not been mapped.
 	 */
