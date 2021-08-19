@@ -24,7 +24,8 @@
         "predis/predis": "^1.1",
         "ezyang/htmlpurifier": "^4.10",
         "phpmailer/phpmailer": "6.4.1",
-        "webonyx/graphql-php": "^14.7"
+        "webonyx/graphql-php": "^14.7",
+        "scssphp/scssphp": "^1.6"
     },
     "suggest": {
         "mpdf/mpdf": "Provides server-side PDF creation capabilities"

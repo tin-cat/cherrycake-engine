@@ -301,6 +301,7 @@ class Css extends \Cherrycake\Module {
 
 		if ($files) {
 			$parsed = [];
+			$isScss = false;
 			foreach ($files as $file) {
 				if (in_array($file, $parsed))
 					continue;
@@ -317,6 +318,23 @@ class Css extends \Cherrycake\Module {
 						"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
 					]
 				)."\n";
+
+				$fileExtension = strtolower(substr($file, strrpos($file, '.') + 1));
+				if ($fileExtension === "scss")
+					$isScss = true;
+			}
+
+			if ($isScss) {
+				try {
+					$scssCompiler = new \ScssPhp\ScssPhp\Compiler();
+					$scssCompiler->setOutputStyle($e->isDevel() ? \ScssPhp\ScssPhp\OutputStyle::EXPANDED : \ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
+					$css = $scssCompiler->compileString($css)->getCss();
+				}
+				catch (\ScssPhp\ScssPhp\Exception\SassException $error) {
+					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
+						"errorDescription" => $error->getMessage()
+					]);
+				}
 			}
 		}
 
