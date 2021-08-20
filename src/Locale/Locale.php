@@ -39,7 +39,6 @@ class Locale extends \Cherrycake\Module {
 		],
 		"defaultLocale" => "main", // The locale name to use when it can not be autodetected.
 		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
-		"availableLanguages" => [\Cherrycake\LANGUAGE_ENGLISH], // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available \Cherrycake\LANGUAGE_? constants.
 		"geolocationMethod" => \Cherrycake\GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
 		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
 		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored. See the cherrycake_location_timezones table in the Cherrycake skeleton database.
@@ -55,8 +54,7 @@ class Locale extends \Cherrycake\Module {
 		"Output",
 		"Errors",
 		"Cache",
-		"Database",
-		"Language"
+		"Database"
 	];
 
 	/**
@@ -251,6 +249,17 @@ class Locale extends \Cherrycake\Module {
 		)
 			return $_SERVER["HTTP_HOST"];
 		return $this->getConfig("availableLocales")[$localeName]["domains"][0];
+	}
+
+	/**
+	 * Gets the languages that are available on the App, taken from the configured `availableLocales`
+	 * @return array The languages available
+	 */
+	function getAvailaleLanguages() {
+		$languages = [];
+		foreach ($this->getConfig("availableLocales") as $locale)
+			$languages[] = $locale['language'];
+		return $languages;
 	}
 
 	/**

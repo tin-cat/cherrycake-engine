@@ -728,6 +728,14 @@ class Engine {
 				$this->$moduleName->end();
 		die;
 	}
+
+	/**
+	 * Helper to easily get a translatable string using Language\Translation
+	 * @param string $key The translation key, usually the text in english
+	 */
+	function t($key, $baseLanguage = false) {
+		return Translation\Text::build($key, $baseLanguage);
+	}
 }
 
 /**

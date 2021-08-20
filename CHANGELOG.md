@@ -1,6 +1,10 @@
 # Changelog
 Changelog documentation for the Cherrycake engine. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0b] - 2021-08-20
+### Changed
+- Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.
+
 ## [1.0.0b] - 2021-05-25
 ### Changed
 - Composer-based autoloading system, a standard class and module autloading mechanism that simplifies overall structure for Cherrycake apps.

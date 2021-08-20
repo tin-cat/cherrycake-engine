@@ -53,7 +53,7 @@ class Item extends BasicObject {
 	 * * * items: For FORM_ITEM_TYPE_SELECT type: A hash array of the items for the selection, where each key is the value
 	 * * * * title
 	 * * * * subTitle
-	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language (as configured in Locale.config.php key availableLanguages)
+	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language
 	 * * title: The title of the field, to be used when representing data on modules like UiComponentTableAdmin
 	 * * prefix: The prefix string to add when humanizing the field value
 	 * * postfix: The postfix string to add when humanizing the field value
@@ -349,7 +349,7 @@ class Item extends BasicObject {
 
 			if ($fieldData["isMultiLanguage"] ?? false) { // If this field is multilanguage
 				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
-					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
+					foreach ($e->Locale->getAvailableLanguages() as $language) {
 						$fieldsData[$fieldName."_".$e->Locale->getLanguageCode($language)] = $value[$language];
 					}
 				}
@@ -485,7 +485,7 @@ class Item extends BasicObject {
 				global $e;
 				if (is_array($fieldData)) {
 
-					foreach ($e->Locale->getConfig("availableLanguages") as $language) {
+					foreach ($e->Locale->getAvailableLanguages() as $language) {
 
 						$this->{$fieldName."_".$e->Locale->getLanguageCode($language)} = $fieldData[$language];
 						$fields[$fieldName."_".$e->Locale->getLanguageCode($language)] = [
