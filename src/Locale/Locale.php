@@ -41,12 +41,6 @@ class Locale extends \Cherrycake\Module {
 		"canonicalLocale" => false, // The locale to consider canonical, used i.e. in the HtmlDocument module to set the rel="canonical" meta tag, in order to let search engines understand that there are different pages in different languages that represent the same content.
 		"availableLanguages" => [\Cherrycake\LANGUAGE_ENGLISH], // An array of the languages that are available for the app. The textsTableName should contain at least this languages. From the available \Cherrycake\LANGUAGE_? constants.
 		"geolocationMethod" => \Cherrycake\GEOLOCATION_METHOD_CLOUDFLARE, // The method to use to determine the user's geographical location, one of the available LOCALE_GEOLOCATION_METHOD_? constants.
-		"textsTableName" => "cherrycake_locale_texts", // The name of the table where multilingual localized texts are stored. See the cherrycake_locale_texts table in the Cherrycake skeleton database.
-		"textsDatabaseProviderName" => "main", // The name of the database provider where the localized multilingual texts are found
-		"textCategoriesTableName" => "cherrycake_locale_textCategories", // The name of the table where text categories are stored. See the cherrycake_locale_textCategories table in the Cherrycake skeleton database.
-		"textCacheProviderName" => "engine", // The name of the cache provider that will be used to cache localized multilingual texts
-		"textCacheKeyPrefix" => "LocaleText", // The prefix of the keys when storing texts into cache
-		"textCacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL for texts stored into cache
 		"timeZonesDatabaseProviderName" => "main", // The name of the database provider where the timezones are found
 		"timeZonesTableName" => "cherrycake_location_timezones", // The name of the table where the timezones are stored. See the cherrycake_location_timezones table in the Cherrycake skeleton database.
 		"timeZonesCacheProviderName" => "engine", // The name of the cache provider that will be user to cache timezones
@@ -61,7 +55,8 @@ class Locale extends \Cherrycake\Module {
 		"Output",
 		"Errors",
 		"Cache",
-		"Database"
+		"Database",
+		"Language"
 	];
 
 	/**
@@ -282,124 +277,6 @@ class Locale extends \Cherrycake\Module {
 		if (!isset($this->languageCodes[$language]))
 			return false;
 		return $this->languageCodes[$language];
-	}
-
-	/**
-	 * getText
-	 *
-	 * Gets a text from the multilingual texts database
-	 *
-	 * @param string $code The code of the text. Can also be specified as <category code>/<text code> in order to discern texts that are stored with the same code in different categories.
-	 * @param array $setup Additional setup with the following possible keys:
-	 * * variables: A hash array of the variables that must be replaced taking the text as a pattern. Every occurrence of {<key>} will be replaced with the matching value, where the value can be a string, or a hash array of values for different languages, where each key is one of the available \Cherrycake\LANGUAGE_? constants.
-	 * * forceLanguage: Force the retrieval of the text on this language. If not specified, the detected language is used.
-	 * * forceTextCacheTtl: Use this TTL for the text cache instead of the module configuration variable textCacheDefaultTtl
-	 * * isPurifyVariables: Whether to purify values from specified variables for security purposes or not. Defaults to true.
-	 * @return string The text
-	 */
-	function getText($code, $setup = false) {
-		global $e;
-
-		if (!isset($setup["isPurifyVariables"]))
-			$setup["isPurifyVariables"] = true;
-
-		$cacheKey = $e->Cache->buildCacheKey([
-			"prefix" => $this->getConfig("textCacheKeyPrefix"),
-			"uniqueId" => $code
-		]);
-		$cacheProviderName = $this->getConfig("textCacheProviderName");
-
-		$availableLanguages = $this->getConfig("availableLanguages");
-
-		if (!$data = $e->Cache->$cacheProviderName->get($cacheKey)) { // Get the text from the cache
-			// If not in the cache, retrieve it from the DB
-			$databaseProviderName = $this->getConfig("textsDatabaseProviderName");
-
-			if (stristr($code, "/")) { // If we're requesting a text from an specific category
-				list($categoryCode, $textCode) = explode("/", $code, 2);
-
-				$sql = "select ";
-				foreach ($availableLanguages as $language)
-					$sql .= $this->getConfig("textsTableName").".text_".$this->getLanguageCode($language).",";
-				reset($availableLanguages);
-				$sql = substr($sql, 0, -1);
-				$sql .= " from ".$this->getConfig("textsTableName").", ".$this->getConfig("textCategoriesTableName");
-				$sql .= " where ".$this->getConfig("textsTableName").".textCategories_id = ".$this->getConfig("textCategoriesTableName").".id";
-				$sql .= " and ".$this->getConfig("textsTableName").".code = '".$e->Database->$databaseProviderName->safeString($textCode)."'";
-				$sql .= " and ".$this->getConfig("textCategoriesTableName").".code = '".$e->Database->$databaseProviderName->safeString($categoryCode)."'";
-				$sql .= " limit 1";
-			}
-			else { // Else we're requesting a text without any category
-				$sql = "select ";
-				foreach ($availableLanguages as $language)
-					$sql .= $this->getConfig("textsTableName").".text".$language.",";
-				reset($availableLanguages);
-				$sql = substr($sql, 0, -1);
-				$sql .= " from ".$this->getConfig("textsTableName");
-				$sql .= " where ".$this->getConfig("textsTableName").".code = '".$e->Database->$databaseProviderName->safeString($code)."'";
-				$sql .= " limit 1";
-			}
-
-			$result = $e->Database->$databaseProviderName->query($sql);
-			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Requested text code not found",
-					"errorVariables" => ["code" => $code],
-					"isSilent" => true
-				]);
-				return ($e->isDevel() ? "Locale text \"".$code."\" not found" : null);
-			}
-
-			$row = $result->getRow();
-			$data = $row->getData();
-
-			// Store in cache
-			$e->Cache->$cacheProviderName->set($cacheKey, $data, ($setup["forceTextCacheTtl"] ?? false ? $setup["forceTextCacheTtl"] : $this->getConfig("textCacheDefaultTtl")));
-		}
-
-		$text = $data["text_".$this->getLanguageCode($setup["forceLanguage"] ?? false ? $setup["forceLanguage"] : $this->getLanguage())];
-
-		if ($setup["variables"] ?? false)
-			foreach ($setup["variables"] as $key => $value) {
-				$valueReplacement =
-					is_array($value)
-					?
-					$value[($setup["forceLanguage"] ? $setup["forceLanguage"] : $this->getLanguage())]
-					:
-					$valueReplacement = $value;
-				if ($setup["isPurifyVariables"])
-					$valueReplacement = $e->Security->clean($valueReplacement);
-				$text = str_replace("{".$key."}", $valueReplacement, $text);
-			}
-
-		return $text;
-	}
-
-	/**
-	 * getFromArray
-	 *
-	 * Given the $data hash-array with language-dependant keys in the syntax of <language id> => <content>, it returns the proper value for the current language
-	 *
-	 * @param array $data The data hash-array to get the field from
-	 * @param int $forceLanguage If specified, forces the retrieval of the specified language instead of the Locale language
-	 * @return mixed The contents of the localized data, or false if no contents for the specified language.
-	 */
-	function getFromArray($data, $forceLanguage = false) {
-		return $data[($forceLanguage ? $forceLanguage : $this->getLanguage())] ?? false;
-	}
-
-	/**
-	 * getFieldFromDatabaseRow
-	 *
-	 * Given a DatabaseRow with language-dependant fields named in the syntax of <$fieldBaseName><language id>, it returns the proper field contents for the current language
-	 *
-	 * @param DatabaseRow $databaseRow The DatabaseRow to get the field from
-	 * @param string $fieldBaseName The base name of the field, <language id> will be appended to get the corresponding localized content
-	 * @param int $forceLanguage If specified, forces the retrieval of the specified language instead of the Locale language
-	 * @return mixed The contents of the localized field
-	 */
-	function getFieldFromDatabaseRow($databaseRow, $fieldBaseName, $forceLanguage = false) {
-		return $databaseRow->getField($fieldBaseName.($forceLanguage ? $forceLanguage : $this->getLanguage()));
 	}
 
 	/**
@@ -665,10 +542,10 @@ class Locale extends \Cherrycake\Module {
 						case \Cherrycake\DATE_FORMAT_LITTLE_ENDIAN:
 							$r =
 								date("j", $timestamp).
-								($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
-								$this->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
+								($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
+								$e->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
-									($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
+									($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
 								: null);
 							break;
@@ -678,14 +555,14 @@ class Locale extends \Cherrycake\Module {
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp).
 									" "
 								: null).
-								$this->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
+								$e->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
 								" ".
 								date("j", $timestamp);
 
 							break;
 						case \Cherrycake\DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
-								$this->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
+								$e->Language->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
 								" ".
 								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"] ?? false, "ordinalGender" => ORDINAL_GENDER_MALE]).
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
@@ -698,7 +575,7 @@ class Locale extends \Cherrycake\Module {
 
 				if ($setup["isHours"]) {
 					$r .=
-						($setup["isBrief"] ? " " : " ".$this->getFromArray($this->texts["prepositionAt"], $setup["language"])." ");
+						($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionAt"], $setup["language"])." ");
 
 					if ($setup["hoursFormat"] == \Cherrycake\HOURS_FORMAT_12H)
 						$r .= date(" h:i".($setup["isSeconds"] ? ".s" : "")." a", $timestamp);
@@ -715,25 +592,25 @@ class Locale extends \Cherrycake\Module {
 
 					// Check is yesterday
 					if (mktime(0, 0, 0, date("n", $timestamp), date("j", $timestamp), date("Y", $timestamp)) == mktime(0, 0, 0, date("n"), date("j")-1, date("Y"))) {
-						$r = $this->getFromArray($this->texts["yesterday"], $setup["language"]);
+						$r = $e->Language->getFromArray($this->texts["yesterday"], $setup["language"]);
 						break;
 					}
 
 					$minutesAgo = floor((time() - $timestamp) / 60);
 
 					if ($minutesAgo < 5) {
-						$r = $this->getFromArray($this->texts["justNow"], $setup["language"]);
+						$r = $e->Language->getFromArray($this->texts["justNow"], $setup["language"]);
 						break;
 					}
 
 					if ($minutesAgo < 60) {
 						$r =
-							$this->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$minutesAgo.
 							" ".
-							($minutesAgo == 1 ? $this->getFromArray($this->texts["minute"], $setup["language"]) : $this->getFromArray($this->texts["minutes"], $setup["language"])).
+							($minutesAgo == 1 ? $e->Language->getFromArray($this->texts["minute"], $setup["language"]) : $e->Language->getFromArray($this->texts["minutes"], $setup["language"])).
 							" ".
-							$this->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
@@ -741,12 +618,12 @@ class Locale extends \Cherrycake\Module {
 
 					if ($hoursAgo < 24) {
 						$r =
-							$this->getFromArray($this->texts["agoPrefix"], $setup["language"] ?? false).
+							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"] ?? false).
 							$hoursAgo.
 							" ".
-							($hoursAgo == 1 ? $this->getFromArray($this->texts["hour"], $setup["language"] ?? false) : $this->getFromArray($this->texts["hours"], $setup["language"] ?? false)).
+							($hoursAgo == 1 ? $e->Language->getFromArray($this->texts["hour"], $setup["language"] ?? false) : $e->Language->getFromArray($this->texts["hours"], $setup["language"] ?? false)).
 							" ".
-							$this->getFromArray($this->texts["agoSuffix"], $setup["language"] ?? false);
+							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"] ?? false);
 						break;
 					}
 
@@ -754,12 +631,12 @@ class Locale extends \Cherrycake\Module {
 
 					if ($daysAgo < 30) {
 						$r =
-							$this->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$daysAgo.
 							" ".
-							($daysAgo == 1 ? $this->getFromArray($this->texts["day"], $setup["language"]) : $this->getFromArray($this->texts["days"], $setup["language"])).
+							($daysAgo == 1 ? $e->Language->getFromArray($this->texts["day"], $setup["language"]) : $e->Language->getFromArray($this->texts["days"], $setup["language"])).
 							" ".
-							$this->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
@@ -767,19 +644,19 @@ class Locale extends \Cherrycake\Module {
 
 					if ($monthsAgo < 4) {
 						$r =
-							$this->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$monthsAgo.
 							" ".
-							($monthsAgo == 1 ? $this->getFromArray($this->texts["month"], $setup["language"]) : $this->getFromArray($this->texts["months"], $setup["language"])).
+							($monthsAgo == 1 ? $e->Language->getFromArray($this->texts["month"], $setup["language"]) : $e->Language->getFromArray($this->texts["months"], $setup["language"])).
 							" ".
-							$this->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
 				}
 
 				// Other cases: Future timestamps, and timestamps not handled by the humanizer above
-				$monthNames = $this->getFromArray($this->texts["monthsLong"], $setup["language"] ?? false);
+				$monthNames = $e->Language->getFromArray($this->texts["monthsLong"], $setup["language"] ?? false);
 				$r =
 					$monthNames[date("n", $timestamp)-1].
 					" ".
