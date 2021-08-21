@@ -731,10 +731,13 @@ class Engine {
 
 	/**
 	 * Helper to easily get a translatable string using Language\Translation
-	 * @param string $key The translation key, usually the text in english
+	 * @param string $baseLanguageText The translated text in the base language.
+	 * @param string $category An optional text category name, to better organize translation files.
+	 * @param int $baseLanguage The language on which the provided $baseLanguageText is. If not specified, the `defaultBaseLanguage` Translation configuration is assumed.
+	 * @return Text A Text object for the given key
 	 */
-	function t($key, $baseLanguage = false) {
-		return Translation\Text::build($key, $baseLanguage);
+	function t($baseLanguageText, $category  = false, $baseLanguage = false) {
+		return Translation\Text::build($baseLanguageText, $category, $baseLanguage);
 	}
 }
 
