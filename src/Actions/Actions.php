@@ -15,7 +15,7 @@ class Actions extends \Cherrycake\Module {
 	 */
 	var $config = [
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use.
-		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // De default TTL to use.
+		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
 		"defaultCachePrefix" => "Actions",
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3] // An array containing the minimum and maximum number of seconds to wait when an action marked as sensible to brute force attacks has been executed and failed.
 	];

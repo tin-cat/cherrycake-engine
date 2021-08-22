@@ -13,9 +13,9 @@ class Translation extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		'defaultCacheProviderName' => 'engine', // The default cache provider name to use.
-		'defaultCacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // De default TTL to use.
-		'defaultCachePrefix' => 'Translation',
+		'cacheProviderName' => 'engine', // The default cache provider name to use.
+		'cacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
+		'cachePrefix' => 'TranslationData',
 		'defaultBaseLanguage' => \Cherrycake\LANGUAGE_ENGLISH, // The default language on which the texts will be specified in the code when using the Text::build method and the $e->t helper, if no other has been specified.
 		'dataFilesDir' => APP_DIR.'/translation', // The directory where translations will be stored
 		'valueWhenNotTranslated' => false // The value to use when a translation is not available, has to be a string. Set to false to use the base language text instead.
@@ -44,6 +44,7 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function loadTranslations() {
 		global $e;
+
 		foreach ($e->Locale->getAvailaleLanguages() as $language)
 			$this->loadTranslationFile($language);
 	}
@@ -55,6 +56,29 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function loadTranslationFile($language) {
 		global $e;
+
+		if ($data = $this->getTranslationFileData($language))
+			$this->translations = array_merge($this->translations ?? [], $data);
+	}
+
+	/**
+	 * Returns the data in the translation file for the given language
+	 * @param int $language The language to load
+	 * @return mixed An array with the data, or false if the data could not be read
+	 */
+	private function getTranslationFileData($language) {
+		global $e;
+
+		$cacheProviderName = $this->GetConfig('cacheProviderName');
+		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig('cacheTtl');
+		$cacheKey = $e->Cache->buildCacheKey([
+			'prefix' => $this->GetConfig('cachePrefix'),
+			'key' => $language
+		]);
+
+		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
+			return $e->Cache->$cacheProviderName->get($cacheKey);
+
 		$filePath = $this->getTranslationFilePath($language);
 
 		if (!file_exists($filePath))
@@ -90,18 +114,19 @@ class Translation extends \Cherrycake\Module {
 			return false;
 		}
 
-
-
+		$data = [];
 		foreach ($translations as $categoryOrKey => $value) {
 			if (is_array($value)) {
 				foreach ($value as $key => $value)
-					$this->translations[$categoryOrKey][$key][$language] = $value;
+					$data[$categoryOrKey][$key][$language] = $value;
 			}
 			else
-				$this->translations[0][$categoryOrKey][$language] = $value;
+				$data[0][$categoryOrKey][$language] = $value;
 		}
 
-		return true;
+		$e->Cache->$cacheProviderName->set($cacheKey, $data, $cacheTtl);
+
+		return $data;
 	}
 
 	/**
