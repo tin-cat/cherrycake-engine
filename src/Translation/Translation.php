@@ -15,7 +15,7 @@ class Translation extends \Cherrycake\Module {
 	var $config = [
 		'cacheProviderName' => 'engine', // The default cache provider name to use.
 		'cacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
-		'cachePrefix' => 'TranslationData',
+		'cacheUniqueId' => 'TranslationData', // The prefix string to add to cached keys
 		'defaultBaseLanguage' => \Cherrycake\LANGUAGE_ENGLISH, // The default language on which the texts will be specified in the code when using the Text::build method and the $e->t helper, if no other has been specified.
 		'dataFilesDir' => APP_DIR.'/translation', // The directory where translations will be stored
 		'valueWhenNotTranslated' => false // The value to use when a translation is not available, has to be a string. Set to false to use the base language text instead.
@@ -45,8 +45,24 @@ class Translation extends \Cherrycake\Module {
 	private function loadTranslations() {
 		global $e;
 
+		if (!$e->isDevel()) {
+			$cacheProviderName = $this->GetConfig('cacheProviderName');
+			$cacheTtl = $this->GetConfig('cacheTtl');
+			$cacheKey = $e->Cache->buildCacheKey([
+				'uniqueId' => $this->GetConfig('cacheUniqueId')
+			]);
+
+			if ($e->Cache->$cacheProviderName->isKey($cacheKey)) {
+				$this->translations = $e->Cache->$cacheProviderName->get($cacheKey);
+				return;
+			}
+		}
+
 		foreach ($e->Locale->getAvailaleLanguages() as $language)
 			$this->loadTranslationFile($language);
+
+		if (!$e->isDevel())
+			$e->Cache->$cacheProviderName->set($cacheKey, $this->translations, $cacheTtl);
 	}
 
 	/**
@@ -57,32 +73,10 @@ class Translation extends \Cherrycake\Module {
 	private function loadTranslationFile($language) {
 		global $e;
 
-		if ($data = $this->getTranslationFileData($language))
-			$this->translations = array_merge($this->translations ?? [], $data);
-	}
-
-	/**
-	 * Returns the data in the translation file for the given language
-	 * @param int $language The language to load
-	 * @return mixed An array with the data, or false if the data could not be read
-	 */
-	private function getTranslationFileData($language) {
-		global $e;
-
-		$cacheProviderName = $this->GetConfig('cacheProviderName');
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig('cacheTtl');
-		$cacheKey = $e->Cache->buildCacheKey([
-			'prefix' => $this->GetConfig('cachePrefix'),
-			'key' => $language
-		]);
-
-		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-			return $e->Cache->$cacheProviderName->get($cacheKey);
-
 		$filePath = $this->getTranslationFilePath($language);
 
 		if (!file_exists($filePath))
-			return true;
+			return [];
 
 		if (!is_readable($filePath)) {
 			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
@@ -104,29 +98,28 @@ class Translation extends \Cherrycake\Module {
 			return false;
 		}
 
-		if (!$translations = parse_ini_string($fileContents, true)) {
+		try {
+			$translations = \Yosymfony\Toml\Toml::Parse($fileContents);
+		}
+		catch(\Yosymfony\ParserUtils\SyntaxErrorException $e) {
 			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couln\'t parse translation INI file',
+				'errorDescription' => 'Couln\'t parse translation TOML file',
 				'errorVariables' => [
-					'file' => $filePath
+					'file' => $filePath,
+					'error' => $e->getMessage()
 				]
 			]);
 			return false;
 		}
 
-		$data = [];
 		foreach ($translations as $categoryOrKey => $value) {
 			if (is_array($value)) {
 				foreach ($value as $key => $value)
-					$data[$categoryOrKey][$key][$language] = $value;
+					$this->translations[$categoryOrKey][$key][$language] = $value;
 			}
 			else
-				$data[0][$categoryOrKey][$language] = $value;
+				$this->translations[0][$categoryOrKey][$language] = $value;
 		}
-
-		$e->Cache->$cacheProviderName->set($cacheKey, $data, $cacheTtl);
-
-		return $data;
 	}
 
 	/**
@@ -136,7 +129,7 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function getTranslationFileName($language) {
 		global $e;
-		return $e->Locale->getLanguageCode($language).'.ini';
+		return $e->Locale->getLanguageCode($language).'.toml';
 	}
 
 	/**
@@ -152,7 +145,10 @@ class Translation extends \Cherrycake\Module {
 	 * Adds the provided $text to the currently loaded translations and sets the flag to recreate translation files on module's end
 	 */
 	private function storeText($text) {
+		global $e;
 		$this->textsToStore[] = $text;
+		foreach ($e->Locale->getAvailaleLanguages() as $language)
+			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->baseLanguageText;
 		$this->isCreateFilesOnEnd = true;
 	}
 
@@ -196,8 +192,8 @@ class Translation extends \Cherrycake\Module {
 			}
 		}
 
-		// Create the INI string
-		$ini = $this->buildIni($data, $language);
+		// Create the TOML string
+		$toml = $this->buildToml($data, $language);
 
 		if (!$fp = fopen($fileName, 'w')) {
 			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
@@ -209,7 +205,7 @@ class Translation extends \Cherrycake\Module {
 			return false;
 		}
 
-		if (!fwrite($fp, $ini)) {
+		if (!fwrite($fp, $toml)) {
 			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
 				'errorDescription' => 'Couldn\'t write to translation data file',
 				'errorVariables' => [
@@ -267,24 +263,28 @@ class Translation extends \Cherrycake\Module {
 		return $this->getTranslation($text);
 	}
 
-	private function buildIni($data, $language) {
+	private function buildToml($data, $language) {
 		global $e;
-		$r = '; Translations for '.$e->Locale->getLanguageName($language)."\n";
+
+		$toml = new \Yosymfony\Toml\TomlBuilder;
+
+		$toml = $toml
+			->addComment('Translations for '.$e->Locale->getLanguageName($language))
+			->addComment('TOML specification: https://github.com/toml-lang/toml/blob/master/toml.md');
+
 		$lastCategory = null;
 		foreach ($data as $category => $items) {
 
 			if ($category !== $lastCategory) {
 				if ($category !== 0)
-					$r .= "\n".'['.$category."]\n";
-				else
-					$r .= "\n";
+					$toml->addTable($category);
 				$lastCategory = $category;
 			}
 
 			foreach ($items as $key => $translation)
-				$r .= $key.' = "'.$translation.'"'."\n";
+				$toml->addValue($key, $translation);
 		}
 
-		return $r;
+		return $toml->getTomlString();
 	}
 }

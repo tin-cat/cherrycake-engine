@@ -42,8 +42,44 @@ class Text {
 		return $e->Translation->getConfig('defaultBaseLanguage');
 	}
 
+	private function buildKey($string) {
+		$key = '';
+		foreach(str_split($string) as $character) {
+
+			if (stristr('¿?!¡.', $character))
+				continue;
+
+			foreach ([
+				'àáä' => 'a',
+				'èéë`' => 'e',
+				'ìíï' => 'i',
+				'òóö' => 'o',
+				'ùúü' => 'u'
+			] as $search => $replace) {
+				if (stristr($search, $character)) {
+					$character = $replace;
+					break;
+				}
+			}
+
+			if (stristr('abcdefghijklmnopqrstuvwxyz0123456789', $character))
+				$key .= strtolower($character);
+			else
+				$key .= '_';
+
+		}
+		$key = substr(md5($string), 0, 5).'_'.$key;
+
+
+		// Prevent keys from starting with a number to solve issue with TOML standards
+		if (ctype_digit(substr($key, 0, 1)))
+			$key = 'x'.substr($key, 1);
+
+		return $key;
+	}
+
 	public function getKey() {
-		return md5($this->baseLanguageText.$this->category.$this->getBaseLanguage());
+		return $this->buildKey($this->baseLanguageText);
 	}
 
 	public function getCategory() {
