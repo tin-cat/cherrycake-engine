@@ -129,7 +129,7 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function getTranslationFileName($language) {
 		global $e;
-		return $e->Locale->getLanguageCode($language).'.toml';
+		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language))).'.toml';
 	}
 
 	/**
@@ -269,7 +269,7 @@ class Translation extends \Cherrycake\Module {
 		$toml = new \Yosymfony\Toml\TomlBuilder;
 
 		$toml = $toml
-			->addComment('Translations for '.$e->Locale->getLanguageName($language))
+			->addComment('Translations for '.$e->Locale->getLanguageName($language).' ('.$e->Locale->getLanguageCode($language).')')
 			->addComment('TOML specification: https://github.com/toml-lang/toml/blob/master/toml.md');
 
 		$lastCategory = null;
