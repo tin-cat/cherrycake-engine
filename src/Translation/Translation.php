@@ -129,7 +129,7 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function getTranslationFileName($language) {
 		global $e;
-		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language))).'.toml';
+		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language, ['forceLanguage' => \Cherrycake\LANGUAGE_ENGLISH]))).'.toml';
 	}
 
 	/**
