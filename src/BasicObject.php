@@ -37,6 +37,7 @@ class BasicObject {
 	 * Bulk sets the given properties for this object
 	 * @param array $properties A hash array of properties
 	 * @param boolean $isOverwrite Whether to overwrite properties if already set
+	 * @return BasicObject Itself, to allow for chaining
 	 */
 	function setProperties($properties, $isOverwrite = true) {
 		if (is_array($properties)) {
@@ -48,6 +49,7 @@ class BasicObject {
 				}
 			}
 		}
+		return $this;
 	}
 
 	/**

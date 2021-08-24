@@ -60,15 +60,6 @@ class Css extends \Cherrycake\Module {
 			foreach ($sets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
 
-		// Adds cherrycake sets
-		$this->addSet(
-			"coreUiComponents",
-			[
-				"order" => 10,
-				"directory" => ENGINE_DIR."/res/css/uicomponents"
-			]
-		);
-
 		return true;
 	}
 
@@ -153,6 +144,9 @@ class Css extends \Cherrycake\Module {
 	 */
 	function getSetUrl($setNames = false) {
 		global $e;
+
+		if (!is_array($this->sets))
+			return null;
 
 		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";
@@ -351,15 +345,6 @@ class Css extends \Cherrycake\Module {
 			else
 				include($requestedSet["variablesFile"]);
 
-		if (isset($requestedSet["isGenerateTextColorsCssHelpers"]) && isset($textColors))
-			$css .= $this->generateCssHelperTextColors($textColors);
-
-		if (isset($requestedSet["isGenerateBackgroundColorsCssHelpers"]) && isset($backgroundColors))
-			$css .= $this->generateCssHelperBackgroundColors($backgroundColors);
-
-		if (isset($requestedSet["isGenerateBackgroundGradientsCssHelpers"]) && isset($gradients))
-			$css .= $this->generateCssHelperBackgroundGradients($gradients);
-
 		if($this->getConfig("isMinify"))
 			$css = $this->minify($css);
 
@@ -433,48 +418,6 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * generateCssHelperTextColors
-	 *
-	 * @param $colors The colors array to use
-	 * @return string Text colors Css helper code
-	 */
-	function generateCssHelperTextColors($colors) {
-		$r = "";
-		foreach ($colors as $colorName => $color)
-			$r .= ".textColor_".$colorName." { color: ".$color." !important; }\n";
-
-		return $r;
-	}
-
-	/**
-	 * generateCssHelperBackgroundColors
-	 *
-	 * @param $colors The colors array to use
-	 * @return string Background colors Css helper code
-	 */
-	function generateCssHelperBackgroundColors($colors) {
-		$r = "";
-		foreach ($colors as $colorName => $color)
-			$r .= ".backgroundColor_".$colorName." { background-color: ".$color." !important; }\n";
-
-		return $r;
-	}
-
-	/**
-	 * generateCssHelperBackgroundGradients
-	 *
-	 * @param $gradients The gradients array to use
-	 * @return string Background gradients Css helper code
-	 */
-	function generateCssHelperBackgroundGradients($gradients) {
-		$r = "";
-		foreach ($gradients as $gradientName => $gradient)
-			$r .= ".backgroundGradient_".$gradientName." { ".$gradient->getCssBackground()." }\n";
-
-		return $r;
-	}
-
-	/**
 	 * unit
 	 *
 	 * @param int $value The value
@@ -489,17 +432,6 @@ class Css extends \Cherrycake\Module {
 			default:
 				return $value.$unit;
 		}
-	}
-
-	/**
-	 * clearFix
-	 *
-	 * @param string $selector The Css selector of the element to apply clearfix to
-	 * @return string Css to apply clearfix to the specified element
-	 */
-	function clearFix($selector) {
-		return
-			$selector.":before,\n".$selector.":after {\ncontent: \"\";\ndisplay: table;\n}\n".$selector.":after {\nclear: both;\n}\n".$selector." {\nzoom: 1;\n}\n";
 	}
 
 	/**
@@ -555,44 +487,6 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * buildUnsupportedProperty
-	 *
-	 * Returns CSS to support all equivalents of $baseParameter with given $value
-	 *
-	 * @param string $baseParameter The name of the Css property, i.e: "linear-gradient"
-	 * @param string $value The value
-	 * @return string The resulting CSS to support all variants for different browser engines
-	 */
-	function buildUnsupportedProperty($baseParameter, $value) {
-		global $e;
-
-		// Consider exceptions
-		if ($baseParameter == "border-top-left-radius")
-			$baseParameterForGecko = "border-radius-topleft";
-
-		if ($baseParameter == "border-top-right-radius")
-			$baseParameterForGecko = "border-radius-topright";
-
-		if ($baseParameter == "border-bottom-left-radius")
-			$baseParameterForGecko = "border-radius-bottomleft";
-
-		if ($baseParameter == "border-bottom-right-radius")
-			$baseParameterForGecko = "border-radius-bottomright";
-
-
-		$baseParameterForWebkit = $baseParameter;
-		$baseParameterForGecko = $baseParameter;
-		$baseParameterForPresto = $baseParameter;
-		$baseParameterForStandardCompliant = $baseParameter;
-
-		return
-			"-webkit-".$baseParameterForWebkit.": ".$value.";\n".
-			"-moz-".$baseParameterForGecko.": ".$value.";\n".
-			"-o-".$baseParameterForPresto.": ".$value.";\n".
-			$baseParameterForStandardCompliant.": ".$value.";\n";
-	}
-
-	/**
 	 * buildBackgroundImageForElement
 	 *
 	 * Builds the Css code to apply a background image.
@@ -627,102 +521,6 @@ class Css extends \Cherrycake\Module {
 						"}".
 					"}";
 			}
-
-		return $r;
-	}
-
-	/**
-	 * mediaQuery
-	 *
-	 * Returns a CSS media query aimed to match devices with specific characteristics, or different maximum screen widths
-	 *
-	 * @param array $setup The specific characteristics for this media query to match, in the syntax:
-	 *  - css: The CSS code for this media query
-	 *  - predefined: One of the available CSS_MEDIAQUERY_* consts (Optional)
-	 *  - maxWidthBreakpoint: One of the configured widths on the config variable responsiveWidthBreakpoints to be used as a max width breakpoint for the generated media query (The CSS will take effect when the page width is the specified width or less)
-	 *  - minWidthBreakpoint: One of the configured widths on the config variable responsiveWidthBreakpoints to be used as a min width breakpoint for the generated media query (The CSS will take effect when the page width is the specified width or more)
-	 *  - characteristics: A key-value array with the specific characteristics for this media query, for example:
-	 *      "min-device-width" => "768px",
-	 *      "max-device-width" => "1024px",
-	 *      "-webkit-min-device-pixel-ratio" => 2,
-	 *      "orientation" => "portrait"
-	 * @return string The Css
-	 */
-	function mediaQuery($setup) {
-		if (isset($setup["predefined"])) {
-			switch ($setup["predefined"]) {
-				case CSS_MEDIAQUERY_TABLET:
-					$setup["characteristics"] = [
-						"min-device-width" => "768px",
-						"max-device-width" => "1024px"
-					];
-					break;
-				case CSS_MEDIAQUERY_TABLET_PORTRAIT:
-					$setup["characteristics"] = [
-						"min-device-width" => "768px",
-						"max-device-width" => "1024px",
-						"orientation" => "portrait"
-					];
-					break;
-				case CSS_MEDIAQUERY_TABLET_LANDSCAPE:
-					$setup["characteristics"] = [
-						"min-device-width" => "768px",
-						"max-device-width" => "1024px",
-						"orientation" => "landscape"
-					];
-					break;
-				case CSS_MEDIAQUERY_PHONE:
-					$setup["characteristics"] = [
-						"min-device-width" => "320px",
-						"max-device-width" => "568px"
-					];
-					break;
-				case CSS_MEDIAQUERY_PHONE_PORTRAIT:
-					$setup["characteristics"] = [
-						"min-device-width" => "320px",
-						"max-device-width" => "568px",
-						"orientation" => "portrait"
-					];
-					break;
-				case CSS_MEDIAQUERY_PHONE_LANDSCAPE:
-					$setup["characteristics"] = [
-						"min-device-width" => "320px",
-						"max-device-width" => "568px",
-						"orientation" => "landscape"
-					];
-					break;
-				case CSS_MEDIAQUERY_PORTABLES:
-					$setup["characteristics"] = [
-						"min-device-width" => "320px",
-						"max-device-width" => "1024px"
-					];
-					break;
-			}
-		}
-		else {
-			if (isset($setup["maxWidthBreakpoint"]))
-				$setup["characteristics"] = [
-					"max-width" => $this->unit($this->getConfig("responsiveWidthBreakpoints")[$setup["maxWidthBreakpoint"]], "px")
-				];
-			if (isset($setup["minWidthBreakpoint"]))
-				$setup["characteristics"] = [
-					"min-width" => $this->unit($this->getConfig("responsiveWidthBreakpoints")[$setup["minWidthBreakpoint"]], "px")
-				];
-
-			if (isset($setup["maxWidth"]))
-				$setup["characteristics"] = [
-					"max-width" => $this->unit($setup["maxWidth"], "px")
-				];
-			if (isset($setup["minWidth"]))
-				$setup["characteristics"] = [
-					"min-width" => $this->unit($setup["minWidth"], "px")
-				];
-		}
-
-		$r = "@media only screen";
-		foreach ($setup["characteristics"] as $key => $value)
-			$r .= " and (".$key.": ".$value.")";
-		$r .= " { ".$setup["css"]." }\n";
 
 		return $r;
 	}

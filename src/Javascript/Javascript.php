@@ -53,15 +53,6 @@ class Javascript extends \Cherrycake\Module {
 			foreach ($sets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
 
-		// Adds cherrycake sets
-		$this->addSet(
-			"coreUiComponents",
-			[
-				"order" => 10,
-				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
-			]
-		);
-
 		return true;
 	}
 
@@ -148,6 +139,9 @@ class Javascript extends \Cherrycake\Module {
 	 */
 	function getSetUrl($setNames = false) {
 		global $e;
+
+		if (!is_array($this->sets))
+			return null;
 
 		$orderedSets = $this->getOrderedSets($setNames);
 		$parameterSetNames = "";

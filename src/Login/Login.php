@@ -13,7 +13,7 @@ class Login extends \Cherrycake\Module {
 	 * @var array $config Default configuration options
 	 */
 	var $config = [
-		"userClassName" => "\CherrycakeApp\User", // The name of the app class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
+		"userClassName" => "\App\User", // The name of the app class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
 		"isLoadUserOnInit" => true, // Whether to check for a logged user and get it on this module's init sequence. Defaults to true.
 		"passwordAuthenticationMethod" => \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. \Cherrycake\Login\LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
 		"sleepOnErrorSeconds" => 1  // Seconds to delay execution when a wrong login is requested, to make things difficult for bombing attacks

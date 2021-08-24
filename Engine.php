@@ -18,7 +18,7 @@ class Engine {
 	/**
 	 * @var string $appName The name of the App
 	 */
-	private $appName = "CherrycakeApp";
+	private $appName = "App";
 
 	/**
 	 * @var bool $isDevel Whether the App is in development environment or not
@@ -196,13 +196,6 @@ class Engine {
 	}
 
 	/**
-	 * @return array All the available Core module names
-	 */
-	function getAvailableCoreModuleNames() {
-		return $this->getAvailableModuleNamesOnDirectory(ENGINE_DIR."/src/Modules");
-	}
-
-	/**
 	 * @return array All the available App module names
 	 */
 	function getAvailableAppModuleNames() {
@@ -357,7 +350,7 @@ class Engine {
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	function loadCoreModule($moduleName, $origin = MODULE_LOADING_ORIGIN_MANUAL, $requiredByModuleName = false) {
-		return $this->loadModule(ENGINE_DIR."/modules", $this->getConfigDir(), $moduleName, __NAMESPACE__, $origin, $requiredByModuleName);
+		return $this->loadModule(ENGINE_DIR."/src", $this->getConfigDir(), $moduleName, __NAMESPACE__, $origin, $requiredByModuleName);
 	}
 
 	/**
@@ -469,7 +462,7 @@ class Engine {
 	 * @return boolean Whether the specified module exists and is a core module
 	 */
 	function isCoreModuleExists($moduleName) {
-		return $this->isModuleExists(ENGINE_DIR."/modules", $moduleName);
+		return $this->isModuleExists(ENGINE_DIR."/src", $moduleName);
 	}
 
 	/**

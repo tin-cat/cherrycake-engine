@@ -76,7 +76,7 @@ class TableAdmin extends \Cherrycake\Module {
      * Maps a new admin. Should be called within the mapTableAdmin method of your module, like this:
      * <code>
      * $e->TableAdmin->map("published", [
-     *  "itemsClassName" => "\\CherrycakeApp\\MyItems",
+     *  "itemsClassName" => "\\App\\MyItems",
      * "number" => ["fieldName" => "number"],
      * "profileImage" => [
      *     "align" => "center",
