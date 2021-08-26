@@ -60,7 +60,12 @@ class Locale extends \Cherrycake\Module {
 	/**
 	 * @var array $locale The current locale settings
 	 */
-	var $locale;
+	public $locale;
+
+	/**
+	 * @var string $localeName The name of the current locale
+	 */
+	private $localeName;
 
 	private $languageNames = [
 		\Cherrycake\LANGUAGE_SPANISH => [
@@ -223,6 +228,14 @@ class Locale extends \Cherrycake\Module {
 	}
 
 	/**
+	 * Gets the name of the current locale
+	 * @return string The name of the current locale, as specified in the availableLocales config key.
+	 */
+	function getLocaleName() {
+		return $this->localeName;
+	}
+
+	/**
 	 * Sets the locale to use
 	 * @param string $localeName The name of the locale to use, as specified in the availableLocales config key.
 	 * @return boolean True if the locale could be set, false if the locale wasn't configured in the availableLocales config key.
@@ -231,6 +244,7 @@ class Locale extends \Cherrycake\Module {
 		if (!isset($this->getConfig("availableLocales")[$localeName]))
 			return false;
 		$this->locale = $this->getConfig("availableLocales")[$localeName];
+		$this->localeName = $localeName;
 		return true;
 	}
 
