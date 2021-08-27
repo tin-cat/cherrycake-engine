@@ -16,6 +16,8 @@ function logError(
 	$errContext = false
 ) {
 	switch ($errNo) {
+		case E_DEPRECATED:
+			break;
 		case E_ERROR:
 		case E_WARNING:
 		// case E_NOTICE:

@@ -167,7 +167,7 @@ class EngineCache {
 	 * @return array The keys stored in the specified bucket
 	 */
 	function getKeysInBucket($bucket) {
-		return $this->getKey($this->buildKey(["bucketKeys", $bucket]));
+		return $this->getKey($this->buildKey(["bucketKeys", $bucket])) ?: [];
 	}
 
 	/**
@@ -182,7 +182,7 @@ class EngineCache {
 		$keysInBucket[] = $key;
 		$this->setKey($this->buildKey(["bucketKeys", $bucket]), $keysInBucket);
 
-		$buckets = $this->get("buckets");
+		$buckets = $this->get("buckets") ?: [];
 		if (is_array($buckets) && !in_array($bucket, $buckets))
 			$buckets[] = $bucket;
 		else

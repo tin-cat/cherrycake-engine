@@ -153,7 +153,7 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		// Check the currentRequestPath against all mapped actions
-		$matchingActions = false;
+		$matchingActions = [];
 		if (is_array($this->actions)) {
 			$this->buildCurrentRequestPathComponentStringsFromRequestUri($requestUri);
 			// Loop through all mapped actions

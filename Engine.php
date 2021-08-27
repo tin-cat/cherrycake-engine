@@ -179,9 +179,9 @@ class Engine {
 			return false;
 		}
 
-		$moduleNames = false;
+		$moduleNames = [];
 		if (!$handler = opendir($directory))
-			return false;
+			return [];
 		while (false !== ($file = readdir($handler))) {
 			if ($file == "." || $file == "..")
 				continue;
