@@ -58,7 +58,7 @@ class Actions extends \Cherrycake\Module {
 	 * Initializes the module
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
@@ -107,35 +107,35 @@ class Actions extends \Cherrycake\Module {
 	 * 	])
 	 * );
 	 *
-	 * @param $actionName string The action name
+	 * @param $name string The action name
 	 * @param $action Action object
 	 */
-	public function mapAction($actionName, $action) {
-		$this->actions[$actionName] = $action;
+	public function mapAction(string $name, Action $action) {
+		$this->actions[$name] = $action;
 	}
 
 	/**
 	 * Checks if an action with the given actionName has been set
 	 *
-	 * @param $actionName string The action name
+	 * @param $name string The action name
 	 * @return bool True if the action exists, false if doesnt's.
 	*/
-	public function isAction($actionName) {
+	public function isAction(string $name): bool {
 		if (!is_array($this->actions))
 			return false;
 
-		return array_key_exists($actionName, $this->actions);
+		return array_key_exists($name, $this->actions);
 	}
 
 	/**
-	 * @param $actionName string The action name
-	 * @return Action The requested action. False if doesn't exists.
+	 * @param $name string The action name
+	 * @return Action The requested action.
 	*/
-	public function getAction($actionName) {
-		if (!$this->isAction($actionName))
+	public function getAction(string $name): Action {
+		if (!$this->isAction($name))
 			return false;
 
-		return $this->actions[$actionName];
+		return $this->actions[$name];
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Actions extends \Cherrycake\Module {
 	 * @param string $requestUri The request URI to run.
 	 * @return bool Returns false if an error occurred when executing the action or if the requested action is not coded and ACTION_NOT_FOUND has not been mapped.
 	 */
-	function run($requestUri) {
+	function run(string $requestUri): bool {
 		global $e;
 
 		if ($e->isDevel() && !is_array($this->actions)) {
@@ -181,7 +181,7 @@ class Actions extends \Cherrycake\Module {
 				continue;
 			}
 			else
-				return;
+				return false;
 		}
 
 		$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
@@ -190,13 +190,15 @@ class Actions extends \Cherrycake\Module {
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions
 			]
 		]);
+
+		return true;
 	}
 
 	/**
 	 * Builds the $currentRequestPathComponentStrings array, to be used lately by Request::isCurrentRequest
 	 * @param string $requestUri The URI string to build the currentRequestPathComponentStrings from
 	 */
-	function buildCurrentRequestPathComponentStringsFromRequestUri($requestUri) {
+	function buildCurrentRequestPathComponentStringsFromRequestUri(string $requestUri) {
 		// Strip get parameters
 		if ($firstInterrogantPosition = strpos($requestUri, "?"))
 			$requestUri = substr($requestUri, 0, $firstInterrogantPosition);
@@ -216,7 +218,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @return array Status information
 	 */
-	function getStatus() {
+	function getStatus(): string {
 		if (is_array($this->actions)) {
 			foreach ($this->actions as $actionName => $action) {
 				$r["mappedActions"][$actionName] = $action->getStatus();
@@ -224,8 +226,7 @@ class Actions extends \Cherrycake\Module {
 			}
 			reset($this->actions);
 		}
-
-		return $r ?? null;
+		return $r ?? '';
 	}
 
 }

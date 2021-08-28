@@ -28,8 +28,6 @@ class Gradient
 	private $colorSteps;
 
 	/**
-	 * Constructor factory
-	 *
 	 * @param string $with How to populate the created gradient object. Leave to false for unpopulated request.
 	 */
 	function __construct($with = false, $parameter = false, $style = false) {

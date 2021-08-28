@@ -58,7 +58,7 @@ class Security  extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 

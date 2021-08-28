@@ -12,62 +12,37 @@ namespace Cherrycake\Actions;
  */
 class Request {
 	/**
-	 * @var array $pathComponents An array of RequestPathComponent objects defining the components of this request, in the same order on which they're expected
-	 */
-	public $pathComponents;
-
-	/**
-	 * @var array $parameters An array of RequestParameter objects of parameters that might be received by this request
-	 */
-	public $parameters;
-
-	/**
 	 * @var array $parameterValues A two-dimensional array of retrieved parameters for this request, filled by retrieveParameterValues()
 	 */
 	private $parameterValues;
 
 	/**
-	 * @var boolean Whether this Request should perform checks aimed to mitigate CSRF attacks, like adding a per-user unique token to requests and checking it agains the token stored on the user's session, or checking for a matching domain on the request coming from the user's browser against the current domain.
+	 * @param array $pathComponents An array of RequestPathComponent objects defining the components of this request, in the same order on which they're expected
+	 * @param array $parameters An array of RequestParameter objects of parameters that might be received by this request
+	 * @param array $additionalCacheKeys A hash array containing additional cache keys to make this request's cached contents different depending on the values of those keys
 	 */
-	public $isSecurityCsrf;
+	function __construct(
+		public array $pathComponents = [],
+		public array $parameters = [],
+		public bool $isSecurityCsrf = false,
+		private array $additionalCacheKeys = [],
 
-	/**
-	 * @var array $additionalCacheKeys A hash array containing additional cache keys to make this request's cached contents different depending on the values of those keys
-	 */
-	private $additionalCacheKeys;
-
-	/**
-	 * Request
-	 *
-	 * Constructor factory
-	 *
-	 * @param string $with How to populate the created Request object. Leave to false for unpopulated request.
-	 */
-	function __construct($setup = false) {
-		$this->isSecurityCsrf = $setup["isSecurityCsrf"] ?? false;
-
+	) {
 		if ($this->isSecurityCsrf()) {
 			global $e;
-			$setup["parameters"][] = new \Cherrycake\Actions\RequestParameter([
-				"name" => "csrfToken",
-				"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET,
-				"value" => $e->Security->getCsrfToken()
-			]);
+			$setup["parameters"][] = new \Cherrycake\Actions\RequestParameter(
+				name: "csrfToken",
+				type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET,
+				value: $e->Security->getCsrfToken()
+			);
 		}
-
-		$this->pathComponents = isset($setup["pathComponents"]) ? $setup["pathComponents"] : false;
-		$this->parameters = isset($setup["parameters"]) ? $setup["parameters"] : false;
-		$this->additionalCacheKeys = isset($setup["additionalCacheKeys"]) ? $setup["additionalCacheKeys"] : false;
 	}
 
 	/*
-	 * isCurrentRequest
-	 *
 	 * Checks whether this request matches the current one made
-	 *
 	 * @return bool True if this request matches the current one made, false if not.
 	 */
-	function isCurrentRequest() {
+	function isCurrentRequest():bool {
 		global $e;
 
 		if (!is_array($e->Actions->currentRequestPathComponentStrings)) { // If the current request doesn't has pathComponents
@@ -108,13 +83,10 @@ class Request {
 	}
 
 	/**
-	 * retrieveParameterValues
-	 *
 	 * Retrieves all the parameters bonded to this Request, coming either from path component strings, get or post. It also performs security checks on them when needed
-	 *
 	 * @return bool True if all the parameters have been retrieved correctly and no security issues found, false otherwise
 	 */
-	function retrieveParameterValues() {
+	function retrieveParameterValues(): bool {
 		global $e;
 
 		// Retrieve parameters coming from path components
@@ -176,7 +148,7 @@ class Request {
 	 * @param string $name The name of the parameter to check
 	 * @return boolean Whether the specified parameter $name has been passed or not
 	 */
-	function isParameterReceived($name) {
+	function isParameterReceived(string $name): bool {
 		return isset($this->parameterValues[$name]);
 	}
 
@@ -185,7 +157,7 @@ class Request {
 	 * @param string $name The name of the parameter to get
 	 * @return mixed The value of the parameter, false if it doesn't exists
 	 */
-	function getParameterValue($name) {
+	function getParameterValue(string $name): bool {
 		if (!isset($this->parameterValues[$name]))
 			return false;
 		return $this->parameterValues[$name];
@@ -196,7 +168,7 @@ class Request {
 	 * @param string $name The name of the parameter
 	 * @return mixed The data. Null if data with the given key is not set.
 	 */
-	function __get($name) {
+	function __get(string $name): mixed {
 		return $this->getParameterValue($name);
 	}
 
@@ -205,55 +177,50 @@ class Request {
 	 * @param string $name The name of the parameter
 	 * @param boolean True if the data parameter has been passed, false otherwise
 	 */
-	function __isset($name) {
+	function __isset(string $name): bool {
 		return $this->isParameterReceived($name);
 	}
 
 	/**
 	 * @return boolean Whether this request must implement security against Csrf attacks
 	 */
-	function isSecurityCsrf() {
+	function isSecurityCsrf(): bool {
 		return $this->isSecurityCsrf;
 	}
 
 	/**
 	 * Returns a URL that represents a call to this request, including the given path components and parameter values
-	 *
-	 * @param array $setup An option setup two-dimensional array containing:
-	 * * locale: An optional string indicating the locale name for which to build the Url. If not specified, the current locale's domain will be used when isAbsolute is true. When specified, returned Url will be absolute.
-	 * * parameterValues: An optional hash array containing the values for the variable path components and for the GET parameters, if any. (not additionalCacheKeys, since they're not represented on the Url itself).
-	 * * isIncludeUrlParameters: Includes the GET parameters in the URL. The passed parameterValues will be used, or the current request's parameters if no parameterValues are specified. Defaults to true.
-	 * * isAbsolute: Whether to generate an absolute url containing additionally http(s):// and the domain of the App. Defaults to false
-	 * * isHttps: Whether to generate an https url or not, with the following possible values:
+	 * @param string $locale An optional string indicating the locale name for which to build the Url. If not specified, the current locale's domain will be used when isAbsolute is true. When specified, returned Url will be absolute.
+	 * @param array $parameterValues An optional hash array containing the values for the variable path components and for the GET parameters, if any. (not additionalCacheKeys, since they're not represented on the Url itself).
+	 * @param bool $isIncludeUrlParameters Includes the GET parameters in the URL. The passed parameterValues will be used, or the current request's parameters if no parameterValues are specified. Defaults to true.
+	 * @param bool $isAbsolute Whether to generate an absolute url containing additionally http(s):// and the domain of the App. Defaults to false
+	 * @param bool|string $isHttps Whether to generate an https url or not, with the following possible values:
 	 *  - true: Use https://
 	 *  - false: Use http://
 	 *  - "auto": Use https:// if the current request has been made over https, http:// otherwise
 	 * @return string The Url
 	 */
-	function buildUrl($setup = false) {
-		if (!isset($setup["isIncludeUrlParameters"]))
-			$setup["isIncludeUrlParameters"] = true;
-
-		if (isset($setup["locale"]))
-			$setup["isAbsolute"] = true;
-
-		if (!isset($setup["isAbsolute"]))
-			$setup["isAbsolute"] = false;
-
-		if (!isset($setup["isHttps"]))
+	function buildUrl(
+		string $locale = '',
+		array $parameterValues = [],
+		bool $isIncludeUrlParameters = true,
+		bool $isAbsolute = false,
+		bool|string $isHttps = 'auto'
+	): string {
+		if ($isHttps === 'auto')
 			$setup["isHttps"] = $_SERVER["HTTPS"] ?? false ? true : false;
 
-		if (!isset($setup["parameterValues"]) && $setup["isIncludeUrlParameters"])
+		if (!isset($parameterValues) && $isIncludeUrlParameters)
 			$this->retrieveParameterValues();
 
-		if ($setup["isAbsolute"]) {
-			if ($setup["isHttps"] === false)
+		if ($isAbsolute) {
+			if ($isHttps === false)
 				$url = "http://";
 			else
-			if ($setup["isHttps"] === true)
+			if ($isHttps === true)
 				$url = "https://";
 			else
-			if ($setup["isHttps"] == "auto") {
+			if ($isHttps == "auto") {
 				if ($_SERVER["HTTPS"])
 					$url = "https://";
 				else
@@ -262,13 +229,13 @@ class Request {
 
 			// Determine the domain
 			// If we haven't a forced locale, use the current domain
-			if (!isset($setup["locale"]))
+			if (!isset($locale))
 				$url .= $_SERVER["HTTP_HOST"];
 			else {
 				// If we have a forced locale, use its domain. Requires the Locale module to be available.
 				global $e;
 				$e->loadAppModule("Locale");
-				$url .= $e->Locale->getMainDomain($setup["locale"]);
+				$url .= $e->Locale->getMainDomain($locale);
 			}
 		}
 		else
@@ -282,8 +249,8 @@ class Request {
 						break;
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
-						if ($setup["parameterValues"] ?? false)
-							$url .= "/".$setup["parameterValues"][$pathComponent->name];
+						if ($parameterValues ?? false)
+							$url .= "/".$parameterValues[$pathComponent->name];
 						else
 							$url .= "/".$this->{$pathComponent->name};
 						break;
@@ -295,11 +262,11 @@ class Request {
 			$url .= "/";
 
 		$count = 0;
-		if (is_array($this->parameters) && $setup["isIncludeUrlParameters"]) {
+		if (is_array($this->parameters) && $isIncludeUrlParameters) {
 			foreach ($this->parameters as $parameter) {
-				if ($setup["parameterValues"] ?? false) {
-					if ($setup["parameterValues"][$parameter->name] ?? false)
-						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$setup["parameterValues"][$parameter->name];
+				if ($parameterValues ?? false) {
+					if ($parameterValues[$parameter->name] ?? false)
+						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$parameterValues[$parameter->name];
 				}
 				else
 					if ($this->{$parameter->name})
@@ -312,31 +279,18 @@ class Request {
 		// 	$url .= ($count > 0 ? "&" : "?")."csrfToken=".$e->Security->getCsrfToken();
 		// }
 
-		if (isset($setup["anchor"]))
-			$url .= "#".$setup["anchor"];
+		if (isset($anchor))
+			$url .= "#".$anchor;
 
 		return $url;
 	}
 
 	/**
-	 * Returns an HTML form that will call this request when submitted
-	 * @param array $setup As in UiComponentform::build
-	 * @return string The HTML
-	 */
-	function buildFormHtml($setup = false) {
-		global $e;
-		$setup["request"] = $this;
-		return $e->UiComponentForm->build($setup);
-	}
-
-	/**
-	 * getCacheKey
-	 *
 	 * @param string $prefix The prefix to use for the cache key
 	 * @param array $parameterValues An optional two-dimensional array containing values for all the parameters related to this request, including url path parameters, get/post parameters and additionalCacheKeys. If not specified, the current retrieved values will be used
 	 * @return string A string that represents uniquely this request, to be used as a cache key
 	 */
-	function getCacheKey($prefix, $parameterValues = null) {
+	function getCacheKey(string $prefix, array $parameterValues = null): string {
 		$key = "";
 		if (is_array($this->pathComponents)) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
@@ -392,7 +346,7 @@ class Request {
 	 * Checks this request for security problems
 	 * @return boolean True if no issues found during checking, false otherwise.
 	 */
-	function securityCheck() {
+	function securityCheck(): bool {
 		global $e;
 		return $e->Security->checkRequest($this);
 	}
@@ -400,7 +354,7 @@ class Request {
 	/**
 	 * @return array Status information
 	 */
-	function getStatus() {
+	function getStatus(): array {
 		$r["brief"] = "";
 		if (is_array($this->pathComponents)) {
 			foreach ($this->pathComponents as $pathComponent) {

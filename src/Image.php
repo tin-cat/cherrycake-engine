@@ -113,7 +113,7 @@ class Image {
 	 *
 	 * @return  boolean Whether the Image could be initialized ok or not
 	 */
-	function init() {
+	function init(): bool {
 		// Add Hd sizes to the sizes array
 		foreach ($this->sizes as $sizeName => $sizeSetup) {
 			if ($sizeSetup["isHd"] ?? false) {

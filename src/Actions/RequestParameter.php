@@ -11,30 +11,14 @@ namespace Cherrycake\Actions;
  * @category Classes
  */
 class RequestParameter {
-	private $type;
-	public $name = false;
 	private $value = null;
-	private $securityRules = false;
-	private $filters = false;
 
-	/**
-	 * RequestParameter
-	 *
-	 * Constructor
-	 */
-	function __construct($setup) {
-		$this->type = $setup["type"];
-		$this->name = $setup["name"];
-
-		if (isset($setup["value"]))
-			$this->setValue($setup["value"]);
-
-		if (isset($setup["securityRules"]))
-			$this->securityRules = $setup["securityRules"];
-
-		if (isset($setup["filters"]))
-			$this->filters = $setup["filters"];
-	}
+	function __construct(
+		private int $type,
+		public string $name,
+		private array $securityRules = [],
+		private array $filters = []
+	) {}
 
 	/**
 	 * retrieveValue

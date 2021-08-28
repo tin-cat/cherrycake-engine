@@ -72,7 +72,7 @@ class JanitorTask {
 	 *
 	 * @return boolean Whether the JanitorTask has been loaded ok
 	 */
-	function init() {
+	function init(): bool {
 		$this->loadConfigFile();
 		return true;
 	}

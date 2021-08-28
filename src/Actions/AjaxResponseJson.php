@@ -37,10 +37,6 @@ class AjaxResponseJson {
 	protected $data;
 
 	/**
-	 * AjaxResponse
-	 *
-	 * Constructor factory
-	 *
 	 * @param string $setup The configuration for the Ajax response
 	 */
 	function __construct($setup) {

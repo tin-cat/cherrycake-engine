@@ -45,7 +45,7 @@ class Javascript extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
@@ -66,29 +66,29 @@ class Javascript extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"javascript",
-			new \Cherrycake\Actions\ActionJavascript([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
-				"moduleName" => "Javascript",
-				"methodName" => "dump",
-				"request" => new \Cherrycake\Actions\Request([
-					"pathComponents" => [
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "js"
-						])
+			new \Cherrycake\Actions\ActionJavascript(
+				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleName: "Javascript",
+				methodName: "dump",
+				request: new \Cherrycake\Actions\Request(
+					pathComponents: [
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "js"
+						)
 					],
-					"parameters" => [
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "set",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						]),
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "version",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						])
+					parameters: [
+						new \Cherrycake\Actions\RequestParameter(
+							name: "set",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						),
+						new \Cherrycake\Actions\RequestParameter(
+							name: "version",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						)
 					]
-				])
-			])
+				)
+			)
 		);
 	}
 
@@ -151,12 +151,12 @@ class Javascript extends \Cherrycake\Module {
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 
-		return $e->Actions->getAction("javascript")->request->buildUrl([
-			"parameterValues" => [
+		return $e->Actions->getAction("javascript")->request->buildUrl(
+			parameterValues: [
 				"set" => $parameterSetNames,
 				"version" => $this->getConfig("lastModifiedTimestamp")
 			]
-		]);
+		);
 	}
 
 	/**

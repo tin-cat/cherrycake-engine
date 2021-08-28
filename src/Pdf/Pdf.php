@@ -13,7 +13,7 @@ namespace Cherrycake\Pdf;
  * @category Modules
  */
 class Pdf extends \Cherrycake\Module {
-    function init() {
+    function init(): bool {
         if (!parent::init())
             return false;
         require_once APP_DIR."/vendor/autoload.php";

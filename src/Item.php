@@ -8,7 +8,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class Item extends BasicObject {
+class Item {
 	/**
 	 * @var string The name of the database provider to use when querying the database for this item.
 	 */
@@ -54,7 +54,7 @@ class Item extends BasicObject {
 	 * * * * title
 	 * * * * subTitle
 	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language
-	 * * title: The title of the field, to be used when representing data on modules like UiComponentTableAdmin
+	 * * title: The title of the field, to be used when representing data
 	 * * prefix: The prefix string to add when humanizing the field value
 	 * * postfix: The postfix string to add when humanizing the field value
 	 * * multiplier: A multiplier to apply when humanizing the field value
@@ -62,7 +62,7 @@ class Item extends BasicObject {
 	 * * humanizeMethodName: A method name to call to humanize the field value. It will receive the Item object as the first and only parameter. If this returns something other than null, the returned value will be used and any other humanizing method and configs like prefix, postfix, multiplier, decimals, etc will be omitted.
 	 * * humanizePreMethodName: A method name to call with the field value before any other humanization is done. It will receive the Item object as the first and only parameter
 	 * * humanizePostMethodName: A method name to call with the field value after any other humanization is done. It will receive the already treated value as the first parameter and the Item object as the second
-	 * * representFunction: An anonymous function that will be passed the Item object, the returned value will be shown to represent this field current value in UiComponents such as UiComponentItemAdmin when used in conjunction with ItemAdmin
+	 * * representFunction: An anonymous function that will be passed the Item object, the returned value will be shown to represent this field current value in ItemAdmin, for example
 	 * * requestSecurityRules: An array of security rules from the available SECURITY_RULE_* that should be applied whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
      * * requestFilters: An array of filter from the available SECURITY_FILTER_* that should be appled whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
 	 * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object. Used for example in ItemAdmin
@@ -559,7 +559,7 @@ class Item extends BasicObject {
 	 *
 	 * @return boolean True on success, false on failure
 	 */
-	function init() {
+	function init(): bool {
 		return true;
 	}
 
@@ -628,16 +628,15 @@ class Item extends BasicObject {
 
 	/**
 	 * Gets the specified item data in a way that's readable for a human.
-	 * Intended to be used by modules like UiComponentTable
+	 * Intended to be used by UI modules
 	 * @param string $key The key of the data to get
 	 * @param array $setup A hash array of additional options, amongst the following keys:
 	 * * isHtml: Whether to use HTML code to humanize when suitable or not. Defaults to true.
 	 * * isEmoji: Whether to use Emoji to humanize when suitable or not. Defaults to true.
-	 * * isUiComponentIcons: Whether to return UiComponentIcons HTML code to humanize when suitale or not. Defaults to false.
 	 * * emojiBooleanTrue: The emoji to use to represent true boolean values. Defaults to "✅"
 	 * * emojiBooleanFalse: The emoji to use to represent false boolean values. Defaults to "❌"
 	 * * emojiEmpty The emoji to use to represent empty values. Defaults to "❌"
-	 * * iconVariant: The variant to use when using UiComponentIcons to humanize. Defaults to black.
+	 * * iconVariant: The variant to use when using icons to humanize. Defaults to black.
 	 * * iconNameBooleanTrue: The icon name to use as boolean true when representing boolean values with icons. Defaults to "true"
 	 * * iconNameBooleanTrue: The icon name to use as boolean false when representing boolean values with icons. Defaults to "false"
 	 * * iconNameEmpty: The icon name to represent empty values. Defaults to "empty".
@@ -651,7 +650,6 @@ class Item extends BasicObject {
 		self::treatParameters($setup, [
 			"isHtml" => ["default" => true],
 			"isEmoji" => ["default" => true],
-			"isUiComponentIcons" => ["default" => false],
 			"emojiBooleanTrue" => ["default" => "✅"],
 			"emojiBooleanFalse" => ["default" => "❌"],
 			"emojiEmpty" => ["default" => "❌"],
@@ -673,27 +671,6 @@ class Item extends BasicObject {
 		if ($this->fields[$key]["humanizePreMethodName"])
 			$r = $this->{$this->fields[$key]["humanizePreMethodName"]}($this);
 
-		if ($setup["isUiComponentIcons"]) {
-			$rEmpty =
-				"<div class=\"".
-					"UiComponentIcon".
-					" ".$setup["iconNameEmpty"].
-					" ".$setup["iconVariantEmpty"].
-				"\"></div>";
-			$rBooleanTrue =
-				"<div class=\"".
-					"UiComponentIcon".
-					" ".$setup["iconNameBooleanTrue"].
-					" ".$setup["iconVariant"].
-				"\"></div>";
-			$rBooleanFalse =
-				"<div class=\"".
-					"UiComponentIcon".
-					" ".$setup["iconNameBooleanFalse"].
-					" ".$setup["iconVariant"].
-				"\"></div>";
-		}
-		else
 		if ($setup["isEmoji"]) {
 			$rEmpty = $setup["emojiEmpty"];
 			$rBooleanTrue = $setup["emojiBooleanTrue"];

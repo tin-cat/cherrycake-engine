@@ -9,7 +9,7 @@ namespace Cherrycake;
  * @category Classes
  * @todo  Check the caching and the cache clearing performed by the fillFromParameters, clearCache and buildCacheKeyNamingOptions methods
  */
-abstract class Items extends BasicObject implements \Iterator {
+abstract class Items implements \Iterator {
 	/**
 	 * @var string The name of the table where this items reside on the database
 	 */
@@ -139,14 +139,14 @@ abstract class Items extends BasicObject implements \Iterator {
 			switch ($setup["itemLoadMethod"]) {
 				case "fromDatabaseRow":
 					while ($databaseRow = $setup["databaseResult"]->getRow()) {
-						eval("\$item = ".$this->getItemClassName($databaseRow)."::build([\"loadMethod\" => \"fromDatabaseRow\", \"databaseRow\" => \$databaseRow]);");
+						eval("\$item = new ".$this->getItemClassName($databaseRow)."([\"loadMethod\" => \"fromDatabaseRow\", \"databaseRow\" => \$databaseRow]);");
 						$this->addItem($item, $databaseRow->getField($setup["keyField"]));
 					}
 					break;
 
 				case "fromId":
 					while ($databaseRow = $setup["databaseResult"]->getRow()) {
-						eval("\$item = ".$this->getItemClassName($databaseRow)."::build(\"loadMethod\" => \"fromId\", \"id\" => \$databaseRow->getField(\$setup[\"keyField\"])]);");
+						eval("\$item = new ".$this->getItemClassName($databaseRow)."(\"loadMethod\" => \"fromId\", \"id\" => \$databaseRow->getField(\$setup[\"keyField\"])]);");
 						$this->addItem($item, $databaseRow->getField($setup["keyField"]));
 					}
 					break;

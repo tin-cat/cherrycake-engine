@@ -52,7 +52,7 @@ class Css extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
@@ -64,38 +64,35 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * mapActions
-	 *
 	 * Maps the Actions to which this module must respond
 	 */
 	public static function mapActions() {
 		global $e;
-
 		$e->Actions->mapAction(
 			"css",
-			new \Cherrycake\Actions\ActionCss([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
-				"moduleName" => "Css",
-				"methodName" => "dump",
-				"request" => new \Cherrycake\Actions\Request([
-					"pathComponents" => [
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "css"
-						])
+			new \Cherrycake\Actions\ActionCss(
+				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleName: "Css",
+				methodName: "dump",
+				request: new \Cherrycake\Actions\Request(
+					pathComponents: [
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "css"
+						)
 					],
-					"parameters" => [
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "set",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						]),
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "version",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						])
+					parameters: [
+						new \Cherrycake\Actions\RequestParameter(
+							name: "set",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						),
+						new \Cherrycake\Actions\RequestParameter(
+							name: "version",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						)
 					]
-				])
-			])
+				)
+			)
 		);
 	}
 
@@ -156,12 +153,12 @@ class Css extends \Cherrycake\Module {
 		}
 		$parameterSetNames = substr($parameterSetNames, 0, -1);
 
-		return $e->Actions->getAction("css")->request->buildUrl([
-			"parameterValues" => [
+		return $e->Actions->getAction("css")->request->buildUrl(
+			parameterValues: [
 				"set" => $parameterSetNames,
 				"version" => $this->getConfig("lastModifiedTimestamp")
 			]
-		]);
+		);
 	}
 
 	/**

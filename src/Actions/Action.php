@@ -3,114 +3,58 @@
 namespace Cherrycake\Actions;
 
 /**
- * Action
- *
  * A class that represents an action requested to the engine. It uses a Request object. It implements Action-level cache.
- *
  * @package Cherrycake
  * @category Classes
  */
 class Action {
 	/**
-	 * @var int $moduleType The type of the module that will be called on this action. Actions can call methods on both Code and App modules, but also on Core and App UiComponents
+	 * @param int $moduleType The type of the module that will be called on this action. Actions can call methods on both Core and App modules
+	 * @param string $moduleName The name of the module that will be called for this action
+	 * @param string $methodName The name of the method within the module that will be called for this action. This method must return false if he doesn't accepts the request. It can return true or nothing if the request has been accepted.
+	 * @param string $responseClass The name of the Response class this Action is expected to return
+	 * @param Request $request The Request that triggers this Action
+	 * @param bool $isCache Whether this action must be cached or not
+	 * @param string $cacheProviderName The name of the cache provider to use when caching this action, defaults to the defaultCacheProviderName config key for the Actions module
+	 * @param string $cachePefix The cache prefix to use when caching this action, defaults to the defaultCachePrefix config key for the Actions module
+	 * @param int $cacheTtl The TTL to use when caching this action, defaults to the defaultCacheTtl config key for the Actions module
+	 * @param bool $isSensibleToBruteForceAttacks Whether this action is sensible to brute force attacks or not. For example, an action that checks a given password and returns false if the password is incorrect. In such case, this request will sleep for some time when the password is wrong in order to discourage crackers.
+	 * @param mixed $timeout When set, this action must have this specific timeout.
+	 * @param boolean $isCli When set to true, this action will only be able to be executed via the command line CLI interface
 	 */
-	private $moduleType;
+	function __construct(
+		private string $moduleName,
+		private string $methodName,
+		public Request $request,
+		private int $moduleType = \Cherrycake\ACTION_MODULE_TYPE_APP,
+		protected string $responseClass = '',
+		private bool $isCache = false,
+		private string $cacheProviderName = '',
+		private string $cachePrefix = '',
+		private int $cacheTtl = 0,
+		private bool $isSensibleToBruteForceAttacks = false,
+		private int $timeout = 0,
+		private bool $isCli = false
+	) {
+		global $e;
 
-	/**
-	 * @var string $moduleName The name of the module that will be called for this action
-	 */
-	private $moduleName;
+		if (!$this->request)
+			$this->request = new Request;
 
-	/**
-	 * @var string $methodName The name of the method within the module that will be called for this action. This method must return false if he doesn't accepts the request. It can return true or nothing if the request has been accepted.
-	 */
-	private $methodName;
+		if (!$this->cacheProviderName)
+			$this->cacheProviderName = $e->Actions->getConfig("defaultCacheProviderName");
 
-	/**
-	 * @var string $responseClass The name of the Response class this Action is expected to return
-	 */
-	protected $responseClass;
+		if (!$this->cacheTtl)
+			$this->cacheTtl = $e->Actions->getConfig("defaultCacheTtl");
 
-	/**
-	 * @var Request $request The Request that triggers this Action
-	 */
-	public $request;
-
-	/**
-	 * @var bool $isCache Whether this action must be cached or not
-	 */
-	private $isCache;
-
-	/**
-	 * @var string $cacheProviderName The name of the cache provider to use when caching this action, defaults to the defaultCacheProviderName config key for the Actions module
-	 */
-	private $cacheProviderName;
-
-	/**
-	 * @var string $cachePefix The cache prefix to use when caching this action, defaults to the defaultCachePrefix config key for the Actions module
-	 */
-	private $cachePrefix;
-
-	/**
-	 * @var int $cacheTtl The TTL to use when caching this action, defaults to the defaultCacheTtl config key for the Actions module
-	 */
-	private $cacheTtl;
-
-	/**
-	 * @var bool $isSensibleToBruteForceAttacks Whether this action is sensible to brute force attacks or not. For example, an action that checks a given password and returns false if the password is incorrect. In such case, this request will sleep for some time when the password is wrong in order to discourage crackers.
-	 */
-	private $isSensibleToBruteForceAttacks;
-
-	/**
-	 * @var mixed $timeout When set, this action must have this specific timeout.
-	 */
-	private $timeout = false;
-
-	/**
-	 * @var boolean $isCli When set to true, this action will only be able to be executed via the command line CLI interface
-	 */
-	protected $isCli = false;
-
-	/**
-	 * Request
-	 *
-	 * Constructor factory
-	 *
-	 * @param string $setup The configuration for the request
-	 */
-	function __construct($setup) {
-		$this->moduleType = isset($setup["moduleType"]) ? $setup["moduleType"] : false;
-		$this->moduleName = isset($setup["moduleName"]) ? $setup["moduleName"] : false;
-		$this->methodName = isset($setup["methodName"]) ? $setup["methodName"] : false;
-		$this->request = isset($setup["request"]) ? $setup["request"] : new Request;
-		$this->isCache = isset($setup["isCache"]) ? $setup["isCache"] : false;
-		$this->isSensibleToBruteForceAttacks = isset($setup["isSensibleToBruteForceAttacks"]) ? $setup["isSensibleToBruteForceAttacks"] : false;
-		$this->timeout = isset($setup["timeout"]) ? $setup["timeout"] : false;
-
-		if ($this->isCache) {
-			global $e;
-
-			if (isset($setup["cacheProviderName"]))
-				$this->cacheProviderName = $setup["cacheProviderName"];
-			else
-				$this->cacheProviderName = $e->Actions->getConfig("defaultCacheProviderName");
-
-			if (isset($setup["cacheTtl"]))
-				$this->cacheTtl = $setup["cacheTtl"];
-			else
-				$this->cacheTtl = $e->Actions->getConfig("defaultCacheTtl");
-
-			if (isset($setup["cachePrefix"]))
-				$this->cachePrefix = $setup["cachePrefix"];
-			else
-				$this->cachePrefix = $e->Actions->getConfig("defaultCachePrefix");
-		}
+		if (!$this->cachePrefix)
+			$this->cachePrefix = $e->Actions->getConfig("defaultCachePrefix");
 	}
 
 	/**
 	 * @return boolean Whether this Action is intended for a command line request or not
 	 */
-	function isCli() {
+	function isCli(): bool {
 		return $this->isCli;
 	}
 

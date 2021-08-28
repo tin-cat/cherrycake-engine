@@ -16,7 +16,7 @@ class Translation extends \Cherrycake\Module {
 		'cacheProviderName' => 'engine', // The default cache provider name to use.
 		'cacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
 		'cacheUniqueId' => 'TranslationData', // The prefix string to add to cached keys
-		'defaultBaseLanguage' => \Cherrycake\LANGUAGE_ENGLISH, // The default language on which the texts will be specified in the code when using the Text::build method and the $e->t helper, if no other has been specified.
+		'defaultBaseLanguage' => \Cherrycake\LANGUAGE_ENGLISH, // The default language on which the texts will be specified
 		'dataFilesDir' => APP_DIR.'/translation', // The directory where translations will be stored
 		'valueWhenNotTranslated' => false // The value to use when a translation is not available, has to be a string. Set to false to use the base language text instead.
 	];
@@ -34,7 +34,7 @@ class Translation extends \Cherrycake\Module {
 	private $textsToStore;
 	private $isCreateFilesOnEnd = false;
 
-	public function init() {
+	public function init(): bool {
 		$this->loadTranslations();
 		return true;
 	}

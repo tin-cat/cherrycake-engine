@@ -12,5 +12,5 @@ class ActionCss extends Action {
 	/**
 	 * @var string $responseClass The name of the Response class this Action is expected to return
 	 */
-	protected $responseClass = "ResponseTextCss";
+	protected string $responseClass = "ResponseTextCss";
 }

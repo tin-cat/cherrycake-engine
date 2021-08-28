@@ -8,10 +8,24 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Modules
  */
-class Ui extends BasicObject {
+class Ui {
 
 	public function __toString() {
 		return $this->dump();
+	}
+
+	public function set(
+		string $key = '',
+		string $value = '',
+		array $properties = []
+	): Ui {
+		if ($properties) {
+			foreach ($properties as $key => $value)
+				$this->$key = $value;
+		}
+		else
+			$this->$key = $value;
+		return $this;
 	}
 
 	/**

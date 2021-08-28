@@ -10,7 +10,7 @@ namespace Cherrycake;
  * @package Cherrycake
  * @category Classes
  */
-class Result extends BasicObject {
+class Result {
 	protected $isOk;
 	protected $payload;
 

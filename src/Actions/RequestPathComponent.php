@@ -11,43 +11,22 @@ namespace Cherrycake\Actions;
  * @category Classes
  */
 class RequestPathComponent {
-	public $name = false;
-	public $type;
-	public $string = false;
 	private $value;
-	private $securityRules = false;
-	private $filters = false;
+
+	function __construct(
+		public int $type,
+		public string $string,
+		public string $name = '',
+		private array $securityRules = [],
+		private array $filters = [],
+	) {}
 
 	/**
-	 * RequestPathComponent
-	 *
-	 * Constructor
-	 */
-	function __construct($setup) {
-		if (isset($setup["name"]))
-			$this->name = $setup["name"];
-
-		$this->type = $setup["type"];
-
-		if (isset($setup["string"]))
-			$this->string = $setup["string"];
-
-		if (isset($setup["securityRules"]))
-			$this->securityRules = $setup["securityRules"];
-
-		if (isset($setup["filters"]))
-			$this->filters = $setup["filters"];
-	}
-
-	/**
-	 * isMatchesString
-	 *
 	 * Checks whether the given string matches this RequestPathComponent syntax, to know if the given string is or could be representing this RequestPathComponent
-	 *
 	 * @param string $string The string to check against to
 	 * @return bool Returns true if the given $string is or could be representing this RequestPathComponent
 	 */
-	function isMatchesString($string) {
+	function isMatchesString(string $string): bool {
 		switch ($this->type) {
 			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 				return (strcasecmp($string, $this->string) == 0 ? true : false);
@@ -64,11 +43,9 @@ class RequestPathComponent {
 	}
 
 	/**
-	 * getTypeName
-	 *
 	 * @return string The name of this RequestPathComponent's type, mainly for debugging purposes
 	 */
-	function getTypeName() {
+	function getTypeName(): string {
 		switch ($this->type) {
 			case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
 				return "Fixed";
@@ -83,34 +60,26 @@ class RequestPathComponent {
 	}
 
 	/**
-	 * getValue
-	 *
 	 * @return string Returns the value passed for this path component, if its type is either \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING or \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 	 */
-	function getValue() {
+	function getValue(): string {
 		return $this->value;
 	}
 
 	/**
-	 * setValue
-	 *
 	 * Sets the value for this path component. Intented to apply only for \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING and \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC types
-	 *
 	 * @param mixed $value The value for this path component
 	 */
-	function setValue($value) {
+	function setValue(mixed $value) {
 		global $e;
 		$this->value = $e->Security->filterValue($value, $this->filters);
 	}
 
 	/**
-	 * checkValueSecurity
-	 *
 	 * Checks this path component's value against its configured security rules (and/or the Security defaulted rules)
-	 *
 	 * @return Result A Result object, like Security::checkValue
 	 */
-	function checkValueSecurity() {
+	function checkValueSecurity(): Result {
 		global $e;
 		return $e->Security->checkValue($this->getValue(), $this->securityRules);
 	}
@@ -118,7 +87,7 @@ class RequestPathComponent {
 	/**
 	 * @return array Status information
 	 */
-	function getStatus() {
+	function getStatus(): array {
 		$r["brief"] = ($this->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED ? $this->string : "[".$this->getTypeName()."]");
 		$r["name"] = $this->name ?? "unnamed";
 		$r["value"] = $this->getValue();

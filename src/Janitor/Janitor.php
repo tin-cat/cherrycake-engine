@@ -57,54 +57,54 @@ class Janitor extends \Cherrycake\Module {
 
 		$e->Actions->mapAction(
 			"janitorRun",
-			new \Cherrycake\Actions\ActionCli([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
-				"moduleName" => "Janitor",
-				"methodName" => "run",
-				"request" => new \Cherrycake\Actions\Request([
-					"pathComponents" => [
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "janitor"
-						]),
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "run"
-						])
+			new \Cherrycake\Actions\ActionCli(
+				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleName: "Janitor",
+				methodName: "run",
+				request: new \Cherrycake\Actions\Request(
+					pathComponents: [
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "janitor"
+						),
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "run"
+						)
 					],
-					"parameters" => [
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "task",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						]),
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "isForceRun",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						])
+					parameters: [
+						new \Cherrycake\Actions\RequestParameter(
+							name: "task",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						),
+						new \Cherrycake\Actions\RequestParameter(
+							name: "isForceRun",
+							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+						)
 					]
-				])
-			])
+				)
+			)
 		);
 
 		$e->Actions->mapAction(
 			"janitorStatus",
-			new \Cherrycake\Actions\ActionCli([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
-				"moduleName" => "Janitor",
-				"methodName" => "showPlainStatus",
-				"request" => new \Cherrycake\Actions\Request([
-					"pathComponents" => [
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "janitor"
-						]),
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "status"
-						])
+			new \Cherrycake\Actions\ActionCli(
+				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleName: "Janitor",
+				methodName: "showPlainStatus",
+				request: new \Cherrycake\Actions\Request(
+					pathComponents: [
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "janitor"
+						),
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							string: "status"
+						)
 					]
-				])
-			])
+				)
+			)
 		);
 	}
 
@@ -427,40 +427,6 @@ class Janitor extends \Cherrycake\Module {
 		}
 
 		return $r;
-	}
-
-	/**
-	 * Get the log in HTML format
-	 * This method expects that the engine has been loaded with the following modules:
-	 * * Database
-	 * * Ui
-	 * * UiComponentTable
-	 *
-	 * @param array $setup Setup parameters
-	 * @return string The HTML
-	 */
-	function getLogHtml($setup = false) {
-		global $e;
-
-		$janitorLogItems = new \Cherrycake\JanitorLogItems([
-			"fillMethod" => "fromParameters",
-			"p" => [
-				"limit" => 100
-			]
-		]);
-
-		return \Cherrycake\UiComponentTable::build([
-			"items" => $janitorLogItems,
-			"itemFields" => [
-				"id" => [],
-				"executionDate" => [],
-				"executionSeconds" => [],
-				"taskName" => [],
-				"resultCode" => [],
-				"resultDescription" => []
-			],
-			"additionalCssClasses" => "fullWidth"
-		])->buildHtml();
 	}
 
 	/**

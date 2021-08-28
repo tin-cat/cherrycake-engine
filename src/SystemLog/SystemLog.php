@@ -36,7 +36,7 @@ class SystemLog extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 		return true;
@@ -161,45 +161,5 @@ class SystemLog extends \Cherrycake\Module {
 				"Log entries older than ".$this->getConfig("purgeLogsOlderThanSeconds")." seconds purged" => $numberOfLogEntriesToPurge
 			]
 		];
-	}
-
-	/**
-	 * Get the log in HTML format
-	 * This method expects that the engine has been loaded with the following modules:
-	 * * Database
-	 * * Ui
-	 * * UiComponentTable
-	 *
-	 * @param array $setup Setup parameters
-	 * @return string The HTML
-	 */
-	function getLogHtml($setup = false) {
-		global $e;
-
-		$janitorLogItems = new \Cherrycake\SystemLogItems([
-			"fillMethod" => "fromParameters",
-			"isForceNoCache" => true,
-			"p" => [
-				"limit" => 100
-			]
-		]);
-
-		return \Cherrycake\UiComponentTable::build([
-			"items" => $janitorLogItems,
-			"itemFields" => [
-				"id" => [],
-				"dateAdded" => [],
-				"class" => [],
-				"type" => [],
-				"subType" => [],
-				"ip" => [],
-				"httpHost" => [],
-				"requestUri" => [],
-				"browserString" => [],
-				"description" => [],
-				"data" => []
-			],
-			"additionalCssClasses" => "fullWidth"
-		])->buildHtml();
 	}
 }
