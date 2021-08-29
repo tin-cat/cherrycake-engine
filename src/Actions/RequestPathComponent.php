@@ -11,7 +11,7 @@ namespace Cherrycake\Actions;
  * @category Classes
  */
 class RequestPathComponent {
-	private $value;
+	private mixed $value = false;
 
 	function __construct(
 		public int $type,
@@ -62,7 +62,7 @@ class RequestPathComponent {
 	/**
 	 * @return string Returns the value passed for this path component, if its type is either \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING or \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 	 */
-	function getValue(): string {
+	function getValue(): mixed {
 		return $this->value;
 	}
 

@@ -14,132 +14,99 @@ class DatabaseResult {
 	/**
 	 * @var array A tridimensional hash array containing the result data
 	 */
-	protected $data;
+	protected array $data = [];
 
 	/**
 	 * @var array $setup Optional array with additional options
 	 */
-	protected $setup;
+	protected array $setup = [];
 
 	/**
 	 * @var string $rowClassName Holds the name of the class that handles database results at row level. Must be set by an overloaded class
 	 */
-	protected $rowClassName;
+	protected string $rowClassName;
 
 	/**
-	 * createDatabaseRowObject
-	 *
 	 * Creates a database provider-dependant DatabaseRow type object and returns it.
-	 *
 	 * @return DatabaseRow The higher-level DatabaseRow object type
 	 */
-	function createDatabaseRowObject() {
+	function createDatabaseRowObject(): DatabaseRow {
 		eval("\$result = new \\Cherrycake\\Database\\".$this->rowClassName."();");
 		return $result;
 	}
 
 	/**
-	 * init
-	 *
 	 * Initializes the result, receiving and storing the result handler. Intended to be overloaded by a higher level provider-specific DatabaseResult class if needed
-	 *
-	 * @param mysqli_result $resultHandler Optional MySQL result object
+	 * @param mysqli_result|bool $resultHandler Optional MySQL result object
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 */
-	function init($resultHandler = false, $setup = false) {
+	function init(
+		mysqli_result|bool $resultHandler = false,
+		array $setup = [],
+	) {
 		$this->setup = $setup;
 	}
 
 	/**
-	 * retrieveResult
-	 *
 	 * Retrieves the result from the database and stores it in $data in the form of a tridimensional array, false if no results. Must be overloaded by a higher level provider-specific DatabaseResult class
 	 */
-	function retrieveResult() {
-	}
+	function retrieveResult() {}
 
 	/**
-	 * getData
-	 *
 	 * Returns all the data
-	 *
 	 * @return array The data in the form of a tridimensional array.
 	 */
-	function getData() {
+	function getData(): array {
 		return $this->data;
 	}
 
 	/**
-	 * setData
-	 *
 	 * Sets the data to the specified one
-	 *
 	 * @param array $data The data to set in the form of a tridimensional array.
 	 */
-	function setData($data) {
+	function setData(array $data) {
 		$this->data = $data;
 		reset($this->data);
 	}
 
 	/**
-	 * freeResult
-	 *
 	 * Frees the database result. Must be overloaded by a higher level provider-specific DatabaseResult class
 	 */
-	function freeResult() {
-	}
+	function freeResult() {}
 
 	/**
-	 * countRows
-	 *
 	 * Returns the number of rows in the result. Must be overloaded by a provider-specific DatabaseResult class
-	 *
 	 * @return int The number of rows in the result.
 	 */
-	function countRows() {
+	function countRows(): int {
 	}
 
 	/**
-	 * isAny
-	 *
 	 * Checks whether there is at least one result. Must be overloaded by a provider-specific DatabaseResult class
-	 *
 	 * @return bool True if there is at least one result, false otherwise.
 	 */
-	function isAny() {
-	}
+	function isAny(): bool {}
 
 	/**
-	 * getRow
-	 *
 	 * Returns the next row in the query results and advances to the next one. Must be overloaded by a provider-specific DatabaseResult class
-	 *
 	 * @return DatabaseRow A provider-specific DatabaseRowMysql object. False if no more rows.
 	 */
-	function getRow() {
-	}
+	function getRow(): DatabaseRow {}
 
 	/**
-	 * reset
-	 *
 	 * Sets the row pointer to the beginning, so the next retrieved row will be the first. Must be overloaded by a provider-specific DatabaseResult class
 	 */
-	function reset() {
-	}
+	function reset() {}
 
 	/**
-	 * getRowKeys
-	 *
 	 * Returns a list of the available keys in each row. Must be overloaded by a provider-specific DatabaseResult class
-	 *
 	 * @return array A list of the available keys in each row
 	 */
-	function getRowKeys() {
+	function getRowKeys(): array {
 	}
 
 	/**
-	 * @return integer the Id generated on the latest insert query
+	 * @return int the Id generated on the latest insert query
 	 */
-	function getInsertId() {
-	}
+	function getInsertId(): int {}
 }

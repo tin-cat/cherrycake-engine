@@ -3,8 +3,6 @@
 namespace Cherrycake\Database;
 
 /**
- * Database
- *
  * Manages database providers.
  * It takes configuration from the App-layer configuration file.
  * This module and its submodules are intended to be fast, reliable and low-memory consuming. To use it in a proper way and to get all the benefits of optimization, take care of the following when using it:
@@ -49,10 +47,7 @@ class Database extends \Cherrycake\Module {
 	];
 
 	/**
-	 * init
-	 *
 	 * Initializes the module and loads the base CacheProvider class
-	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init(): bool {
@@ -68,15 +63,12 @@ class Database extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addProvider
-	 *
 	 * Adds a database provider
-	 *
 	 * @param string $key The key to later access the database provider
 	 * @param string $providerClassName The database provider class name
 	 * @param array $config The configuration for the database provider
 	 */
-	function addProvider($key, $providerClassName, $config) {
+	function addProvider(string $key, string $providerClassName, array $config) {
 		global $e;
 
 		eval("\$this->".$key." = new \\Cherrycake\\Database\\".$providerClassName."();");
@@ -84,7 +76,7 @@ class Database extends \Cherrycake\Module {
 		$this->$key->config($config);
 
 		// if (!$this->$key->init()) {
-		// 	$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error while Initting database provider"]);
+		// 	$e->Errors->trigger(type: \Cherrycake\ERROR_SYSTEM, description:  "Error while Initting database provider");
 		// 	return;
 		// }
 	}

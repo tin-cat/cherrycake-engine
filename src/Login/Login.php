@@ -70,12 +70,13 @@ class Login extends \Cherrycake\Module {
 
 		eval("\$this->user = new ".$this->getConfig("userClassName")."();");
 		if (!$this->user->loadFromId($userId)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Cannot load the user from the given Id",
-				"errorVariables" => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Cannot load the user from the given Id",
+				variables: [
 					"userId" => $userId
 				]
-			]);
+			);
 			return false;
 		}
 		else

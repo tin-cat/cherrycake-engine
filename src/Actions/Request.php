@@ -45,16 +45,16 @@ class Request {
 	function isCurrentRequest():bool {
 		global $e;
 
-		if (!is_array($e->Actions->currentRequestPathComponentStrings)) { // If the current request doesn't has pathComponents
+		if (!$e->Actions->currentRequestPathComponentStrings) { // If the current request doesn't has pathComponents
 
-			if (!is_array($this->pathComponents)) // If this request doesn't have pathComponents, this is the current Request
+			if (!$this->pathComponents) // If this request doesn't have pathComponents, this is the current Request
 				return true;
 			else
 				return false; // If his request has pathComponents, this is not the current Request
 
 		}
 		else { // Else the current request has pathComponents
-			if (!is_array($this->pathComponents)) { // If this request doesn't have pathComponents, this is not the current Request
+			if (!$this->pathComponents) { // If this request doesn't have pathComponents, this is not the current Request
 				return false;
 			} else { // Else this request has pathComponents, further analysis must be done
 
@@ -91,7 +91,7 @@ class Request {
 
 		// Retrieve parameters coming from path components
 		$isErrors = false;
-		if (is_array($this->pathComponents)) {
+		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				if(
 					$pathComponent->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING
@@ -102,13 +102,14 @@ class Request {
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-							"errorDescription" => implode(" / ", $result->description),
-							"errorVariables" => [
+						$e->Errors->trigger(
+							type: \Cherrycake\ERROR_SYSTEM,
+							description: implode(" / ", $result->description),
+							variables: [
 								"pathComponent name" => $pathComponent->name,
 								"pathComponent value" => $pathComponent->getValue()
 							]
-						]);
+						);
 					}
 					else
 						$this->parameterValues[$pathComponent->name] = $pathComponent->getValue();
@@ -118,19 +119,20 @@ class Request {
 		}
 
 		// Retrieve parameters coming from get or post
-		if (is_array($this->parameters)) {
+		if ($this->parameters) {
 			foreach ($this->parameters as $parameter) {
 				$parameter->retrieveValue();
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-						"errorDescription" => implode(" / ", $result->description),
-						"errorVariables" => [
+					$e->Errors->trigger(
+						type: \Cherrycake\ERROR_SYSTEM,
+						description: implode(" / ", $result->description),
+						variables: [
 							"parameter name" => $parameter->name,
 							"parameter value" => $parameter->getValue()
 						]
-					]);
+					);
 				}
 				else {
 					if ($parameter->isReceived())
@@ -157,7 +159,7 @@ class Request {
 	 * @param string $name The name of the parameter to get
 	 * @return mixed The value of the parameter, false if it doesn't exists
 	 */
-	function getParameterValue(string $name): bool {
+	function getParameterValue(string $name): mixed {
 		if (!isset($this->parameterValues[$name]))
 			return false;
 		return $this->parameterValues[$name];
@@ -241,7 +243,7 @@ class Request {
 		else
 			$url = "";
 
-		if (is_array($this->pathComponents)) {
+		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
@@ -262,7 +264,7 @@ class Request {
 			$url .= "/";
 
 		$count = 0;
-		if (is_array($this->parameters) && $isIncludeUrlParameters) {
+		if ($this->parameters && $isIncludeUrlParameters) {
 			foreach ($this->parameters as $parameter) {
 				if ($parameterValues ?? false) {
 					if ($parameterValues[$parameter->name] ?? false)
@@ -292,7 +294,7 @@ class Request {
 	 */
 	function getCacheKey(string $prefix, array $parameterValues = null): string {
 		$key = "";
-		if (is_array($this->pathComponents)) {
+		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
 					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
@@ -312,7 +314,7 @@ class Request {
 		else
 			$key = "_";
 
-		if (is_array($this->parameters)) {
+		if ($this->parameters) {
 			foreach ($this->parameters as $parameter) {
 				if (isset($parameterValues))
 					$key .= "_".$parameter->name."=".$parameterValues[$parameter->name];
@@ -323,7 +325,7 @@ class Request {
 			reset($this->parameters);
 		}
 
-		if (is_array($this->additionalCacheKeys)) {
+		if ($this->additionalCacheKeys) {
 			foreach ($this->additionalCacheKeys as $additionalCacheKey => $value) {
 				if (isset($parameterValues))
 					$key .= "_".$additionalCacheKey."=".$parameterValues[$key];
@@ -356,7 +358,7 @@ class Request {
 	 */
 	function getStatus(): array {
 		$r["brief"] = "";
-		if (is_array($this->pathComponents)) {
+		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $pathComponent) {
 				$pathComponentsStatus[] = $pathComponent->getStatus()["brief"];
 				$r["pathComponents"][] = $pathComponent->getStatus();
@@ -377,7 +379,7 @@ class Request {
 			reset($this->parameters);
 		}
 
-		if (is_array($this->additionalCacheKeys))
+		if ($this->additionalCacheKeys)
 			$r["additionalCacheKeys"] = $this->additionalCacheKeys;
 
 		return $r;

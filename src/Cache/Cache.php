@@ -33,9 +33,10 @@ class Cache extends \Cherrycake\Module {
 		// Check that the "engine" cache provider has not been defined previously
 		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
 			$e->loadCoreModule("Errors");
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The \"engine\" cache provider name is reserved"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "The \"engine\" cache provider name is reserved"
+			);
 		}
 
 		// Setup the engine cache
@@ -66,8 +67,6 @@ class Cache extends \Cherrycake\Module {
 	}
 
 	/**
-	 * buildCacheKey
-	 *
 	 * Returns a cache key to be used in caching operations, based on the provided $config.
 	 * The keys built can have one of the following syntaxes:
 	 * <App namespace>_[<prefix>]_<uniqueId>

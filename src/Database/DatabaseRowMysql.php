@@ -17,7 +17,10 @@ class DatabaseRowMysql extends DatabaseRow {
 	 * @param integer $fieldType The field type, one of \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * @return mixed The treated data
 	 */
-	function treatFieldData($data, $fieldType) {
+	function treatFieldData(
+		mixed $data,
+		int $fieldType,
+	): mixed {
 		switch ($fieldType) {
 			case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
 			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:

@@ -465,12 +465,13 @@ class Item {
 		global $e;
 
 		if (!$this->idFieldName) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't update item on the database because it hasn't an idFieldName set up.",
-				"errorVariables" => [
+			$e->Errors->trigger(
+				type: ERROR_SYSTEM,
+				description: "Couldn't update item on the database because it hasn't an idFieldName set up.",
+				variables: [
 					"Item class" => get_class($this)
 				]
-			]);
+			);
 			return false;
 		}
 
@@ -533,12 +534,13 @@ class Item {
 		global $e;
 
 		if (!$this->idFieldName) {
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't delete item from the database because it hasn't an idFieldName set up.",
-				"errorVariables" => [
+			$e->Errors->trigger(
+				type: ERROR_SYSTEM,
+				description: "Couldn't delete item from the database because it hasn't an idFieldName set up.",
+				variables: [
 					"Item class" => get_class($this)
 				]
-			]);
+			);
 			return false;
 		}
 

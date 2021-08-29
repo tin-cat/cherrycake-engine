@@ -79,22 +79,24 @@ class Translation extends \Cherrycake\Module {
 			return [];
 
 		if (!is_readable($filePath)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Translation file is not readable',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Translation file is not readable',
+				variables: [
 					'file' => $filePath
 				]
-			]);
+			);
 			return false;
 		}
 
 		if (!$fileContents = file_get_contents($filePath)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couldn\'t read translation file',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Couldn\'t read translation file',
+				variables: [
 					'file' => $filePath
 				]
-			]);
+			);
 			return false;
 		}
 
@@ -102,13 +104,14 @@ class Translation extends \Cherrycake\Module {
 			$translations = \Yosymfony\Toml\Toml::Parse($fileContents);
 		}
 		catch(\Yosymfony\ParserUtils\SyntaxErrorException $e) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couln\'t parse translation TOML file',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Couln\'t parse translation TOML file',
+				variables: [
 					'file' => $filePath,
 					'error' => $e->getMessage()
 				]
-			]);
+			);
 			return false;
 		}
 
@@ -196,22 +199,24 @@ class Translation extends \Cherrycake\Module {
 		$toml = $this->buildToml($data, $language);
 
 		if (!$fp = fopen($fileName, 'w')) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couldn\'t open translation data file for writing',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Couldn\'t open translation data file for writing',
+				variables: [
 					'fileName' => $fileName
 				]
-			]);
+			);
 			return false;
 		}
 
 		if (!fwrite($fp, $toml)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couldn\'t write to translation data file',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Couldn\'t write to translation data file',
+				variables: [
 					'fileName' => $fileName
 				]
-			]);
+			);
 			return false;
 		}
 
@@ -227,12 +232,13 @@ class Translation extends \Cherrycake\Module {
 
 		if (!mkdir($dir, 0777, true)) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				'errorDescription' => 'Couldn\'t create translations data files directory',
-				'errorVariables' => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: 'Couldn\'t create translations data files directory',
+				variables: [
 					'directory' => $dir
 				]
-			]);
+			);
 			return false;
 		}
 

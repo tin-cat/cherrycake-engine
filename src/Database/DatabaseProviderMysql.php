@@ -74,12 +74,10 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	protected $resultClassName = "DatabaseResultMysql";
 
 	/**
-	 * connect
-	 *
 	 * Connects to MySQL
 	 * @return bool True if the connection has been established, false otherwise
 	 */
-	function connect() {
+	function connect(): bool {
 		$this->connectionHandler = new \mysqli(
 			$this->getConfig("host"),
 			$this->getConfig("user"),
@@ -89,13 +87,19 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (mysqli_connect_error()) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"
+			);
 			return false;
 		}
 
 		if (!$this->connectionHandler->set_charset($this->getConfig("charset"))) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"
+			);
 			return false;
 		}
 
@@ -105,16 +109,17 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * disconnect
-	 *
 	 * Disconnect from the database provider if needed.
 	 * @return bool True if the disconnection has been done, false otherwise
 	 */
-	function disconnect() {
+	function disconnect(): bool {
 		if (!$this->connectionHandler->close())
 		{
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"
+			);
 			return false;
 		}
 		$this->isConnected = false;
@@ -123,20 +128,23 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * query
-	 *
 	 * Performs a query to MySQL.
-	 *
 	 * @param string $sql The SQL query string
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 * @return DatabaseResultMysql A provider-specific DatabaseResultMysql object if the query has been executed correctly, false otherwise.
 	 */
-	function query($sql, $setup = false) {
+	function query(
+		string $sql,
+		array $setup = [],
+	): DatabaseResultMysql {
 		$this->requireConnection();
 
 		if (!$resultHandler = $this->connectionHandler->query($sql, MYSQLI_STORE_RESULT)) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error querying MySQL (".$this->connectionHandler->error.")"]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error querying MySQL (".$this->connectionHandler->error.")"
+			);
 			return false;
 		}
 
@@ -146,21 +154,20 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * prepare
-	 *
 	 * Prepares a query so it can be later executed as a prepared query with the DatabaseProvider::execute method.
-	 *
 	 * @param string $sql The SQL statement to prepare to be queried to the database, where all the variables are replaced by question marks.
-	 *
 	 * @return array A hash array with the following keys:
 	 *  - sql: The passed sql statement
 	 *  - statement: A provider-specific statement object if the query has been prepared correctly, false otherwise.
 	 */
-	function prepare($sql) {;
+	function prepare(string $sql): array {
 		$this->requireConnection();
 		if (!$statement = $this->connectionHandler->prepare($sql)) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""
+			);
 			return false;
 		}
 
@@ -171,21 +178,19 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * execute
-	 *
 	 * Executes a previously prepared query with the given parameters.
-	 *
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
-	 *
 	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\DATABASE_FIELD_TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
-	 *
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
-	 *
 	 * @return DatabaseResult A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise.
 	 */
-	function execute($prepareResult, $parameters, $setup = false) {
+	function execute(
+		array $prepareResult,
+		array $parameters,
+		array $setup = [],
+	): DatabaseResult {
 		if (is_array($parameters)) {
 			$types = "";
 			foreach ($parameters as $parameter)
@@ -235,13 +240,14 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 		if (!$prepareResult["statement"]->execute()) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
-				"errorVariables" => [
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
+				variables: [
 					"sql" => $prepareResult["sql"],
 					"values" => "\"".implode("\" / \"", $values)."\""
 				]
-			]);
+			);
 			return false;
 		}
 
@@ -254,14 +260,11 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * convertArrayValuesToRefForCallUserFuncArray
-	 *
 	 * From a given regular one-dimensional array, it returns the same array but with its values as references. Intended to be used to call bind_param method within a call_user_func_array function call.
-	 *
 	 * @param array $array The array to convert
 	 * @return array The converted array
 	 */
-	function convertArrayValuesToRefForCallUserFuncArray($array) {
+	function convertArrayValuesToRefForCallUserFuncArray(array $array): array {
 		if (strnatcmp(phpversion(),'5.3') >= 0) {
 			$refs = [];
 			foreach ($array as $key => $value)
@@ -272,13 +275,11 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	}
 
 	/**
-	 * safeString
-	 *
 	 * Treats the given string in order to let it be safely included in an SQL sentence as a string literal.
-	 *
 	 * @param string $string The safe string
+	 * @return string The safe string
 	 */
-	function safeString($string) {
+	function safeString($string): string {
 		$this->requireConnection();
 		return $this->connectionHandler->real_escape_string($string);
 	}

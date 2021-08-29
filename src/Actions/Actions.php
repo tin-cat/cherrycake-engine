@@ -37,7 +37,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $actions An array of Actions to be handled by this module
 	 */
-	private $actions;
+	private $actions = [];
 
 	/**
 	 * @var array $currentRequestPathComponentStrings An array of strings representing the path of the currently made request, built on Actions::buildCurrentRequestPathComponentStringsFromRequestUri
@@ -121,7 +121,7 @@ class Actions extends \Cherrycake\Module {
 	 * @return bool True if the action exists, false if doesnt's.
 	*/
 	public function isAction(string $name): bool {
-		if (!is_array($this->actions))
+		if (!$this->actions)
 			return false;
 
 		return array_key_exists($name, $this->actions);
@@ -146,15 +146,16 @@ class Actions extends \Cherrycake\Module {
 	function run(string $requestUri): bool {
 		global $e;
 
-		if ($e->isDevel() && !is_array($this->actions)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "No mapped actions"
-			]);
+		if ($e->isDevel() && !$this->actions) {
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "No mapped actions"
+			);
 		}
 
 		// Check the currentRequestPath against all mapped actions
 		$matchingActions = [];
-		if (is_array($this->actions)) {
+		if ($this->actions) {
 			$this->buildCurrentRequestPathComponentStringsFromRequestUri($requestUri);
 			// Loop through all mapped actions
 			foreach ($this->actions as $actionName => $action) {
@@ -165,9 +166,10 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
-				"errorDescription" => "No mapped action found for this request"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_NOT_FOUND,
+				description: "No mapped action found for this request"
+			);
 			return false;
 		}
 
@@ -184,12 +186,13 @@ class Actions extends \Cherrycake\Module {
 				return false;
 		}
 
-		$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
-			"errorDescription" => "No matching actions were productive",
-			"errorVariables" => [
+		$e->Errors->trigger(
+			type: \Cherrycake\ERROR_NOT_FOUND,
+			description: "No matching actions were productive",
+			variables: [
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions
 			]
-		]);
+		);
 
 		return true;
 	}
@@ -218,15 +221,15 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @return array Status information
 	 */
-	function getStatus(): string {
-		if (is_array($this->actions)) {
+	function getStatus(): array {
+		if ($this->actions) {
 			foreach ($this->actions as $actionName => $action) {
 				$r["mappedActions"][$actionName] = $action->getStatus();
 				$r["brief"]["mappedActions"][$actionName] = $action->getStatus()["brief"];
 			}
 			reset($this->actions);
 		}
-		return $r ?? '';
+		return $r ?? [];
 	}
 
 }

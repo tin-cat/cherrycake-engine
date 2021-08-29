@@ -250,13 +250,14 @@ class Css extends \Cherrycake\Module {
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
 			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Couldn't open CSS directory",
-					"errorVariables" => [
+				$e->Errors->trigger(
+					type: \Cherrycake\ERROR_SYSTEM,
+					description: "Couldn't open CSS directory",
+					variables: [
 						"setName" => $setName,
 						"directory" => $requestedSet["directory"]
 					]
-				]);
+				);
 			}
 			if ($handler = opendir($requestedSet["directory"])) {
 				while (false !== ($entry = readdir($handler))) {
@@ -322,9 +323,10 @@ class Css extends \Cherrycake\Module {
 					$css = $scssCompiler->compileString($css)->getCss();
 				}
 				catch (\ScssPhp\ScssPhp\Exception\SassException $error) {
-					$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-						"errorDescription" => $error->getMessage()
-					]);
+					$e->Errors->trigger(
+						type: \Cherrycake\ERROR_SYSTEM,
+						description: $error->getMessage()
+					);
 				}
 			}
 		}

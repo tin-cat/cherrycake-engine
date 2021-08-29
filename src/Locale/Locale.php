@@ -401,11 +401,12 @@ class Locale extends \Cherrycake\Module {
 
 			$result = $e->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".$e->Database->$databaseProviderName->safeString($timezone));
 			if (!$result->isAny()) {
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Requested timezone not found",
-					"errorVariables" => ["timezone" => $timezone],
-					"isSilent" => true
-				]);
+				$e->Errors->trigger(
+					type: \Cherrycake\ERROR_SYSTEM,
+					description: "Requested timezone not found",
+					variables: ["timezone" => $timezone],
+					isSilent: true
+				);
 				return $e->getTimezoneName();
 			}
 

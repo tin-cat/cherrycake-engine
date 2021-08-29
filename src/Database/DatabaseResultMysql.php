@@ -12,29 +12,29 @@ namespace Cherrycake\Database;
  */
 class DatabaseResultMysql extends DatabaseResult {
 	/**
-	 * @var Result $resultHandler The MySQL result handler
+	 * @var DatabaseResult $resultHandler The MySQL result handler
 	 */
-	protected $resultHandler;
+	protected DatabaseResult $resultHandler;
 
 	/**
 	 * @var mixed The result obtained from the resultHandler after calling resultHandler->get_result()
 	 */
-	private $result;
+	private mixed $result;
 
 	/**
 	 * @var string $rowClassName Holds the name of the class that handles database results at row level.
 	 */
-	protected $rowClassName = "DatabaseRowMysql";
+	protected string $rowClassName = "DatabaseRowMysql";
 
 	/**
-	 * init
-	 *
 	 * Initializes the result, receiving and storing the result handler optionally.
-	 *
-	 * @param mysqli_result $resultHandler Optional MySQL result object
+	 * @param mysqli_result|bool $resultHandler Optional MySQL result object
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 */
-	function init($resultHandler = false, $setup = false) {
+	function init(
+		mysqli_result|bool $resultHandler = false,
+		array $setup = [],
+	) {
 		parent::init($resultHandler, $setup);
 
 		if ($resultHandler) {
@@ -45,8 +45,6 @@ class DatabaseResultMysql extends DatabaseResult {
 	}
 
 	/**
-	 * retrieveResult
-	 *
 	 * Retrieves the result from the database and stores it in $data in the form of a tridimensional array
 	 */
 	function retrieveResult() {
@@ -59,8 +57,6 @@ class DatabaseResultMysql extends DatabaseResult {
 	}
 
 	/**
-	 * freeResult
-	 *
 	 * Frees the database result.
 	 */
 	function freeResult() {
@@ -69,38 +65,26 @@ class DatabaseResultMysql extends DatabaseResult {
 	}
 
 	/**
-	 * countRows
-	 *
 	 * Returns the number of rows in the result.
-	 *
 	 * @return int The number of rows in the result.
 	 */
-	function countRows() {
+	function countRows(): int {
 		return sizeof($this->data);
 	}
 
 	/**
-	 * isAny
-	 *
 	 * Checks whether there is at least one result.
-	 *
 	 * @return bool True if there is at least one result, false otherwise.
 	 */
-	function isAny() {
-		if (is_array($this->data))
-			return true;
-		else
-			return false;
+	function isAny(): bool {
+		return $this->data ? true : false;
 	}
 
 	/**
-	 * getRow
-	 *
 	 * Returns the current row in the query results and advances to the next one.
-	 *
 	 * @return DatabaseRow A provider-specific DatabaseRowMysql object. False if no more rows.
 	 */
-	function getRow() {
+	function getRow(): DatabaseRow {
 		if (!$this->data)
 			return false;
 
@@ -115,8 +99,6 @@ class DatabaseResultMysql extends DatabaseResult {
 	}
 
 	/**
-	 * reset
-	 *
 	 * Sets the row pointer to the beginning, so the next retrieved row will be the first.
 	 */
 	function reset() {
@@ -124,20 +106,17 @@ class DatabaseResultMysql extends DatabaseResult {
 	}
 
 	/**
-	 * getRowKeys
-	 *
 	 * Returns a list of the available keys in each row.
-	 *
 	 * @return array A list of the available keys in each row
 	 */
-	function getRowKeys() {
+	function getRowKeys(): array  {
 		return array_keys($this->data[0]);
 	}
 
 	/**
-	 * @return integer the Id generated on the latest insert query
+	 * @return int the Id generated on the latest insert query
 	 */
-	function getInsertId() {
+	function getInsertId(): int {
 		return $this->resultHandler->insert_id;
 	}
 }

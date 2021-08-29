@@ -159,9 +159,10 @@ class Session extends \Cherrycake\Module {
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Could not create the session into the DB"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Could not create the session into the DB"
+			);
 			return false;
 		}
 
@@ -216,9 +217,10 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The session cookie could not be sent"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "The session cookie could not be sent"
+			);
 			return false;
 		}
 
@@ -259,9 +261,10 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The session cookie could not be sent"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "The session cookie could not be sent"
+			);
 			return false;
 		}
 
@@ -279,17 +282,19 @@ class Session extends \Cherrycake\Module {
 	function generateNewSessionId($attemptsCounter = 0) {
 		if (!function_exists("openssl_random_pseudo_bytes")) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Session module needs function openssl_random_pseudo_bytes()"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Session module needs function openssl_random_pseudo_bytes()"
+			);
 			return false;
 		}
 
 		if ($attemptsCounter > 10) {
 			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Maximum attempts to generate a unique session id had been reached"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Maximum attempts to generate a unique session id had been reached"
+			);
 			return false;
 		}
 
@@ -423,9 +428,10 @@ class Session extends \Cherrycake\Module {
 			return false;
 
 		if (!$this->isSession()) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't set session data because no session is present."
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Couldn't set session data because no session is present."
+			);
 			return false;
 		}
 
@@ -459,9 +465,10 @@ class Session extends \Cherrycake\Module {
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't update session data in DB"
-			]);
+			$e->Errors->trigger(
+				type: \Cherrycake\ERROR_SYSTEM,
+				description: "Couldn't update session data in DB"
+			);
 			return false;
 		}
 

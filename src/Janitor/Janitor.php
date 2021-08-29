@@ -248,16 +248,14 @@ class Janitor extends \Cherrycake\Module {
 					if ($resultCode != \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
 						$e->Errors->trigger(
-							\Cherrycake\ERROR_SYSTEM,
-							[
-								"errorDescription" => "JanitorTask failed",
-								"errorVariables" => [
-									"JanitorTask name" => $janitorTask->getName(),
-									"JanitorTask result code" => $this->getJanitorTaskReturnCodeDescription($resultCode),
-									"JanitorTask result description" => $resultDescription
-								],
-								"isSilent" => true
-							]
+							type: \Cherrycake\ERROR_SYSTEM,
+							description: "JanitorTask failed",
+							variables: [
+								"JanitorTask name" => $janitorTask->getName(),
+								"JanitorTask result code" => $this->getJanitorTaskReturnCodeDescription($resultCode),
+								"JanitorTask result description" => $resultDescription
+							],
+							isSilent: true
 						);
 						$r .= "Ok. ";
 					}
