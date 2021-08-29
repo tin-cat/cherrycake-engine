@@ -223,7 +223,7 @@ class Request {
 				$url = "https://";
 			else
 			if ($isHttps == "auto") {
-				if ($_SERVER["HTTPS"])
+				if ($_SERVER["HTTPS"] ?? false)
 					$url = "https://";
 				else
 					$url = "http://";
@@ -231,7 +231,7 @@ class Request {
 
 			// Determine the domain
 			// If we haven't a forced locale, use the current domain
-			if (!isset($locale))
+			if (!$locale)
 				$url .= $_SERVER["HTTP_HOST"];
 			else {
 				// If we have a forced locale, use its domain. Requires the Locale module to be available.
