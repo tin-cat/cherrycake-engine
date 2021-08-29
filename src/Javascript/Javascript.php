@@ -304,10 +304,8 @@ class Javascript extends \Cherrycake\Module {
 
 				$js .= $e->Patterns->parse(
 					$file,
-					[
-						"directoryOverride" => $requestedSet["directory"] ?? false,
-						"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
-					]
+					directoryOverride: $requestedSet["directory"] ?? false,
+					fileToIncludeBeforeParsing: $requestedSet["variablesFile"] ?? false
 				)."\n";
 			}
 		}

@@ -49,67 +49,98 @@ class Patterns extends \Cherrycake\Module {
 	 * @param string $patternName The name of the pattern to out
 	 * @param array $setup Additional setup with additional options. See Parse method for details.
 	 * @param int $code The response code to send, one of the RESPONSE_* available
+	 * @param bool noParse: When set to true, the pattern is returned without any parsing
+	 * @param string|array fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
+	 * @param array variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" => $variable
+	 * @param bool|null isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
+	 * @param string cacheProviderName: A cache provider name that will override the one set in the cachedPatterns or defaultCacheProviderName config key (if any)
+	 * @param int cacheTtl: A cache TTL that will override the one set in the cachedPatterns or defaultCacheTtl config key (if any)
+	 * @param string cachePrefix: A cache prefix that will override the one set in the cachedPatterns or defaultCachePrefix config key (if any)
 	 */
 	function out(
 		string $patternName,
-		array $setup = [],
-		int|null $code = null
+		int|null $code = null,
+		string $directoryOverride = '',
+		bool $noParse = false,
+		string|array $fileToIncludeBeforeParsing = '',
+		array $variables = [],
+		bool|null $isCache = null,
+		string $cacheProviderName = '',
+		int $cacheTtl = 0,
+		string $cachePrefix = ''
 	) {
 		global $e;
 		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
 			code: $code,
-			payload: $this->parse($patternName, $setup),
+			payload: $this->parse(
+				patternName: $patternName,
+				directoryOverride: $directoryOverride,
+				noParse: $noParse,
+				fileToIncludeBeforeParsing: $fileToIncludeBeforeParsing,
+				variables: $variables,
+				isCache: $isCache,
+				cacheProviderName: $cacheProviderName,
+				cacheTtl: $cacheTtl,
+				cachePrefix: $cachePrefix
+			),
 		));
 	}
 
 	/**
 	 * Determines whether a given Pattern exists and can be read
-	 *
 	 * @param string $patternName The name of the pattern
-	 * @param array $setup Additional setup with the following possible keys:
-	 * directoryOverride: When specified, the pattern is taken from this directory instead of the default configured directory.
+	 * @param string $directoryOverride When specified, the pattern is taken from this directory instead of the default configured directory.
 	 * @return boolean True if the Pattern exists and is readable, false otherwise
 	 */
-	function isPatternExists($patternName, $setup = false) {
-		$patternFile = $this->getPatternFileName($patternName, $setup["directoryOverride"] ?? false);
+	function isPatternExists(
+		string $patternName,
+		string $directoryOverride = '',
+	): bool {
+		$patternFile = $this->getPatternFileName($patternName, $directoryOverride);
 		return file_exists($patternFile) && is_readable($patternFile);
 	}
 
 	/**
-	 * parse
-	 *
 	 * Parses a pattern
-	 *
 	 * @param string $patternName The name of the pattern to parse
-	 * @param array $setup Additional setup with the following possible keys:
-	 * * directoryOverride: When specified, the pattern is taken from this directory instead of the default configured directory.
-	 * * noParse: When set to true, the pattern is returned without any parsing
-	 * * fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
-	 * * variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" => $variable
-	 * * isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
-	 * * cacheProviderName: A cache provider name that will override the one set in the cachedPatterns or defaultCacheProviderName config key (if any)
-	 * * cacheTtl: A cache TTL that will override the one set in the cachedPatterns or defaultCacheTtl config key (if any)
-	 * * cachePrefix: A cache prefix that will override the one set in the cachedPatterns or defaultCachePrefix config key (if any)
+	 * @param string directoryOverride: When specified, the pattern is taken from this directory instead of the default configured directory.
+	 * @param bool noParse: When set to true, the pattern is returned without any parsing
+	 * @param string|array fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
+	 * @param array variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" => $variable
+	 * @param bool|null isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
+	 * @param string cacheProviderName: A cache provider name that will override the one set in the cachedPatterns or defaultCacheProviderName config key (if any)
+	 * @param int cacheTtl: A cache TTL that will override the one set in the cachedPatterns or defaultCacheTtl config key (if any)
+	 * @param string cachePrefix: A cache prefix that will override the one set in the cachedPatterns or defaultCachePrefix config key (if any)
 	 *
 	 * @return string The parsed pattern. Returns false if some error occurred
 	 */
-	function parse($patternName, $setup = false) {
+	function parse(
+		string $patternName,
+		string $directoryOverride = '',
+		bool $noParse = false,
+		string|array $fileToIncludeBeforeParsing = '',
+		array $variables = [],
+		bool|null $isCache = null,
+		string $cacheProviderName = '',
+		int $cacheTtl = 0,
+		string $cachePrefix = ''
+	): string {
 		global $e;
 
-		$patternFile = $this->getPatternFileName($patternName, isset($setup["directoryOverride"]) ? $setup["directoryOverride"] : null);
+		$patternFile = $this->getPatternFileName($patternName, $directoryOverride);
 
 		// Check cache
 		if (
-			(isset($this->getConfig("cachedPatterns")[$patternName]) && !isset($setup["isCache"]))
+			(isset($this->getConfig("cachedPatterns")[$patternName]) && is_null($isCache))
 			||
-			($setup["isCache"] ?? false)
+			$isCache
 		)
 			if (
 				isset($this->getConfig("cachedPatterns")[$patternName])
 				||
-				$setup["isCache"]
+				$isCache
 			) {
-				$cacheProviderName = $setup["cacheProviderName"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?? false ?: $this->getConfig("defaultCacheProviderName");
+				$cacheProviderName = $cacheProviderName ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?? false ?: $this->getConfig("defaultCacheProviderName");
 				$cacheKey = \Cherrycake\Cache\Cache::buildCacheKey([
 					"prefix" => $setup["cachePrefix"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?? false ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
@@ -118,21 +149,22 @@ class Patterns extends \Cherrycake\Module {
 					return $buffer;
 			}
 
-		if (isset($setup["noParse"]))
+		if ($noParse)
 			return file_get_contents($patternFile);
 
-		if (isset($setup["fileToIncludeBeforeParsing"]))
-			if (is_array($setup["fileToIncludeBeforeParsing"]))
-				foreach ($setup["fileToIncludeBeforeParsing"] as $fileToIncludeBeforeParsing) {
+		if ($fileToIncludeBeforeParsing)
+			if (is_array($fileToIncludeBeforeParsing)) {
+				foreach ($fileToIncludeBeforeParsing as $fileToIncludeBeforeParsing) {
 					include($fileToIncludeBeforeParsing);
 				}
-				else {
-					if ($setup["fileToIncludeBeforeParsing"] ?? false)
-						include($setup["fileToIncludeBeforeParsing"]);
-				}
+			}
+			else {
+				if ($fileToIncludeBeforeParsing)
+					include($fileToIncludeBeforeParsing);
+			}
 
-		if (isset($setup["variables"])) {
-			foreach ($setup["variables"] as $variableName => $variable)
+		if ($variables) {
+			foreach ($variables as $variableName => $variable)
 				eval("\$".$variableName." = \$variable;");
 		}
 
@@ -145,30 +177,30 @@ class Patterns extends \Cherrycake\Module {
 
 		// Cache store
 		if (
-			(isset($this->getConfig("cachedPatterns")[$patternName]) && !isset($setup["isCache"]))
+			(isset($this->getConfig("cachedPatterns")[$patternName]) && is_null($isCache))
 			||
-			($setup["isCache"] ?? false)
+			$isCache
 		)
 			$e->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$buffer,
-				$setup["cacheTtl"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?? false ?: $this->getConfig("defaultCacheTtl")
+				$cacheTtl ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?: $this->getConfig("defaultCacheTtl")
 			);
 
 		return $buffer;
 	}
 
 	/**
-	 * getPatternFileName
-	 *
 	 * Builds the complete filename and path of a pattern
-	 *
 	 * @param string $patternName The pattern name
 	 * @param string $directoryOverride When specified, the pattern is taken from this directory instead of the default configured directory.
 	 * @return string The complete pattern filename
 	 */
-	function getPatternFileName($patternName, $directoryOverride = null) {
-		return (!is_null($directoryOverride) ? $directoryOverride.($directoryOverride != "" ? "/" : "") : APP_DIR."/".$this->getConfig("directory")."/").$patternName;
+	function getPatternFileName(
+		string $patternName,
+		string $directoryOverride = '',
+	): string {
+		return ($directoryOverride ? $directoryOverride.($directoryOverride != "" ? "/" : "") : APP_DIR."/".$this->getConfig("directory")."/").$patternName;
 	}
 
 	/**

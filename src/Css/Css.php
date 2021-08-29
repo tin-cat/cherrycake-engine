@@ -305,10 +305,8 @@ class Css extends \Cherrycake\Module {
 
 				$css .= $e->Patterns->parse(
 					$file,
-					[
-						"directoryOverride" => $requestedSet["directory"] ?? false,
-						"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
-					]
+					directoryOverride: $requestedSet["directory"] ?? false,
+					fileToIncludeBeforeParsing: $requestedSet["variablesFile"] ?? false
 				)."\n";
 
 				$fileExtension = strtolower(substr($file, strrpos($file, '.') + 1));
