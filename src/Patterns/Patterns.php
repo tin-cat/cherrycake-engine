@@ -18,7 +18,7 @@ class Patterns extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"directory" => "patterns", // The directory where patterns are stored
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use for cached patterns.
 		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use for cached patterns.
@@ -28,7 +28,7 @@ class Patterns extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Cache"

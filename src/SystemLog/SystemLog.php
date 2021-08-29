@@ -12,7 +12,7 @@ class SystemLog extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"eventsToLog" => false, // An array of the SystemLogEvent class names to be stored in the log. The events not listed here will not be logged even if they're triggered. Set it to false to log all events.
 		"tableName" => "cherrycake_systemLog", // The name of the table in the database where the log events will be stored.
 		"cacheProviderName" => "engine", // The name of the cache provider to use.
@@ -24,7 +24,7 @@ class SystemLog extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Database",
 		"Cache"
 	];

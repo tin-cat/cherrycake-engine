@@ -32,7 +32,7 @@ class Validate extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"emailValidationMethod" => \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE,
 		"emailValidationMailgunConfig" => [
 			"endpoint" => "https://api.mailgun.net/v3/address/validate",

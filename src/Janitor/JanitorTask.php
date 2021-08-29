@@ -12,7 +12,7 @@ class JanitorTask {
 	/**
 	 * @var array $config Holds the default configuration for this JanitorTask
 	 */
-	protected $config = [
+	protected array $config = [
 		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL, // The periodicity for this task execution. One of the available \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_? constants.
 		"periodicityEachSeconds" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, this is the number of seconds between each execution.
 		"periodicityMinutes" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_MINUTES, this is an array specifying the minutes within each hour when this task will be executed, in the syntax: [0, 15, 30, 45, ...]

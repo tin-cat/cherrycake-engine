@@ -35,7 +35,7 @@ class Errors  extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"isHtmlOutput" => true,
 		"patternName" => [
 			\Cherrycake\ERROR_SYSTEM => "errors/error.html",
@@ -57,7 +57,7 @@ class Errors  extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output"
 	];
 

@@ -12,7 +12,7 @@ class Stats extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"databaseProviderName" => "main", // The name of the database provider to use.
 		"cacheProviderName" => "engine", // The name of the cache provider used to temporarily store stats events. Must support queueing.
 		"cacheKeyUniqueId" => "QueuedStats", // The unique cache key to use when storing stat events into cache. Defaults to "QueuedStats"
@@ -22,7 +22,7 @@ class Stats extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Database",
 		"Cache"

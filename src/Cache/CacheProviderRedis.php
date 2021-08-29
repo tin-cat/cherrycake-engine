@@ -14,7 +14,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	/**
 	 * @var array $config Holds the configuration of the cache provider when needed; things like host, port and password. This is set by the Cache object from the Cherrycake configuration files when this cache provider is setup.
 	 */
-	protected $config = [
+	protected array $config = [
 		"scheme" => "tcp",
 		"host" => "localhost",
 		"port" => 6379,

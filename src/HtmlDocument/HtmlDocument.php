@@ -12,7 +12,7 @@ class HtmlDocument extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"title" => false,  // The page title
 		"description" => false,  // The page description
 		"copyright" => false, // The page copyright info
@@ -51,51 +51,42 @@ class HtmlDocument extends \Cherrycake\Module {
 	/**
 	 * @var string $inlineJavascript Javascript code that must be executed inline from the HTML
 	 */
-	private $inlineJavascript;
+	private string $inlineJavascript = '';
 
 	/**
 	 * @var mixed $footerAdditionalHtml HTML code to be additionally added to the end of the document body
 	 */
-	private $footerAdditionalHtml = false;
+	private string $footerAdditionalHtml = '';
 
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module, to be dumped on the header method
 	 */
-	var $dependentCoreModules = [
+	var array $dependentCoreModules = [
 		"Css",
 		"Javascript"
 	];
 
 	/**
-	 * setTitle
-	 *
 	 * Sets the Html document's title
-	 *
 	 * @param string $title The title
 	 */
-	function setTitle($title) {
+	function setTitle(string $title) {
 		$this->setConfig("title", $title);
 	}
 
 	/**
-	 * setDescription
-	 *
 	 * Sets the Html document's description
-	 *
 	 * @param string $description The description
 	 */
-	function setDescription($description) {
+	function setDescription(string $description) {
 		$this->setConfig("description", $description);
 	}
 
 	/**
-	 * addKeywords
-	 *
 	 * Adds keywords to the document
-	 *
-	 * @param mixed $keywords An array of keywords or a single string keyword
+	 * @param array|string $keywords An array of keywords or a single string keyword
 	 */
-	function addKeywords($keywords) {
+	function addKeywords(array|string $keywords) {
 		if (is_array($keywords))
 			$this->setConfig("keywords", array_merge($this->getConfig("keywords"), $keywords));
 		else
@@ -103,40 +94,36 @@ class HtmlDocument extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addInlineJavascript
-	 *
 	 * Adds Javascript code to be executed inline on the HTML itself. If isDeferJavascript is true, this code will be executed only after Javascript sets have been loaded by the client
-	 *
-	 * @param $javascript
+	 * @param string $javascript
 	 */
-	function addInlineJavascript($javascript) {
+	function addInlineJavascript(string $javascript) {
 		$this->inlineJavascript .= $javascript;
 	}
 
 	/**
 	 * Adds HTML code to the end of the document body
-	 *
 	 * @param string $html The HTML to add to the end of the body
 	 */
-	function addFooterAdditionalHtml($html) {
+	function addFooterAdditionalHtml(string $html) {
 		$this->footerAdditionalHtml .= $html;
 	}
 
 	/**
-	 * @return mixed The HTML code to be added to the end of the document body, or false if none specified.
+	 * @return string The HTML code to be added to the end of the document body, or false if none specified.
 	 */
-	function getFooterAdditionalHtml() {
+	function getFooterAdditionalHtml():string {
 		return $this->footerAdditionalHtml;
 	}
 
 	/**
 	 * Builds a standard HTML header, from the <html ... > to the <body ...> tags. It works with the Css and Javascript modules to include the proper CSS/JavaScript calls.
-	 *
-	 * @param array $setup Setup options to configure the HTML header, with possible keys:
-	 * "bodyAdditionalCssClasses" => false // Additional CSS classes for the body element
+	 * @param string $bodyAdditionalCssClasses Additional CSS classes for the body element
 	 * @return string The HTML header
 	 */
-	function header($setup = false) {
+	function header(
+		string $bodyAdditionalCssClasses = ''
+	): string {
 		global $e;
 
 		$r = "<!DOCTYPE html>\n";
@@ -283,14 +270,13 @@ class HtmlDocument extends \Cherrycake\Module {
 
 		$r .= "</head>\n";
 
-		$r .= "<body".(isset($setup["bodyAdditionalCssClasses"]) ? " class=\"".$setup["bodyAdditionalCssClasses"]."\"" : "").">\n";
+		$r .= "<body".($bodyAdditionalCssClasses ? " class=\"".$bodyAdditionalCssClasses."\"" : "").">\n";
 
 		return $r;
 	}
 
 	/**
 	 * Builds a standard HTML footer, from the </body> to the </html> tags. Works with the Javascript module to implement deferred JavaScript capabilities.
-	 *
 	 * @todo Inlined Javascript should be minimized
 	 */
 	function footer() {
@@ -367,7 +353,7 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @param string $trackingId The Google Analytics tracking id to use
 	 * @return string The HTML code for Google Analytics tracking for the given $trackingId
 	 */
-	function getGoogleAnalyticsCode($trackingId) {
+	function getGoogleAnalyticsCode(string $trackingId): string {
 		return
 			"<script>\n".
 				"(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n".
@@ -385,7 +371,10 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @param string $id The Matomo tracking Id
 	 * @return string The HTML code for Matomo Analytics tracking
 	 */
-	function getMatomoCode($serverUrl, $id) {
+	function getMatomoCode(
+		string $serverUrl,
+		string $id
+	): string {
 		return
 			"<script>\n".
 				"var _paq = _paq || [];\n".

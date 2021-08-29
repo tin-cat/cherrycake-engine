@@ -12,7 +12,7 @@ class Locale extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		/*
 			A hash array of available localizations the app supports, where each key is the locale name, and each value a hash array with the following keys:
 				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
@@ -50,7 +50,7 @@ class Locale extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Cache",

@@ -12,7 +12,7 @@ class Javascript extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
 		"cacheProviderName" => "engine", // The name of the cache provider to use
 		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
@@ -25,7 +25,7 @@ class Javascript extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Actions",
 		"Cache",

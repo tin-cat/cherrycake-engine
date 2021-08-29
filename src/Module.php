@@ -11,22 +11,22 @@ class Module {
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
-	protected $isConfigFileRequired = false;
+	protected bool $isConfigFileRequired = false;
 
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
-	protected $config;
+	protected array $config = [];
 
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	protected $dependentCoreModules;
+	protected array $dependentCoreModules = [];
 
 	/**
 	 * @var array $dependentAppModules App module names that are required by this module
 	 */
-	protected $dependentAppModules;
+	protected array $dependentAppModules = [];
 
 	// /**
 	//  * Returns a new instance of this module with the given optional configuration values.
@@ -127,14 +127,14 @@ class Module {
 	function loadDependencies(): bool {
 		global $e;
 
-		if (is_array($this->dependentCoreModules)) {
+		if ($this->dependentCoreModules) {
 			foreach ($this->dependentCoreModules as $moduleName) {
 				if (!$e->loadCoreModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}
 
-		if (is_array($this->dependentAppModules)) {
+		if ($this->dependentAppModules) {
 			foreach ($this->dependentAppModules as $moduleName) {
 				if (!$e->loadAppModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;

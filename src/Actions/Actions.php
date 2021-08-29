@@ -13,7 +13,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use.
 		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
 		"defaultCachePrefix" => "Actions",
@@ -23,7 +23,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Security"

@@ -15,7 +15,7 @@ class DatabaseProvider {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	protected $config = [
+	protected array $config = [
 		"cacheKeyPrefix" => "Database",
 		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
 		"cacheProviderName" => "engine"

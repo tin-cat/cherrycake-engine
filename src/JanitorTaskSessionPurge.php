@@ -14,7 +14,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	protected $config = [
+	protected array $config = [
 		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
 		"purgeSessionsWithoutDataOlderThanSeconds" => 86400, // Sessions older than this seconds without any data will be deleted from the database, since they haven't been actually used (most likely, visits that have bounced the site). (86400 = 1 day)

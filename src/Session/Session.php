@@ -22,7 +22,7 @@ class Session extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"sessionDatabaseProviderName" => "main", // The name of the database provider to use for storing sessions
 		"sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
 		"sessionCacheProviderName" => "engine", // The name of the cache provider to use to store sessions and the counter of created sessions
@@ -39,7 +39,7 @@ class Session extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Cache",
 		"Database"

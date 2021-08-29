@@ -20,7 +20,7 @@ class Janitor extends \Cherrycake\Module {
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
-	protected $config = [
+	protected array $config = [
 		"logDatabaseProviderName" => "main", // The name of the DatabaseProvider to use for storing Janitor log.
 		"logTableName" => "cherrycake_janitor_log", // The name of the table used to store Janitor log.
 		"coreJanitorTasks" => [ // An array of names of Cherrycake core JanitorTask classes to run.
@@ -37,7 +37,7 @@ class Janitor extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Database"
 	];

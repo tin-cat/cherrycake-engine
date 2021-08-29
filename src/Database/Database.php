@@ -36,12 +36,12 @@ class Database extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
-	protected $isConfigFileRequired = true;
+	protected bool $isConfigFileRequired = true;
 
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Cache"
 	];

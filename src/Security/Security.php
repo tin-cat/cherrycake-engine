@@ -13,7 +13,7 @@ class Security  extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"isCheckMaliciousBadBrowsers" => true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true
 		"permanentlyBannedIps" => [], // An array of banned IPs that must be blocked from accessing the application
 		"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
@@ -26,7 +26,7 @@ class Security  extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Cache"

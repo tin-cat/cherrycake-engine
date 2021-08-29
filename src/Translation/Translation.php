@@ -12,7 +12,7 @@ class Translation extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		'cacheProviderName' => 'engine', // The default cache provider name to use.
 		'cacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
 		'cacheUniqueId' => 'TranslationData', // The prefix string to add to cached keys
@@ -24,7 +24,7 @@ class Translation extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		'Errors',
 		'Cache',
 		'Locale'

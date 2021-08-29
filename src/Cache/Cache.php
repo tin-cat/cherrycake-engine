@@ -15,7 +15,7 @@ class Cache extends \Cherrycake\Module {
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
-	protected $isConfigFileRequired = false;
+	protected bool $isConfigFileRequired = false;
 
 	/**
 	 * init
@@ -47,7 +47,7 @@ class Cache extends \Cherrycake\Module {
 		// Sets up providers
 		if (is_array($providers = $this->getConfig("providers")))
 			foreach ($providers as $key => $provider)
-				$this->addProvider($key, $provider["providerClassName"], (isset($provider["config"]) ? $provider["config"] : null));
+				$this->addProvider($key, $provider["providerClassName"], $provider["config"] ?? []);
 
 		return true;
 	}
@@ -61,7 +61,11 @@ class Cache extends \Cherrycake\Module {
 	 * @param string $providerClassName The cache provider class name
 	 * @param array $config The configuration for the cache provider
 	 */
-	function addProvider($key, $providerClassName, $config) {
+	function addProvider(
+		string $key,
+		string $providerClassName,
+		array $config = [],
+	) {
 		eval("\$this->".$key." = new \\Cherrycake\\Cache\\".$providerClassName."();");
 		$this->$key->config($config);
 	}

@@ -13,7 +13,7 @@ class Log extends \Cherrycake\Module {
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
-	protected $config = [
+	protected array $config = [
 		"databaseProviderName" => "main", // The name of the database provider where the log table is found
 		"cacheProviderName" => "engine", // The name of the cache provider that will be used to temporally store events as they happen, to be later added to the database by the JanitorTaskLog
 		"cacheKeyUniqueId" => "QueuedLogEvents", // The unique cache key to use when storing events into cache.
@@ -23,7 +23,7 @@ class Log extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Database",
 		"Cache"
