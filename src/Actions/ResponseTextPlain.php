@@ -14,5 +14,5 @@ class ResponseTextPlain extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	protected $contentType = "text/plain";
+	protected string $contentType = "text/plain";
 }

@@ -14,7 +14,7 @@ class ResponseFile extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	// protected $contentType = "application/octet-stream";
+	// protected string $contentType = "application/octet-stream";
 
 	private $filePath;
 	private $fileName;

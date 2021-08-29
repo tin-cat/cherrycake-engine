@@ -293,9 +293,9 @@ class Errors  extends \Cherrycake\Module {
 
 			case "plain":
 				if ($e->isDevel()) {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" =>
+					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						payload:
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								\Cherrycake\ERROR_SYSTEM => "System error",
 								\Cherrycake\ERROR_APP => "App error",
@@ -306,13 +306,13 @@ class Errors  extends \Cherrycake\Module {
 							($description ?? false ? "Description: ".$description."\n" : null).
 							($variables ?? false ? "Variables:\n".print_r($variables, true)."\n" : null).
 							"Backtrace:\n".strip_tags(implode("\n", $backtrace_info))
-					]));
+					));
 				}
 				else {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" => "Error"
-					]));
+					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						payload: "Error"
+					));
 				}
 				break;
 		}

@@ -13,30 +13,33 @@ namespace Cherrycake\Output;
  */
 class Output  extends \Cherrycake\Module {
 	/**
-	 * @var Response $response The Response that will be sent to the client
+	 * @var \Cherrycake\Actions\Response $response The Response that will be sent to the client
 	 */
-	private $response = null;
+	private \Cherrycake\Actions\Response $response;
 
 	/**
 	 * Sets the Response object that will be sent to the client
+	 * @param \Cherrycake\Actions\Response $response The response
 	 */
-	function setResponse($response) {
+	function setResponse(\Cherrycake\Actions\Response $response) {
 		$this->response = $response;
 	}
 
 	/**
-	 * @return Response The current Response object
+	 * @return \Cherrycake\Actions\Response The current Response object
 	 */
-	function getResponse() {
+	function getResponse(): \Cherrycake\Actions\Response {
 		return $this->response;
 	}
 
 	/**
 	 * Sends the current response. If a response is passed, sets it as the current response and then sends it.
-	 * @param Response Optionally, the Response to send. If not specified, the current Response will be sent.
+	 * @param \Cherrycake\Actions\Response|null Optionally, the Response to send. If not specified, the current Response will be sent.
 	 */
-	function sendResponse($response = false) {
-		if ($response)
+	function sendResponse(
+		\Cherrycake\Actions\Response|null $response = null
+	) {
+		if (!is_null($response))
 			$this->setResponse($response);
 		if ($this->response)
 			$this->response->send();

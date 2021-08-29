@@ -370,7 +370,7 @@ class Css extends \Cherrycake\Module {
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if (!$request->set) {
-			$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss());
+			$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss);
 			return;
 		}
 
@@ -396,9 +396,7 @@ class Css extends \Cherrycake\Module {
 				$css .= "/* Css set \"".$setName."\" (not cached) */\n";
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss([
-			"payload" => $css
-		]));
+		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss(payload: $css));
 		return;
 	}
 

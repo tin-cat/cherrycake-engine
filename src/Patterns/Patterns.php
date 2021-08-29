@@ -37,28 +37,29 @@ class Patterns extends \Cherrycake\Module {
 	/**
 	 * @var string $lastEvaluatedCode Contains the last evaluated code
 	 */
-	private $lastEvaluatedCode;
+	private string $lastEvaluatedCode;
 
 	/**
 	 * @var string $lastTreatedFile The name of the last treated file
 	 */
-	private $lastTreatedFile;
+	private string $lastTreatedFile;
 
 	/**
-	 * out
-	 *
 	 * Parses a pattern and sets the result as the output response payload
-	 *
 	 * @param string $patternName The name of the pattern to out
 	 * @param array $setup Additional setup with additional options. See Parse method for details.
-	 * @param integet $code The response code to send, one of the RESPONSE_* available
+	 * @param int $code The response code to send, one of the RESPONSE_* available
 	 */
-	function out($patternName, $setup = false, $code = false) {
+	function out(
+		string $patternName,
+		array $setup = [],
+		int|null $code = null
+	) {
 		global $e;
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-			"code" => $code,
-			"payload" => $this->parse($patternName, $setup)
-		]));
+		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+			code: $code,
+			payload: $this->parse($patternName, $setup),
+		));
 	}
 
 	/**

@@ -14,5 +14,5 @@ class ResponseApplicationJavascript extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	protected $contentType = "application/javascript";
+	protected string $contentType = "application/javascript";
 }

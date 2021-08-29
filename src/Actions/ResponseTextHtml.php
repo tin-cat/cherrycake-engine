@@ -12,7 +12,7 @@ namespace Cherrycake\Actions;
  */
 class ResponseTextHtml extends Response {
 	/**
-	 * @var integer $contentType The content type of the response
+	 * @var string $contentType The content type of the response
 	 */
-	protected $contentType = "text/html";
+	protected string $contentType = "text/html";
 }

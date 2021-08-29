@@ -14,5 +14,5 @@ class ResponseTextCss extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	protected $contentType = "text/css";
+	protected string $contentType = "text/css";
 }

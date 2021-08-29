@@ -433,9 +433,9 @@ function handleError(
 		switch ($currentActionClass) {
 
 			case "Cherrycake\ActionHtml":
-				$response = new \Cherrycake\Actions\ResponseTextHtml([
-					"payload" => $e->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
-				]);
+				$response = new \Cherrycake\Actions\ResponseTextHtml(
+					payload: $e->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
+				);
 				break;
 
 			case "Cherrycake\ActionAjax":
@@ -480,9 +480,9 @@ function handleError(
 
 			default:
 				if ($e->isDevel()) {
-					$response = new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" =>
+					$response = new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						payload:
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
 								E_WARNING => "Warning",
@@ -504,13 +504,13 @@ function handleError(
 							"File: ".$errFile."\n".
 							"Line: ".$errLine."\n".
 							"Backtrace:\n".strip_tags(implode("\n", $backtrace_info))
-					]);
+					);
 				}
 				else {
-					$response = new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" => "Error"
-					]);
+					$response = new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						payload: "Error"
+					);
 				}
 				break;
 		}

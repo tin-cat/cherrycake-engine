@@ -14,5 +14,5 @@ class ResponseImageGif extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	protected $contentType = "image/gif";
+	protected string $contentType = "image/gif";
 }

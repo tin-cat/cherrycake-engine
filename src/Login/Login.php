@@ -4,7 +4,6 @@ namespace Cherrycake\Login;
 
 /**
  * Provides a standardized method for implementing secure user identification workflows for web apps.
- *
  * @package Cherrycake
  * @category Modules
  */
@@ -30,15 +29,12 @@ class Login extends \Cherrycake\Module {
 	];
 
 	/**
-	 * @var User $user The user object that represents the logged user, object of class specified as "userClassName" in config, must implement the \Cherrycake\LoginUser interface
+	 * @var LoginUser $user The user object that represents the logged user, object of class specified as "userClassName" in config, must implement the \Cherrycake\LoginUser interface
 	 */
-	public $user = false;
+	public LoginUser $user;
 
 	/**
-	 * init
-	 *
 	 * Initializes the module and loads the base CacheProvider class
-	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
 	function init(): bool {
@@ -54,13 +50,10 @@ class Login extends \Cherrycake\Module {
 	}
 
 	/**
-	 * loadUser
-	 *
 	 * If a user is logged, gets it and loads it into $this->user
-	 *
 	 * @return bool Whether the user was successfully retrieved. False if there's no logged user, or if there's an error while retrieving it.
 	 */
-	function loadUser() {
+	function loadUser(): bool {
 		global $e;
 		if (!$e->Session->isSession())
 			return false;
@@ -84,14 +77,11 @@ class Login extends \Cherrycake\Module {
 	}
 
 	/**
-	 * encryptPassword
-	 *
 	 * Encrypts the given password with the configured password encryption method
-	 *
 	 * @param string $password The password to encrypt
-	 * @return mixed The encrypted string, or false if the password could not be encrypted
+	 * @return string|bool The encrypted string, or false if the password could not be encrypted
 	 */
-	function encryptPassword($password) {
+	function encryptPassword(string $password): string|bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
 			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
@@ -103,15 +93,12 @@ class Login extends \Cherrycake\Module {
 	}
 
 	/**
-	 * checkPassword
-	 *
 	 * Checks the given password against the given encrypted password with the configured encryption method
-	 *
 	 * @param string $passwordToCheck The plain password to check
 	 * @param string $encryptedPassword The encrypted password to check against
 	 * @return boolean True if password is correct, false otherwise
 	 */
-	function checkPassword($passwordToCheck, $encryptedPassword) {
+	function checkPassword(string $passwordToCheck, string $encryptedPassword): bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
 			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
@@ -124,24 +111,19 @@ class Login extends \Cherrycake\Module {
 
 	/**
 	 * Checks whether there is a logged user or not
-	 *
 	 * @return bool True if there is a logged user, false otherwise.
 	 */
-	function isLogged() {
-		if ($this->user !== false)
-			return true;
-		else
-			return false;
+	function isLogged(): bool {
+		return $this->user !== false;
 	}
 
 	/**
 	 * Checks the given credentials in the database, and logs in the user if they're found to be correct.
-	 *
 	 * @param string $userName The string field that uniquely identifies the user on the database, the one used by the user to login. Usually, an email or a username.
 	 * @param string $password The password entered by the user to login.
-	 * @return integer One of the \Cherrycake\LOGIN_RESULT_* consts
+	 * @return int One of the \Cherrycake\LOGIN_RESULT_* consts
 	 */
-	function doLogin($userName, $password) {
+	function doLogin(string $userName, string $password): int {
 		eval("\$user = new ".$this->getConfig("userClassName")."();");
 
 		if (!$user->loadFromUserNameField($userName)) {
@@ -164,22 +146,19 @@ class Login extends \Cherrycake\Module {
 	}
 
 	/**
-	 * doLogout
-	 *
 	 * Logs out the user
-	 *
-	 * @return integer One of the \Cherrycake\LOGOUT_RESULT_* consts
+	 * @return int One of the \Cherrycake\LOGOUT_RESULT_* consts
 	 */
-	function doLogout() {
+	function doLogout(): int {
 		return $this->logoutUser();
 	}
 
 	/**
 	 * Logs in the current user as the specified $userId
-	 * @param integer $userId The user id to log in
+	 * @param int $userId The user id to log in
 	 * @return bool Whether the session info to log the user could be set or not
 	 */
-	function loginUserId($userId) {
+	function loginUserId(int $userId): bool {
 		global $e;
 		return $e->Session->setSessionData("userId", $userId);
 	}
@@ -195,11 +174,8 @@ class Login extends \Cherrycake\Module {
 	}
 
 	/**
-	 * debug
-	 *
 	 * @return string Debug info about the current login
 	 */
-	function debug() {
-	}
+	function debug(): string {}
 
 }

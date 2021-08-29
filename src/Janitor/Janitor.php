@@ -275,9 +275,7 @@ class Janitor extends \Cherrycake\Module {
 			reset($this->janitorTasks);
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain([
-			"payload" => $r
-		]));
+		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
 	}
 
 	/**
@@ -318,9 +316,7 @@ class Janitor extends \Cherrycake\Module {
 			}
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain([
-			"payload" => $r
-		]));
+		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
 	}
 
 	/**

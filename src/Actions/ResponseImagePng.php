@@ -14,5 +14,5 @@ class ResponseImagePng extends Response {
 	/**
 	 * @var integer $contentType The content type of the response
 	 */
-	protected $contentType = "image/png";
+	protected string $contentType = "image/png";
 }

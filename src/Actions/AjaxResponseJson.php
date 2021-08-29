@@ -71,9 +71,7 @@ class AjaxResponseJson {
 		if ($this->data)
 			$r["data"] = $this->data;
 
-		return new \Cherrycake\Actions\ResponseApplicationJson([
-			"payload" => $r
-		]);
+		return new \Cherrycake\Actions\ResponseApplicationJson(payload: $r);
 	}
 
 	/**
