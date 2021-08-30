@@ -15,7 +15,7 @@ class RequestPathComponent {
 
 	function __construct(
 		public int $type,
-		public string $string,
+		public string $string = '',
 		public string $name = '',
 		private array $securityRules = [],
 		private array $filters = [],
@@ -79,7 +79,7 @@ class RequestPathComponent {
 	 * Checks this path component's value against its configured security rules (and/or the Security defaulted rules)
 	 * @return Result A Result object, like Security::checkValue
 	 */
-	function checkValueSecurity(): Result {
+	function checkValueSecurity(): \Cherrycake\Result {
 		global $e;
 		return $e->Security->checkValue($this->getValue(), $this->securityRules);
 	}

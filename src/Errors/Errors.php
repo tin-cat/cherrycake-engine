@@ -203,15 +203,13 @@ class Errors  extends \Cherrycake\Module {
 
 					$e->Patterns->out(
 						$patternNames[$type],
-						[
-							"variables" => [
-								"type" => $type,
-								"description" => isset($description) ? $description : false,
-								"variables" => isset($variables) ? $variables : false,
-								"backtrace" => $backtrace
-							]
+						variables: [
+							"type" => $type,
+							"errorDescription" => isset($description) ? $description : false,
+							"variables" => isset($variables) ? $variables : false,
+							"backtrace" => $backtrace
 						],
-						[
+						code: [
 							\Cherrycake\ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
 							\Cherrycake\ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
 							\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
