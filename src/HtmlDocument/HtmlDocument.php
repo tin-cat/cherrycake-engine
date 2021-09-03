@@ -173,9 +173,8 @@ class HtmlDocument extends \Cherrycake\Module {
 
 		// Css
 		if ($e->Css) {
-			if (!$cssSets = $this->getConfig("cssSets")) {
+			if (!$cssSets = $this->getConfig("cssSets"))
 				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl()."\" />\n";
-			}
 			else
 			if (is_array($cssSets[0])) {
 				foreach ($cssSets as $cssSet)
@@ -188,17 +187,7 @@ class HtmlDocument extends \Cherrycake\Module {
 
 		// Javascript
 		if ($e->Javascript) {
-			if (!$javascriptSets = $this->getConfig("javascriptSets")) {
-				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl()."\"></script>\n";
-			}
-			else
-			if (is_array($javascriptSets[0])) {
-				foreach ($javascriptSets as $javascriptSet)
-					$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSet)."\"></script>\n";
-			}
-			else
-			if (is_array($javascriptSets))
-				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSets)."\"></script>\n";
+			$r .= $e->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets"));
 		}
 
 		// Mobile viewport

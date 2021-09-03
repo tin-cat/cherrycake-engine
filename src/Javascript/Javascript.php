@@ -131,6 +131,28 @@ class Javascript extends \Cherrycake\Module {
 	}
 
 	/**
+	 * Builds HTML headers to request the given sets contents.
+	 * Also stores the parsed set in cache for further retrieval by the dump method
+	 *
+	 * @param mixed $setNames Optional nhe name of the Javascript set, or an array of them. If set to false, all available sets are used.
+	 * @return string The HTML header of the Javascript set
+	 */
+	function getSetsHtmlHeaders($setNames = false) {
+		if ($setNames === false)
+			$setNames = array_keys($this->getOrderedSets($setNames));
+		if (!is_array($setNames))
+			$setNames = [$setNames];
+
+		if (!count($setNames))
+			return;
+
+		$r = '';
+		foreach ($setNames as $setName)
+			$r .= "<script type=\"".($this->sets[$setName]['type'] ?? false ?: 'text/javascript')."\" src=\"".$this->getSetUrl($setName)."\"></script>\n";
+		return $r;
+	}
+
+	/**
 	 * Builds a URL to request the given set contents.
 	 * Also stores the parsed set in cache for further retrieval by the dump method
 	 *
