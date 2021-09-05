@@ -105,85 +105,44 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Builds a unique id that uniquely identifies the specified set with its current files and its contents.
-	 * Unique ids for sets change if the list of files in a set changes, or if the contents of any of the files changes.
-	 * Set unique ids are stored in shared memory, and generated when they're not found there.
-	 * Set unique ids are stored with a TTL of 1 if the app is in development mode.
-	 * This ultimately causes the browser to easily cache the requests because the URL uniquely identifies versions, automatically causing a cache miss when the contents have changed, avoiding any need to keep track of cache versions manually.
-	 * @param string $setName The name of the set
-	 * @return string A uniq id
+	 * Builds HTML headers to request the given sets contents.
+	 *
+	 * @param array|string $setNames Name of the Css set, or an array of them. If set to false, all available sets are used.
+	 * @return string The HTML header of the Css set
 	 */
-	function getSetUniqueId($setName) {
-		global $e;
+	function getSetsHtmlHeaders($setNames = false) {
+		if (!$setNames)
+			return;
 
-		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
-		$cacheKey = $e->Cache->buildCacheKey([
-			"prefix" => "cssSetUniqueId",
-			"uniqueId" => $setName
-		]);
+		if (!is_array($setNames))
+			$setNames = [$setNames];
 
-		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-			return $e->Cache->$cacheProviderName->get($cacheKey);
+		if (!count($setNames))
+			return;
 
-		$uniqId = md5($this->parseSet($setName));
-
-		$e->Cache->$cacheProviderName->set($cacheKey, $uniqId, $cacheTtl);
-		return $uniqId;
+		$r = '';
+		foreach ($setNames as $setName)
+			$r .= '<link rel="stylesheet" href="'.$this->getSetUrl($setName).'">'."\n";
+		return $r;
 	}
 
 	/**
 	 * Builds a URL to request the given set contents.
-	 * Also stores the parsed set in cache for retrieval by the dump method in another request.
-	 *
-	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
+	 * @param string $setName Name of the Javascript set
 	 * @return string The Url of the Css requested sets
 	 */
-	function getSetUrl($setNames = false) {
+	function getSetUrl(string $setName): string {
 		global $e;
 
 		if (!is_array($this->sets))
 			return null;
 
-		$orderedSets = $this->getOrderedSets($setNames);
-		$parameterSetNames = "";
-		foreach ($orderedSets as $setName => $set) {
-			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
-			$this->storeParsedSetInCache($setName);
-		}
-		$parameterSetNames = substr($parameterSetNames, 0, -1);
-
 		return $e->Actions->getAction("css")->request->buildUrl(
 			parameterValues: [
-				"set" => $parameterSetNames,
-				"version" => $this->getConfig("lastModifiedTimestamp")
+				"set" => $setName,
+				"version" => ($this->getConfig("isCache") ? $this->getConfig("lastModifiedTimestamp") : uniqid())
 			]
 		);
-	}
-
-	/**
-	 * Returns an ordered version of the current sets
-	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
-	 * @return array The sets
-	 */
-	function getOrderedSets($setNames = false) {
-		if ($setNames == false)
-			$setNames = array_keys($this->sets);
-
-		if (!is_array($setNames))
-			$setNames = [$setNames];
-
-		foreach ($setNames as $setName)
-			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
-		ksort($orderedSetNames);
-
-		foreach ($orderedSetNames as $order => $setNames) {
-			foreach ($setNames as $setName) {
-				$orderedSets[$setName] = $this->sets[$setName];
-			}
-		}
-
-		return $orderedSets;
 	}
 
 	/**
@@ -352,13 +311,10 @@ class Css extends \Cherrycake\Module {
 	}
 
 	/**
-	 * dump
-	 *
 	 * Outputs the requested CSS sets to the client.
 	 * It guesses what CSS sets to dump via the "set" get parameter.
 	 * It handles CSS caching,
 	 * Intended to be called from a <link rel ...>
-	 *
 	 * @param Request $request The Request object received
 	 */
 	function dump($request) {
@@ -372,26 +328,24 @@ class Css extends \Cherrycake\Module {
 			return;
 		}
 
-		$setPairs = explode("-", $request->set);
-
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 
-		$css = "";
+		$css = '';
 
-		foreach ($setPairs as $setPair) {
-			list($setName, $setUniqueId) = explode(":", $setPair);
-			$cacheKey = $e->Cache->buildCacheKey([
-				"prefix" => "cssParsedSet",
-				"setName" => $setName,
-				"uniqueId" => $setUniqueId
-			]);
-			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-				$css .=
-					($e->isDevel() ? "/* Css set \"".$setName."\" (cached) */\n" : null).
-					$e->Cache->$cacheProviderName->get($cacheKey);
-			else
-			if ($e->isDevel())
-				$css .= "/* Css set \"".$setName."\" (not cached) */\n";
+		$cacheKey = $e->Cache->buildCacheKey([
+			"prefix" => "cssParsedSet",
+			"uniqueId" => $request->set.'_'.$this->getConfig("lastModifiedTimestamp")
+		]);
+
+		if ($this->getConfig("isCache") && $e->Cache->$cacheProviderName->isKey($cacheKey))
+			$css = $e->Cache->$cacheProviderName->get($cacheKey);
+		else {
+			$css = $this->parseSet($request->set);
+			$e->Cache->$cacheProviderName->set(
+				$cacheKey,
+				$css,
+				$this->GetConfig("cacheTtl")
+			);
 		}
 
 		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss(payload: $css));
@@ -525,8 +479,7 @@ class Css extends \Cherrycake\Module {
 	 */
 	function getStatus() {
 		if (is_array($this->sets)) {
-			$orderedSets = $this->getOrderedSets();
-			foreach ($orderedSets as $setName => $set) {
+			foreach ($this->sets as $setName => $set) {
 
 				$r[$setName]["order"] = $set["order"] ?? $this->getConfig("defaultSetOrder");
 

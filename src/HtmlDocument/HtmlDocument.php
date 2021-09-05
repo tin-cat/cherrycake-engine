@@ -43,8 +43,8 @@ class HtmlDocument extends \Cherrycake\Module {
 		"matomoServerUrl" => false, // The Matomo (Piwik) server URL, if any.
 		"matomoTrackingId" => false, // The Matomo (Piwik) tracking id, if any.
 		"googleAnalyticsTrackingId" => false, // The Google Analytics id, if any.
-		"cssSets" => false, // An array of the Css set names to link in the HTML document in a single request, or, to add different Css requests instead of one, an array where each item represents a single request, and is an array of Css set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
-		"javascriptSets" => false, // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
+		"cssSets" => [], // An array of the Css set names to link in the HTML document
+		"javascriptSets" => [], // An array of the Javascript set names to link in the HTML document
 		"googleFonts" => false // An array of the Google fonts to include, where each item is a hash array containing the following keys: "family": The font family (i.e.: "Duru Sans"), "subset" The subset (i.e.: "latin"), "weight" The font weight (i.e.: 300)
 	];
 
@@ -119,10 +119,14 @@ class HtmlDocument extends \Cherrycake\Module {
 	/**
 	 * Builds a standard HTML header, from the <html ... > to the <body ...> tags. It works with the Css and Javascript modules to include the proper CSS/JavaScript calls.
 	 * @param string $bodyAdditionalCssClasses Additional CSS classes for the body element
+	 * @param array $additionalJavascriptSets The Javascript set names to add to the header, additionally to those specified on the Javascript config
+	 * * @param array $additionalCssSets The Css set names to add to the header, additionally to those specified on the Css config
 	 * @return string The HTML header
 	 */
 	function header(
-		string $bodyAdditionalCssClasses = ''
+		string $bodyAdditionalCssClasses = '',
+		array $additionalJavascriptSets = [],
+		array $additionalCssSets = []
 	): string {
 		global $e;
 
@@ -172,23 +176,12 @@ class HtmlDocument extends \Cherrycake\Module {
 		}
 
 		// Css
-		if ($e->Css) {
-			if (!$cssSets = $this->getConfig("cssSets"))
-				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl()."\" />\n";
-			else
-			if (is_array($cssSets[0])) {
-				foreach ($cssSets as $cssSet)
-					$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSet)."\" />\n";
-			}
-			else
-			if (is_array($cssSets))
-				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSets)."\" />\n";
-		}
+		if ($e->Css)
+			$r .= $e->Css->getSetsHtmlHeaders($this->getConfig("cssSets") + $additionalCssSets);
 
 		// Javascript
-		if ($e->Javascript) {
-			$r .= $e->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets"));
-		}
+		if ($e->Javascript)
+			$r .= $e->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets") + $additionalJavascriptSets);
 
 		// Mobile viewport
 		if ($mobileViewport = $this->getConfig("mobileViewport")) {
