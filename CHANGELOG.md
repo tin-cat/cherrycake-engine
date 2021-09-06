@@ -2,9 +2,12 @@
 Changelog documentation for the Cherrycake engine. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [v2.0.0b] - 2021-08-27
+### Added
+- Support for Sass CSS
 ### Changed
 - Upgraded to PHP 8.
 - Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.
+- Javascript and Css modules no longer merge different sets into one.
 ### Bugs
 - Solved many minor bugs
 
