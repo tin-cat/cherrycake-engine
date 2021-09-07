@@ -16,7 +16,7 @@ class Ui {
 
 	public function set(
 		string $key = '',
-		string $value = '',
+		string|array $value = '',
 		array $properties = []
 	): Ui {
 		if ($properties) {

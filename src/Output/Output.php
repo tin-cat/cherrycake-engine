@@ -15,7 +15,7 @@ class Output  extends \Cherrycake\Module {
 	/**
 	 * @var \Cherrycake\Actions\Response $response The Response that will be sent to the client
 	 */
-	private \Cherrycake\Actions\Response $response;
+	private \Cherrycake\Actions\Response|null  $response = null;
 
 	/**
 	 * Sets the Response object that will be sent to the client
