@@ -14,18 +14,8 @@ class Text {
 	 * @param int $baseLanguage The language on which the provided $baseLanguageText is. If not specified, the `defaultBaseLanguage` Translation configuration is assumed.
 	 * @return Text A Text object for the given key
 	*/
-	public static function build(
-		string $baseLanguageText,
-		string $category = '',
-		int $baseLanguage = 0,
-		array $replacements = []
-	): Text {
-		return new Text(
-			baseLanguageText: $baseLanguageText,
-			category: $category,
-			baseLanguage: $baseLanguage,
-			replacements: $replacements
-		);
+	public static function build(...$parameters): Text {
+		return new Text(...$parameters);
 	}
 
 	function __construct(
@@ -87,5 +77,9 @@ class Text {
 
 	public function getKey(): string {
 		return $this->buildKey($this->baseLanguageText);
+	}
+
+	public function getCategory(): string|int {
+		return $this->category ?: 0;
 	}
 }

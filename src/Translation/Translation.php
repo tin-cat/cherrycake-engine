@@ -151,7 +151,7 @@ class Translation extends \Cherrycake\Module {
 		global $e;
 		$this->textsToStore[] = $text;
 		foreach ($e->Locale->getAvailaleLanguages() as $language)
-			$this->translations[$text->category][$text->getKey()][$language] = $text->baseLanguageText;
+			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->baseLanguageText;
 		$this->isCreateFilesOnEnd = true;
 	}
 
@@ -191,7 +191,7 @@ class Translation extends \Cherrycake\Module {
 		// Create the data for the newly found texts on textsToStore, if any
 		if (is_array($this->textsToStore)) {
 			foreach ($this->textsToStore as $text) {
-				$data[$text->category][$text->getKey()] = $text->baseLanguageText;
+				$data[$text->getCategory()][$text->getKey()] = $text->baseLanguageText;
 			}
 		}
 
@@ -254,12 +254,12 @@ class Translation extends \Cherrycake\Module {
 	}
 
 	private function isTextStored($text) {
-		return isset($this->translations[$text->category][$text->getKey()]);
+		return isset($this->translations[$text->getCategory()][$text->getKey()]);
 	}
 
 	private function getTranslation($text) {
 		global $e;
-		$translation = $this->translations[$text->category][$text->getKey()][$e->Locale->getLanguage()] ?? '';
+		$translation = $this->translations[$text->getCategory()][$text->getKey()][$e->Locale->getLanguage()] ?? '';
 		if (!$text->replacements)
 			return $translation;
 		else

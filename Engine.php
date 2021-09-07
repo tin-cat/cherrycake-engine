@@ -661,14 +661,9 @@ class Engine {
 	 * @param int $baseLanguage The language on which the provided $baseLanguageText is. If not specified, the `defaultBaseLanguage` Translation configuration is assumed.
 	 * @return Translation\Text A Text object for the given key
 	 */
-	public function t(
-		string $baseLanguageText,
-		string $category  = '',
-		int $baseLanguage = 0,
-		array $replacements = []
-	)
+	public function t(...$parameters)
 	: Translation\Text {
-		return new Translation\Text($baseLanguageText, $category, $baseLanguage);
+		return new Translation\Text(...$parameters);
 	}
 }
 

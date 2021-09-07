@@ -5,7 +5,7 @@ namespace Cherrycake\Validate;
 /**
  * Module to validate different types of data.
  *
- * Configuration example for security.config.php:
+ * Configuration example for Validate.config.php:
  * <code>
  * $validateConfig = [
  * 	"emailValidationMethod" => \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE, // The method to use by default to validate emails, one of the available VALIDATE_EMAIL_METHOD_*
