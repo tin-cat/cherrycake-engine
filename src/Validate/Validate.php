@@ -92,7 +92,11 @@ class Validate extends \Cherrycake\Module {
 	 * @param boolean $isFallbackToSimpleMethod Whether to use the VALIDATE_EMAIL_METHOD_SIMPLE method if the configured or forced method is not available
 	 * @return Result A Result object
 	 */
-	function email($email, $forceMethod = false, $isFallbackToSimpleMethod = true) {
+	function email(
+		string $email,
+		int|bool $forceMethod = false,
+		bool $isFallbackToSimpleMethod = true
+	): \Cherrycake\Result {
 		$method = $forceMethod ? $forceMethod : $this->getConfig("emailValidationMethod");
 
 		if ($isFallbackToSimpleMethod && $method > \Cherrycake\VALIDATE_EMAIL_METHOD_SIMPLE)
@@ -226,7 +230,12 @@ class Validate extends \Cherrycake\Module {
 	 * @param string $login The login associated with this password, used for some validations
 	 * @return array A Result object
 	 */
-	function passwordStrength($password, $login = false) {
+	function passwordStrength(
+		string $password,
+		string|bool $login = false
+	) {
+		$resultInfo["weaknesses"] = [];
+
 		if (
 			$this->getConfig("passwordStrengthValidationMinChars")
 			&&
@@ -268,7 +277,7 @@ class Validate extends \Cherrycake\Module {
 		)
 			$resultInfo["weaknesses"][] = \Cherrycake\VALIDATE_PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME;
 
-		if (is_array($resultInfo["weaknesses"]))
+		if ($resultInfo["weaknesses"])
 			return new \Cherrycake\ResultKo($resultInfo);
 		else
 			return new \Cherrycake\ResultOk;

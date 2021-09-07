@@ -14,7 +14,7 @@ class RequestParameter {
 	private $value = null;
 
 	function __construct(
-		private int $type,
+		public int $type,
 		public string $name,
 		private array $securityRules = [],
 		private array $filters = []

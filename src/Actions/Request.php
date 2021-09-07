@@ -266,6 +266,8 @@ class Request {
 		$count = 0;
 		if ($this->parameters && $isIncludeUrlParameters) {
 			foreach ($this->parameters as $parameter) {
+				if ($parameter->type !== \Cherrycake\REQUEST_PARAMETER_TYPE_GET)
+					continue;
 				if ($parameterValues ?? false) {
 					if ($parameterValues[$parameter->name] ?? false)
 						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$parameterValues[$parameter->name];
