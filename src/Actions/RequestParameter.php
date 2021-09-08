@@ -11,11 +11,10 @@ namespace Cherrycake\Actions;
  * @category Classes
  */
 class RequestParameter {
-	private $value = null;
-
 	function __construct(
 		public int $type,
 		public string $name,
+		public mixed $value = null,
 		private array $securityRules = [],
 		private array $filters = []
 	) {}
@@ -51,7 +50,7 @@ class RequestParameter {
 	}
 
 	/**
-	 * @return mixed Returns the value received for this parameter after applying the proper filters
+	 * @return mixed Returns the value received for this parameter after applying the proper filters, null if the parameter was not received
 	 */
 	function getValue() {
 		global $e;

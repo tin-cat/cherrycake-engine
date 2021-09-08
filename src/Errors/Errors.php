@@ -182,10 +182,10 @@ class Errors  extends \Cherrycake\Module {
 		}
 		else {
 			switch (get_class($e->Actions->currentAction)) {
-				case "Cherrycake\ActionHtml":
+				case "Cherrycake\Actions\ActionHtml":
 					$outputType = "pattern";
 					break;
-				case "Cherrycake\ActionAjax":
+				case "Cherrycake\Actions\ActionAjax":
 					$outputType = "ajax";
 					break;
 				default:
@@ -206,7 +206,7 @@ class Errors  extends \Cherrycake\Module {
 						variables: [
 							"type" => $type,
 							"errorDescription" => isset($description) ? $description : false,
-							"variables" => isset($variables) ? $variables : false,
+							"variables" => $variables,
 							"backtrace" => $backtrace
 						],
 						code: [
@@ -221,16 +221,14 @@ class Errors  extends \Cherrycake\Module {
 					if ($e->isDevel()) {
 						if ($this->getConfig("isHtmlOutput")) {
 
-							$variables = "";
-
+							$variablesDescription = [];
 							if (isset($variables)) {
-								foreach ($variables as $key => $value) {
-									$variables .= "<br><b>".$key."</b>: ".(is_array($value) ? json_encode($value) : $value);
-								}
+								foreach ($variables as $key => $value)
+									$variablesDescription .= "<br><b>".$key."</b>: ".(is_array($value) ? json_encode($value) : $value);
 							}
 
 							trigger_error(
-								$description.$variables,
+								$description.$variablesDescription,
 								[
 									\Cherrycake\ERROR_SYSTEM => E_USER_ERROR,
 									\Cherrycake\ERROR_APP => E_USER_ERROR,

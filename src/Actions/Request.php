@@ -30,10 +30,9 @@ class Request {
 	) {
 		if ($this->isSecurityCsrf()) {
 			global $e;
-			$setup["parameters"][] = new \Cherrycake\Actions\RequestParameter(
+			$this->parameters[] = new \Cherrycake\Actions\RequestParameter(
 				name: "csrfToken",
-				type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET,
-				value: $e->Security->getCsrfToken()
+				type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
 			);
 		}
 	}
@@ -263,6 +262,11 @@ class Request {
 		else
 			$url .= "/";
 
+		if ($this->isSecurityCsrf()) {
+			global $e;
+			$parameterValues['csrfToken'] = $e->Security->getCsrfToken();
+		}
+
 		$count = 0;
 		if ($this->parameters && $isIncludeUrlParameters) {
 			foreach ($this->parameters as $parameter) {
@@ -272,16 +276,12 @@ class Request {
 					if ($parameterValues[$parameter->name] ?? false)
 						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$parameterValues[$parameter->name];
 				}
-				else
+				else {
 					if ($this->{$parameter->name})
 						$url .= (!$count++ ? "?" : "&").$parameter->name."=".$this->{$parameter->name};
+				}
 			}
 		}
-
-		// if ($this->isSecurityCsrf()) {
-		// 	global $e;
-		// 	$url .= ($count > 0 ? "&" : "?")."csrfToken=".$e->Security->getCsrfToken();
-		// }
 
 		if (isset($anchor))
 			$url .= "#".$anchor;
