@@ -14,7 +14,7 @@ class DatabaseResultMysql extends DatabaseResult {
 	/**
 	 * @var DatabaseResult $resultHandler The MySQL result handler
 	 */
-	protected DatabaseResult $resultHandler;
+	protected mixed $resultHandler;
 
 	/**
 	 * @var mixed The result obtained from the resultHandler after calling resultHandler->get_result()
@@ -28,11 +28,11 @@ class DatabaseResultMysql extends DatabaseResult {
 
 	/**
 	 * Initializes the result, receiving and storing the result handler optionally.
-	 * @param mysqli_result|bool $resultHandler Optional MySQL result object
+	 * @param mixed $resultHandler Optional MySQL result object
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 */
 	function init(
-		mysqli_result|bool $resultHandler = false,
+		mixed $resultHandler = false,
 		array $setup = [],
 	) {
 		parent::init($resultHandler, $setup);

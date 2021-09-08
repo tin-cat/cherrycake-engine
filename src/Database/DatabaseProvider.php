@@ -224,7 +224,7 @@ class DatabaseProvider {
 		string $sql,
 		array $parameters = [],
 		array $setup = [],
-	): DatabseResult {
+	): DatabaseResult {
 		if (!$prepareResult = $this->prepare($sql))
 			return false;
 
