@@ -334,12 +334,12 @@ class DatabaseProvider {
 	 * Inserts a row into the specified table on the current database, with the given fields.
 	 * @param string $table The table name
 	 * @param array $fields A hash array of field values
-	 * @return int|bool If everything went ok, the id of the inserted row if the table had an autonumeric field, true if didn't have one. False otherwise.
+	 * @return bool If everything went ok, the id of the inserted row if the table had an autonumeric field, true if didn't have one. False otherwise.
 	 */
 	function insert(
 		string $tableName,
 		array $fields
-	): int|bool {
+	): \Cherrycake\Database\DatabaseResult {
 		return $this->prepareAndExecute(
 			"insert into ".$tableName." (".implode(", ",array_keys($fields)).") values (".implode(", ", array_fill(0, sizeof($fields), "?"	)).");",
 			$fields

@@ -3,8 +3,7 @@
 namespace Cherrycake;
 
 /**
- * Class that represents a generic item from a database.
- *
+ * Represents a generic item from a database.
  * @package Cherrycake
  * @category Classes
  */
@@ -12,37 +11,37 @@ class Item {
 	/**
 	 * @var string The name of the database provider to use when querying the database for this item.
 	 */
-	protected $databaseProviderName = "main";
+	static protected $databaseProviderName = "main";
 
 	/**
 	 * @var string The name of the database table where this items are stored.
 	 */
-	protected $tableName;
+	static protected $tableName;
 
 	/**
 	 * @var string The name of the field on the table that uniquely identifies this item on the database table with a numeric id. It should be an autoincrement field.
 	 */
-	protected $idFieldName = "id";
+	static protected $idFieldName = "id";
 
 	/**
 	 * @var string The name of the cache provider to use.
 	 */
-	protected $cacheProviderName = "engine";
+	static protected $cacheProviderName = "engine";
 
 	/**
 	 * @var integer The TTL to use when caching data for this Item.
 	 */
-	protected $cacheTtl = CACHE_TTL_NORMAL;
+	static protected $cacheTtl = CACHE_TTL_NORMAL;
 
 	/**
 	 * @var string The string to use as the key prefix for this Item in the cache, the value of the idFieldName will be appended.
 	 */
-	protected $cacheSpecificPrefix;
+	static protected $cacheSpecificPrefix;
 
 	/**
 	 * @var string <queryDatabaseCache|queryDatabase> The method to use when loading this item from the database via an index
 	 */
-	protected $loadFromIdMethod = "queryDatabase";
+	static protected $loadFromIdMethod = "queryDatabase";
 
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
@@ -67,7 +66,7 @@ class Item {
      * * requestFilters: An array of filter from the available SECURITY_FILTER_* that should be appled whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
 	 * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object. Used for example in ItemAdmin
 	 */
-	protected $fields = false;
+	static protected $fields = false;
 
 	/**
 	 * @var array Hash array specification of the fields for this item type that are not fields on the database, but instead fields that interact with the database in a special way. For example, a "location" meta field might interact with the database by setting the countryId, regionId and cityId non-meta fields. Each key is the field name, and each value a hash array with following possible keys:
@@ -77,22 +76,22 @@ class Item {
 	 * * * * title: The title of the level
 	 * * * * fieldName: The name of the field on the table that stores this level value
 	 */
-	protected $metaFields = false;
+	static protected $metaFields = false;
 
 	/**
 	 * @var string $urlShortCodeCharacters The characters that will be used to generate url short codes
 	 */
-	protected $urlShortCodeCharacters = "123456789abcdefghijkmnpqrstuvwyzABCDEFGHJKLMNPQRSTUVWXYZ";
+	static protected $urlShortCodeCharacters = "123456789abcdefghijkmnpqrstuvwyzABCDEFGHJKLMNPQRSTUVWXYZ";
 
 	/**
 	 * @var integer $minUrlShortCodeCharacters The minimum number of characters that will be used when generating url short codes
 	 */
-	protected $minUrlShortCodeCharacters = 5;
+	static protected $minUrlShortCodeCharacters = 5;
 
 	/**
 	 * @var integer $maxUrlShortCodeTriesForCodeLength When generating url short codes, the maximum number of random url short codes of a given length will be tried before increasing the length by one and keep trying
 	 */
-	protected $maxUrlShortCodeTriesForCodeLength = 5;
+	static protected $maxUrlShortCodeTriesForCodeLength = 5;
 
 	/**
 	 * @var array An array containing the Item data
@@ -105,110 +104,99 @@ class Item {
 	private $changedFields = false;
 
 	/**
-	 * __construct
-	 *
 	 * Constructor, allows to create an instance object which automatically fills itself using one of the available load methods
-	 *
-	 * Setup keys:
-	 *
-	 * * loadMethod: If specified, it loads the Item using the given method, available methods:
+	 * @param string|int $id The id to match with the specified $idFieldName, or static::$idFieldName is $idFieldName is not specified
+	 * @param string $loadMethod If specified, it loads the Item using the given method, available methods:
 	 * 	- fromDatabaseRow: Loads the Item with the given DatabaseRow object data in the setup key "databaseRow"
 	 *  - fromId: Loads the item by calling the loadFromId method passing the value of the "id" setup key as the parameter
 	 *  - fromData: Loads the item by calling the loadFromData method passing the value of the "data" setup key as the parameter
-	 *
-	 * Throws an exception if the object could not be constructed
-	 *
-	 * @param array $setup Specifications on how to create the Item object
+	 * @param string $idFieldName The name of the field to match with the id to override static::$idFieldName
+	 * @param array $data
+	 * @param string $loadFromIdMethod
+	 * @param \Cherrycake\Database\DatabaseRow|null $databaseRow
+	 * @throws Exception If the object could not be constructed
 	 */
-	function __construct($setup = false) {
-		if (isset($setup["loadMethod"]))
-			switch($setup["loadMethod"]) {
+	function __construct(
+		string|int $id = 0,
+		string $loadMethod = '',
+		string $loadFromIdMethod = '',
+		string $idFieldName = '',
+		array $data = [],
+		\Cherrycake\Database\DatabaseRow|null $databaseRow = null
+	) {
+		if ($id !== 0 && !$loadMethod)
+			$loadMethod = 'fromId';
+
+		if ($loadMethod)
+			switch($loadMethod) {
 				case "fromDatabaseRow":
-					if (!$this->loadFromDatabaseRow($setup["databaseRow"]))
+					if (!$this->loadFromDatabaseRow($databaseRow))
 						throw new \Exception("Couldn't load ".get_called_class()." Item from row");
 					break;
 
 				case "fromId":
-					if (!$this->loadFromId($setup["id"], $setup["idFieldName"] ?? false, $setup["loadFromIdMethod"] ?? false))
-						throw new \Exception("Couldn't load ".get_called_class()." Item from id ".$setup["id"].($setup["idFieldName"] ?? false ? " with idFieldName ".$setup["idFieldName"] : null));
+					if (!$this->loadFromId($id, $idFieldName ?? false, $loadFromIdMethod ?? false))
+						throw new \Exception("Couldn't load ".get_called_class()." Item from id ".$id.($idFieldName ?? false ? " with idFieldName ".$idFieldName : null));
 					break;
 
 				case "fromData":
-					if (!$this->loadFromData($setup["data"]))
+					if (!$this->loadFromData($data))
 						throw new \Exception("Couldn't load ".get_called_class()." Item from data");
 					break;
 			}
-		else
-			if (!$this->loadInline($setup))
-				throw new \Exception("Couldn't inline load ".get_called_class()." Item");
 	}
 
 	/**
 	 * @return array The fields for this Item
 	 */
-	function getFields() {
-		return $this->fields;
+	function getFields(): array {
+		return static::$fields;
 	}
 
 	/**
 	 * @return array The meta fields for this Item
 	 */
-	function getMetaFields() {
+	function getMetaFields(): array {
 		return $this->metaFields;
 	}
 
 	/**
-	 * loadFromDatabaseRow
-	 *
 	 * Fills the Item's data with the given DatabaseRow object data
-	 *
 	 * @param DatabaseRow $databaseRow
 	 * @return boolean True on success, false on error
 	 */
-	function loadFromDatabaseRow($databaseRow) {
-		return $this->loadFromData($databaseRow->getData($this->fields));
+	function loadFromDatabaseRow(\Cherrycake\Database\DatabaseRow $databaseRow): bool {
+		return $this->loadFromData($databaseRow->getData(static::$fields));
 	}
 
 	/**
-	 * loadFromData
-	 *
 	 * Fills the Item's data with the given data array
-	 *
 	 * @param array $data A hash array with the data
 	 * @return boolean True on success, false on error
 	 */
-	function loadFromData($data) {
+	function loadFromData(array $data): bool {
 		$this->itemData = $data;
 		return $this->init();
 	}
 
 	/**
-	 * loadInline
-	 *
-	 * Loads the item when no loadMethod has been provided on construction. Intended to be overloaded when needed.
-	 *
-	 * @param array $data A hash array with the data
-	 * @return boolean True on success, false on error
-	 */
-	function loadInline($data = false) {
-		return $this->init();
-	}
-
-	/**
 	 * Retrieves the item data on the database corresponding to the specified $value for the given $fieldName and fills this Item's with it.
-	 *
-	 * @param mixed $id The value to match the $fieldName to.
+	 * @param string|int $id The value to match the $fieldName to.
 	 * @param string $fieldName The name of the id field, as defined on this Item's $fields. Should be a field that uniquely identifies a row on the database.
-	 * @param mixed $loadMethod The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
+	 * @param string $method The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
 	 * * queryDatabaseCache
 	 * * queryDatabase
 	 * @return boolean True if the row was found and the Item was loaded ok, false otherwise.
 	 */
-	function loadFromId($id, $fieldName = false, $method = false) {
-		switch($method ? $method : $this->loadFromIdMethod) {
+	function loadFromId(
+		string|int $id,
+		string $fieldName = '',
+		string $method = ''
+	): bool {
+		switch($method ? $method : static::$loadFromIdMethod) {
 			case "queryDatabaseCache":
 			case "queryDatabase":
-				if (!$databaseRow = $this->loadFromIdGetDatabaseRow($fieldName ? $fieldName : $this->idFieldName, $id, $method))
+				if (!$databaseRow = static::loadFromIdGetDatabaseRow($fieldName ? $fieldName : static::$idFieldName, $id, $method))
 					return false;
 				return $this->loadFromDatabaseRow($databaseRow);
 				break;
@@ -219,32 +207,35 @@ class Item {
 
 	/**
 	 * Returns a DatabaseRow object containing the query result of the Item identified by the given id
-	 *
 	 * @param string $fieldName The name of the id field, as defined on this Item's $fields. Should be a field that uniquely identifies a row on the database.
-	 * @param mixed $id The value to match the $fieldName to.
-	 * @param mixed $method The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
+	 * @param string|int $id The value to match the $fieldName to.
+	 * @param string $method The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
 	 * * queryDatabaseCache
 	 * * queryDatabase
-	 * @return DatabaseRow A DatabaseRow object containing the result of querying the item with the given id, or false if error
+	 * @return DatabaseRow|bool A DatabaseRow object containing the result of querying the item with the given id, or false if error
 	 */
-	function loadFromIdGetDatabaseRow($fieldName, $id, $method = false) {
-		switch($method ? $method : $this->loadFromIdMethod) {
+	static function loadFromIdGetDatabaseRow(
+		string $fieldName,
+		string|int $id,
+		string $method = ''
+	): \Cherrycake\Database\DatabaseRow|bool {
+		switch($method ? $method : static::$loadFromIdMethod) {
 			case "queryDatabaseCache":
 				global $e;
-				if (!$result = $e->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
-					$this->getLoadFromIdDatabaseQuery($fieldName),
+				if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecuteCache(
+					static::getLoadFromIdDatabaseQuery($fieldName),
 					[
 						[
-							"type" => $this->fields[$fieldName]["type"],
+							"type" => static::$fields[$fieldName]["type"],
 							"value" => $id
 						]
 					],
-					$this->cacheTtl,
+					static::$cacheTtl,
 					array(
-						"prefix" => $this->cacheSpecificPrefix,
+						"prefix" => static::$cacheSpecificPrefix,
 						"uniqueId" => $fieldName."=".$id
 					),
-					$this->cacheProviderName,
+					static::$cacheProviderName,
 					false
 				))
 					return false;
@@ -253,11 +244,11 @@ class Item {
 
 			case "queryDatabase":
 				global $e;
-				if (!$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
-					$this->getLoadFromIdDatabaseQuery($fieldName),
+				if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecute(
+					static::getLoadFromIdDatabaseQuery($fieldName),
 					[
 						[
-							"type" => $this->fields[$fieldName]["type"],
+							"type" => static::$fields[$fieldName]["type"],
 							"value" => $id
 						]
 					]
@@ -272,27 +263,41 @@ class Item {
 	 * @param string $fieldName The name of the field to match te index of a unique Item on the database to.
 	 * @return string The SQL query to request the item of the given index from the Database
 	 */
-	function getLoadFromIdDatabaseQuery($fieldName) {
-		return "select * from ".$this->tableName." where ".$fieldName." = ?";
+	static function getLoadFromIdDatabaseQuery(string $fieldName): string {
+		return "select * from ".static::$tableName." where ".$fieldName." = ?";
 	}
 
 	/**
-	 * clearCache
-	 *
+	 * Checks if an item with the given $id exists on the database
+	 * @param string|int $id The id to match with the specified $idFieldName, or static::$idFieldName is $idFieldName is not specified
+	 * @param string $idFieldName The name of the field to match with the id to override static::$idFieldName
+	 * @param string $method The loading method to use. If not specified, it uses the default $loadFromIdMethod. One of the following values:
+	 * * queryDatabaseCache
+	 * * queryDatabase
+	 * @return bool Whether the item exists or not
+	 */
+	static function isExists(
+		string|int $id = 0,
+		string $idFieldName = '',
+		string $method = ''
+	): bool {
+		return static::loadFromIdGetDatabaseRow($idFieldName ? $idFieldName : static::$idFieldName, $id, $method) ? true : false;
+	}
+
+	/**
 	 * Removes this Item from the cache. Can be overloaded if more additional things have to be cleared from cache in relation to the Item.
-	 *
 	 * @param array $fieldNames An optional array of field names that have been used to query items by index, so those queries will be cleared from cache. idFieldName and other field names commonly used by this object are automatically added to this array and cleared from cache.
 	 * @return boolean True on success, false on failure
 	 */
-	function clearCache($fieldNames = false) {
+	function clearCache(array $fieldNames = []): bool {
 		global $e;
 
-		$fieldNames[] = $this->idFieldName;
+		$fieldNames[] = static::$idFieldName;
 
 		$isErrors = false;
 		foreach ($fieldNames as $fieldName) {
-			if (!$e->Cache->{$this->cacheProviderName}->delete($e->Cache->buildCacheKey([
-				"prefix" => $this->cacheSpecificPrefix,
+			if (!$e->Cache->{static::$cacheProviderName}->delete($e->Cache->buildCacheKey([
+				"prefix" => static::$cacheSpecificPrefix,
 				"uniqueId" => $fieldName."=".$this->{$fieldName}
 			])))
 				$isErrors = true;
@@ -307,11 +312,11 @@ class Item {
 	 * For multilanguage fields, a hash array with the syntax [<language code> => <value>, ...] can be passed. If a non-array value is passed the currently detected language will be used
 	 * @return boolean True if insertion went ok, false otherwise
 	 */
-	function insert($data = false) {
+	function insert(array $data = []): bool {
 		global $e;
 
-		foreach ($this->fields as $fieldName => $fieldData) {
-			if ($fieldName == $this->idFieldName)
+		foreach (static::$fields as $fieldName => $fieldData) {
+			if ($fieldName == static::$idFieldName)
 				continue;
 
 			if (isset($data[$fieldName]))
@@ -366,13 +371,13 @@ class Item {
 
 			$data[$fieldName] = $value;
 		}
-		reset($this->fields);
+		reset(static::$fields);
 
-		if (!$result = $e->Database->{$this->databaseProviderName}->insert($this->tableName, $fieldsData))
+		if (!$result = $e->Database->{static::$databaseProviderName}->insert(static::$tableName, $fieldsData))
 			return false;
 
-		if ($this->idFieldName)
-			$data[$this->idFieldName] = $result->getInsertId();
+		if (static::$idFieldName)
+			$data[static::$idFieldName] = $result->getInsertId();
 
 		$this->loadFromData($data);
 
@@ -384,7 +389,7 @@ class Item {
 	/**
 	 * @return string The client's IP
 	 */
-	function getClientIp() {
+	function getClientIp(): string {
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
 		else
@@ -393,10 +398,11 @@ class Item {
 
 	/**
 	 * Finds a random available url short code
-	 *
-	 * @var string $fieldName The name of the field that holds url short codes for this item
+	 * @param string $fieldName The name of the field that holds url short codes for this item
+	 * @param int $numberOfCharacters The number of characters for the short code
+	 * @return string The code
 	 */
-	function getRandomAvailableUrlShortCode($fieldName, $numberOfCharacters = false) {
+	function getRandomAvailableUrlShortCode(string $fieldName, int $numberOfCharacters = 0) {
 		if (!$numberOfCharacters)
 			$numberOfCharacters = $this->minUrlShortCodeCharacters;
 
@@ -427,14 +433,17 @@ class Item {
 	 * @param string $code The code to check
 	 * @return boolean True if the code is available to be used, false otherwise
 	 */
-	function isAvailableUrlShortCode($fieldName, $code) {
+	function isAvailableUrlShortCode(
+		string $fieldName,
+		string $code
+	): bool {
 		global $e;
 
-		if (!$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
-			"select ".$this->idFieldName." from ".$this->tableName." where ".$fieldName." = ?",
+		if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecute(
+			"select ".static::$idFieldName." from ".static::$tableName." where ".$fieldName." = ?",
 			[
 				[
-					"type" => $this->fields[$fieldName]["type"],
+					"type" => static::$fields[$fieldName]["type"],
 					"value" => $code
 				]
 			]
@@ -445,26 +454,15 @@ class Item {
 	}
 
 	/**
-	 * Creates a new item with the given setup and data. This method can be overriden when implementing specific items when additional tasks need to be done before/after inserting an item into de database, passing additional $setup keys if needed. If not overriden, it simply adds the row on the database.
-	 * Setup keys:
-	 * * data: A hash array of the data for the new item, where each key matches the field name on the database table. Fields must be defined on this->fields
-	 * @param array $setup Hash array of setup options
-	 * @return boolean True if creation went ok, false otherwise
-	 */
-	function create($setup = false) {
-		return $this->insert($setup["data"]);
-	}
-
-	/**
 	 * Updates the data on the database for this Item
 	 * @param array An optional hash array where each key is the field name to update, and each value the new data to store on that field for this item. If not passed or left to false, the current data stored in the object is used. Default: false.
 	 * * For multilanguage fields, a hash array where the keys are language codes and the values are the value in that language can be passed. If a non-array value is passed the currently detected language will be used.
 	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function update($data = false) {
+	function update(array $data = []): bool {
 		global $e;
 
-		if (!$this->idFieldName) {
+		if (!static::$idFieldName) {
 			$e->Errors->trigger(
 				type: ERROR_SYSTEM,
 				description: "Couldn't update item on the database because it hasn't an idFieldName set up.",
@@ -482,7 +480,7 @@ class Item {
 		}
 
 		foreach ($data as $fieldName => $fieldData) {
-			if ($this->fields[$fieldName]["isMultiLanguage"] ?? false) {
+			if (static::$fields[$fieldName]["isMultiLanguage"] ?? false) {
 				global $e;
 				if (is_array($fieldData)) {
 
@@ -490,7 +488,7 @@ class Item {
 
 						$this->{$fieldName."_".$e->Locale->getLanguageCode($language)} = $fieldData[$language];
 						$fields[$fieldName."_".$e->Locale->getLanguageCode($language)] = [
-							"type" => $this->fields[$fieldName]["type"],
+							"type" => static::$fields[$fieldName]["type"],
 							"value" => $fieldData[$language]
 						];
 
@@ -501,7 +499,7 @@ class Item {
 
 					$this->$fieldName = $fieldData;
 					$fields[$fieldName."_".$e->Locale->getLanguageCode()] = [
-						"type" => $this->fields[$fieldName]["type"],
+						"type" => static::$fields[$fieldName]["type"],
 						"value" => $fieldData
 					];
 
@@ -511,17 +509,17 @@ class Item {
 
 				$this->$fieldName = $fieldData;
 				$fields[$fieldName] = [
-					"type" => $this->fields[$fieldName]["type"],
+					"type" => static::$fields[$fieldName]["type"],
 					"value" => $fieldData
 				];
 
 			}
 		}
 
-		return $e->Database->{$this->databaseProviderName}->updateByUniqueField(
-			$this->tableName,
-			$this->idFieldName,
-			$this->{$this->idFieldName},
+		return $e->Database->{static::$databaseProviderName}->updateByUniqueField(
+			static::$tableName,
+			static::$idFieldName,
+			$this->{static::$idFieldName},
 			$fields
 		);
 	}
@@ -530,10 +528,10 @@ class Item {
 	 * Deletes this item from the database.
 	 * @return boolean True on success, false on failure
 	 */
-	function delete() {
+	function delete(): bool {
 		global $e;
 
-		if (!$this->idFieldName) {
+		if (!static::$idFieldName) {
 			$e->Errors->trigger(
 				type: ERROR_SYSTEM,
 				description: "Couldn't delete item from the database because it hasn't an idFieldName set up.",
@@ -544,10 +542,10 @@ class Item {
 			return false;
 		}
 
-		if (!$e->Database->{$this->databaseProviderName}->deleteByUniqueField(
-			$this->tableName,
-			$this->idFieldName,
-			$this->{$this->idFieldName}
+		if (!$e->Database->{static::$databaseProviderName}->deleteByUniqueField(
+			static::$tableName,
+			static::$idFieldName,
+			$this->{static::$idFieldName}
 		))
 			return false;
 
@@ -555,10 +553,7 @@ class Item {
 	}
 
 	/**
-	 * init
-	 *
 	 * Initializes the Item. Intended to be overloaded to perform any additional actions that must be done just after the Item is loaded with data
-	 *
 	 * @return boolean True on success, false on failure
 	 */
 	function init(): bool {
@@ -567,17 +562,16 @@ class Item {
 
 	/**
 	 * Magic get method to return the Item's data corresponding to the specified $key
-	 * If the key is for a database field that is language dependant as specified by $this->fields, the proper language data according to the current Locale language will be returned
-	 * If the key is for a timezone dependant field as specified by $this->fields, the proper timezone adjusted timestamp will be returned according to the current Locale timezone
-	 *
+	 * If the key is for a database field that is language dependant as specified by static::$fields, the proper language data according to the current Locale language will be returned
+	 * If the key is for a timezone dependant field as specified by static::$fields, the proper timezone adjusted timestamp will be returned according to the current Locale timezone
 	 * @param string $key The key of the data to get, matches the database field name.
 	 * @return mixed The data. Null if data with the given key is not set.
 	 */
-	function __get($key) {
+	function __get(string $key): mixed {
 		// If key is for a database field
-		if (isset($this->fields) && isset($this->fields[$key])) {
+		if (isset(static::$fields) && isset(static::$fields[$key])) {
 			// If it's a language dependant field
-			if (isset($this->fields[$key]["isMultiLanguage"])) {
+			if (isset(static::$fields[$key]["isMultiLanguage"])) {
 				global $e;
 				$key .= "_".$e->Locale->getLanguageCode();
 			}
@@ -598,11 +592,11 @@ class Item {
 	/**
 	 * Gets the item data for the specificied language when the field is language dependant
 	 * @param string $key The key of the data to get
-	 * @param integer $language The language to get the data for
+	 * @param int|bool $language The language to get the data for
 	 * @return mixed The data. Null if data with the given key is not set, or false if the specified key is not for a language dependant field
 	 */
-	function getForLanguage($key, $language) {
-		if (!$this->fields || $this->fields[$key]["isMultiLanguage"])
+	function getForLanguage(string $key, int|bool  $language = false): mixed {
+		if (!static::$fields || static::$fields[$key]["isMultiLanguage"])
 			return false;
 		$key .= "_".$e->Locale->getLanguageCode($language);
 		return $this->$key;
@@ -614,11 +608,11 @@ class Item {
 	 * @param string $timeZone The timezone, as in http://www.php.net/timezones. If none specified, the current Locale timezone is used.
 	 * @return integer The timestamp data. Null if data with the given key is not set, or false if the specified key is not for a timezone dependant field
 	 */
-	function getForTimezone($key, $timeZone = false) {
-		if (!$this->fields || (
-			$this->fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME
+	function getForTimezone(string $key, string $timeZone = ''): int {
+		if (!static::$fields || (
+			static::$fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME
 			&&
-			$this->fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME
+			static::$fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME
 		))
 			return false;
 
@@ -646,7 +640,7 @@ class Item {
 	 * @param boolean $isHtml Whehter to use HTML to help make the data readable by a human
 	 * @return string The HTML representing
 	 */
-	function getHumanized($key, $setup = false) {
+	function getHumanized(string $key, array $setup = []): string {
 		global $e;
 
 		self::treatParameters($setup, [
@@ -664,14 +658,14 @@ class Item {
 
 		$r = $this->{$key};
 
-		if ($this->fields[$key]["humanizeMethodName"]) {
-			$finalR = $this->{$this->fields[$key]["humanizeMethodName"]}($this);
+		if (static::$fields[$key]["humanizeMethodName"]) {
+			$finalR = $this->{static::$fields[$key]["humanizeMethodName"]}($this);
 			if (!is_null($finalR))
 				return $finalR;
 		}
 
-		if ($this->fields[$key]["humanizePreMethodName"])
-			$r = $this->{$this->fields[$key]["humanizePreMethodName"]}($this);
+		if (static::$fields[$key]["humanizePreMethodName"])
+			$r = $this->{static::$fields[$key]["humanizePreMethodName"]}($this);
 
 		if ($setup["isEmoji"]) {
 			$rEmpty = $setup["emojiEmpty"];
@@ -690,16 +684,16 @@ class Item {
 			$BooleanFalse = "N";
 		}
 
-		switch ($this->fields[$key]["type"]) {
+		switch (static::$fields[$key]["type"]) {
 			case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
 			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
-						"decimals" => $this->fields[$key]["decimals"],
-						"decimalMark" => $this->fields[$key]["decimalMark"],
-						"isSeparateThousands" => $this->fields[$key]["isSeparateThousands"],
-						"multiplier" => $this->fields[$key]["multiplier"]
+						"decimals" => static::$fields[$key]["decimals"],
+						"decimalMark" => static::$fields[$key]["decimalMark"],
+						"isSeparateThousands" => static::$fields[$key]["isSeparateThousands"],
+						"multiplier" => static::$fields[$key]["multiplier"]
 					]
 				);
 				break;
@@ -707,10 +701,10 @@ class Item {
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
-						"decimals" => $this->fields[$key]["decimals"],
-						"decimalMark" => $this->fields[$key]["decimalMark"],
-						"isSeparateThousands" => $this->fields[$key]["isSeparateThousands"],
-						"multiplier" => $this->fields[$key]["multiplier"]
+						"decimals" => static::$fields[$key]["decimals"],
+						"decimalMark" => static::$fields[$key]["decimalMark"],
+						"isSeparateThousands" => static::$fields[$key]["isSeparateThousands"],
+						"multiplier" => static::$fields[$key]["multiplier"]
 					]
 				);
 				break;
@@ -724,7 +718,7 @@ class Item {
 					break;
 				}
 
-				switch ($this->fields[$key]["type"]) {
+				switch (static::$fields[$key]["type"]) {
 					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
 						$r = $e->Locale->formatTimestamp(
 							$r,
@@ -812,14 +806,14 @@ class Item {
 				break;
 		}
 
-		if ($this->fields[$key]["prefix"])
-			$r = $this->fields[$key]["prefix"].$r;
+		if (static::$fields[$key]["prefix"])
+			$r = static::$fields[$key]["prefix"].$r;
 
-		if ($this->fields[$key]["postfix"])
-			$r = $r.$this->fields[$key]["postfix"];
+		if (static::$fields[$key]["postfix"])
+			$r = $r.static::$fields[$key]["postfix"];
 
-		if ($this->fields[$key]["humanizePostMethodName"])
-			$r = $this->{$this->fields[$key]["humanizePostMethodName"]}($r, $this);
+		if (static::$fields[$key]["humanizePostMethodName"])
+			$r = $this->{static::$fields[$key]["humanizePostMethodName"]}($r, $this);
 
 		return $r;
 	}
@@ -829,7 +823,7 @@ class Item {
 	 * @param string $key The key of the data to set
 	 * @param mixed $value The value
 	 */
-	function __set($key, $value) {
+	function __set(string $key, mixed $value) {
 		if (property_exists($this, $key)) {
 			$this->$key = $value;
 			return;
@@ -846,7 +840,7 @@ class Item {
 	 * @param string $key The key of the data to check
 	 * @param boolean True if the data exists, false otherwise
 	 */
-	function __isset($key) {
+	function __isset(string $key): bool {
 		return isset($this->itemData[$key]);
 	}
 }

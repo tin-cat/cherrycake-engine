@@ -89,9 +89,9 @@ class DatabaseResult {
 
 	/**
 	 * Returns the next row in the query results and advances to the next one. Must be overloaded by a provider-specific DatabaseResult class
-	 * @return DatabaseRow A provider-specific DatabaseRowMysql object. False if no more rows.
+	 * @return DatabaseRow|bool A provider-specific DatabaseRowMysql object. False if no more rows.
 	 */
-	function getRow(): DatabaseRow {}
+	function getRow(): DatabaseRow|bool {}
 
 	/**
 	 * Sets the row pointer to the beginning, so the next retrieved row will be the first. Must be overloaded by a provider-specific DatabaseResult class

@@ -82,9 +82,9 @@ class DatabaseResultMysql extends DatabaseResult {
 
 	/**
 	 * Returns the current row in the query results and advances to the next one.
-	 * @return DatabaseRow A provider-specific DatabaseRowMysql object. False if no more rows.
+	 * @return DatabaseRow|bool A provider-specific DatabaseRowMysql object. False if no more rows.
 	 */
-	function getRow(): DatabaseRow {
+	function getRow(): DatabaseRow|bool {
 		if (!$this->data)
 			return false;
 
