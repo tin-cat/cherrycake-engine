@@ -114,7 +114,7 @@ class Login extends \Cherrycake\Module {
 	 * @return bool True if there is a logged user, false otherwise.
 	 */
 	function isLogged(): bool {
-		return $this->user !== false;
+		return isset($this->user);
 	}
 
 	/**

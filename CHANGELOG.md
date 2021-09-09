@@ -4,6 +4,7 @@ Changelog documentation for the Cherrycake engine. This project adheres to [Sema
 ## [v2.0.0b] - 2021-08-27
 ### Added
 - Support for Sass CSS
+- Modules no longer need to be specifically loaded via the Module->dependentCoreModules and Module->dependentAppModules properties, they're loaded as soon as they're requested for the first time.
 ### Changed
 - Upgraded to PHP 8.
 - Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.

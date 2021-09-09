@@ -330,8 +330,8 @@ class Engine {
 		bool $requiredByModuleName = false
 	): bool {
 		if ($this->isCoreModuleExists($moduleName))
-			return $this->loadCoreModule($moduleName, $requiredByModuleName);
-		return $this->loadAppModule($moduleName, $requiredByModuleName);
+			return $this->loadCoreModule($moduleName, $origin, $requiredByModuleName);
+		return $this->loadAppModule($moduleName, $origin, $requiredByModuleName);
 	}
 
 	/**
@@ -454,6 +454,24 @@ class Engine {
 			}
 			reset($appModuleNames);
 		}
+	}
+
+	/**
+	 * Magic get method to get a module.
+	 * It loads the module if it hasn't been loaded.
+	 * @param string $key The name of the module
+	 * @return mixed The module, the local property value if it exists, or false otherwise.
+	 */
+	function __get($key) {
+		// First check if the module is already loaded, or if it is a local property
+		if (isset($this->$key))
+			return $this->$key;
+
+		// Try to load the module
+		if ($this->loadUnknownModule($key))
+			return $this->$key;
+
+		return false;
 	}
 
 	/**

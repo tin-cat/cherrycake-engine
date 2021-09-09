@@ -31,7 +31,7 @@ class Ui {
 	/**
 	 * @return string The HTML of the Ui component
 	 */
-	public function dump() {
+	public function dump(): string {
 		return '';
 	}
 }
