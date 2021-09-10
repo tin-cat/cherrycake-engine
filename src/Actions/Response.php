@@ -14,7 +14,7 @@ class Response {
 	/**
 	 * @var string $contentType The content type of the response
 	 */
-	protected string $contentType;
+	protected string $contentType = '';
 
 	/**
 	 * @var array $headers Holds the headers to send to the client
