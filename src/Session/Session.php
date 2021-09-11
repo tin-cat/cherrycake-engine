@@ -14,9 +14,6 @@ namespace Cherrycake\Session;
  * The JanitorTaskSession is required to be run in order to do this maintenance work, so be sure to add it to your Janitor.config.php
  *
  * Important note: You cannot use session keys starting with "_pool_", since it's used for the pools functionality.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Session extends \Cherrycake\Module {
 	/**

@@ -3,13 +3,8 @@
 namespace Cherrycake\Cache;
 
 /**
- * Cache
- *
  * Manages cache providers.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Cache extends \Cherrycake\Module {
 	/**

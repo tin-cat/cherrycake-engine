@@ -4,9 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an Action which will return JavaScript
- *
- * @package Cherrycake
- * @category Classes
  */
 class ActionJavascript extends Action {
 	/**

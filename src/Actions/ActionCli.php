@@ -4,9 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an Action that will be executed via the command line CLI interface
- *
- * @package Cherrycake
- * @category Classes
  */
 class ActionCli extends Action {
 	/**

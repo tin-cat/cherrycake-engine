@@ -4,9 +4,6 @@ namespace Cherrycake\Css;
 
 /**
  * Module that manages Css code.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Css extends \Cherrycake\Module {
 	/**

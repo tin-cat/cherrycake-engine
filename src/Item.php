@@ -4,8 +4,6 @@ namespace Cherrycake;
 
 /**
  * Represents a generic item from a database.
- * @package Cherrycake
- * @category Classes
  */
 class Item {
 	/**

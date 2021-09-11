@@ -4,9 +4,6 @@ namespace Cherrycake;
 
 /**
  * Class that represents a color.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Color {
 	/**

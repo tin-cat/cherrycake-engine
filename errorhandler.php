@@ -3,7 +3,7 @@
 /**
  * Error handler
  *
- * @package Cherrycake
+
  */
 
 namespace Cherrycake;

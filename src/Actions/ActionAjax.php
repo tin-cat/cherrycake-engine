@@ -4,9 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an Action which will return Json for an Ajax request
- *
- * @package Cherrycake
- * @category Classes
  */
 class ActionAjax extends Action {
 	/**

@@ -4,9 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an Action which will return plain text
- *
- * @package Cherrycake
- * @category Classes
  */
 class ActionPlainText extends Action {
 	/**

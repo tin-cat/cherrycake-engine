@@ -3,12 +3,7 @@
 namespace Cherrycake\Actions;
 
 /**
- * Request
- *
  * A class that represents a path component of a Request
- *
- * @package Cherrycake
- * @category Classes
  */
 class RequestPathComponent {
 	private mixed $value = false;

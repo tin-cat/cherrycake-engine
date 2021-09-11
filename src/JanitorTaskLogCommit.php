@@ -3,9 +3,6 @@
 /**
  * A JanitorTask to maintain the Log module
  * Stores the cached events queue into database, then empties the cache
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTaskLogCommit extends \Cherrycake\Janitor\JanitorTask {
 	/**

@@ -3,8 +3,6 @@
 namespace Cherrycake;
 
 /**
- * Image
- *
  * Class that represents an image stored on the server.
  * * It allows for images to be stored in multiple sizes.
  * * Can create the multiple size images from a given file.
@@ -37,9 +35,6 @@ namespace Cherrycake;
  *      "isHd" => true
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Classes
  * @todo Implement forceWidthAndHeight on buildFromFile method
  */
 class Image {

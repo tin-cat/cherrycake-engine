@@ -3,12 +3,7 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseResult
- *
  * Base class for database result implementations. Intended to be overloaded by a higher level database system implementation class.
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseResult {
 	/**

@@ -3,12 +3,7 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseRow
- *
  * Class that represents a row retrieved from a query to a database, specific for MySql
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseRowMysql extends DatabaseRow {
 	/**

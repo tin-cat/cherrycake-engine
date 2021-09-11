@@ -4,9 +4,6 @@ namespace Cherrycake;
 
 /**
  * Class that sends HTTP Cache-related headers to let the client browser recognize cached elements
- *
- * @package Cherrycake
- * @category Classes
  * @author Jasper <http://stackoverflow.com/users/1714705/jasper>
  */
 class HttpCache

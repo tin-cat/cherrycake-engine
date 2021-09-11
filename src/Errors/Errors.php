@@ -27,9 +27,6 @@ namespace Cherrycake\Errors;
  *  "notificationEmail" => false // The email address to send the error report.
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Modules
  */
 class Errors  extends \Cherrycake\Module {
 	/**

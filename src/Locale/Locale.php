@@ -4,9 +4,6 @@ namespace Cherrycake\Locale;
 
 /**
  * The Locale module provides localization functionalities for multilingual web sites with automatic detection, plus the handling of currencies, dates, timezones and more.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Locale extends \Cherrycake\Module {
 	/**

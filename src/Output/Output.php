@@ -3,13 +3,8 @@
 namespace Cherrycake\Output;
 
 /**
- * Output
- *
  * Manages the final output produced by the app.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Output  extends \Cherrycake\Module {
 	/**

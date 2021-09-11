@@ -3,12 +3,7 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseResultMysql
- *
  * Database result based on MySQL
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseResultMysql extends DatabaseResult {
 	/**

@@ -3,12 +3,7 @@
 namespace Cherrycake\Actions;
 
 /**
- * Request
- *
  * A class that represents a request to the engine, mainly used via an Action mapped into Actions module.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Request {
 	/**

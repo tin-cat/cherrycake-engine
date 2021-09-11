@@ -12,9 +12,6 @@ namespace Cherrycake\Janitor;
  *
  *  /janitor/status
  *      Presents a page with a tasks report status
- *
- * @package Cherrycake
- * @category Modules
  */
 class Janitor extends \Cherrycake\Module {
 	/**

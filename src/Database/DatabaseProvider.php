@@ -3,13 +3,8 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseProvider
- *
  * Base class for database provider implementations. Intended to be overloaded by a higher level database system implementation class.
  * Database providers are only connected when required (when the first request is received)
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseProvider {
 	/**

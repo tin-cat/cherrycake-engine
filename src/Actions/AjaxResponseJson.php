@@ -3,12 +3,7 @@
 namespace Cherrycake\Actions;
 
 /**
- * AjaxResponseJson
- *
  * A class that represents an Ajax JSON response, intended to be handled by the Javascript part of the Ajax module
- *
- * @package Cherrycake
- * @category Classes
  */
 class AjaxResponseJson {
 	/**

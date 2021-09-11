@@ -4,9 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an Action which will return Html
- *
- * @package Cherrycake
- * @category Classes
  */
 class ActionHtml extends Action {
 	/**

@@ -3,13 +3,8 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseProviderMysql
- *
  * Database provider based on MySQL, using mysqli PHP interface.
  * Requires PHP to be compiled with the native MySQLnd driver, which improves perfomance. See here: http://www.php.net/manual/es/book.mysqlnd.php
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseProviderMysql extends DatabaseProvider {
 	/**

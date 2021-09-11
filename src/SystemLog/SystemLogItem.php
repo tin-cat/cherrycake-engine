@@ -4,9 +4,6 @@ namespace Cherrycake\SystemLog;
 
 /**
  * Class that represents a system log item
- *
- * @package Cherrycake
- * @category Classes
  */
 class SystemLogItem extends \Cherrycake\Item {
 	protected $tableName = "cherrycake_SystemLog";

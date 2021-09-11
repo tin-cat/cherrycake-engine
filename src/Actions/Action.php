@@ -4,8 +4,6 @@ namespace Cherrycake\Actions;
 
 /**
  * A class that represents an action requested to the engine. It uses a Request object. It implements Action-level cache.
- * @package Cherrycake
- * @category Classes
  */
 class Action {
 	/**

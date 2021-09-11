@@ -3,12 +3,7 @@
 namespace Cherrycake\Actions;
 
 /**
- * RequestParameter
- *
  * A class that represents a parameter passed to a Request via Get or Post
- *
- * @package Cherrycake
- * @category Classes
  */
 class RequestParameter {
 	function __construct(

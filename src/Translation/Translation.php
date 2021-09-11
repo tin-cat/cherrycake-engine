@@ -4,9 +4,6 @@ namespace Cherrycake\Translation;
 
 /**
  * The Language module provides text translations for multilingual sites, working in conjunction with the Locale module.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Translation extends \Cherrycake\Module {
 	/**

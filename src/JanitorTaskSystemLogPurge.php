@@ -3,9 +3,6 @@
 /**
  * A JanitorTask to purge the SystemLog module database
  * Purges the old log items on the database to avoid unnecessary database cluttering.
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTaskSystemLogPurge extends \Cherrycake\Janitor\JanitorTask {
 	/**

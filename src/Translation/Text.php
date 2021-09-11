@@ -4,8 +4,6 @@ namespace Cherrycake\Translation;
 
 /**
  * A class that represents a translatable text
- * @package Cherrycake
- * @category Classes
  */
 class Text {
 	/**

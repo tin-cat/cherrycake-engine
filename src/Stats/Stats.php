@@ -4,9 +4,6 @@ namespace Cherrycake\Stats;
 
 /**
  * Stores and manages statistical information
- *
- * @package Cherrycake
- * @category Modules
  */
 class Stats extends \Cherrycake\Module {
 	/**

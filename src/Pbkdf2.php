@@ -41,8 +41,6 @@ define("HASH_PBKDF2_INDEX", 3);
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package Cherrycake
- * @category Classes
  */
 class Pbkdf2 {
 	function createHash($password) {

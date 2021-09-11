@@ -4,8 +4,6 @@ namespace Cherrycake;
 
 /**
  * The base class for modules. Intented to be overloaded by specific functionality classes
- * @package Cherrycake
- * @category Modules
  */
 class Module {
 	/**

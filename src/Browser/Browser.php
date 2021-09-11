@@ -3,14 +3,9 @@
 namespace Cherrycake\Browser;
 
 /**
- * Browser
- *
  * Module that identifies the client's browser identity and capabilities.
  * Strongly based on Browser.php by Chris Schuld (http://chrisschuld.com/), 99% of the code by him.
- *
  * @author Chris Schuld
- * @package Cherrycake
- * @category Modules
  */
 class Browser extends \Cherrycake\Module {
 	private $_agent = '';

@@ -4,9 +4,6 @@ namespace Cherrycake;
 
 /**
  * The base class for UI components. Intented to be overloaded by specific functionality classes
- *
- * @package Cherrycake
- * @category Modules
  */
 class Ui {
 

@@ -4,9 +4,6 @@ namespace Cherrycake\Stats;
 
 /**
  * Base class to represent a stats event for the Stats module
- *
- * @package Cherrycake
- * @category Classes
  */
 class StatsEvent extends \Cherrycake\Item {
 	protected $tableName = "cherrycake_stats";

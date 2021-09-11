@@ -7,12 +7,7 @@ const LOCATION_CACHE_PROVIDER_NAME = "engine"; // The name of the CacheProvider 
 const LOCATION_CACHE_TTL = 2592000; // TTL For the location data (2592000 = 1 Month)
 
 /**
- * Location
- *
  * Class that represents a location
- *
- * @package Cherrycake
- * @category Classes
  */
 class Location {
 	/**
@@ -21,17 +16,11 @@ class Location {
 	var $data;
 
 	/**
-	 * __construct
-	 *
 	 * Constructor, allows to create an instance object which automatically fills itself in one of the available forms
-	 *
 	 * Setup keys:
-	 *
 	 * * loadMethod: If specified, it loads the Item using the given method, available methods:
 	 * 	- fromGivenLocationIds: Loads the Location for the given countryId, RegionId and CityId keys
-	 *
 	 * @param array $setup Specifications on how to create the Location object
-	 *
 	 * @return boolean Whether the object could be initialized ok or not
 	 */
 	function __construct($setup = false) {

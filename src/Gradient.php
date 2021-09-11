@@ -10,9 +10,6 @@ const GRADIENT_STYLE_DIAGONAL_DOWN = 4;
 
 /**
  * Class that represents a color gradient.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Gradient
 {

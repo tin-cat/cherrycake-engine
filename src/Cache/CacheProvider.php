@@ -3,13 +3,8 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProvider
- *
  * Base class for cache provider implementations. Intended to be overloaded by a higher level cache system implementation class.
  * Cache providers are only connected when required (when the first request is received)
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProvider {
 	/**

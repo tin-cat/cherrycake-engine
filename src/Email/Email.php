@@ -6,10 +6,7 @@ use \PHPMailer\PHPMailer\PHPMailer;
 use \PHPMailer\PHPMailer\Exception;
 
 /**
- * Email
- *
  * Sends emails
- *
  * Configuration example for email.config.php:
  * <code>
  * $emailConfig = [
@@ -24,9 +21,6 @@ use \PHPMailer\PHPMailer\Exception;
  * </code>
  *
  * @todo Implement an email queueing system
- *
- * @package Cherrycake
- * @category Modules
  */
 class Email extends \Cherrycake\Module {
     private $phpMailer;

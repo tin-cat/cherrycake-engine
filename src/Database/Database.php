@@ -28,9 +28,6 @@ namespace Cherrycake\Database;
  * 	]
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Modules
  */
 class Database extends \Cherrycake\Module {
 	/**

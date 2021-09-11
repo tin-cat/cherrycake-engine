@@ -5,9 +5,6 @@ namespace Cherrycake\Security;
 /**
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Security  extends \Cherrycake\Module {
 	/**

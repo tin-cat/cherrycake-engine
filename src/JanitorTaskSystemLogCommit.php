@@ -3,9 +3,6 @@
 /**
  * A JanitorTask to maintain the System Log module
  * Commits the system log events in cache to database
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTaskSystemLogCommit extends \Cherrycake\Janitor\JanitorTask {
 	/**

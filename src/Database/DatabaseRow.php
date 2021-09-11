@@ -3,12 +3,7 @@
 namespace Cherrycake\Database;
 
 /**
- * DatabaseRow
- *
  * Class that represents a row retrieved from a query to a database
- *
- * @package Cherrycake
- * @category Classes
  */
 class DatabaseRow {
 	/**

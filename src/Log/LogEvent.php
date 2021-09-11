@@ -4,9 +4,6 @@ namespace Cherrycake\Log;
 
 /**
  * Base class to represent log events for the Log module
- *
- * @package Cherrycake
- * @category Classes
  */
 class LogEvent extends \Cherrycake\Item {
 	protected $tableName = "log";

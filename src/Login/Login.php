@@ -4,8 +4,6 @@ namespace Cherrycake\Login;
 
 /**
  * Provides a standardized method for implementing secure user identification workflows for web apps.
- * @package Cherrycake
- * @category Modules
  */
 class Login extends \Cherrycake\Module {
 	/**

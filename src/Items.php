@@ -4,9 +4,6 @@ namespace Cherrycake;
 
 /**
  * Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method
- *
- * @package Cherrycake
- * @category Classes
  * @todo  Check the caching and the cache clearing performed by the fillFromParameters, clearCache and buildCacheKeyNamingOptions methods
  */
 abstract class Items implements \Iterator {

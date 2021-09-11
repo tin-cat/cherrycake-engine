@@ -3,16 +3,11 @@
 namespace Cherrycake\Patterns;
 
 /**
- * Module to manage patterns.
- *
  * * It reads and parses pattern files
  * * Allows pattern nesting and in-pattern commands
  * * Can work in conjunction with Cache module to provide a pattern-level cache
  *
  * Be very careful by not allowing user-entered data or data received via a request to be parsed. Never parse a user-entered information as a pattern.
-
- * @package Cherrycake
- * @category Modules
  */
 class Patterns extends \Cherrycake\Module {
 	/**

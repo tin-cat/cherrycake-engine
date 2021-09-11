@@ -3,13 +3,8 @@
 namespace Cherrycake;
 
 /**
- * JanitorTaskJanitorPurge
- *
  * A JanitorTask to maintain the Janitor module itself
  * Purges the old log items on the database to avoid unnecessary database cluttering.
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTaskJanitorPurge extends \Cherrycake\Janitor\JanitorTask {
 	/**

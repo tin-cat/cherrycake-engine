@@ -4,9 +4,6 @@ namespace Cherrycake\Javascript;
 
 /**
  * Module that manages Javascript code.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Javascript extends \Cherrycake\Module {
 	/**

@@ -5,9 +5,6 @@ namespace Cherrycake;
 /**
  * Provides a bottom level cache aimed to provide engine-level speed optimizations with a small-size, high performance cache.
  * This cache mechanism is not intended to be used in the Application layers, use Cache module instead.
- *
- * @package Cherrycake
- * @category Classes
  */
 class EngineCache {
 	private $defaultBucketName = "default";

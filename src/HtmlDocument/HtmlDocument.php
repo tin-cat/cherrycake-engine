@@ -4,9 +4,6 @@ namespace Cherrycake\HtmlDocument;
 
 /**
  * Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
- *
- * @package Cherrycake
- * @category Modules
  */
 class HtmlDocument extends \Cherrycake\Module {
 	/**

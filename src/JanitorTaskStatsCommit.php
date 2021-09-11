@@ -3,9 +3,6 @@
 /**
  * A JanitorTask to maintain the Stats module
  * Commits the Stats events in cache to database
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTaskStatsCommit extends \Cherrycake\Janitor\JanitorTask {
 	/**

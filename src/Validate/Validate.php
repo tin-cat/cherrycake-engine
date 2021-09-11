@@ -24,9 +24,6 @@ namespace Cherrycake\Validate;
  *  "passwordStrengthValidationIsRequireNotEqualToLogin" => true // For password strength validation, whether to require the password to be different than the login
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Modules
  */
 class Validate extends \Cherrycake\Module {
 	/**

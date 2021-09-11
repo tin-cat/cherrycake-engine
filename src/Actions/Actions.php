@@ -5,9 +5,6 @@ namespace Cherrycake\Actions;
 /**
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
  * It takes configuration from the App-layer configuration file.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Actions extends \Cherrycake\Module {
 	/**

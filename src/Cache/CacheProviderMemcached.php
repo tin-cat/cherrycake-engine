@@ -3,12 +3,7 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProviderMemcached
- *
  * Cache Provider based on Memcached. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored. Memcached daemon can also be setup to run in a server cluster.
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProviderMemcached extends CacheProvider implements CacheProviderInterface {
 	/**

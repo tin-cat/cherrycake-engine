@@ -4,9 +4,6 @@ namespace Cherrycake\SystemLog;
 
 /**
  * Base class to represent system log events for the SystemLog module
- *
- * @package Cherrycake
- * @category Classes
  */
 class SystemLogEvent extends \Cherrycake\Item {
 	protected $tableName = "cherrycake_systemLog";

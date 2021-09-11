@@ -3,12 +3,7 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProviderRedis
- *
  * Cache Provider based on Redis. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored.
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProviderRedis extends CacheProvider implements CacheProviderInterface, CacheProviderInterfacePool, CacheProviderInterfaceQueue, CacheProviderInterfaceList {
 	/**
