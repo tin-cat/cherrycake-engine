@@ -437,18 +437,15 @@ class Engine {
 		// Call the static method
 		$coreModuleNames = $this->getAvailableCoreModuleNamesWithMethod($methodName);
 		if (is_array($coreModuleNames)) {
-			foreach ($coreModuleNames as $coreModuleName) {
+			foreach ($coreModuleNames as $coreModuleName)
 				forward_static_call(["\\Cherrycake\\".$coreModuleName."\\".$coreModuleName, $methodName]);
-			}
 			reset($coreModuleNames);
 		}
 
 		$appModuleNames = $this->getAvailableAppModuleNamesWithMethod($methodName);
 		if (is_array($appModuleNames)) {
-			foreach ($appModuleNames as $appModuleName) {
-
+			foreach ($appModuleNames as $appModuleName)
 				forward_static_call(["\\".$this->getAppNamespace()."\\".$appModuleName."\\".$appModuleName, $methodName]);
-			}
 			reset($appModuleNames);
 		}
 	}

@@ -13,7 +13,7 @@ class Ui {
 
 	public function set(
 		string $key = '',
-		string|array $value = '',
+		mixed $value = '',
 		array $properties = []
 	): Ui {
 		if ($properties) {

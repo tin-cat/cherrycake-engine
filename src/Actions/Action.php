@@ -21,7 +21,7 @@ class Action {
 	 * @param boolean $isCli When set to true, this action will only be able to be executed via the command line CLI interface
 	 */
 	function __construct(
-		private string $moduleName,
+		private string $moduleName = '',
 		private string $methodName,
 		public Request $request,
 		private int $moduleType = \Cherrycake\ACTION_MODULE_TYPE_APP,
@@ -35,6 +35,12 @@ class Action {
 		private bool $isCli = false
 	) {
 		global $e;
+
+		// If no moduleName has been specified, use the same matching the class this Action is being constructed from
+		if (!$this->moduleName) {
+			$moduleNameClassPath = explode("\\", get_called_class());
+			$this->moduleName = end($moduleNameClassPath);
+		}
 
 		if (!$this->request)
 			$this->request = new Request;
