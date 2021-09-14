@@ -2,6 +2,8 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Cache\Cache;
+
 /**
  * Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method
  * @todo  Check the caching and the cache clearing performed by the fillFromParameters, clearCache and buildCacheKeyNamingOptions methods
@@ -40,7 +42,7 @@ abstract class Items implements \Iterator {
 	/**
 	 * @var integer The cache ttl to use on the fillFromParameters method
 	 */
-	protected $cacheTtl = CACHE_TTL_NORMAL;
+	protected $cacheTtl = Cache::TTL_NORMAL;
 
 	/**
 	 * @var string The name of the cache provider to use on the fillFromParameters method
@@ -172,7 +174,7 @@ abstract class Items implements \Iterator {
 	 * * wheres: <array|false> Default: false. An array of where SQL clauses, where each item is a hash array containing the following keys:
 	 * * * sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
 	 * * * values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
-	 * * * * type: The type of the value, must be one of the \Cherrycake\Database\DATABASE_FIELD_TYPE_*
+	 * * * * type: The type of the value, must be one of the \Cherrycake\Database\Database::TYPE_*
 	 * * * * value: The value
 	 * * limit: <integer|false> Default: false. Maximum number of items returned
 	 * * order <array|false> Default: false: An ordered array of orders to apply to results, on which each item can be one of the configured in the "orders" parameter
@@ -184,7 +186,7 @@ abstract class Items implements \Iterator {
 	 * * isBuildTotalNumberOfItems: <true|false> Default: false. Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account limit, if specified.
 	 * * isFillItems: <true|false> Default: true. Whether to return the matching items or not in the "items" results key.
 	 * * isForceNoCache: <true|false> Default: false. If set to true, the query won't use cache, even if the object is configured to do so.
-	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
 	 * * isStoreInCacheWhenNoResults: <boolean> Default: true. Whether to store results in cache even when there are no results.
 	 *
 	 * Stores the results on the following object variables, so they can be later used by other methods:
@@ -263,7 +265,7 @@ abstract class Items implements \Iterator {
 			if ($p["limit"]) {
 				$sql .= " limit ? ";
 				$fields[] = [
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $p["limit"]
 				];
 			}
@@ -271,11 +273,11 @@ abstract class Items implements \Iterator {
 			if ($p["isPaging"]) {
 				$sql .= " limit ?,? ";
 				$fields[] = [
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $p["page"] * $p["itemsPerPage"]
 				];
 				$fields[] = [
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $p["itemsPerPage"]
 				];
 			}
@@ -291,7 +293,7 @@ abstract class Items implements \Iterator {
 				);
 
 				if ($this->cachedKeysPoolName)
-					$this->addCachedKey(\Cherrycake\Cache\Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
+					$this->addCachedKey(Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
 			}
 			else
 				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(

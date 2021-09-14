@@ -20,16 +20,16 @@ class RequestParameter {
 	function retrieveValue() {
 		global $e;
 		switch ($this->type) {
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_GET:
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_CLI:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_GET:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_CLI:
 				if (isset($_GET[$this->name]))
 					$this->setValue($_GET[$this->name]);
 				break;
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_POST:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_POST:
 				if (isset($_POST[$this->name]))
 					$this->setValue($_POST[$this->name]);
 				break;
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_FILE:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE:
 				if (isset($_FILES[$this->name]))
 					$this->setValue($_FILES[$this->name]);
 				break;
@@ -52,7 +52,7 @@ class RequestParameter {
 		if (!$this->isReceived())
 			return null;
 		return
-			$this->type == \Cherrycake\REQUEST_PARAMETER_TYPE_FILE
+			$this->type == \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE
 			?
 			$this->value
 			:
@@ -77,7 +77,7 @@ class RequestParameter {
 	function checkValueSecurity() {
 		global $e;
 		return
-			$this->type == \Cherrycake\REQUEST_PARAMETER_TYPE_FILE
+			$this->type == \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE
 			?
 			$e->Security->checkFile($this->value, $this->securityRules)
 			:

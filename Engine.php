@@ -2,6 +2,8 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Errors\Errors;
+
 /**
  * The main class that loads modules and configurations, and the entry point of the application.
  * Cherrycake uses global variables for configuring modules and global configuration, be sure to set "register_globals" to "off" in php.ini to avoid security issues.

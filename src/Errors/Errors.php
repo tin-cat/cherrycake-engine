@@ -35,6 +35,24 @@ class Errors extends \Cherrycake\Module {
 	const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
 	const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
 
+	const ANSI_NOCOLOR = "\033[0m";
+	const ANSI_BLACK = "\033[0;30m";
+	const ANSI_RED = "\033[0;31m";
+	const ANSI_GREEN = "\033[0;32m";
+	const ANSI_ORANGE = "\033[0;33m";
+	const ANSI_BLUE = "\033[0;34m";
+	const ANSI_PURPLE = "\033[0;35m";
+	const ANSI_CYAN = "\033[0;36m";
+	const ANSI_LIGHT_GRAY = "\033[0;37m";
+	const ANSI_DARK_GRAY = "\033[1;90m";
+	const ANSI_LIGHT_RED = "\033[35m";
+	const ANSI_LIGHT_GREEN = "\033[1;32m";
+	const ANSI_YELLOW = "\033[1;33m";
+	const ANSI_LIGHT_BLUE = "\033[36m";
+	const ANSI_LIGHT_PURPLE = "\033[1;35m";
+	const ANSI_LIGHT_CYAN = "\033[1;36m";
+	const ANSI_WHITE = "\033[1;37m";
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -159,23 +177,23 @@ class Errors extends \Cherrycake\Module {
 
 		if ($e->isCli()) {
 			echo
-				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-				\Cherrycake\ANSI_WHITE.$e->getAppName()." ".[
-					self::ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
-					self::ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
-					self::ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
-					self::ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
+				\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
+				\Cherrycake\Errors\Errors::ANSI_WHITE.$e->getAppName()." ".[
+					self::ERROR_SYSTEM => \Cherrycake\Errors\Errors::ANSI_RED."System error",
+					self::ERROR_APP => \Cherrycake\Errors\Errors::ANSI_ORANGE."App error",
+					self::ERROR_NOT_FOUND => \Cherrycake\Errors\Errors::ANSI_PURPLE."Not found",
+					self::ERROR_NO_PERMISSION => \Cherrycake\Errors\Errors::ANSI_CYAN."No permission"
 				][$type]."\n".
-				\Cherrycake\ANSI_NOCOLOR.
-				(isset($subType) ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$subType."\n" : null).
-				(isset($description) ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$description."\n" : null).
+				\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+				(isset($subType) ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Subtype: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$subType."\n" : null).
+				(isset($description) ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Description: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$description."\n" : null).
 				(isset($variables) ?
-					\Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.
+					\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Variables:\n".\Cherrycake\Errors\Errors::ANSI_WHITE.
 					substr(print_r($variables, true), 8, -3).
 					"\n"
 				: null).
-				($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
-				\Cherrycake\ANSI_NOCOLOR;
+				($e->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+				\Cherrycake\Errors\Errors::ANSI_NOCOLOR;
 			return;
 		}
 
@@ -213,10 +231,10 @@ class Errors extends \Cherrycake\Module {
 							"backtrace" => $backtrace
 						],
 						code: [
-							self::ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							self::ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							self::ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
-							self::ERROR_NO_PERMISSION => \Cherrycake\Output\RESPONSE_NO_PERMISSION
+							self::ERROR_SYSTEM => \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_APP => \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_NOT_FOUND => \Cherrycake\Output\Output::RESPONSE_NOT_FOUND,
+							self::ERROR_NO_PERMISSION => \Cherrycake\Output\Output::RESPONSE_NO_PERMISSION
 						][$type]
 					);
 				}
@@ -263,8 +281,8 @@ class Errors extends \Cherrycake\Module {
 			case "ajax":
 
 				if ($e->isDevel()) {
-					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+					$ajaxResponse = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
 						"description" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								self::ERROR_SYSTEM => "System error",
@@ -275,16 +293,14 @@ class Errors extends \Cherrycake\Module {
 							($subType ? "Subtype: ".$subType."<br>" : null).
 							($description ? "Description: ".$description."<br>" : null).
 							($variables ? "Variables:<br>".print_r($variables, true)."<br>" : null).
-							"Backtrace:<br>".strip_tags(implode("<br>", $backtrace_info)),
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+							"Backtrace:<br>".strip_tags(implode("<br>", $backtrace_info))
 					]);
 					$ajaxResponse->output();
 				}
 				else {
-					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
-						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+					$ajaxResponse = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+						"description" => "Sorry, we've got an unexpected error"
 					]);
 					$ajaxResponse->output();
 				}
@@ -293,7 +309,7 @@ class Errors extends \Cherrycake\Module {
 			case "plain":
 				if ($e->isDevel()) {
 					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								self::ERROR_SYSTEM => "System error",
@@ -309,7 +325,7 @@ class Errors extends \Cherrycake\Module {
 				}
 				else {
 					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload: "Error"
 					));
 				}

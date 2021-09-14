@@ -2,11 +2,38 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Errors\Errors;
+
 /**
  * Manages cache providers.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
  */
 class Cache extends \Cherrycake\Module {
+
+	const TTL_1_MINUTE = 60;
+	const TTL_5_MINUTES = 300;
+	const TTL_10_MINUTES = 600;
+	const TTL_30_MINUTES = 1800;
+	const TTL_1_HOUR = 3600;
+	const TTL_2_HOURS = 7200;
+	const TTL_6_HOURS = 21600;
+	const TTL_12_HOURS = 43200;
+	const TTL_1_DAY = 86400;
+	const TTL_2_DAYS = 172800;
+	const TTL_3_DAYS = 259200;
+	const TTL_5_DAYS = 432000;
+	const TTL_1_WEEK = 604800;
+	const TTL_2_WEEKS = 1209600;
+	const TTL_1_MONTH = 2592000;
+
+	const TTL_MINIMAL = 10;
+	const TTL_CRITICAL = self::TTL_1_MINUTE;
+	const TTL_SHORT = self::TTL_5_MINUTES;
+	const TTL_NORMAL = self::TTL_1_HOUR;
+	const TTL_UNCRITICAL = self::TTL_1_DAY;
+	const TTL_LONG = self::TTL_1_WEEK;
+	const TTL_LONGEST = self::TTL_1_MONTH;
+
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */

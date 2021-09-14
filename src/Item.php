@@ -2,6 +2,9 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Cache\Cache;
+use Cherrycake\Errors\Errors;
+
 /**
  * Represents a generic item from a database.
  */
@@ -29,7 +32,7 @@ class Item {
 	/**
 	 * @var integer The TTL to use when caching data for this Item.
 	 */
-	static protected $cacheTtl = CACHE_TTL_NORMAL;
+	static protected $cacheTtl = Cache::TTL_NORMAL;
 
 	/**
 	 * @var string The string to use as the key prefix for this Item in the cache, the value of the idFieldName will be appended.
@@ -43,7 +46,7 @@ class Item {
 
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
-	 * * type: The type of the field, one of the available \Cherrycake\Database\DATABASE_FIELD_TYPE_*
+	 * * type: The type of the field, one of the available \Cherrycake\Database\Database::TYPE_*
 	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
 	 * * * type: The type of the form item, one of the available \Cherrycake\ItemAdmin\FORM_ITEM_TYPE_*
 	 * * * selectType: For FORM_ITEM_TYPE_SELECT type: The select type: either FORM_ITEM_SELECT_TYPE_RADIOS or FORM_ITEM_SELECT_TYPE_COMBO
@@ -60,8 +63,8 @@ class Item {
 	 * * humanizePreMethodName: A method name to call with the field value before any other humanization is done. It will receive the Item object as the first and only parameter
 	 * * humanizePostMethodName: A method name to call with the field value after any other humanization is done. It will receive the already treated value as the first parameter and the Item object as the second
 	 * * representFunction: An anonymous function that will be passed the Item object, the returned value will be shown to represent this field current value in ItemAdmin, for example
-	 * * requestSecurityRules: An array of security rules from the available SECURITY_RULE_* that should be applied whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
-     * * requestFilters: An array of filter from the available SECURITY_FILTER_* that should be appled whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
+	 * * requestSecurityRules: An array of security rules from the available RULE_* that should be applied whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
+     * * requestFilters: An array of filter from the available FILTER_* that should be appled whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
 	 * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object. Used for example in ItemAdmin
 	 */
 	static protected $fields = false;
@@ -326,22 +329,22 @@ class Item {
 			if (isset($fieldData["defaultValue"])) {
 
 				switch ($fieldData["defaultValue"]) {
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE:
 						$value = $fieldData["value"];
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_DATE:
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_DATETIME:
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_TIMESTAMP:
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_TIME:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_DATE:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_DATETIME:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_TIMESTAMP:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_TIME:
 						$value = time();
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_YEAR:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_YEAR:
 						$value = date("Y");
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_IP:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_IP:
 						$value = $this->getClientIp();
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
+					case \Cherrycake\Database\Database::DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
 						$value = $this->getRandomAvailableUrlShortCode($fieldName);
 						break;
 				}
@@ -596,6 +599,7 @@ class Item {
 	function getForLanguage(string $key, int|bool  $language = false): mixed {
 		if (!static::$fields || static::$fields[$key]["isMultiLanguage"])
 			return false;
+		global $e;
 		$key .= "_".$e->Locale->getLanguageCode($language);
 		return $this->$key;
 	}
@@ -608,9 +612,9 @@ class Item {
 	 */
 	function getForTimezone(string $key, string $timeZone = ''): int {
 		if (!static::$fields || (
-			static::$fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME
+			static::$fields[$key]["type"] !== \Cherrycake\Database\Database::TYPE_DATETIME
 			&&
-			static::$fields[$key]["type"] !== \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME
+			static::$fields[$key]["type"] !== \Cherrycake\Database\Database::TYPE_TIME
 		))
 			return false;
 
@@ -683,8 +687,8 @@ class Item {
 		}
 
 		switch (static::$fields[$key]["type"]) {
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:
+			case \Cherrycake\Database\Database::TYPE_INTEGER:
+			case \Cherrycake\Database\Database::TYPE_TINYINT:
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
@@ -695,7 +699,7 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT:
+			case \Cherrycake\Database\Database::TYPE_FLOAT:
 				$r = $e->Locale->formatNumber(
 					$r,
 					[
@@ -706,10 +710,10 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
+			case \Cherrycake\Database\Database::TYPE_DATE:
+			case \Cherrycake\Database\Database::TYPE_DATETIME:
+			case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
+			case \Cherrycake\Database\Database::TYPE_TIME:
 
 				if (!$r) {
 					$r = $rEmpty;
@@ -717,7 +721,7 @@ class Item {
 				}
 
 				switch (static::$fields[$key]["type"]) {
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
+					case \Cherrycake\Database\Database::TYPE_DATE:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -726,8 +730,8 @@ class Item {
 							]
 						);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
+					case \Cherrycake\Database\Database::TYPE_DATETIME:
+					case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -736,7 +740,7 @@ class Item {
 							]
 						);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
+					case \Cherrycake\Database\Database::TYPE_TIME:
 						$r = $e->Locale->formatTimestamp(
 							$r,
 							[
@@ -750,7 +754,7 @@ class Item {
 
 				break;
 
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR:
+			case \Cherrycake\Database\Database::TYPE_YEAR:
 				$r = $e->Locale->formatTimestamp(
 					$r,
 					[
@@ -758,16 +762,16 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN:
+			case \Cherrycake\Database\Database::TYPE_BOOLEAN:
 				$r = $r ? $rBooleanTrue : $rBooleanFalse;
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_IP:
+			case \Cherrycake\Database\Database::TYPE_IP:
 				if (!$r) {
 					$r = $rEmpty;
 					break;
 				}
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED:
+			case \Cherrycake\Database\Database::TYPE_SERIALIZED:
 				$value = $r;
 
 				if (!$value) {
@@ -792,10 +796,10 @@ class Item {
 				$table .= "</table>";
 				$r = $table;
 				break;
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB:
-			case \Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR:
+			case \Cherrycake\Database\Database::TYPE_STRING:
+			case \Cherrycake\Database\Database::TYPE_TEXT:
+			case \Cherrycake\Database\Database::TYPE_BLOB:
+			case \Cherrycake\Database\Database::TYPE_COLOR:
 			default:
 				if (!$r) {
 					$r = $rEmpty;

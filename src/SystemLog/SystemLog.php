@@ -119,7 +119,7 @@ class SystemLog extends \Cherrycake\Module {
 			"select count(*) as numberOf from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 					"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 				]
 			]
@@ -139,7 +139,7 @@ class SystemLog extends \Cherrycake\Module {
 				"delete from ".$e->SystemLog->getConfig("tableName")." where dateAdded < ?",
 				[
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
 					]
 				]

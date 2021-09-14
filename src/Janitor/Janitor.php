@@ -14,6 +14,19 @@ namespace Cherrycake\Janitor;
  *      Presents a page with a tasks report status
  */
 class Janitor extends \Cherrycake\Module {
+
+	const EXECUTION_RETURN_WARNING = 0; // Return code for JanitorTask run when task returned a warning.
+	const EXECUTION_RETURN_ERROR = 1; // Return code for JanitorTask run when task returned an error.
+	const EXECUTION_RETURN_CRITICAL = 2; // Return code for JanitorTask run when task returned a critical error.
+	const EXECUTION_RETURN_OK = 3; // Return code for JanitorTask run when task was executed without errors.
+
+	const EXECUTION_PERIODICITY_ONLY_MANUAL = 0; // The task can only be executed when calling the Janitor run process with an specific task parameter.
+	const EXECUTION_PERIODICITY_ALWAYS = 1; // The task will be executed every time Janitor run is called.
+	const EXECUTION_PERIODICITY_EACH_SECONDS = 2; // The task will be executed every specified seconds. Seconds are specified in "periodicityEachSeconds" config key.
+	const EXECUTION_PERIODICITY_MINUTES = 3; // The task will be executed on the given minutes of each hour. Desired minutes are specified as an array in the "periodicityMinutes" config key. For example: [0, 15, 30, 45]
+	const EXECUTION_PERIODICITY_HOURS = 4; // The task will be executed on the given hours of each day. Desired hours/minute are specified as an array in the "periodicityHours" config key in the syntax ["hour:minute", ...] For example: ["00:00", "10:45", "20:15"]
+	const EXECUTION_PERIODICITY_DAYSOFMONTH = 5; // The task will be executed on the given days of each month. Desired days/hour/minute are specified as an array in the "periodicityDaysOfMonth" config key in the syntax ["day@hour:minute", ...] For example: ["1@12:00", "15@18:30", "20@00:00"] (Take into account days of month that do not exist)
+
 	/**
 	 * @var array $config Holds the default configuration for this module
 	 */
@@ -55,28 +68,28 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorRun",
 			new \Cherrycake\Actions\ActionCli(
-				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
 				moduleName: "Janitor",
 				methodName: "run",
 				request: new \Cherrycake\Actions\Request(
 					pathComponents: [
 						new \Cherrycake\Actions\RequestPathComponent(
-							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 							string: "janitor"
 						),
 						new \Cherrycake\Actions\RequestPathComponent(
-							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 							string: "run"
 						)
 					],
 					parameters: [
 						new \Cherrycake\Actions\RequestParameter(
 							name: "task",
-							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 						),
 						new \Cherrycake\Actions\RequestParameter(
 							name: "isForceRun",
-							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 						)
 					]
 				)
@@ -86,17 +99,17 @@ class Janitor extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"janitorStatus",
 			new \Cherrycake\Actions\ActionCli(
-				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
 				moduleName: "Janitor",
 				methodName: "showPlainStatus",
 				request: new \Cherrycake\Actions\Request(
 					pathComponents: [
 						new \Cherrycake\Actions\RequestPathComponent(
-							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 							string: "janitor"
 						),
 						new \Cherrycake\Actions\RequestPathComponent(
-							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 							string: "status"
 						)
 					]
@@ -211,23 +224,23 @@ class Janitor extends \Cherrycake\Module {
 						"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
 						[
 							[
-								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+								"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 								"value" => $baseTimestamp
 							],
 							[
-								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT,
+								"type" => \Cherrycake\Database\Database::TYPE_FLOAT,
 								"value" => $executionSeconds
 							],
 							[
-								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\Database\Database::TYPE_STRING,
 								"value" => $janitorTask->getName()
 							],
 							[
-								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+								"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 								"value" => $resultCode
 							],
 							[
-								"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+								"type" => \Cherrycake\Database\Database::TYPE_STRING,
 								"value" => json_encode($resultDescription)
 							]
 						]
@@ -242,7 +255,7 @@ class Janitor extends \Cherrycake\Module {
 					$r .= $this->getJanitorTaskReturnCodeDescription($resultCode).". ";
 
 
-					if ($resultCode != \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK) {
+					if ($resultCode != \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
 						$e->Errors->trigger(
 							type: Errors::ERROR_SYSTEM,
@@ -339,16 +352,16 @@ class Janitor extends \Cherrycake\Module {
 	 */
 	static function getJanitorTaskReturnCodeDescription($returnCode) {
 		switch ($returnCode) {
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_WARNING:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_WARNING:
 				return "Warning";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR:
 				return "Error";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_CRITICAL:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_CRITICAL:
 				return "Critical";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK:
 				return "Ok";
 				break;
 			default:

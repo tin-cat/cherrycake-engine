@@ -68,16 +68,6 @@ class Module {
 	}
 
 	/**
-	 * Loads the constants file for this module, if there's one
-	 */
-	function loadConstantsFile() {
-		$fileName = dirname(__FILE__)."/".$this->getName()."/".$this->getName().".constants.php";
-		if (!file_exists($fileName))
-			return;
-		include $fileName;
-	}
-
-	/**
 	 * Sets the module configuration
 	 * @param array $config An array of configuration options for this module. It merges them with the hard coded default values configured in the overloaded module.
 	 */
@@ -163,7 +153,6 @@ class Module {
 	function init(): bool {
 		if (!$this->loadDependencies())
 			return false;
-		$this->loadConstantsFile();
 		$this->loadConfigFile();
 		return true;
 	}

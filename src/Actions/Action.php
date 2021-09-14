@@ -24,7 +24,7 @@ class Action {
 		private string $moduleName,
 		private string $methodName,
 		public Request $request,
-		private int $moduleType = \Cherrycake\ACTION_MODULE_TYPE_APP,
+		private int $moduleType = \Cherrycake\Actions\Actions::MODULE_TYPE_APP,
 		protected string $responseClass = '',
 		private bool $isCache = false,
 		private string $cacheProviderName = '',
@@ -86,18 +86,18 @@ class Action {
 		if ($this->timeout)
 			set_time_limit($this->timeout);
 
-		if ($this->moduleType == \Cherrycake\ACTION_MODULE_TYPE_CORE)
+		if ($this->moduleType == \Cherrycake\Actions\Actions::MODULE_TYPE_CORE)
 			$e->loadCoreModule($this->moduleName);
 		else
-		if ($this->moduleType == \Cherrycake\ACTION_MODULE_TYPE_APP)
+		if ($this->moduleType == \Cherrycake\Actions\Actions::MODULE_TYPE_APP)
 			$e->loadAppModule($this->moduleName);
 
 		if (!$this->request->securityCheck())
 			return false;
 
 		switch ($this->moduleType) {
-			case \Cherrycake\ACTION_MODULE_TYPE_CORE:
-			case \Cherrycake\ACTION_MODULE_TYPE_APP:
+			case \Cherrycake\Actions\Actions::MODULE_TYPE_CORE:
+			case \Cherrycake\Actions\Actions::MODULE_TYPE_APP:
 				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
 					$e->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,

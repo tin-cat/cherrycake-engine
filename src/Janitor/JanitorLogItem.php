@@ -11,16 +11,16 @@ class JanitorLogItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"executionDate" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+			"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 			"title" => "Execution date",
 		],
 		"executionSeconds" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT,
+			"type" => \Cherrycake\Database\Database::TYPE_FLOAT,
 			"title" => "Time spent",
 			"multiplier" => 1000,
 			"decimals" => 2,
@@ -29,16 +29,16 @@ class JanitorLogItem extends \Cherrycake\Item {
 			"humanizePostMethodName" => "humanizePostExecutionSeconds",
 		],
 		"taskName" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Task"
 		],
 		"resultCode" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"title" => "Result code",
 			"humanizeMethodName" => "humanizeResultCode"
 		],
 		"resultDescription" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED,
+			"type" => \Cherrycake\Database\Database::TYPE_SERIALIZED,
 			"title" => "Result"
 		]
 	];

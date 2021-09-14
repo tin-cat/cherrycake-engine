@@ -14,12 +14,12 @@ class HttpCache
 	 * Method to call statically to perform Http cache control and send the proper headers
 	 *
 	 * @param int $lastModifiedTimestamp The timestamp to mark this request with, i.e: Last modified timestamp
-	 * @param int $maxAge The maximum age of this request in seconds, defaults to CACHE_TTL_LONGEST
+	 * @param int $maxAge The maximum age of this request in seconds, defaults to Cache::TTL_LONGEST
 	 */
 	public static function Init($lastModifiedTimestamp, $maxAge = false)
 	{
 		if (!$maxAge)
-			$maxAge = CACHE_TTL_LONGEST;
+			$maxAge = Cache::TTL_LONGEST;
 
 		if (self::IsModifiedSince($lastModifiedTimestamp))
 			self::SetLastModifiedHeader($lastModifiedTimestamp, $maxAge);

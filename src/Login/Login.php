@@ -6,13 +6,21 @@ namespace Cherrycake\Login;
  * Provides a standardized method for implementing secure user identification workflows for web apps.
  */
 class Login extends \Cherrycake\Module {
+
+	const LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 = 0;
+
+	const RESULT_OK = 0;
+	const RESULT_FAILED = 1;
+	const RESULT_FAILED_UNKNOWN_USER = 2;
+	const RESULT_FAILED_WRONG_PASSWORD = 3;
+
 	/**
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
 		"userClassName" => "\App\User", // The name of the app class that represents a user on the App. Must implement the \Cherrycake\LoginUser interface.
 		"isLoadUserOnInit" => true, // Whether to check for a logged user and get it on this module's init sequence. Defaults to true.
-		"passwordAuthenticationMethod" => \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. \Cherrycake\Login\LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
+		"passwordAuthenticationMethod" => \Cherrycake\Login\Login::LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2, // One of the available consts for password authentication methods. \Cherrycake\Login\LOGIN_PASSWORD_AUTHENTICATION_METHOD_PBKDF2 by default
 		"sleepOnErrorSeconds" => 1  // Seconds to delay execution when a wrong login is requested, to make things difficult for bombing attacks
 	];
 
@@ -76,7 +84,7 @@ class Login extends \Cherrycake\Module {
 	 */
 	function encryptPassword(string $password): string|bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
-			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
+			case \Cherrycake\Login\Login::LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
 				return $pbkdf2->createHash($password);
 				break;
@@ -93,7 +101,7 @@ class Login extends \Cherrycake\Module {
 	 */
 	function checkPassword(string $passwordToCheck, string $encryptedPassword): bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
-			case \Cherrycake\LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
+			case \Cherrycake\Login\Login::LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
 				$pbkdf2 = new \Cherrycake\Pbkdf2;
 				return $pbkdf2->checkPassword($passwordToCheck, $encryptedPassword);
 				break;
@@ -114,7 +122,7 @@ class Login extends \Cherrycake\Module {
 	 * Checks the given credentials in the database, and logs in the user if they're found to be correct.
 	 * @param string $userName The string field that uniquely identifies the user on the database, the one used by the user to login. Usually, an email or a username.
 	 * @param string $password The password entered by the user to login.
-	 * @return int One of the \Cherrycake\LOGIN_RESULT_* consts
+	 * @return int One of the \Cherrycake\Login\Login::RESULT_* consts
 	 */
 	function doLogin(string $userName, string $password): int {
 		eval("\$user = new ".$this->getConfig("userClassName")."();");
@@ -122,25 +130,25 @@ class Login extends \Cherrycake\Module {
 		if (!$user->loadFromUserNameField($userName)) {
 			if ($this->getConfig("sleepOnErrorSeconds"))
 				sleep($this->getConfig("sleepOnErrorSeconds"));
-			return \Cherrycake\LOGIN_RESULT_FAILED_UNKNOWN_USER;
+			return \Cherrycake\Login\Login::RESULT_FAILED_UNKNOWN_USER;
 		}
 
 		if (!$this->checkPassword($password, $user->getEncryptedPassword())) {
 			if ($this->getConfig("sleepOnErrorSeconds")) {
 				sleep($this->getConfig("sleepOnErrorSeconds"));
 			}
-			return \Cherrycake\LOGIN_RESULT_FAILED_WRONG_PASSWORD;
+			return \Cherrycake\Login\Login::RESULT_FAILED_WRONG_PASSWORD;
 		}
 
 		if (!$this->logInUserId($user->id))
-			return \Cherrycake\LOGIN_RESULT_FAILED;
+			return \Cherrycake\Login\Login::RESULT_FAILED;
 		$this->loadUser();
-		return \Cherrycake\LOGIN_RESULT_OK;
+		return \Cherrycake\Login\Login::RESULT_OK;
 	}
 
 	/**
 	 * Logs out the user
-	 * @return int One of the \Cherrycake\LOGOUT_RESULT_* consts
+	 * @return int One of the \Cherrycake\Login\Login::RESULT_* consts
 	 */
 	function doLogout(): int {
 		return $this->logoutUser();
@@ -162,8 +170,8 @@ class Login extends \Cherrycake\Module {
 	function logoutUser() {
 		global $e;
 		if (!$e->Session->removeSessionData("userId"))
-			return \Cherrycake\LOGOUT_RESULT_FAILED;
-		return \Cherrycake\LOGOUT_RESULT_OK;
+			return \Cherrycake\Login\Login::RESULT_FAILED;
+		return \Cherrycake\Login\Login::RESULT_OK;
 	}
 
 	/**

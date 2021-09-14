@@ -14,7 +14,7 @@ class HtmlDocument extends \Cherrycake\Module {
 		"description" => false,  // The page description
 		"copyright" => false, // The page copyright info
 		"keywords" => false, // The page keywords
-		"languageCode" => "en", // The language code of the page, from the ISO 639-1 standard (https://www.w3schools.com/tags/ref_language_codes.asp)
+		"languageCode" => "en", // The language code of the page, from the ISO 639-1 standard (https://www.w3schools.com/tags/ref_codes.asp)
 		"charset" => "utf-8",
 		"bodyAdditionalCssClasses" => false,
 		"isAllowRobotsIndex" => true, // Whether to allow robots to index the document

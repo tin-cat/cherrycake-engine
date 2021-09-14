@@ -2,11 +2,37 @@
 
 namespace Cherrycake\Security;
 
+use Cherrycake\Cache\Cache;
+
 /**
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
  */
 class Security  extends \Cherrycake\Module {
+
+	const RULE_NOT_NULL = 0; // The value must be not null (typically used to check whether a parameter has been passed or not. An empty field in a form will not trigger this rule)
+	const RULE_NOT_EMPTY = 1; // The value must not be empty (typically used to check whether a parameter has been passed or not. An empty field in a form _will_ trigger this rule)
+	const RULE_INTEGER = 2; // The value must be an integer (-infinite to +infinite without decimals)
+	const RULE_POSITIVE = 3; // The value must be positive (0 to +infinite)
+	const RULE_MAX_VALUE = 4; // The value must be a number less than or equal the specified value
+	const RULE_MIN_VALUE = 5; // The value must be a number greater than or equal the specified value
+	const RULE_MAX_CHARS = 6; // The value must be less than or equal the specified number of chars
+	const RULE_MIN_CHARS = 7; // The value must be bigger than or equal the specified number of chars
+	const RULE_BOOLEAN = 8; // The value must be either a 0 or a 1
+	const RULE_SLUG = 9; // The value must have the typical URL slug code syntax, containing only numbers and letters from A to Z both lower and uppercase, and -_ characters
+	const RULE_URL_SHORT_CODE = 10; // The value must have the typical URL short code syntax, containing only numbers and letters from A to Z both lower and uppercase
+	const RULE_URL_ROUTE = 11; // The value must have the typical URL slug code syntax, like RULE_SLUG plus the "/" character
+	const RULE_LIMITED_VALUES = 12; // The value must be exactly one of the specified values.
+	const RULE_UPLOADED_FILE = 13; // The value must be a valid uploaded file. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_UPLOADED_FILE_IMAGE = 14; // The value must be an uploaded image. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_SQL_INJECTION = 100; // The value must not contain SQL injection suspicious strings
+	const RULE_TYPICAL_ID = 1000; // Same as RULE_NOT_EMPTY + RULE_INTEGER + RULE_POSITIVE
+
+	const FILTER_XSS = 0; // The value is purified to try to remove XSS attacks
+	const FILTER_STRIP_TAGS = 1; // HTML tags are removed from the value
+	const FILTER_TRIM = 2; // Spaces at the beggining and at the end of the value are trimmed
+	const FILTER_JSON = 3; // Decodes json data
+
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -15,7 +41,7 @@ class Security  extends \Cherrycake\Module {
 		"permanentlyBannedIps" => [], // An array of banned IPs that must be blocked from accessing the application
 		"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
 		"autoBannedIpsCacheProviderName" => "engine", // The name of the CacheProvider used to store banned Ips
-		"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
+		"autoBannedIpsCacheTtl" => Cache::TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
 		"autoBannedIpsThreshold" => 10, // The number hack intrusions detected from the same Ip to consider it banned
 		"isRequestServerNameCheck" => false // Whether to check or not that the header reported origin host matches the server reported host when checking requests for CSRF attacks. This will add additional protection against CSRF attacks, but might not work in some server environments, specially development server environments.
 	];
@@ -33,14 +59,14 @@ class Security  extends \Cherrycake\Module {
 	 * @var array $fixedParameterRulesForValues Contains the rules that must be always met when checking parameter values
 	 */
 	var $fixedParameterRulesForValues = [
-		\Cherrycake\SECURITY_RULE_SQL_INJECTION
+		self::RULE_SQL_INJECTION
 	];
 
 	/**
 	 * @var array $fixedParametersFilters Contains the filters that must be always applied when retrieving parameter values
 	 */
 	var $fixedParametersFilters = [
-		\Cherrycake\SECURITY_FILTER_XSS
+		self::FILTER_XSS
 	];
 
 	var $sqlInjectionDetectRegexp = "[insert( *)into|delete( *)from|alter( *)table|drop( *)table|drop( *)database|select( *)select|union( *)all|select( *)union|select( *)count|waitfor( *)delay|information_schema|limit( +)0|select( +)1|,null|rand\(|\tables|1=1|0x31303235343830303536]i";
@@ -146,7 +172,7 @@ class Security  extends \Cherrycake\Module {
 				$rule = $rule[0];
 			}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_SQL_INJECTION)
+			if ($rule == self::RULE_SQL_INJECTION)
 				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
 					$isError = true;
 					$description[] = "Suspicious of SQL injection";
@@ -154,81 +180,81 @@ class Security  extends \Cherrycake\Module {
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_NOT_NULL)
+			if ($rule == self::RULE_NOT_NULL)
 				if (is_null($value)) {
 					$isError = true;
 					$description[] = "Parameter not passed";
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_NOT_EMPTY)
+			if ($rule == self::RULE_NOT_EMPTY)
 				if (trim($value) == "") {
 					$isError = true;
 					$description[] = "Parameter is empty";
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_INTEGER || $rule == \Cherrycake\SECURITY_RULE_TYPICAL_ID)
+			if ($rule == self::RULE_INTEGER || $rule == self::RULE_TYPICAL_ID)
 				if ($value && (!is_numeric($value) || stristr($value, "."))) {
 					$isError = true;
 					$description[] = "Parameter is not integer";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_POSITIVE || $rule == \Cherrycake\SECURITY_RULE_TYPICAL_ID)
+			if ($rule == self::RULE_POSITIVE || $rule == self::RULE_TYPICAL_ID)
 				if ($value < 0) {
 					$isError = true;
 					$description[] = "Parameter is not positive";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MAX_VALUE)
+			if ($rule == self::RULE_MAX_VALUE)
 				if ($value > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is greater than ".$ruleParameter;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MIN_VALUE)
+			if ($rule == self::RULE_MIN_VALUE)
 				if ($value < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MAX_CHARS)
+			if ($rule == self::RULE_MAX_CHARS)
 				if (strlen($value) > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is bigger than ".$ruleParameter." characters";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MIN_CHARS)
+			if ($rule == self::RULE_MIN_CHARS)
 				if (strlen($value) < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter." characters";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_BOOLEAN)
+			if ($rule == self::RULE_BOOLEAN)
 				if (intval($value) !== 0 && intval($value) !== 1) {
 					$isError = true;
 					$description[] = "Parameter is not boolean";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_SLUG)
+			if ($rule == self::RULE_SLUG)
 				if (preg_match("/[^0-9A-Za-z\-_]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a slug";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_URL_SHORT_CODE)
+			if ($rule == self::RULE_URL_SHORT_CODE)
 				if (preg_match("/[^0-9A-Za-z]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a url short code";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_URL_ROUTE)
+			if ($rule == self::RULE_URL_ROUTE)
 				if (preg_match("/[^0-9A-Za-z\-_\/]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not an URL route";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_LIMITED_VALUES) {
+			if ($rule == self::RULE_LIMITED_VALUES) {
 				$isError = true;
 				foreach ($ruleParameter as $possibleValue)
 					if (strcmp($possibleValue, $value) == 0)
@@ -274,7 +300,7 @@ class Security  extends \Cherrycake\Module {
 				$rule = $rule[0];
 			}
 
-			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE) {
+			if ($file && $rule == self::RULE_UPLOADED_FILE) {
 				$result = $this->checkUploadedFile(
 					$file,
 					$ruleParameter
@@ -285,7 +311,7 @@ class Security  extends \Cherrycake\Module {
 				}
 			}
 
-			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE_IMAGE) {
+			if ($file && $rule == self::RULE_UPLOADED_FILE_IMAGE) {
 				$result = $this->checkUploadedFile(
 					$file,
 					array_merge(
@@ -348,19 +374,19 @@ class Security  extends \Cherrycake\Module {
 				$filter = $filter[0];
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_XSS) {
+			if ($filter == self::FILTER_XSS) {
 				$value = $this->stripXss($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_STRIP_TAGS) {
+			if ($filter == self::FILTER_STRIP_TAGS) {
 				$value = strip_tags($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_TRIM) {
+			if ($filter == self::FILTER_TRIM) {
 				$value = trim($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_JSON) {
+			if ($filter == self::FILTER_JSON) {
 				$value = json_decode($value);
 			}
 		}
@@ -720,13 +746,13 @@ class Security  extends \Cherrycake\Module {
 
 		// Check file name
 		$result = $this->checkValue($file["name"], [
-			\Cherrycake\SECURITY_RULE_SQL_INJECTION
+			self::RULE_SQL_INJECTION
 		]);
 		if (!$result->isOk)
 			return $result;
 
 		if ($this->filterValue($file["name"], [
-			\Cherrycake\SECURITY_FILTER_XSS
+			self::FILTER_XSS
 		]) != $file["name"]) {
 			return new \Cherrycake\ResultKo([
 				"description" => "File name contained was suspicious of XSS attack"

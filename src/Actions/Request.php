@@ -2,10 +2,23 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Cache\Cache;
+use Cherrycake\Errors\Errors;
+
 /**
  * A class that represents a request to the engine, mainly used via an Action mapped into Actions module.
  */
 class Request {
+
+	const PARAMETER_TYPE_GET = 0;
+	const PARAMETER_TYPE_POST = 1;
+	const PARAMETER_TYPE_FILE = 2;
+	const PARAMETER_TYPE_CLI = 3;
+
+	const PATH_COMPONENT_TYPE_FIXED = 0;
+	const PATH_COMPONENT_TYPE_VARIABLE_STRING = 1;
+	const PATH_COMPONENT_TYPE_VARIABLE_NUMERIC = 2;
+
 	/**
 	 * @var array $parameterValues A two-dimensional array of retrieved parameters for this request, filled by retrieveParameterValues()
 	 */
@@ -27,7 +40,7 @@ class Request {
 			global $e;
 			$this->parameters[] = new \Cherrycake\Actions\RequestParameter(
 				name: "csrfToken",
-				type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+				type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 			);
 		}
 	}
@@ -88,9 +101,9 @@ class Request {
 		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				if(
-					$pathComponent->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING
+					$pathComponent->type == \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_STRING
 					||
-					$pathComponent->type == \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
+					$pathComponent->type == \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 				) {
 					$this->pathComponents[$index]->setValue($e->Actions->currentRequestPathComponentStrings[$index]);
 					$result = $pathComponent->checkValueSecurity();
@@ -240,11 +253,11 @@ class Request {
 		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED:
 						$url .= "/".$pathComponent->string;
 						break;
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_STRING:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 						if ($parameterValues ?? false)
 							$url .= "/".$parameterValues[$pathComponent->name];
 						else
@@ -265,7 +278,7 @@ class Request {
 		$count = 0;
 		if ($this->parameters && $isIncludeUrlParameters) {
 			foreach ($this->parameters as $parameter) {
-				if ($parameter->type !== \Cherrycake\REQUEST_PARAMETER_TYPE_GET)
+				if ($parameter->type !== \Cherrycake\Actions\Request::PARAMETER_TYPE_GET)
 					continue;
 				if ($parameterValues ?? false) {
 					if ($parameterValues[$parameter->name] ?? false)
@@ -294,11 +307,11 @@ class Request {
 		if ($this->pathComponents) {
 			foreach ($this->pathComponents as $index => $pathComponent) {
 				switch ($pathComponent->type) {
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED:
 						$key .= "_".$pathComponent->string;
 						break;
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING:
-					case \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_STRING:
+					case \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_NUMERIC:
 						if (is_array($parameterValues))
 							$key .= "_".$parameterValues[$pathComponent->name];
 						else
@@ -338,7 +351,7 @@ class Request {
 		global $e;
 		$cacheKeyNamingOptions["prefix"] = $prefix;
 		$cacheKeyNamingOptions["key"] = $key;
-		return \Cherrycake\Cache\Cache::buildCacheKey($cacheKeyNamingOptions);
+		return Cache::buildCacheKey($cacheKeyNamingOptions);
 	}
 
 	/**

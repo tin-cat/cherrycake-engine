@@ -262,7 +262,7 @@ class Location {
 			$sql = "select * from cherrycake_location_regions where countries_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $countryId
 				]
 			];
@@ -298,11 +298,11 @@ class Location {
 			$sql = "select * from cherrycake_location_cities where countries_id = ? and regions_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $countryId
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $regionId
 				]
 			];
@@ -312,7 +312,7 @@ class Location {
 			$sql = "select * from cherrycake_location_cities where regions_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $regionId
 				]
 			];

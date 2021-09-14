@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Css;
 
+use Cherrycake\Cache\Cache;
+
 /**
  * Module that manages Css code.
  */
@@ -11,11 +13,11 @@ class Css extends \Cherrycake\Module {
 	 */
 	protected array $config = [
 		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
-		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL to use for the cache
+		"cacheTtl" => Cache::TTL_LONGEST, // The TTL to use for the cache
 		"cacheProviderName" => "engine", // The name of the cache provider to use
 		"lastModifiedTimestamp" => false, // The timestamp of the last modification to the CSS files, or any other string that will serve as a unique identifier to force browser cache reloading when needed.
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
-		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST, // The TTL of the HTTP Cache
+		"httpCacheMaxAge" => Cache::TTL_LONGEST, // The TTL of the HTTP Cache
 		"isMinify" => false, // Whether to minify the CSS code or not
 		"responsiveWidthBreakpoints" => [
 			"tiny" => 500,
@@ -68,24 +70,24 @@ class Css extends \Cherrycake\Module {
 		$e->Actions->mapAction(
 			"css",
 			new \Cherrycake\Actions\ActionCss(
-				moduleType: \Cherrycake\ACTION_MODULE_TYPE_CORE,
+				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
 				moduleName: "Css",
 				methodName: "dump",
 				request: new \Cherrycake\Actions\Request(
 					pathComponents: [
 						new \Cherrycake\Actions\RequestPathComponent(
-							type: \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 							string: "css"
 						)
 					],
 					parameters: [
 						new \Cherrycake\Actions\RequestParameter(
 							name: "set",
-							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 						),
 						new \Cherrycake\Actions\RequestParameter(
 							name: "version",
-							type: \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 						)
 					]
 				)

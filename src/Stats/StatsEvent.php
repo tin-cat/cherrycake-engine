@@ -6,25 +6,32 @@ namespace Cherrycake\Stats;
  * Base class to represent a stats event for the Stats module
  */
 class StatsEvent extends \Cherrycake\Item {
+
+	const TIME_RESOLUTION_MINUTE = 0;
+	const TIME_RESOLUTION_HOUR = 1;
+	const TIME_RESOLUTION_DAY = 2;
+	const TIME_RESOLUTION_MONTH = 3;
+	const TIME_RESOLUTION_YEAR = 4;
+
 	protected $tableName = "cherrycake_stats";
 	protected $cacheSpecificPrefix = "Stats";
 
 	protected $fields = [
-		"id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"type" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING],
-		"subType" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING],
-		"resolution" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"timestamp" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME],
-		"secondary_id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"tertiary_id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"count" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER]
+		"id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"type" => ["type" => \Cherrycake\Database\Database::TYPE_STRING],
+		"subType" => ["type" => \Cherrycake\Database\Database::TYPE_STRING],
+		"resolution" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"timestamp" => ["type" => \Cherrycake\Database\Database::TYPE_DATETIME],
+		"secondary_id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"tertiary_id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"count" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER]
 	];
 
 	/**
-	 * The time frame resolution used by this event. One of the available \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_? constants.
+	 * The time frame resolution used by this event. One of the available TIME_RESOLUTION_? constants.
 	 * @var timeResolution
 	 */
-	protected $timeResolution = \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_DAY;
+	protected $timeResolution = \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_DAY;
 
 	/**
 	 * @var string $typeDescription The description of the log event type. Intended to be overloaded.
@@ -100,19 +107,19 @@ class StatsEvent extends \Cherrycake\Item {
 		if (!$timestamp)
 			$timestamp = $this->timestamp;
 		switch ($this->timeResolution) {
-			case \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_MINUTE:
+			case \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_MINUTE:
 				$paramsSetup = [true, true, false, true, true, true];
 				break;
-			case \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_HOUR:
+			case \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_HOUR:
 				$paramsSetup = [true, false, false, true, true, true];
 				break;
-			case \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_DAY:
+			case \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_DAY:
 				$paramsSetup = [false, false, false, true, true, true];
 				break;
-			case \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_MONTH:
+			case \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_MONTH:
 				$paramsSetup = [false, false, false, true, false, true];
 				break;
-			case \Cherrycake\Stats\STATS_EVENT_TIME_RESOLUTION_YEAR:
+			case \Cherrycake\Stats\StatsEvent::TIME_RESOLUTION_YEAR:
 				$paramsSetup = [false, false, false, false, false, true];
 				break;
 		}
@@ -146,37 +153,37 @@ class StatsEvent extends \Cherrycake\Item {
 		// Prepare query parameters
 		// type
 		$parameters[] = [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"value" => $this->type
 		];
 
 		// subType
 		if ($this->subType)
 			$parameters[] = [
-				"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+				"type" => \Cherrycake\Database\Database::TYPE_STRING,
 				"value" => $this->subType
 			];
 
 		// resolution
 		$parameters[] = [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"value" => $this->resolution
 		];
 		// timestamp
 		$parameters[] = [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+			"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 			"value" => $this->timestamp
 		];
 		// secondary_id
 		if ($this->isSecondaryId)
 			$parameters[] = [
-				"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+				"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 				"value" => $this->secondary_id
 			];
 		// tertiary_id
 		if ($this->isTertiaryId)
 			$parameters[] = [
-				"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+				"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 				"value" => $this->tertiary_id
 			];
 

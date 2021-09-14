@@ -10,7 +10,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
-		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
 		"purgeSessionsWithoutDataOlderThanSeconds" => 86400, // Sessions older than this seconds without any data will be deleted from the database, since they haven't been actually used (most likely, visits that have bounced the site). (86400 = 1 day)
 		"purgeSessionsWithDataOlderThanSeconds" => 31536000 // Sessions older than this seconds _with_ data will be deleted from the database. This should be a lot higher (specially when isSessionRenew in session.config.php for Session module is true) than the session duration in session.config.php (sessionDuration config key), in order to remove sessions that have been used but lasted too long. This is intended mostly to avoid cluttering the database with too many sessions, and to avoid potential session id collisions, which can represent a security risk. (31536000 = 365 days)
@@ -46,7 +46,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * Performs the tasks for what this JanitorTask is meant.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
 		global $e;
@@ -61,7 +61,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithoutDataOlderThanSeconds"))
 				]
 			]
@@ -69,7 +69,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 
 		if (!$result)
 			return [
-				\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -81,7 +81,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 				[
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\Database::TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithoutDataOlderThanSeconds"))
 					]
 				]
@@ -89,7 +89,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 
 			if (!$result)
 				return [
-					\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 					"Could not delete sessions from the database"
 				];
 		}
@@ -100,7 +100,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithDataOlderThanSeconds"))
 				]
 			]
@@ -108,7 +108,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 
 		if (!$result)
 			return [
-				\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
+				\Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 				"Could not query the database"
 			];
 
@@ -120,7 +120,7 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 				[
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\Database::TYPE_STRING,
 						"value" => date("Y-n-j H:i:s", $baseTimestamp - $this->getConfig("purgeSessionsWithDataOlderThanSeconds"))
 					]
 				]
@@ -128,14 +128,14 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 
 			if (!$result)
 				return [
-					\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_ERROR,
+					\Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 					"Could not delete sessions from the database"
 				];
 		}
 
 
 		return [
-			\Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK,
+			\Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK,
 			[
 				"Sessions older than ".$this->getConfig("purgeSessionsWithoutDataOlderThanSeconds")." seconds without data purged" => $numberOfSessionsToPurgeWithoutData,
 				"Sessions older than ".$this->getConfig("purgeSessionsWithDataOlderThanSeconds")." seconds with data purged" => $numberOfSessionsToPurgeWithData

@@ -76,14 +76,14 @@ function handleError(
 
 	if (defined("STDIN")) {
 		echo
-			\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-			\Cherrycake\ANSI_WHITE.$e->getAppName()." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".
-			\Cherrycake\ANSI_NOCOLOR.
-			\Cherrycake\ANSI_DARK_GRAY."Message: ".\Cherrycake\ANSI_WHITE.$errStr."\n".
-			\Cherrycake\ANSI_DARK_GRAY."File: ".\Cherrycake\ANSI_WHITE.$errFile."\n".
-			\Cherrycake\ANSI_DARK_GRAY."Line: ".\Cherrycake\ANSI_WHITE.$errLine."\n".
-			\Cherrycake\ANSI_NOCOLOR.
-			($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+			\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
+			\Cherrycake\Errors\Errors::ANSI_WHITE.$e->getAppName()." Error ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errNo."\n".
+			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Message: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errStr."\n".
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."File: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errFile."\n".
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Line: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errLine."\n".
+			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+			($e->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 
 		exit();
 	}
@@ -441,7 +441,7 @@ function handleError(
 			case "Cherrycake\ActionAjax":
 				if ($e->isDevel()) {
 					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
 						"description" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -463,16 +463,14 @@ function handleError(
 							"Description: ".$errStr."<br>".
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
-							"Backtrace:<br>".implode("<br>", $backtrace_info),
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+							"Backtrace:<br>".implode("<br>", $backtrace_info)
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
 				else {
 					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
-						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+						"description" => "Sorry, we've got an unexpected error"
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
@@ -481,7 +479,7 @@ function handleError(
 			default:
 				if ($e->isDevel()) {
 					$response = new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
 							"Cherrycake Error / ".$e->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -508,7 +506,7 @@ function handleError(
 				}
 				else {
 					$response = new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload: "Error"
 					);
 				}

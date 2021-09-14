@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Translation;
 
+use Cherrycake\Cache\Cache;
+use Cherrycake\Errors\Errors;
+
 /**
  * The Language module provides text translations for multilingual sites, working in conjunction with the Locale module.
  */
@@ -11,9 +14,9 @@ class Translation extends \Cherrycake\Module {
 	 */
 	protected array $config = [
 		'cacheProviderName' => 'engine', // The default cache provider name to use.
-		'cacheTtl' => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
+		'cacheTtl' => Cache::TTL_NORMAL, // The default TTL to use.
 		'cacheUniqueId' => 'TranslationData', // The prefix string to add to cached keys
-		'defaultBaseLanguage' => \Cherrycake\LANGUAGE_ENGLISH, // The default language on which the texts will be specified
+		'defaultBaseLanguage' => \Cherrycake\Locale\Locale::ENGLISH, // The default language on which the texts will be specified
 		'dataFilesDir' => APP_DIR.'/translation', // The directory where translations will be stored
 		'valueWhenNotTranslated' => false // The value to use when a translation is not available, has to be a string. Set to false to use the base language text instead.
 	];
@@ -129,7 +132,7 @@ class Translation extends \Cherrycake\Module {
 	 */
 	private function getTranslationFileName($language) {
 		global $e;
-		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language, ['forceLanguage' => \Cherrycake\LANGUAGE_ENGLISH]))).'.toml';
+		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language, ['forceLanguage' => \Cherrycake\Locale\Locale::ENGLISH]))).'.toml';
 	}
 
 	/**

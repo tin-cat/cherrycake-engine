@@ -9,6 +9,7 @@ Changelog documentation for the Cherrycake engine. This project adheres to [Sema
 - Upgraded to PHP 8.
 - Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.
 - Javascript and Css modules no longer merge different sets into one.
+- Constants are now stored inside each relevant class and module, the `.constants.php` file functionality is removed as a result. Constans now should be referenced using their correct namespace.
 ### Bugs
 - Solved many minor bugs
 

@@ -39,7 +39,7 @@ class SystemLogEvents extends \Cherrycake\Items {
 				"sqlPart" => "type = ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\Database::TYPE_STRING,
 						"value" => $p["type"]
 					]
 				]
@@ -50,7 +50,7 @@ class SystemLogEvents extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["fromTimestamp"]
 					]
 				]
@@ -61,7 +61,7 @@ class SystemLogEvents extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["toTimestamp"]
 					]
 				]

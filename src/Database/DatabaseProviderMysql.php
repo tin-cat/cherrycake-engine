@@ -8,52 +8,52 @@ namespace Cherrycake\Database;
  */
 class DatabaseProviderMysql extends DatabaseProvider {
 	/**
-	 * @var array Configuration about fieldtypes (\Cherrycake\Database\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
+	 * @var array Configuration about fieldtypes (\Cherrycake\Database\Database::TYPE_*) for each implementation of DatabaseProvider
 	 */
 	protected $fieldTypes = [
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER => [
+		\Cherrycake\Database\Database::TYPE_INTEGER => [
 			"stmtBindParamType" => "i"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT => [
+		\Cherrycake\Database\Database::TYPE_TINYINT => [
 			"stmtBindParamType" => "i"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT => [
+		\Cherrycake\Database\Database::TYPE_FLOAT => [
 			"stmtBindParamType" => "d"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_DATE => [
+		\Cherrycake\Database\Database::TYPE_DATE => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME => [
+		\Cherrycake\Database\Database::TYPE_DATETIME => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP => [
+		\Cherrycake\Database\Database::TYPE_TIMESTAMP => [
 			"stmtBindParamType" => "i"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_TIME => [
+		\Cherrycake\Database\Database::TYPE_TIME => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR => [
+		\Cherrycake\Database\Database::TYPE_YEAR => [
 			"stmtBindParamType" => "i"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_STRING => [
+		\Cherrycake\Database\Database::TYPE_STRING => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT => [
+		\Cherrycake\Database\Database::TYPE_TEXT => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB => [
+		\Cherrycake\Database\Database::TYPE_BLOB => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN =>  [
+		\Cherrycake\Database\Database::TYPE_BOOLEAN =>  [
 			"stmtBindParamType" => "i"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_IP => [
+		\Cherrycake\Database\Database::TYPE_IP => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED => [
+		\Cherrycake\Database\Database::TYPE_SERIALIZED => [
 			"stmtBindParamType" => "s"
 		],
-		\Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR => [
+		\Cherrycake\Database\Database::TYPE_COLOR => [
 			"stmtBindParamType" => "s"
 		]
 	];
@@ -176,7 +176,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 	 * Executes a previously prepared query with the given parameters.
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
-	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\DATABASE_FIELD_TYPE_*
+	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\Database::TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 * @return DatabaseResult A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise.
@@ -194,35 +194,35 @@ class DatabaseProviderMysql extends DatabaseProvider {
 
 			foreach ($parameters as $parameter) {
 				switch ($parameter["type"]) {
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TINYINT:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_YEAR:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_FLOAT:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TEXT:
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_BLOB:
+					case \Cherrycake\Database\Database::TYPE_INTEGER:
+					case \Cherrycake\Database\Database::TYPE_TINYINT:
+					case \Cherrycake\Database\Database::TYPE_YEAR:
+					case \Cherrycake\Database\Database::TYPE_FLOAT:
+					case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
+					case \Cherrycake\Database\Database::TYPE_STRING:
+					case \Cherrycake\Database\Database::TYPE_TEXT:
+					case \Cherrycake\Database\Database::TYPE_BLOB:
 						$value = $parameter["value"];
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_BOOLEAN:
+					case \Cherrycake\Database\Database::TYPE_BOOLEAN:
 						$value = $parameter["value"] ? 1 : 0;
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATE:
+					case \Cherrycake\Database\Database::TYPE_DATE:
 						$value = date("Y-n-j", $parameter["value"]);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME:
+					case \Cherrycake\Database\Database::TYPE_DATETIME:
 						$value = date("Y-n-j H:i:s", $parameter["value"]);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_TIME:
+					case \Cherrycake\Database\Database::TYPE_TIME:
 						$value = date("H:i:s", $parameter["value"]);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_IP:
+					case \Cherrycake\Database\Database::TYPE_IP:
 						$value = ip2long($parameter["value"]);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED:
+					case \Cherrycake\Database\Database::TYPE_SERIALIZED:
 						$value = json_encode($parameter["value"], JSON_FORCE_OBJECT);
 						break;
-					case \Cherrycake\Database\DATABASE_FIELD_TYPE_COLOR:
+					case \Cherrycake\Database\Database::TYPE_COLOR:
 						$value = $parameter["value"]->getHex();
 						break;
 				}

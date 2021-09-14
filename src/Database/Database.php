@@ -30,6 +30,32 @@ namespace Cherrycake\Database;
  * </code>
  */
 class Database extends \Cherrycake\Module {
+
+	const TYPE_INTEGER = 0;
+	const TYPE_TINYINT = 1;
+	const TYPE_FLOAT = 2;
+	const TYPE_DATE = 3;
+	const TYPE_DATETIME = 4;
+	const TYPE_TIMESTAMP = 5;
+	const TYPE_TIME = 6;
+	const TYPE_YEAR = 7;
+	const TYPE_STRING = 8;
+	const TYPE_TEXT = 9;
+	const TYPE_BLOB = 10;
+	const TYPE_BOOLEAN = 11;
+	const TYPE_IP = 12;
+	const TYPE_SERIALIZED = 13;
+	const TYPE_COLOR = 14;
+
+	const DEFAULT_VALUE = 0;
+	const DEFAULT_VALUE_DATE = 1;
+	const DEFAULT_VALUE_DATETIME = 2;
+	const DEFAULT_VALUE_TIMESTAMP = 3;
+	const DEFAULT_VALUE_TIME = 4;
+	const DEFAULT_VALUE_YEAR = 5;
+	const DEFAULT_VALUE_IP = 6;
+	const DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE = 7;
+
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */

@@ -37,7 +37,7 @@ class JanitorLogItems extends \Cherrycake\Items {
 				"sqlPart" => "executionDate > ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["fromExecutionDate"]
 					]
 				]
@@ -48,7 +48,7 @@ class JanitorLogItems extends \Cherrycake\Items {
 				"sqlPart" => "executionDate <= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["toExecutionDate"]
 					]
 				]

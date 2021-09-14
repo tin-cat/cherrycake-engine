@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Patterns;
 
+use Cherrycake\Cache\Cache;
+
 /**
  * * It reads and parses pattern files
  * * Allows pattern nesting and in-pattern commands
@@ -16,7 +18,7 @@ class Patterns extends \Cherrycake\Module {
 	protected array $config = [
 		"directory" => "patterns", // The directory where patterns are stored
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use for cached patterns.
-		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use for cached patterns.
+		"defaultCacheTtl" => Cache::TTL_NORMAL, // The default TTL to use for cached patterns.
 		"defaultCachePrefix" => "Patterns" // The default prefix to use for cached patterns.
 	];
 
@@ -136,7 +138,7 @@ class Patterns extends \Cherrycake\Module {
 				$isCache
 			) {
 				$cacheProviderName = $cacheProviderName ?: $this->getConfig("cachedPatterns")[$patternName]["cacheProviderName"] ?? false ?: $this->getConfig("defaultCacheProviderName");
-				$cacheKey = \Cherrycake\Cache\Cache::buildCacheKey([
+				$cacheKey = Cache::buildCacheKey([
 					"prefix" => $setup["cachePrefix"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?? false ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
 				]);

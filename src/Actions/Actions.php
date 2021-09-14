@@ -2,17 +2,24 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Cache\Cache;
+use Cherrycake\Errors\Errors;
+
 /**
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
  * It takes configuration from the App-layer configuration file.
  */
 class Actions extends \Cherrycake\Module {
+
+	const MODULE_TYPE_CORE = 0;
+	const MODULE_TYPE_APP = 1;
+
 	/**
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use.
-		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // The default TTL to use.
+		"defaultCacheTtl" => Cache::TTL_NORMAL, // The default TTL to use.
 		"defaultCachePrefix" => "Actions",
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3] // An array containing the minimum and maximum number of seconds to wait when an action marked as sensible to brute force attacks has been executed and failed.
 	];
@@ -71,33 +78,33 @@ class Actions extends \Cherrycake\Module {
 	 * $e->Actions->mapAction(
 	 * 	"TableAdminGetRows",
 	 * 	new \Cherrycake\ActionHtml([
-	 * 		"moduleType" => ACTION_MODULE_TYPE_CORE,
+	 * 		"moduleType" => MODULE_TYPE_CORE,
 	 * 		"moduleName" => "TableAdmin",
 	 * 		"methodName" => "getRows",
 	 * 		"request" => new \Cherrycake\Request([
 	 * 			"isSecurityCsrf" => true,
 	 * 			"pathComponents" => [
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "TableAdmin"
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_STRING,
 	 * 					"name" => "mapName",
 	 * 					"securityRules" => [
-	 * 						SECURITY_RULE_NOT_EMPTY,
-	 * 						SECURITY_RULE_SLUG
+	 * 						RULE_NOT_EMPTY,
+	 * 						RULE_SLUG
 	 * 					]
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "getRows"
 	 * 				])
 	 * 			],
 	 * 			"parameters" => [
 	 * 				new \Cherrycake\RequestParameter([
 	 * 					"name" => "additionalFillFromParameters",
-	 * 					"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+	 * 					"type" => \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 	 * 				])
 	 * 			]
 	 * 		])

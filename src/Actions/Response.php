@@ -17,7 +17,7 @@ class Response {
 	private array $headers = [];
 
 	function __construct(
-		private int|null $code = \Cherrycake\Output\RESPONSE_OK,
+		private int|null $code = \Cherrycake\Output\Output::RESPONSE_OK,
 		private string $url = '',
 		private string|array $payload = '',
 	) {}
@@ -114,22 +114,22 @@ class Response {
 
 	function addResponseHeader() {
 		switch ($this->code) {
-			case \Cherrycake\Output\RESPONSE_OK:
+			case \Cherrycake\Output\Output::RESPONSE_OK:
 				$this->addHeader("HTTP/1.0 200 Ok");
 				break;
-			case \Cherrycake\Output\RESPONSE_NOT_FOUND:
+			case \Cherrycake\Output\Output::RESPONSE_NOT_FOUND:
 				$this->addHeader("HTTP/1.0 404 Not Found");
 				break;
-			case \Cherrycake\Output\RESPONSE_NO_PERMISSION:
+			case \Cherrycake\Output\Output::RESPONSE_NO_PERMISSION:
 				$this->addHeader("HTTP/1.0 403 Not Found");
 				break;
-			case \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR:
+			case \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR:
 				$this->addHeader("HTTP/1.1 500 Internal Server Error");
 				break;
-			case \Cherrycake\Output\RESPONSE_REDIRECT_MOVED_PERMANENTLY:
+			case \Cherrycake\Output\Output::RESPONSE_REDIRECT_MOVED_PERMANENTLY:
 				$this->addHeader("HTTP/1.1 301 Moved Permanently");
 				break;
-			case \Cherrycake\Output\RESPONSE_REDIRECT_FOUND:
+			case \Cherrycake\Output\Output::RESPONSE_REDIRECT_FOUND:
 				$this->addHeader("HTTP/1.1 302 Found");
 				break;
 		}

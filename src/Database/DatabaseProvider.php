@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Database;
 
+use Cherrycake\Cache\Cache;
+
 /**
  * Base class for database provider implementations. Intended to be overloaded by a higher level database system implementation class.
  * Database providers are only connected when required (when the first request is received)
@@ -12,12 +14,12 @@ class DatabaseProvider {
 	 */
 	protected array $config = [
 		"cacheKeyPrefix" => "Database",
-		"cacheDefaultTtl" => \Cherrycake\CACHE_TTL_NORMAL,
+		"cacheDefaultTtl" => Cache::TTL_NORMAL,
 		"cacheProviderName" => "engine"
 	];
 
 	/**
-	 * @var array Configuration about fieldtypes (\Cherrycake\Database\DATABASE_FIELD_TYPE_*) for each implementation of DatabaseProvider
+	 * @var array Configuration about fieldtypes (\Cherrycake\Database\Database::TYPE_*) for each implementation of DatabaseProvider
 	 */
 	protected $fieldTypes;
 
@@ -102,7 +104,7 @@ class DatabaseProvider {
 	 * <code>
 	 * $result = $e->Database->main->QueryCache(
 	 * 	"select * from stuff order by rand() limit 3", // The query
-	 * 	\Cherrycake\CACHE_TTL_MINIMAL, // The TTL
+	 * 	Cache::TTL_MINIMAL, // The TTL
 	 * 	[ // A key naming options array
 	 * 		"cacheSpecificPrefix" => "TestQuery"
 	 * 	],
@@ -112,7 +114,7 @@ class DatabaseProvider {
 	 *
 	 * @param string $sql The SQL statement.
 	 * @param string $cacheTtl The TTL for the cache results. If not specified, the Database configuration key cacheDefaultTtl is used.
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
 	 * @param boolean $isStoreInCacheWhenNoResults Whether to store results in the cache when the query returned no rows or not.
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
@@ -151,7 +153,7 @@ class DatabaseProvider {
 
 	/**
 	 * Clears the cache for the query identified by the given cacheKeyNamingOptions
-	 * @param array $cacheKeyNamingOptions The cache key naming configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions The cache key naming configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
 	 * @return boolean Whether the cache could be cleared succesfully or not
 	 */
@@ -170,7 +172,7 @@ class DatabaseProvider {
 	 * The cache key is always prefixed with the configuration value "cacheKeyPrefix", if set. (For clarity purposes when browsing the cached elements)
 	 * It uses MD4 algorithm to create a unique string based on the query because is faster, and we do not require any security here.  MD4 algorithm generates a 32-char hexadecimal code, allowing for 16^32 different keys (approx. 3.4*10^38, 340 undecillion different values)
 	 * @param $sql The SQL sentence.
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @return string The cache key
 	 */
 	protected function buildQueryCacheKey(
@@ -180,7 +182,7 @@ class DatabaseProvider {
 		global $e;
 		$cacheKeyNamingOptions["prefix"] = $this->getConfig("cacheKeyPrefix");
 		$cacheKeyNamingOptions["hash"] = $sql;
-		return \Cherrycake\Cache\Cache::buildCacheKey($cacheKeyNamingOptions);
+		return Cache::buildCacheKey($cacheKeyNamingOptions);
 	}
 
 	/**
@@ -197,7 +199,7 @@ class DatabaseProvider {
 	 *
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Each array element has the following keys:
-	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\DATABASE_FIELD_TYPE_*
+	 * * type: One of the prepared statement variable type consts, i.e.: \Cherrycake\Database\Database::TYPE_*
 	 * * value: The value to be used for this variable on the prepared statement
 	 * @param array $setup Optional array with additional options, See DatabaseResult::$setup for available options
 	 * @return DatabaseResult A provider-specific DatabaseResult object if the query has been executed correctly, false otherwise.
@@ -236,7 +238,7 @@ class DatabaseProvider {
 	 * @param array $prepareResult The prepared result as returned by the prepare method
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Same syntax as in execute method
 	 * @param string $cacheTtl The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
 	 * @param boolean $isStoreInCacheWhenNoResults Whether to store results in the cache when the query returned no rows or not
 	 * @param array $setup Optional array with additional options, See DatabaseResult::init for available options
@@ -279,7 +281,7 @@ class DatabaseProvider {
 	 * @param string $sql The SQL sentence to prepare to be queried to the database.
 	 * @param array $parameters Hash array of the variables that must be applied to the prepared query in order to execute the final query, in the same order as are stated on the prepared sql. Same syntax as in the execute method.
 	 * @param int $cacheTtl The TTL for the cache results. If not specified, configuration value cacheDefaultTtl is used
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @param string $overrideCacheProviderName The name of the alternative cache provider to use for this query. If specified, it will use this cache provider (as configured in cache.config.php) instead of the one configured in database.config.php
 	 * @param boolean $isStoreInCacheWhenNoResults Whether to store results in the cache when the query returned no rows or not
 	 * @param array $setup Optional array with additional options, See DatabaseResult::init for available options
@@ -307,7 +309,7 @@ class DatabaseProvider {
 	 * Builds a cache key that uniquely identifies a prepared query with the given parameters, based on the configuration provided via $cacheKeyNamingConfig
 	 * @param string $sql The SQL sentence.
 	 * @param array $parameters Hash array of the variables to be applied to the prepared query, with the same syntax as in the execute method
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @return string The cache key
 	 */
 	protected function buildPreparedQueryCacheKey(
@@ -322,7 +324,7 @@ class DatabaseProvider {
 				$hashString .= $parameter["value"];
 
 		$cacheKeyNamingOptions["hash"] = $hashString;
-		return \Cherrycake\Cache\Cache::buildCacheKey($cacheKeyNamingOptions);
+		return Cache::buildCacheKey($cacheKeyNamingOptions);
 	}
 
 	/**
@@ -357,7 +359,7 @@ class DatabaseProvider {
 	): bool {
 		$query = "update ".$tableName." set ".implode(" = ?, ",array_keys($fields))." = ? where ".$idFieldName." = ?;";
 		$fields[$idFieldName] = [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"value" => $idFieldValue
 		];
 		if ($this->prepareAndExecute(
@@ -386,7 +388,7 @@ class DatabaseProvider {
 			$query,
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $idFieldValue
 				]
 			]

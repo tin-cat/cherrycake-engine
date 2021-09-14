@@ -11,48 +11,48 @@ class SystemLogItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"dateAdded" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+			"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 			"title" => "Date",
 		],
 		"class" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Class"
 		],
 		"type" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Type"
 		],
 		"subType" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "SubType"
 		],
 		"ip" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
+			"type" => \Cherrycake\Database\Database::TYPE_IP,
 			"title" => "IP"
 		],
 		"httpHost" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Host"
 		],
 		"requestUri" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Uri"
 		],
 		"browserString" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "BrowserString"
 		],
 		"description" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Description"
 		],
 		"data" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED,
+			"type" => \Cherrycake\Database\Database::TYPE_SERIALIZED,
 			"title" => "Data"
 		]
 	];
