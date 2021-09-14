@@ -77,7 +77,7 @@ class Translation extends \Cherrycake\Module {
 
 		if (!is_readable($filePath)) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Translation file is not readable',
 				variables: [
 					'file' => $filePath
@@ -88,7 +88,7 @@ class Translation extends \Cherrycake\Module {
 
 		if (!$fileContents = file_get_contents($filePath)) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t read translation file',
 				variables: [
 					'file' => $filePath
@@ -102,7 +102,7 @@ class Translation extends \Cherrycake\Module {
 		}
 		catch(\Yosymfony\ParserUtils\SyntaxErrorException $e) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Couln\'t parse translation TOML file',
 				variables: [
 					'file' => $filePath,
@@ -197,7 +197,7 @@ class Translation extends \Cherrycake\Module {
 
 		if (!$fp = fopen($fileName, 'w')) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t open translation data file for writing',
 				variables: [
 					'fileName' => $fileName
@@ -208,7 +208,7 @@ class Translation extends \Cherrycake\Module {
 
 		if (!fwrite($fp, $toml)) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t write to translation data file',
 				variables: [
 					'fileName' => $fileName
@@ -230,7 +230,7 @@ class Translation extends \Cherrycake\Module {
 		if (!mkdir($dir, 0777, true)) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t create translations data files directory',
 				variables: [
 					'directory' => $dir

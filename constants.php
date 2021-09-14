@@ -21,18 +21,6 @@ const ANSI_LIGHT_PURPLE = "\033[1;35m";
 const ANSI_LIGHT_CYAN = "\033[1;36m";
 const ANSI_WHITE = "\033[1;37m";
 
-const MODULE_LOADING_ORIGIN_MANUAL = 0;
-const MODULE_LOADING_ORIGIN_BASE = 1;
-const MODULE_LOADING_ORIGIN_DEPENDENCY = 2;
-const MODULE_LOADING_ORIGIN_AUTOLOAD = 3;
-const MODULE_LOADING_ORIGIN_GETTER = 4;
-
-// Errors
-const ERROR_SYSTEM = 0; // Errors caused by bad programming
-const ERROR_APP = 1; // Errors caused by bad usering
-const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
-const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
-
 // Cache
 const CACHE_TTL_1_MINUTE = 60;
 const CACHE_TTL_5_MINUTES = 300;

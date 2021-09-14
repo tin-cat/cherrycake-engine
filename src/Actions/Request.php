@@ -97,7 +97,7 @@ class Request {
 					if (!$result->isOk) {
 						$isErrors = true;
 						$e->Errors->trigger(
-							type: \Cherrycake\ERROR_SYSTEM,
+							type: Errors::ERROR_SYSTEM,
 							description: implode(" / ", $result->description),
 							variables: [
 								"pathComponent name" => $pathComponent->name,
@@ -120,7 +120,7 @@ class Request {
 				if (!$result->isOk) {
 					$isErrors = true;
 					$e->Errors->trigger(
-						type: \Cherrycake\ERROR_SYSTEM,
+						type: Errors::ERROR_SYSTEM,
 						description: implode(" / ", $result->description),
 						variables: [
 							"parameter name" => $parameter->name,

@@ -48,7 +48,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 		if (!$this->client) {
 			global $e;
 			$e->Errors->Trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error connecting to Redis"
 			);
 			return false;
@@ -68,7 +68,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 			if (!$this->client->close()) {
 				global $e;
 				$e->Errors->Trigger(
-					type: \Cherrycake\ERROR_SYSTEM,
+					type: Errors::ERROR_SYSTEM,
 					description: "Error disconnecting from Redis"
 				);
 				return false;

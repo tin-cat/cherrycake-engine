@@ -6,6 +6,13 @@ namespace Cherrycake;
  * The base class for modules. Intented to be overloaded by specific functionality classes
  */
 class Module {
+
+	const MODULE_LOADING_ORIGIN_MANUAL = 0;
+	const MODULE_LOADING_ORIGIN_BASE = 1;
+	const MODULE_LOADING_ORIGIN_DEPENDENCY = 2;
+	const MODULE_LOADING_ORIGIN_AUTOLOAD = 3;
+	const MODULE_LOADING_ORIGIN_GETTER = 4;
+
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
@@ -127,14 +134,14 @@ class Module {
 
 		if ($this->dependentCoreModules) {
 			foreach ($this->dependentCoreModules as $moduleName) {
-				if (!$e->loadCoreModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
+				if (!$e->loadCoreModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}
 
 		if ($this->dependentAppModules) {
 			foreach ($this->dependentAppModules as $moduleName) {
-				if (!$e->loadAppModule($moduleName, MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
+				if (!$e->loadAppModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}

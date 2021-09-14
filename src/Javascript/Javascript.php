@@ -207,7 +207,7 @@ class Javascript extends \Cherrycake\Module {
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
 			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
 				$e->Errors->trigger(
-					type: \Cherrycake\ERROR_SYSTEM,
+					type: Errors::ERROR_SYSTEM,
 					description: "Couldn't open JavaScript directory",
 					variables: [
 						"setName" => $setName,

@@ -413,7 +413,7 @@ class Security  extends \Cherrycake\Module {
 					]));
 				else
 					$e->Errors->trigger(
-						type: \Cherrycake\ERROR_APP,
+						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: No token parameter received"
 					);
 				return false;
@@ -427,7 +427,7 @@ class Security  extends \Cherrycake\Module {
 					]));
 				else
 					$e->Errors->trigger(
-						type: \Cherrycake\ERROR_APP,
+						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: No token in session"
 					);
 				return false;
@@ -441,7 +441,7 @@ class Security  extends \Cherrycake\Module {
 					]));
 				else
 					$e->Errors->trigger(
-						type: \Cherrycake\ERROR_APP,
+						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: Token parameter does not matches token in session"
 					);
 				return false;

@@ -145,7 +145,7 @@ class Actions extends \Cherrycake\Module {
 
 		if ($e->isDevel() && !$this->actions) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "No mapped actions"
 			);
 		}
@@ -164,7 +164,7 @@ class Actions extends \Cherrycake\Module {
 
 		if (!$matchingActions) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_NOT_FOUND,
+				type: Errors::ERROR_NOT_FOUND,
 				description: "No mapped action found for this request"
 			);
 			return false;
@@ -184,7 +184,7 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		$e->Errors->trigger(
-			type: \Cherrycake\ERROR_NOT_FOUND,
+			type: Errors::ERROR_NOT_FOUND,
 			description: "No matching actions were productive",
 			variables: [
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions

@@ -462,7 +462,7 @@ class Item {
 
 		if (!static::$idFieldName) {
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't update item on the database because it hasn't an idFieldName set up.",
 				variables: [
 					"Item class" => get_class($this)
@@ -531,7 +531,7 @@ class Item {
 
 		if (!static::$idFieldName) {
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't delete item from the database because it hasn't an idFieldName set up.",
 				variables: [
 					"Item class" => get_class($this)

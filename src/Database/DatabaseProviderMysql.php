@@ -83,7 +83,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (mysqli_connect_error()) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"
 			);
 			return false;
@@ -92,7 +92,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$this->connectionHandler->set_charset($this->getConfig("charset"))) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error ".mysqli_connect_errno()." setting MySQL charset ".$this->getConfig("charset")." (".mysqli_connect_error().")"
 			);
 			return false;
@@ -112,7 +112,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		{
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error ".mysqli_connect_errno()." connecting to MySQL (".mysqli_connect_error().")"
 			);
 			return false;
@@ -137,7 +137,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$resultHandler = $this->connectionHandler->query($sql, MYSQLI_STORE_RESULT)) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error querying MySQL (".$this->connectionHandler->error.")"
 			);
 			return false;
@@ -160,7 +160,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$statement = $this->connectionHandler->prepare($sql)) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error MySQL preparing statement (".$this->connectionHandler->error.") in sql \"".$sql."\""
 			);
 			return false;
@@ -236,7 +236,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		if (!$prepareResult["statement"]->execute()) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Error MySQL executing statement (".$prepareResult["statement"]->errno.": ".$prepareResult["statement"]->error.")",
 				variables: [
 					"sql" => $prepareResult["sql"],

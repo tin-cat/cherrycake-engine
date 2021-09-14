@@ -93,13 +93,13 @@ class Engine {
 		}
 
 		foreach ($baseCoreModules as $module) {
-			if (!$this->loadCoreModule($module, MODULE_LOADING_ORIGIN_BASE))
+			if (!$this->loadCoreModule($module, Module::MODULE_LOADING_ORIGIN_BASE))
 				return false;
 		}
 
 		if (count($baseAppModules)) {
 			foreach ($baseAppModules as $module) {
-				if (!$this->loadAppModule($module, MODULE_LOADING_ORIGIN_BASE))
+				if (!$this->loadAppModule($module, Module::MODULE_LOADING_ORIGIN_BASE))
 					return false;
 			}
 		}
@@ -287,13 +287,13 @@ class Engine {
 	/**
 	 * Loads a Core module. Core modules are classes extending the module class that provide engine-specific functionalities.
 	 * @param string $moduleName The name of the module to load
-	 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
+	 * @param int $origin The origin from where the module is being loaded, one of the Module::MODULE_LOADING_ORIGIN_? constants, defaults to Module::MODULE_LOADING_ORIGIN_MANUAL
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	public function loadCoreModule(
 		string $moduleName,
-		int $origin = MODULE_LOADING_ORIGIN_MANUAL,
+		int $origin = Module::MODULE_LOADING_ORIGIN_MANUAL,
 		bool $requiredByModuleName = false
 	): bool {
 		return $this->loadModule(ENGINE_DIR."/src", $this->getConfigDir(), $moduleName, __NAMESPACE__, $origin, $requiredByModuleName);
@@ -302,13 +302,13 @@ class Engine {
 	/**
 	 * Loads an App module. App modules are classes extending the module class that provide app-specific functionalities.
 	 * @param string $moduleName The name of the module to load
-	 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
+	 * @param int $origin The origin from where the module is being loaded, one of the Module::MODULE_LOADING_ORIGIN_? constants, defaults to Module::MODULE_LOADING_ORIGIN_MANUAL
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	public function loadAppModule(
 		string $moduleName,
-		int $origin = MODULE_LOADING_ORIGIN_MANUAL,
+		int $origin = Module::MODULE_LOADING_ORIGIN_MANUAL,
 		bool $requiredByModuleName = false
 	): bool {
 		return $this->loadModule($this->getAppModulesDir(), $this->getConfigDir(), $moduleName, $this->getAppNamespace(), $origin, $requiredByModuleName);
@@ -317,13 +317,13 @@ class Engine {
 	/**
 	 * Loads a module when it's not known whether it's an app or a core module
 	 * @param string $moduleName The name of the module to load
-	 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
+	 * @param int $origin The origin from where the module is being loaded, one of the Module::MODULE_LOADING_ORIGIN_? constants, defaults to Module::MODULE_LOADING_ORIGIN_MANUAL
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
 	 * @return boolean Whether the module has been loaded ok
 	 */
 	public function loadUnknownModule(
 		string $moduleName,
-		int $origin = MODULE_LOADING_ORIGIN_MANUAL,
+		int $origin = Module::MODULE_LOADING_ORIGIN_MANUAL,
 		bool $requiredByModuleName = false
 	): bool {
 		if ($this->isCoreModuleExists($moduleName))
@@ -337,7 +337,7 @@ class Engine {
 	 * @param string $configDirectory Directory where module configuration files are stored with the syntax [module name].config.php
 	 * @param string $moduleName The name of the module to load
 	 * @param string $namespace The namespace of the module
-	 * @param int $origin The origin from where the module is being loaded, one of the MODULE_LOADING_ORIGIN_? constants, defaults to MODULE_LOADING_ORIGIN_MANUAL
+	 * @param int $origin The origin from where the module is being loaded, one of the Module::MODULE_LOADING_ORIGIN_? constants, defaults to Module::MODULE_LOADING_ORIGIN_MANUAL
 	 * @param string $requiredByModuleName The name of the module that required this module, if any.
 	 * @return boolean Whether the module has been loaded and initted ok
 	 */
@@ -346,7 +346,7 @@ class Engine {
 		string $configDirectory,
 		string $moduleName,
 		string $namespace,
-		int $origin = MODULE_LOADING_ORIGIN_MANUAL,
+		int $origin = Module::MODULE_LOADING_ORIGIN_MANUAL,
 		bool $requiredByModuleName = false
 	): bool {
 		if ($this->isDevel()) {
@@ -487,7 +487,7 @@ class Engine {
 		}
 
 		if ($argc < 2) {
-			$this->Errors->trigger(ERROR_SYSTEM, [
+			$this->Errors->trigger(Errors::ERROR_SYSTEM, [
 				"errorDescription" => "No action name specified"
 			]);
 			die;
@@ -495,7 +495,7 @@ class Engine {
 
 		$actionName = $argv[1];
 		if (!$action = $this->Actions->getAction($actionName)) {
-			$this->Errors->trigger(ERROR_SYSTEM, [
+			$this->Errors->trigger(Errors::ERROR_SYSTEM, [
 				"errorDescription" => "Unknown action",
 				"errorVariables" => [
 					"actionName" => $actionName
@@ -623,11 +623,11 @@ class Engine {
 							$historyItem["namespace"]."/".$historyItem["loadedModule"].
 							" / ".
 							[
-								MODULE_LOADING_ORIGIN_MANUAL => "Manually loaded",
-								MODULE_LOADING_ORIGIN_BASE => "Base module",
-								MODULE_LOADING_ORIGIN_DEPENDENCY => "Required by ".$historyItem["requiredBy"],
-								MODULE_LOADING_ORIGIN_AUTOLOAD => "Autoloaded",
-								MODULE_LOADING_ORIGIN_GETTER => "Loaded in getter"
+								Module::MODULE_LOADING_ORIGIN_MANUAL => "Manually loaded",
+								Module::MODULE_LOADING_ORIGIN_BASE => "Base module",
+								Module::MODULE_LOADING_ORIGIN_DEPENDENCY => "Required by ".$historyItem["requiredBy"],
+								Module::MODULE_LOADING_ORIGIN_AUTOLOAD => "Autoloaded",
+								Module::MODULE_LOADING_ORIGIN_GETTER => "Loaded in getter"
 							][$historyItem["origin"]].
 							" / loaded at ".number_format(($historyItem["loadingStartHrTime"] - $status["executionStartHrTime"]) / 1000000, 4)."ms".
 							($historyItem["initEndHrTime"] ?? false ?

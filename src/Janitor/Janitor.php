@@ -245,7 +245,7 @@ class Janitor extends \Cherrycake\Module {
 					if ($resultCode != \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
 						$e->Errors->trigger(
-							type: \Cherrycake\ERROR_SYSTEM,
+							type: Errors::ERROR_SYSTEM,
 							description: "JanitorTask failed",
 							variables: [
 								"JanitorTask name" => $janitorTask->getName(),

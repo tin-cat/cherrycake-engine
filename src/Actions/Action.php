@@ -67,7 +67,7 @@ class Action {
 
 		if ($this->isCli && !$e->isCli()) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "This action only runs on the CLI interface"
 			);
 			return true;
@@ -100,7 +100,7 @@ class Action {
 			case \Cherrycake\ACTION_MODULE_TYPE_APP:
 				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
 					$e->Errors->trigger(
-						type: \Cherrycake\ERROR_SYSTEM,
+						type: Errors::ERROR_SYSTEM,
 						description: "Mapped method ".$this->moduleName."::".$this->methodName." not found"
 					);
 					return true;

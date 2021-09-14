@@ -73,7 +73,7 @@ class Database extends \Cherrycake\Module {
 		$this->$key->config($config);
 
 		// if (!$this->$key->init()) {
-		// 	$e->Errors->trigger(type: \Cherrycake\ERROR_SYSTEM, description:  "Error while Initting database provider");
+		// 	$e->Errors->trigger(type: Errors::ERROR_SYSTEM, description:  "Error while Initting database provider");
 		// 	return;
 		// }
 	}

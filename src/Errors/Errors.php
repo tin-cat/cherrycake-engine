@@ -11,10 +11,10 @@ namespace Cherrycake\Errors;
  * $errorsConfig = [
  *  "isHtmlOutput" => true, // Whether to dump HTML formatted errors or not when not using a pattern to show errors. Defaults to true
  * 	"patternNames" => [
- *		\Cherrycake\ERROR_SYSTEM => "errors/error.html",
- *		\Cherrycake\ERROR_APP => "errors/error.html",
- *		\Cherrycake\ERROR_NOT_FOUND => "errors/error.html"
- *		\Cherrycake\ERROR_NO_PERMISSION => "errors/error.html"
+ *		self::ERROR_SYSTEM => "errors/error.html",
+ *		self::ERROR_APP => "errors/error.html",
+ *		self::ERROR_NOT_FOUND => "errors/error.html"
+ *		self::ERROR_NO_PERMISSION => "errors/error.html"
  *	], // An array of pattern names to user when an error occurs. If a patterns is not specified, a generic error is triggered.
  * 	"isLogSystemErrors" => true, // Whether or not to log system errors. Defaults to true
  * 	"isLogAppErrors" => true // Whether or not to log app errors.  Defaults to true
@@ -28,17 +28,23 @@ namespace Cherrycake\Errors;
  * ];
  * </code>
  */
-class Errors  extends \Cherrycake\Module {
+class Errors extends \Cherrycake\Module {
+
+	const ERROR_SYSTEM = 0; // Errors caused by bad programming
+	const ERROR_APP = 1; // Errors caused by bad usering
+	const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
+	const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
+
 	/**
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
 		"isHtmlOutput" => true,
 		"patternName" => [
-			\Cherrycake\ERROR_SYSTEM => "errors/error.html",
-			\Cherrycake\ERROR_APP => "errors/error.html",
-			\Cherrycake\ERROR_NOT_FOUND => "errors/error.html",
-			\Cherrycake\ERROR_NO_PERMISSION => "errors/error.html"
+			self::ERROR_SYSTEM => "errors/error.html",
+			self::ERROR_APP => "errors/error.html",
+			self::ERROR_NOT_FOUND => "errors/error.html",
+			self::ERROR_NO_PERMISSION => "errors/error.html"
 		],
 		"isLogSystemErrors" => true,
 		"isLogAppErrors" => true,
@@ -112,13 +118,13 @@ class Errors  extends \Cherrycake\Module {
 			$e->isModuleLoaded("SystemLog")
 			&&
 			(
-				($type == \Cherrycake\ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
+				($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
 				||
-				($type == \Cherrycake\ERROR_APP && $this->getConfig("isLogAppErrors"))
+				($type == self::ERROR_APP && $this->getConfig("isLogAppErrors"))
 				||
-				($type == \Cherrycake\ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
+				($type == self::ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
 				||
-				($type == \Cherrycake\ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
+				($type == self::ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
 				||
 				isset($isForceLog) && $isForceLog == true
 			)
@@ -130,13 +136,13 @@ class Errors  extends \Cherrycake\Module {
 			]));
 
 		if (
-			($type == \Cherrycake\ERROR_SYSTEM && $this->getConfig("isEmailSystemErrors"))
+			($type == self::ERROR_SYSTEM && $this->getConfig("isEmailSystemErrors"))
 			||
-			($type == \Cherrycake\ERROR_APP && $this->getConfig("isEmailAppErrors"))
+			($type == self::ERROR_APP && $this->getConfig("isEmailAppErrors"))
 			||
-			($type == \Cherrycake\ERROR_NOT_FOUND && $this->getConfig("isEmailNotFoundErrors"))
+			($type == self::ERROR_NOT_FOUND && $this->getConfig("isEmailNotFoundErrors"))
 			||
-			($type == \Cherrycake\ERROR_NO_PERMISSION && $this->getConfig("isEmailNoPermissionErrors"))
+			($type == self::ERROR_NO_PERMISSION && $this->getConfig("isEmailNoPermissionErrors"))
 			||
 			isset($isForceEmail) && $isForceEmail == true
 		)
@@ -155,10 +161,10 @@ class Errors  extends \Cherrycake\Module {
 			echo
 				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
 				\Cherrycake\ANSI_WHITE.$e->getAppName()." ".[
-					\Cherrycake\ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
-					\Cherrycake\ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
-					\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
-					\Cherrycake\ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
+					self::ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
+					self::ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
+					self::ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
+					self::ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
 				][$type]."\n".
 				\Cherrycake\ANSI_NOCOLOR.
 				(isset($subType) ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$subType."\n" : null).
@@ -207,10 +213,10 @@ class Errors  extends \Cherrycake\Module {
 							"backtrace" => $backtrace
 						],
 						code: [
-							\Cherrycake\ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
-							\Cherrycake\ERROR_NO_PERMISSION => \Cherrycake\Output\RESPONSE_NO_PERMISSION
+							self::ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
+							self::ERROR_NO_PERMISSION => \Cherrycake\Output\RESPONSE_NO_PERMISSION
 						][$type]
 					);
 				}
@@ -227,10 +233,10 @@ class Errors  extends \Cherrycake\Module {
 							trigger_error(
 								$description.$variablesDescription,
 								[
-									\Cherrycake\ERROR_SYSTEM => E_USER_ERROR,
-									\Cherrycake\ERROR_APP => E_USER_ERROR,
-									\Cherrycake\ERROR_NOT_FOUND => E_USER_ERROR,
-									\Cherrycake\ERROR_NO_PERMISSION => E_USER_ERROR
+									self::ERROR_SYSTEM => E_USER_ERROR,
+									self::ERROR_APP => E_USER_ERROR,
+									self::ERROR_NOT_FOUND => E_USER_ERROR,
+									self::ERROR_NO_PERMISSION => E_USER_ERROR
 								][$type]
 							);
 						}
@@ -261,10 +267,10 @@ class Errors  extends \Cherrycake\Module {
 						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
 						"description" =>
 							"Cherrycake Error / ".$e->getAppName()." / ".[
-								\Cherrycake\ERROR_SYSTEM => "System error",
-								\Cherrycake\ERROR_APP => "App error",
-								\Cherrycake\ERROR_NOT_FOUND => "Not found",
-								\Cherrycake\ERROR_NO_PERMISSION => "No permission"
+								self::ERROR_SYSTEM => "System error",
+								self::ERROR_APP => "App error",
+								self::ERROR_NOT_FOUND => "Not found",
+								self::ERROR_NO_PERMISSION => "No permission"
 							][$type]."<br>".
 							($subType ? "Subtype: ".$subType."<br>" : null).
 							($description ? "Description: ".$description."<br>" : null).
@@ -290,10 +296,10 @@ class Errors  extends \Cherrycake\Module {
 						code: \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
 							"Cherrycake Error / ".$e->getAppName()." / ".[
-								\Cherrycake\ERROR_SYSTEM => "System error",
-								\Cherrycake\ERROR_APP => "App error",
-								\Cherrycake\ERROR_NOT_FOUND => "Not found",
-								\Cherrycake\ERROR_NO_PERMISSION => "No permission"
+								self::ERROR_SYSTEM => "System error",
+								self::ERROR_APP => "App error",
+								self::ERROR_NOT_FOUND => "Not found",
+								self::ERROR_NO_PERMISSION => "No permission"
 							][$type]."\n".
 							($subType ?? false ? "Subtype: ".$subType."\n" : null).
 							($description ?? false ? "Description: ".$description."\n" : null).

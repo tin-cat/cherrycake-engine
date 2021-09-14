@@ -157,7 +157,7 @@ class Session extends \Cherrycake\Module {
 
 		if (!$result) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Could not create the session into the DB"
 			);
 			return false;
@@ -215,7 +215,7 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieHttpOnly")
 		)) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "The session cookie could not be sent"
 			);
 			return false;
@@ -259,7 +259,7 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieHttpOnly")
 		)) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "The session cookie could not be sent"
 			);
 			return false;
@@ -280,7 +280,7 @@ class Session extends \Cherrycake\Module {
 		if (!function_exists("openssl_random_pseudo_bytes")) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Session module needs function openssl_random_pseudo_bytes()"
 			);
 			return false;
@@ -289,7 +289,7 @@ class Session extends \Cherrycake\Module {
 		if ($attemptsCounter > 10) {
 			global $e;
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Maximum attempts to generate a unique session id had been reached"
 			);
 			return false;
@@ -426,7 +426,7 @@ class Session extends \Cherrycake\Module {
 
 		if (!$this->isSession()) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't set session data because no session is present."
 			);
 			return false;
@@ -463,7 +463,7 @@ class Session extends \Cherrycake\Module {
 
 		if (!$result) {
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't update session data in DB"
 			);
 			return false;

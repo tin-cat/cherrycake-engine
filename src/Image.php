@@ -267,7 +267,7 @@ class Image {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
 			global $e;
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image width from given file",
 				variables: array_merge(
 					$this->getDebugErrorVariables(),
@@ -296,7 +296,7 @@ class Image {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
 			global $e;
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image height from given file",
 				variables: array_merge(
 					$this->getDebugErrorVariables(),
@@ -364,7 +364,7 @@ class Image {
 		if (!$this->sizes) {
 			global $e;
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Can't create size files from image because no sizes were defined"
 			);
 			return false;
@@ -373,7 +373,7 @@ class Image {
 		if (!$result = getimagesize($sourceFileName)) {
 			global $e;
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image information from given file",
 				variables: array_merge(
 					$this->getDebugErrorVariables(),
@@ -411,7 +411,7 @@ class Image {
 		if (!$sourceImage) {
 			global $e;
 			$e->Errors->trigger(
-				type: ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "Can't create a GD image resource from given file",
 				variables: array_merge(
 					$this->getDebugErrorVariables(),
@@ -431,7 +431,7 @@ class Image {
 			if ($isCreateDirectory && !$this->createFileDirectory($sizeName)) {
 				global $e;
 				$e->Errors->trigger(
-					type: ERROR_SYSTEM,
+					type: Errors::ERROR_SYSTEM,
 					description: "Can't create file directory for image"
 				);
 				return false;
@@ -489,7 +489,7 @@ class Image {
 						if (!imagejpeg($tempImage, $finalFileName, $sizeSetup["jpgCompression"])) {
 							global $e;
 							$e->Errors->trigger(
-								type: ERROR_SYSTEM,
+								type: Errors::ERROR_SYSTEM,
 								description: "Can't create JPG image",
 								variables: array_merge(
 									$this->getDebugErrorVariables(),
@@ -509,7 +509,7 @@ class Image {
 						if (!imagepng($tempImage, $finalFileName, $sizeSetup["pngCompression"])) {
 							global $e;
 							$e->Errors->trigger(
-								type: ERROR_SYSTEM,
+								type: Errors::ERROR_SYSTEM,
 								description: "Can't create PNG image",
 								variables: array_merge(
 									$this->getDebugErrorVariables(),
@@ -528,7 +528,7 @@ class Image {
 						if (!imagegif($tempImage, $finalFileName)) {
 							global $e;
 							$e->Errors->trigger(
-								type: ERROR_SYSTEM,
+								type: Errors::ERROR_SYSTEM,
 								description: "Can't create GIF image",
 								variables: array_merge(
 									$this->getDebugErrorVariables(),
@@ -549,7 +549,7 @@ class Image {
 				if (!copy($sourceFileName, $finalFileName)) {
 					global $e;
 					$e->Errors->trigger(
-						type: ERROR_SYSTEM,
+						type: Errors::ERROR_SYSTEM,
 						description: "Can't copy image",
 						variables: array_merge(
 							$this->getDebugErrorVariables(),

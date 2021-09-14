@@ -36,7 +36,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		{
 			global $e;
 			$e->Errors->Trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				desription: "Error connecting to Memcached"
 			);
 			return false;
@@ -56,7 +56,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 			{
 				global $e;
 				$e->Errors->Trigger(
-					type: \Cherrycake\ERROR_SYSTEM,
+					type: Errors::ERROR_SYSTEM,
 					description: "Error disconnecting from Memcached"
 				);
 				return false;

@@ -29,7 +29,7 @@ class Cache extends \Cherrycake\Module {
 		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
 			$e->loadCoreModule("Errors");
 			$e->Errors->trigger(
-				type: \Cherrycake\ERROR_SYSTEM,
+				type: Errors::ERROR_SYSTEM,
 				description: "The \"engine\" cache provider name is reserved"
 			);
 		}
