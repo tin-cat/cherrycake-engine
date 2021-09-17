@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Errors\Errors;
+
 /**
  * A class that represents an action requested to the engine. It uses a Request object. It implements Action-level cache.
  */
