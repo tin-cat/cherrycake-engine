@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Janitor;
 
+use Cherrycake\Engine;
+
 /**
  * Base class for Janitor tasks.
  */
@@ -33,9 +35,8 @@ class JanitorTask {
 	 * Loads the configuration file for this JanitorTask, if there's one
 	 */
 	function loadConfigFile() {
-		global $e;
 		$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-		$fileName = $e->getConfigDir()."/".$className.".config.php";
+		$fileName = Engine::e()->getConfigDir()."/".$className.".config.php";
 		if (!file_exists($fileName))
 			return;
 		include $fileName;
@@ -122,11 +123,10 @@ class JanitorTask {
 	 * @return mixed The timestamp on which this task ran for the last time. False if haven't ever run.
 	 */
 	function getLastExecutionTimestamp() {
-		global $e;
 
-		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select executionDate from ".$e->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
+		$databaseProviderName = Engine::e()->Janitor->getConfig("logDatabaseProviderName");
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select executionDate from ".Engine::e()->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
 			[
 				[
 					"type" => \Cherrycake\Database\Database::TYPE_STRING,
@@ -268,12 +268,11 @@ class JanitorTask {
 	 * @return mixed A hash array containing status information about this task. Return false if no info about the last execution of this task could be retrieved.
 	 */
 	function getStatus() {
-		global $e;
 
 		// Get last execution log for this task
-		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select executionDate, executionSeconds, resultCode, resultDescription from ".$e->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
+		$databaseProviderName = Engine::e()->Janitor->getConfig("logDatabaseProviderName");
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select executionDate, executionSeconds, resultCode, resultDescription from ".Engine::e()->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
 			[
 				[
 					"type" => \Cherrycake\Database\Database::TYPE_STRING,

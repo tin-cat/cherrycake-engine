@@ -92,14 +92,12 @@ class Database extends \Cherrycake\Module {
 	 * @param array $config The configuration for the database provider
 	 */
 	function addProvider(string $key, string $providerClassName, array $config) {
-		global $e;
-
 		eval("\$this->".$key." = new \\Cherrycake\\Database\\".$providerClassName."();");
 
 		$this->$key->config($config);
 
 		// if (!$this->$key->init()) {
-		// 	$e->Errors->trigger(type: Errors::ERROR_SYSTEM, description:  "Error while Initting database provider");
+		// 	Engine::e()->Errors->trigger(type: Errors::ERROR_SYSTEM, description:  "Error while Initting database provider");
 		// 	return;
 		// }
 	}

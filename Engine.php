@@ -10,6 +10,11 @@ use Cherrycake\Errors\Errors;
  */
 class Engine {
 	/**
+	 * @var array $instances Holds the singleton instance
+	 */
+	private static array $instances = [];
+
+	/**
 	 * @var EngineCache $engineCache Holds the bottom-level Cache object
 	 */
 	public EngineCache $engineCache;
@@ -29,8 +34,21 @@ class Engine {
 	 */
 	private int $executionStartHrTime;
 
+	protected function __construct() {}
+	protected function __clone() {}
+	protected function __wakeup() {
+		throw new \Exception('Can\'t unserialize Engine singleton');
+	}
+
+	public static function e(): Engine {
+		$class = static::class;
+		if (!isset(self::$instances[$class]))
+			self::$instances[$class] = new static();
+		return self::$instances[$class];
+	}
+
 	/**
-	 * Constructs an engine
+	 * Initializes the engine
 	 * @param string $appNamespace The namespace of the app
 	 * @param string $appName The App name
 	 * @param bool $isDevel Whether the App is in development mode or not
@@ -42,39 +60,41 @@ class Engine {
 	 * @param int $timezoneId The system's timezone. The same as timezoneName, but the matching id on the cherrycake timezones database table
 	 * @param bool $isCli Whether the engine is running as cli or not. When not specified, it will autodetect
 	 * @param array $underMaintenanceExceptionIps An array of IPs that will override the $isDevel parameter to false
+	 * @param array $additionalAppConfigFiles
+	 * @param array $additionalAppConfigFiles An ordered array of any additional App config files to load that are found under the App config directory
+	 * @return boolean Whether all the modules have been loaded ok
 	 */
-	public function __construct(
-		private string $appNamespace = 'App',
-		private string $appName = '',
-		private bool $isDevel = false,
-		private bool $isUnderMaintenance = false,
-		private string $configDir = 'config',
-		private string $appModulesDir = 'src',
-		private string $appClassesDir = 'src',
-		private string $timezoneName = 'Etc/UTC',
-		private int $timezoneId = 532,
-		private bool|null $isCli = null,
-		private array $underMaintenanceExceptionIps = [],
-	) {
+	public function init(
+		string $appNamespace = 'App',
+		string $appName = '',
+		bool $isDevel = false,
+		bool $isUnderMaintenance = false,
+		string $configDir = 'config',
+		string $appModulesDir = 'src',
+		string $appClassesDir = 'src',
+		string $timezoneName = 'Etc/UTC',
+		int $timezoneId = 532,
+		bool|null $isCli = null,
+		array $underMaintenanceExceptionIps = [],
+		array $additionalAppConfigFiles = []
+	): bool {
+		$this->appNamespace = $appNamespace;
+		$this->appName = $appName;
+		$this->isDevel = $isDevel;
+		$this->isUnderMaintenance = $isUnderMaintenance;
+		$this->configDir = $configDir;
+		$this->appModulesDir = $appModulesDir;
+		$this->appClassesDir = $appClassesDir;
+		$this->timezoneName = $timezoneName;
+		$this->timezoneId = $timezoneId;
+		$this->isCli = $isCli;
+		$this->underMaintenanceExceptionIps = $underMaintenanceExceptionIps;
+
 		if ($this->appName === '')
 			$this->appName = md5(($_SERVER["HOSTNAME"] ?? false ?: '').$_SERVER["DOCUMENT_ROOT"]);
 
 		if (is_null($this->isCli))
 			$this->isCli = defined('STDIN');
-	}
-
-	/**
-	 * Initializes the engine
-	 * @param array $baseCoreModules An ordered array of the base Core module names that has to be always loaded on application start. Defaults to ["Actions"]. This list should include the Actions module to provide some kind of functionality to the app, since otherwise it wouldn't be answering any requests and will be completely unusable, except if you're experimenting with different ways of using the Cherrycake engine
-	 * @param array $baseAppModules An ordered array of the base App module names that has to be always loaded on application start
-	 * @param array $additionalAppConfigFiles An ordered array of any additional App config files to load that are found under the App config directory
-	 * @return boolean Whether all the modules have been loaded ok
-	 */
-	public function init(
-		array $baseCoreModules = ['Actions'],
-		array $baseAppModules = [],
-		array $additionalAppConfigFiles = []
-	): bool {
 
 		if ($this->isDevel())
 			$this->executionStartHrTime = hrtime(true);
@@ -92,18 +112,6 @@ class Engine {
 		if (count($additionalAppConfigFiles)) {
 			foreach ($additionalAppConfigFiles as $fileName)
 				require APP_DIR."/config/".$fileName;
-		}
-
-		foreach ($baseCoreModules as $module) {
-			if (!$this->loadCoreModule($module, Module::MODULE_LOADING_ORIGIN_BASE))
-				return false;
-		}
-
-		if (count($baseAppModules)) {
-			foreach ($baseAppModules as $module) {
-				if (!$this->loadAppModule($module, Module::MODULE_LOADING_ORIGIN_BASE))
-					return false;
-			}
 		}
 
 		return true;
@@ -459,7 +467,7 @@ class Engine {
 	 * @return mixed The module, the local property value if it exists, or false otherwise.
 	 */
 	function __get($key) {
-		// First check if the module is already loaded, or if it is a local property
+		// Check if the module is already loaded, or if it is a local property
 		if (isset($this->$key))
 			return $this->$key;
 

@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Log;
 
+use Cherrycake\Engine;
+
 /**
  * Base class to represent log events for the Log module
  */
@@ -66,10 +68,9 @@ class LogEvent extends \Cherrycake\Item {
 			$this->user_id = $data["userId"];
 		else
 		if ($this->isUseCurrentLoggedUserId) {
-			global $e;
-			$e->loadCoreModule("Login");
-			if ($e->Login && $e->Login->isLogged()) {
-				$this->user_id = $e->Login->user->id;
+			Engine::e()->loadCoreModule("Login");
+			if (Engine::e()->Login && Engine::e()->Login->isLogged()) {
+				$this->user_id = Engine::e()->Login->user->id;
 			}
 		}
 

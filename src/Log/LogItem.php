@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Log;
 
+use Cherrycake\Engine;
+
 /**
  * Class that represents a log item
  */
@@ -57,7 +59,6 @@ class LogItem extends \Cherrycake\Item {
 	}
 
 	function humanizeResultCode($resultCode) {
-		global $e;
-		return $e->Janitor->getJanitorTaskReturnCodeDescription($resultCode);
+		return Engine::e()->Janitor->getJanitorTaskReturnCodeDescription($resultCode);
 	}
 }

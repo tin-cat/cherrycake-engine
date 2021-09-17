@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Errors;
 
+use Cherrycake\Engine;
+
 /**
  * Module to manage application and core errors.
  * Errors will be shown on screen if isDevel is set to true or if client's IP is on underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
@@ -110,7 +112,6 @@ class Errors extends \Cherrycake\Module {
 		bool|null $isForceLog = null,
 		bool $isSilent = false
 	) {
-		global $e;
 
 		if (is_array($description))
 			$description = print_r($description, true);
@@ -133,7 +134,7 @@ class Errors extends \Cherrycake\Module {
 					: null);
 
 		if (
-			$e->isModuleLoaded("SystemLog")
+			Engine::e()->isModuleLoaded("SystemLog")
 			&&
 			(
 				($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
@@ -147,7 +148,7 @@ class Errors extends \Cherrycake\Module {
 				isset($isForceLog) && $isForceLog == true
 			)
 		)
-			$e->SystemLog->event(new \Cherrycake\SystemLog\SystemLogEventError([
+			Engine::e()->SystemLog->event(new \Cherrycake\SystemLog\SystemLogEventError([
 				"subType" => isset($subType) ? $subType : false,
 				"description" => isset($description) ? $description : false,
 				"data" => isset($variables) ? $variables : false
@@ -170,15 +171,15 @@ class Errors extends \Cherrycake\Module {
 				"backtrace" => implode("<br>Backtrace: ", $backtrace_info)
 			]);
 
-		if (isset($isSilent) && $isSilent && !$e->isDevel())
+		if (isset($isSilent) && $isSilent && !Engine::e()->isDevel())
 			return;
 
 		$patternNames = $this->getConfig("patternNames");
 
-		if ($e->isCli()) {
+		if (Engine::e()->isCli()) {
 			echo
 				\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
-				\Cherrycake\Errors\Errors::ANSI_WHITE.$e->getAppName()." ".[
+				\Cherrycake\Errors\Errors::ANSI_WHITE.Engine::e()->getAppName()." ".[
 					self::ERROR_SYSTEM => \Cherrycake\Errors\Errors::ANSI_RED."System error",
 					self::ERROR_APP => \Cherrycake\Errors\Errors::ANSI_ORANGE."App error",
 					self::ERROR_NOT_FOUND => \Cherrycake\Errors\Errors::ANSI_PURPLE."Not found",
@@ -192,17 +193,17 @@ class Errors extends \Cherrycake\Module {
 					substr(print_r($variables, true), 8, -3).
 					"\n"
 				: null).
-				($e->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+				(Engine::e()->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 				\Cherrycake\Errors\Errors::ANSI_NOCOLOR;
 			return;
 		}
 
 		// If this error generated before we couldn't get a action
-		if (!$e->Actions->currentAction) {
+		if (!Engine::e()->Actions->currentAction) {
 			$outputType = "pattern";
 		}
 		else {
-			switch (get_class($e->Actions->currentAction)) {
+			switch (get_class(Engine::e()->Actions->currentAction)) {
 				case "Cherrycake\Actions\ActionHtml":
 					$outputType = "pattern";
 					break;
@@ -219,10 +220,10 @@ class Errors extends \Cherrycake\Module {
 
 			case "pattern":
 				if (isset($patternNames[$type])) {
-					$e->loadCoreModule("Patterns");
-					$e->loadCoreModule("HtmlDocument");
+					Engine::e()->loadCoreModule("Patterns");
+					Engine::e()->loadCoreModule("HtmlDocument");
 
-					$e->Patterns->out(
+					Engine::e()->Patterns->out(
 						$patternNames[$type],
 						variables: [
 							"type" => $type,
@@ -239,7 +240,7 @@ class Errors extends \Cherrycake\Module {
 					);
 				}
 				else {
-					if ($e->isDevel()) {
+					if (Engine::e()->isDevel()) {
 						if ($this->getConfig("isHtmlOutput")) {
 
 							$variablesDescription = [];
@@ -280,11 +281,11 @@ class Errors extends \Cherrycake\Module {
 
 			case "ajax":
 
-				if ($e->isDevel()) {
+				if (Engine::e()->isDevel()) {
 					$ajaxResponse = new \Cherrycake\Actions\AjaxResponseJson([
 						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
 						"description" =>
-							"Cherrycake Error / ".$e->getAppName()." / ".[
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								self::ERROR_SYSTEM => "System error",
 								self::ERROR_APP => "App error",
 								self::ERROR_NOT_FOUND => "Not found",
@@ -307,11 +308,11 @@ class Errors extends \Cherrycake\Module {
 				break;
 
 			case "plain":
-				if ($e->isDevel()) {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+				if (Engine::e()->isDevel()) {
+					Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
 						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
-							"Cherrycake Error / ".$e->getAppName()." / ".[
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								self::ERROR_SYSTEM => "System error",
 								self::ERROR_APP => "App error",
 								self::ERROR_NOT_FOUND => "Not found",
@@ -324,7 +325,7 @@ class Errors extends \Cherrycake\Module {
 					));
 				}
 				else {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+					Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
 						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload: "Error"
 					));
@@ -333,7 +334,7 @@ class Errors extends \Cherrycake\Module {
 		}
 
 
-		$e->end();
+		Engine::e()->end();
 		die;
 	}
 
@@ -345,7 +346,6 @@ class Errors extends \Cherrycake\Module {
 	 * @param mixed $data A hash array of data to include in the notification, or a simple string
 	 */
 	function emailNotify($data) {
-		global $e;
 
 		$message = "";
 
@@ -369,10 +369,10 @@ class Errors extends \Cherrycake\Module {
 		else
 			$message = $data;
 
-		$e->loadCoreModule("Email");
-		$e->Email->send(
+		Engine::e()->loadCoreModule("Email");
+		Engine::e()->Email->send(
 			[[$this->getConfig("notificationEmail")]],
-			"[".$e->getAppNamespace()."] Error",
+			"[".Engine::e()->getAppNamespace()."] Error",
 			[
 				"contentHTML" => $message
 			]

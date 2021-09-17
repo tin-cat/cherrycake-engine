@@ -171,8 +171,6 @@ class Browser extends \Cherrycake\Module {
 	 * @return The data from $data whose key corresponds to the currently detected browser's engine. Returns false if the detected current browser-engine key is not set in the data array, or if a ENGINE_OTHERS key has not specified.
 	 */
 	function getForEngine($data) {
-		global $e;
-
 		if ($r = $data[$this->getEngine()])
 			return $r;
 		else

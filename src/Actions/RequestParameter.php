@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+
 /**
  * A class that represents a parameter passed to a Request via Get or Post
  */
@@ -18,7 +20,6 @@ class RequestParameter {
 	 * retrieveValue
 	 */
 	function retrieveValue() {
-		global $e;
 		switch ($this->type) {
 			case \Cherrycake\Actions\Request::PARAMETER_TYPE_GET:
 			case \Cherrycake\Actions\Request::PARAMETER_TYPE_CLI:
@@ -48,7 +49,6 @@ class RequestParameter {
 	 * @return mixed Returns the value received for this parameter after applying the proper filters, null if the parameter was not received
 	 */
 	function getValue() {
-		global $e;
 		if (!$this->isReceived())
 			return null;
 		return
@@ -56,7 +56,7 @@ class RequestParameter {
 			?
 			$this->value
 			:
-			$e->Security->filterValue($this->value, $this->filters);
+			Engine::e()->Security->filterValue($this->value, $this->filters);
 	}
 
 	/**
@@ -75,13 +75,12 @@ class RequestParameter {
 	 * @return Result A Result object, like Security::checkValue
 	 */
 	function checkValueSecurity() {
-		global $e;
 		return
 			$this->type == \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE
 			?
-			$e->Security->checkFile($this->value, $this->securityRules)
+			Engine::e()->Security->checkFile($this->value, $this->securityRules)
 			:
-			$e->Security->checkValue($this->value, $this->securityRules);
+			Engine::e()->Security->checkValue($this->value, $this->securityRules);
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Translation;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 use Cherrycake\Errors\Errors;
 
@@ -43,26 +44,25 @@ class Translation extends \Cherrycake\Module {
 	 * Loads all the available translation data files matching the configured Locale available languages
 	 */
 	private function loadTranslations() {
-		global $e;
 
-		if (!$e->isDevel()) {
+		if (!Engine::e()->isDevel()) {
 			$cacheProviderName = $this->GetConfig('cacheProviderName');
 			$cacheTtl = $this->GetConfig('cacheTtl');
-			$cacheKey = $e->Cache->buildCacheKey([
+			$cacheKey = Engine::e()->Cache->buildCacheKey([
 				'uniqueId' => $this->GetConfig('cacheUniqueId')
 			]);
 
-			if ($e->Cache->$cacheProviderName->isKey($cacheKey)) {
-				$this->translations = $e->Cache->$cacheProviderName->get($cacheKey);
+			if (Engine::e()->Cache->$cacheProviderName->isKey($cacheKey)) {
+				$this->translations = Engine::e()->Cache->$cacheProviderName->get($cacheKey);
 				return;
 			}
 		}
 
-		foreach ($e->Locale->getAvailaleLanguages() as $language)
+		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language)
 			$this->loadTranslationFile($language);
 
-		if (!$e->isDevel())
-			$e->Cache->$cacheProviderName->set($cacheKey, $this->translations, $cacheTtl);
+		if (!Engine::e()->isDevel())
+			Engine::e()->Cache->$cacheProviderName->set($cacheKey, $this->translations, $cacheTtl);
 	}
 
 	/**
@@ -71,7 +71,6 @@ class Translation extends \Cherrycake\Module {
 	 * @return boolean True if loading went ok, false otherwise. If the file doesn't exists, it's not considered as an error, and it still returns true;
 	 */
 	private function loadTranslationFile($language) {
-		global $e;
 
 		$filePath = $this->getTranslationFilePath($language);
 
@@ -79,7 +78,7 @@ class Translation extends \Cherrycake\Module {
 			return [];
 
 		if (!is_readable($filePath)) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Translation file is not readable',
 				variables: [
@@ -90,7 +89,7 @@ class Translation extends \Cherrycake\Module {
 		}
 
 		if (!$fileContents = file_get_contents($filePath)) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t read translation file',
 				variables: [
@@ -104,12 +103,12 @@ class Translation extends \Cherrycake\Module {
 			$translations = \Yosymfony\Toml\Toml::Parse($fileContents);
 		}
 		catch(\Yosymfony\ParserUtils\SyntaxErrorException $e) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Couln\'t parse translation TOML file',
 				variables: [
 					'file' => $filePath,
-					'error' => $e->getMessage()
+					'error' => Engine::e()->getMessage()
 				]
 			);
 			return false;
@@ -131,8 +130,7 @@ class Translation extends \Cherrycake\Module {
 	 * @return string The file name
 	 */
 	private function getTranslationFileName($language) {
-		global $e;
-		return strtolower(str_replace(' ', '_', $e->Locale->getLanguageName($language, ['forceLanguage' => \Cherrycake\Locale\Locale::ENGLISH]))).'.toml';
+		return strtolower(str_replace(' ', '_', Engine::e()->Locale->getLanguageName($language, ['forceLanguage' => \Cherrycake\Locale\Locale::ENGLISH]))).'.toml';
 	}
 
 	/**
@@ -148,9 +146,8 @@ class Translation extends \Cherrycake\Module {
 	 * Adds the provided $text to the currently loaded translations and sets the flag to recreate translation files on module's end
 	 */
 	private function storeText($text) {
-		global $e;
 		$this->textsToStore[] = $text;
-		foreach ($e->Locale->getAvailaleLanguages() as $language)
+		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language)
 			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->baseLanguageText;
 		$this->isCreateFilesOnEnd = true;
 	}
@@ -159,8 +156,7 @@ class Translation extends \Cherrycake\Module {
 	 * Creates the data files for all available languages using the currently loaded translations
 	 */
 	private function createFiles() {
-		global $e;
-		foreach ($e->Locale->getAvailaleLanguages() as $language)
+		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language)
 			$this->createFile($language);
 	}
 
@@ -170,7 +166,6 @@ class Translation extends \Cherrycake\Module {
 	 * @return bool True if creation went ok, false otherwise
 	 */
 	private function createFile($language) {
-		global $e;
 
 		if (!$this->createDataFilesDir())
 			return;
@@ -199,7 +194,7 @@ class Translation extends \Cherrycake\Module {
 		$toml = $this->buildToml($data, $language);
 
 		if (!$fp = fopen($fileName, 'w')) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t open translation data file for writing',
 				variables: [
@@ -210,7 +205,7 @@ class Translation extends \Cherrycake\Module {
 		}
 
 		if (!fwrite($fp, $toml)) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t write to translation data file',
 				variables: [
@@ -231,8 +226,7 @@ class Translation extends \Cherrycake\Module {
 			return true;
 
 		if (!mkdir($dir, 0777, true)) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: 'Couldn\'t create translations data files directory',
 				variables: [
@@ -258,8 +252,7 @@ class Translation extends \Cherrycake\Module {
 	}
 
 	private function getTranslation($text) {
-		global $e;
-		$translation = $this->translations[$text->getCategory()][$text->getKey()][$e->Locale->getLanguage()] ?? '';
+		$translation = $this->translations[$text->getCategory()][$text->getKey()][Engine::e()->Locale->getLanguage()] ?? '';
 		if (!$text->replacements)
 			return $translation;
 		else
@@ -278,12 +271,11 @@ class Translation extends \Cherrycake\Module {
 	}
 
 	private function buildToml($data, $language) {
-		global $e;
 
 		$toml = new \Yosymfony\Toml\TomlBuilder;
 
 		$toml = $toml
-			->addComment('Translations for '.$e->Locale->getLanguageName($language).' ('.$e->Locale->getLanguageCode($language).')')
+			->addComment('Translations for '.Engine::e()->Locale->getLanguageName($language).' ('.Engine::e()->Locale->getLanguageCode($language).')')
 			->addComment('TOML specification: https://github.com/toml-lang/toml/blob/master/toml.md');
 
 		$lastCategory = null;

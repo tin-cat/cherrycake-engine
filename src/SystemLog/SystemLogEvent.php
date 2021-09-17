@@ -2,6 +2,8 @@
 
 namespace Cherrycake\SystemLog;
 
+use Cherrycake\Engine;
+
 /**
  * Base class to represent system log events for the SystemLog module
  */
@@ -117,8 +119,7 @@ class SystemLogEvent extends \Cherrycake\Item {
 	 * @return mixed The client's IP, or false if it wasn't available
 	 */
 	function getClientIp() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -130,8 +131,7 @@ class SystemLogEvent extends \Cherrycake\Item {
 	 * @return mixed The host reported by the server, or false if it wasn't available
 	 */
 	function getHttpHost() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		return $_SERVER["HTTP_HOST"];
 	}
@@ -140,8 +140,7 @@ class SystemLogEvent extends \Cherrycake\Item {
 	 * @return mixed The URI reported by the server, or false if it wasn't available
 	 */
 	function getRequestUri() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		return $_SERVER["REQUEST_URI"];
 	}
@@ -152,8 +151,7 @@ class SystemLogEvent extends \Cherrycake\Item {
 	 * @return mixed The client's browserstring, or false if it wasn't available
 	 */
 	function getClientBrowserString() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}

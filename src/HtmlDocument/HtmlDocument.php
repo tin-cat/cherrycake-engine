@@ -2,6 +2,8 @@
 
 namespace Cherrycake\HtmlDocument;
 
+use Cherrycake\Engine;
+
 /**
  * Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
  */
@@ -125,8 +127,6 @@ class HtmlDocument extends \Cherrycake\Module {
 		array $additionalJavascriptSets = [],
 		array $additionalCssSets = []
 	): string {
-		global $e;
-
 		$r = "<!DOCTYPE html>\n";
 
 		$r .= "<html lang=\"".$this->getConfig("languageCode")."\">\n";
@@ -158,27 +158,27 @@ class HtmlDocument extends \Cherrycake\Module {
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
 			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
 
-		if ($e->Actions->currentAction) {
+		if (Engine::e()->Actions->currentAction) {
 			// Canonical
-			if ($e->Locale->getConfig("canonicalLocale"))
-				$r .= "<link rel=\"canonical\" href=\"".$e->Actions->currentAction->request->buildUrl(locale: $e->Locale->getConfig("canonicalLocale"))."\" />\n";
+			if (Engine::e()->Locale->getConfig("canonicalLocale"))
+				$r .= "<link rel=\"canonical\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("canonicalLocale"))."\" />\n";
 
 			// Alternates
-			foreach ($e->Locale->getConfig("availableLocales") as $localeName => $locale)
-				$r .= "<link rel=\"alternate\" href=\"".$e->Actions->currentAction->request->buildUrl(locale: $localeName)."\" hreflang=\"".$e->Locale->getLanguageCode($locale["language"])."\" />\n";
+			foreach (Engine::e()->Locale->getConfig("availableLocales") as $localeName => $locale)
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: $localeName)."\" hreflang=\"".Engine::e()->Locale->getLanguageCode($locale["language"])."\" />\n";
 
 			// Default
-			if ($e->Locale->getConfig("defaultLocale"))
-				$r .= "<link rel=\"alternate\" href=\"".$e->Actions->currentAction->request->buildUrl(locale: $e->Locale->getConfig("defaultLocale"))."\" hreflang=\"x-default\" />\n";
+			if (Engine::e()->Locale->getConfig("defaultLocale"))
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("defaultLocale"))."\" hreflang=\"x-default\" />\n";
 		}
 
 		// Css
-		if ($e->Css)
-			$r .= $e->Css->getSetsHtmlHeaders($this->getConfig("cssSets") + $additionalCssSets);
+		if (Engine::e()->Css)
+			$r .= Engine::e()->Css->getSetsHtmlHeaders($this->getConfig("cssSets") + $additionalCssSets);
 
 		// Javascript
-		if ($e->Javascript)
-			$r .= $e->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets") + $additionalJavascriptSets);
+		if (Engine::e()->Javascript)
+			$r .= Engine::e()->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets") + $additionalJavascriptSets);
 
 		// Mobile viewport
 		if ($mobileViewport = $this->getConfig("mobileViewport")) {
@@ -259,21 +259,19 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @todo Inlined Javascript should be minimized
 	 */
 	function footer() {
-		global $e;
-
 		$r = "";
 
-		if ($this->getConfig("googleAnalyticsTrackingId") && !$e->isDevel())
+		if ($this->getConfig("googleAnalyticsTrackingId") && !Engine::e()->isDevel())
 			$r .= $this->getGoogleAnalyticsCode($this->getConfig("googleAnalyticsTrackingId"));
 
-		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !$e->isDevel())
+		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !Engine::e()->isDevel())
 			$r .= $this->getMatomoCode($this->getConfig("matomoServerUrl"), $this->getConfig("matomoTrackingId"));
 
 		if ($this->getFooterAdditionalHtml())
 			$r .= $this->getFooterAdditionalHtml();
 
 		// Javascript
-		if ($e->Javascript) {
+		if (Engine::e()->Javascript) {
 
 			if ($this->getConfig("isDeferJavascript") && $javascriptSets = $this->getConfig("javascriptSets")) {
 				if (is_array($javascriptSets[0])) {
@@ -283,7 +281,7 @@ class HtmlDocument extends \Cherrycake\Module {
 								var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
 								DOMReady(function () {
 									var element = document.createElement(\"script\");
-									element.src = \"".$e->Javascript->getSetUrl($javascriptSet)."\";
+									element.src = \"".Engine::e()->Javascript->getSetUrl($javascriptSet)."\";
 									document.body.appendChild(element);
 								});
 							</script>";
@@ -295,7 +293,7 @@ class HtmlDocument extends \Cherrycake\Module {
 							var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
 							DOMReady(function () {
 								var element = document.createElement(\"script\");
-								element.src = \"".$e->Javascript->getSetUrl($javascriptSets)."\";
+								element.src = \"".Engine::e()->Javascript->getSetUrl($javascriptSets)."\";
 								document.body.appendChild(element);
 							});
 						</script>";

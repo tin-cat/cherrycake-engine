@@ -55,9 +55,8 @@ class Module {
 	 * Loads the configuration file for this module, if there's one
 	 */
 	function loadConfigFile() {
-		global $e;
 		$className = $this->getName();
-		$fileName = $e->getConfigDir()."/".$className.".config.php";
+		$fileName = Engine::e()->getConfigDir()."/".$className.".config.php";
 		if (!file_exists($fileName)) {
 			if ($this->isConfigFileRequired)
 				trigger_error("Configuration file $fileName required");
@@ -120,18 +119,17 @@ class Module {
 	 * @return boolean Whether the dependent modules were loaded ok
 	 */
 	function loadDependencies(): bool {
-		global $e;
 
 		if ($this->dependentCoreModules) {
 			foreach ($this->dependentCoreModules as $moduleName) {
-				if (!$e->loadCoreModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
+				if (!Engine::e()->loadCoreModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}
 
 		if ($this->dependentAppModules) {
 			foreach ($this->dependentAppModules as $moduleName) {
-				if (!$e->loadAppModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
+				if (!Engine::e()->loadAppModule($moduleName, self::MODULE_LOADING_ORIGIN_DEPENDENCY, $this->getName()))
 					return false;
 			}
 		}

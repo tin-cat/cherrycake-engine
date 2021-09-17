@@ -1,5 +1,7 @@
 <?php
 
+use Cherrycake\Engine;
+
 /**
  * A JanitorTask to maintain the Log module
  * Stores the cached events queue into database, then empties the cache
@@ -32,12 +34,10 @@ class JanitorTaskLogCommit extends \Cherrycake\Janitor\JanitorTask {
 	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
-		global $e;
-
 		// Loads the needed modules
-		$e->loadCoreModule("Log");
+		Engine::e()->loadCoreModule("Log");
 
-		$result = $e->Log->commit();
+		$result = Engine::e()->Log->commit();
 		return [
 			$result[0] ? \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 			isset($result[1]) ? $result[1] : false

@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Stats;
 
+use Cherrycake\Engine;
+
 /**
  * Base class to represent a stats event for the Stats module
  */
@@ -65,7 +67,6 @@ class StatsEvent extends \Cherrycake\Item {
 	 * @return boolean True on success, false on error
 	 */
 	function loadInline($data = false) {
-		global $e;
 		$this->type = get_called_class();
 		$this->subType = $data["subType"] ?? null;
 		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : time();
@@ -146,7 +147,6 @@ class StatsEvent extends \Cherrycake\Item {
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function store() {
-		global $e;
 
 		// Check if this event is already on the database
 
@@ -187,7 +187,7 @@ class StatsEvent extends \Cherrycake\Item {
 				"value" => $this->tertiary_id
 			];
 
-		if (!$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
+		if (!$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
 			$sql = "
 				select
 					".$this->tableName.".*

@@ -48,16 +48,15 @@ class JanitorTaskJanitorPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
-		global $e;
 
 		// Loads the needed modules
-		$e->loadCoreModule("Janitor");
+		Engine::e()->loadCoreModule("Janitor");
 
-		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
+		$databaseProviderName = Engine::e()->Janitor->getConfig("logDatabaseProviderName");
 
 		// Purge sessions older than PurgeSessionsWithoutDataOlderThanSeconds without data
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select count(*) as numberOf from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select count(*) as numberOf from ".Engine::e()->Janitor->getConfig("logTableName")." where executionDate < ?",
 			[
 				[
 					"type" => \Cherrycake\Database\Database::TYPE_STRING,
@@ -76,8 +75,8 @@ class JanitorTaskJanitorPurge extends \Cherrycake\Janitor\JanitorTask {
 		$numberOfLogEntriesToPurge = $row->getField("numberOf");
 
 		if ($numberOfLogEntriesToPurge > 0) {
-			$result = $e->Database->$databaseProviderName->prepareAndExecute(
-				"delete from ".$e->Janitor->getConfig("logTableName")." where executionDate < ?",
+			$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+				"delete from ".Engine::e()->Janitor->getConfig("logTableName")." where executionDate < ?",
 				[
 					[
 						"type" => \Cherrycake\Database\Database::TYPE_STRING,

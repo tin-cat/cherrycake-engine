@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Janitor;
 
+use Cherrycake\Engine;
+
 /**
  * Allows an app to program tasks to be executed automatically and periodically.
  *
@@ -63,9 +65,7 @@ class Janitor extends \Cherrycake\Module {
 	 * Maps the Actions to which this module must respond
 	 */
 	public static function mapActions() {
-		global $e;
-
-		$e->Actions->mapAction(
+		Engine::e()->Actions->mapAction(
 			"janitorRun",
 			new \Cherrycake\Actions\ActionCli(
 				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
@@ -96,7 +96,7 @@ class Janitor extends \Cherrycake\Module {
 			)
 		);
 
-		$e->Actions->mapAction(
+		Engine::e()->Actions->mapAction(
 			"janitorStatus",
 			new \Cherrycake\Actions\ActionCli(
 				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
@@ -159,9 +159,8 @@ class Janitor extends \Cherrycake\Module {
 	 * @param string $janitorTaskName The name of the class of the App Janitor task to add
 	 */
 	function addAppJanitorTask($janitorTaskName) {
-		global $e;
 		if (!isset($this->janitorTasks[$janitorTaskName])) {
-			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\".$e->getAppNamespace()."\\".$janitorTaskName."();");
+			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\".Engine::e()->getAppNamespace()."\\".$janitorTaskName."();");
 			$this->janitorTasks[$janitorTaskName]->init();
 		}
 	}
@@ -188,7 +187,6 @@ class Janitor extends \Cherrycake\Module {
 
 		$this->loadTasks();
 
-		global $e;
 		$r = "Janitor run\n";
 
 		$baseTimestamp = time();
@@ -220,7 +218,7 @@ class Janitor extends \Cherrycake\Module {
 					$r .= "Logging: ";
 
 					$databaseProviderName = $this->getConfig("logDatabaseProviderName");
-					$result = $e->Database->$databaseProviderName->prepareAndExecute(
+					$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
 						"insert into ".$this->getConfig("logTableName")." (executionDate, executionSeconds, taskName, resultCode, resultDescription) values (?, ?, ?, ?, ?)",
 						[
 							[
@@ -257,7 +255,7 @@ class Janitor extends \Cherrycake\Module {
 
 					if ($resultCode != \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK) {
 						$r .= "Logging error: ";
-						$e->Errors->trigger(
+						Engine::e()->Errors->trigger(
 							type: Errors::ERROR_SYSTEM,
 							description: "JanitorTask failed",
 							variables: [
@@ -285,14 +283,13 @@ class Janitor extends \Cherrycake\Module {
 			reset($this->janitorTasks);
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
+		Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
 	}
 
 	/**
 	 * Shows the status of the Janitor tasks in plain text
 	 */
 	function showPlainStatus($request) {
-		global $e;
 		$this->loadTasks();
 
 		$r = "";
@@ -326,7 +323,7 @@ class Janitor extends \Cherrycake\Module {
 			}
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
+		Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextPlain(payload: $r));
 	}
 
 	/**
@@ -380,7 +377,6 @@ class Janitor extends \Cherrycake\Module {
 	 * @return string The HTML
 	 */
 	function getStatusHtml($setup = false) {
-		global $e;
 
 		$this->loadTasks();
 

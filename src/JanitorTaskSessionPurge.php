@@ -1,5 +1,7 @@
 <?php
 
+use Cherrycake\Engine;
+
 /**
  * A JanitorTask to maintain the Session module.
  * Purges sessions older than the given seconds. A different configuration is given for differentiating the purging sessions without any data stored (sessions that haven't been used in any way) between sessions with data stored (sessions that have been actually used somehow)
@@ -49,16 +51,14 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
-		global $e;
-
 		// Loads the needed modules
-		$e->loadCoreModule("Session");
+		Engine::e()->loadCoreModule("Session");
 
-		$databaseProviderName = $e->Session->getConfig("sessionDatabaseProviderName");
+		$databaseProviderName = Engine::e()->Session->getConfig("sessionDatabaseProviderName");
 
 		// Purge sessions older than PurgeSessionsWithoutDataOlderThanSeconds without data
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select count(*) as numberOf from ".Engine::e()->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 			[
 				[
 					"type" => \Cherrycake\Database\Database::TYPE_STRING,
@@ -77,8 +77,8 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 		$numberOfSessionsToPurgeWithoutData = $row->getField("numberOf");
 
 		if ($numberOfSessionsToPurgeWithoutData > 0) {
-			$result = $e->Database->$databaseProviderName->prepareAndExecute(
-				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
+			$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+				"delete from ".Engine::e()->Session->getConfig("sessionTableName")." where creationDate < ? and data is null",
 				[
 					[
 						"type" => \Cherrycake\Database\Database::TYPE_STRING,
@@ -96,8 +96,8 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 
 
 		// Purge sessions older than PurgeSessionsWithoutDataOlderThanSeconds with data
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select count(*) as numberOf from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select count(*) as numberOf from ".Engine::e()->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 			[
 				[
 					"type" => \Cherrycake\Database\Database::TYPE_STRING,
@@ -116,8 +116,8 @@ class JanitorTaskSessionPurge extends \Cherrycake\Janitor\JanitorTask {
 		$numberOfSessionsToPurgeWithData = $row->getField("numberOf");
 
 		if ($numberOfSessionsToPurgeWithData > 0) {
-			$result = $e->Database->$databaseProviderName->prepareAndExecute(
-				"delete from ".$e->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
+			$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+				"delete from ".Engine::e()->Session->getConfig("sessionTableName")." where creationDate < ? and data is not null",
 				[
 					[
 						"type" => \Cherrycake\Database\Database::TYPE_STRING,

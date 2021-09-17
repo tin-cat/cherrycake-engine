@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Css;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 
 /**
@@ -66,8 +67,7 @@ class Css extends \Cherrycake\Module {
 	 * Maps the Actions to which this module must respond
 	 */
 	public static function mapActions() {
-		global $e;
-		$e->Actions->mapAction(
+		Engine::e()->Actions->mapAction(
 			"css",
 			new \Cherrycake\Actions\ActionCss(
 				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
@@ -131,12 +131,11 @@ class Css extends \Cherrycake\Module {
 	 * @return string The Url of the Css requested sets
 	 */
 	function getSetUrl(string $setName): string {
-		global $e;
 
 		if (!is_array($this->sets))
 			return null;
 
-		return $e->Actions->getAction("css")->request->buildUrl(
+		return Engine::e()->Actions->getAction("css")->request->buildUrl(
 			parameterValues: [
 				"set" => $setName,
 				"version" => ($this->getConfig("isCache") ? $this->getConfig("lastModifiedTimestamp") : uniqid())
@@ -179,17 +178,16 @@ class Css extends \Cherrycake\Module {
 	 * @param string $setName The name of the set
 	 */
 	function storeParsedSetInCache($setName) {
-		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 		$cacheTtl = $this->GetConfig("cacheTtl");
-		$cacheKey = $e->Cache->buildCacheKey([
+		$cacheKey = Engine::e()->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
 			"setName" => $setName,
 			"uniqueId" => $this->getSetUniqueId($setName)
 		]);
-		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
-			$e->Cache->$cacheProviderName->set(
+		if (!Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
+			Engine::e()->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$this->parseSet($setName),
 				$cacheTtl
@@ -202,13 +200,12 @@ class Css extends \Cherrycake\Module {
 	* @return array The names of the files on the set, or false if no files
 	*/
 	function getSetFiles($setName) {
-		global $e;
 
 		$requestedSet = $this->sets[$setName];
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
-			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
-				$e->Errors->trigger(
+			if (Engine::e()->isDevel() && !is_dir($requestedSet["directory"])) {
+				Engine::e()->Errors->trigger(
 					type: Errors::ERROR_SYSTEM,
 					description: "Couldn't open CSS directory",
 					variables: [
@@ -235,12 +232,11 @@ class Css extends \Cherrycake\Module {
 	 * @return string The parsed set, or false if something went wrong
 	 */
 	function parseSet($setName) {
-		global $e;
 
 		if (!isset($this->sets[$setName]))
 			return null;
 
-		if ($e->isDevel())
+		if (Engine::e()->isDevel())
 			$develInformation = "\nSet \"".$setName."\":\n";
 
 		$requestedSet = $this->sets[$setName];
@@ -258,10 +254,10 @@ class Css extends \Cherrycake\Module {
 				else
 					$parsed[] = $file;
 
-				if ($e->isDevel())
+				if (Engine::e()->isDevel())
 					$develInformation .= $requestedSet["directory"]."/".$file."\n";
 
-				$css .= $e->Patterns->parse(
+				$css .= Engine::e()->Patterns->parse(
 					$file,
 					directoryOverride: $requestedSet["directory"] ?? false,
 					fileToIncludeBeforeParsing: $requestedSet["variablesFile"] ?? false
@@ -275,11 +271,11 @@ class Css extends \Cherrycake\Module {
 			if ($isScss) {
 				try {
 					$scssCompiler = new \ScssPhp\ScssPhp\Compiler();
-					$scssCompiler->setOutputStyle($e->isDevel() ? \ScssPhp\ScssPhp\OutputStyle::EXPANDED : \ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
+					$scssCompiler->setOutputStyle(Engine::e()->isDevel() ? \ScssPhp\ScssPhp\OutputStyle::EXPANDED : \ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
 					$css = $scssCompiler->compileString($css)->getCss();
 				}
 				catch (\ScssPhp\ScssPhp\Exception\SassException $error) {
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
 						description: $error->getMessage()
 					);
@@ -289,7 +285,7 @@ class Css extends \Cherrycake\Module {
 
 		if (isset($requestedSet["appendCss"]))
 			$css .=
-				($e->isDevel() ? "\n/* ".$setName." appended CSS */\n\n" : null).
+				(Engine::e()->isDevel() ? "\n/* ".$setName." appended CSS */\n\n" : null).
 				$requestedSet["appendCss"];
 
 		// Include variablesFile specified files
@@ -303,7 +299,7 @@ class Css extends \Cherrycake\Module {
 		if($this->getConfig("isMinify"))
 			$css = $this->minify($css);
 
-		if ($e->isDevel())
+		if (Engine::e()->isDevel())
 			$css = "/*\n".$develInformation."\n*/\n\n".$css;
 
 		return $css;
@@ -317,13 +313,12 @@ class Css extends \Cherrycake\Module {
 	 * @param Request $request The Request object received
 	 */
 	function dump($request) {
-		global $e;
 
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if (!$request->set) {
-			$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss);
+			Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss);
 			return;
 		}
 
@@ -331,23 +326,23 @@ class Css extends \Cherrycake\Module {
 
 		$css = '';
 
-		$cacheKey = $e->Cache->buildCacheKey([
+		$cacheKey = Engine::e()->Cache->buildCacheKey([
 			"prefix" => "cssParsedSet",
 			"uniqueId" => $request->set.'_'.$this->getConfig("lastModifiedTimestamp")
 		]);
 
-		if ($this->getConfig("isCache") && $e->Cache->$cacheProviderName->isKey($cacheKey))
-			$css = $e->Cache->$cacheProviderName->get($cacheKey);
+		if ($this->getConfig("isCache") && Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
+			$css = Engine::e()->Cache->$cacheProviderName->get($cacheKey);
 		else {
 			$css = $this->parseSet($request->set);
-			$e->Cache->$cacheProviderName->set(
+			Engine::e()->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$css,
 				$this->GetConfig("cacheTtl")
 			);
 		}
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss(payload: $css));
+		Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss(payload: $css));
 		return;
 	}
 

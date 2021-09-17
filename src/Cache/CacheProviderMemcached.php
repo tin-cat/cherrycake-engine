@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Engine;
+use Cherrycake\Errors\Errors;
+
 /**
  * Cache Provider based on Memcached. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored. Memcached daemon can also be setup to run in a server cluster.
  */
@@ -34,8 +37,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		$this->memcached->setOption(\Memcached::OPT_COMPRESSION, $this->getConfig("isCompression"));
 		if (!$this->memcached->addServers($this->GetConfig("servers")))
 		{
-			global $e;
-			$e->Errors->Trigger(
+			Engine::e()->Errors->Trigger(
 				type: Errors::ERROR_SYSTEM,
 				desription: "Error connecting to Memcached"
 			);
@@ -54,8 +56,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		if (!$this->GetConfig("isPersistentConnection"))
 			if (!$this->memcached->quit())
 			{
-				global $e;
-				$e->Errors->Trigger(
+				Engine::e()->Errors->Trigger(
 					type: Errors::ERROR_SYSTEM,
 					description: "Error disconnecting from Memcached"
 				);

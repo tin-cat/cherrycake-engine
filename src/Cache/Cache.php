@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Engine;
 use Cherrycake\Errors\Errors;
 
 /**
@@ -50,12 +51,10 @@ class Cache extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		global $e;
-
 		// Check that the "engine" cache provider has not been defined previously
-		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
-			$e->loadCoreModule("Errors");
-			$e->Errors->trigger(
+		if (Engine::e()->isDevel() && isset($this->getConfig("providers")["engine"])) {
+			Engine::e()->loadCoreModule("Errors");
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "The \"engine\" cache provider name is reserved"
 			);
@@ -108,8 +107,7 @@ class Cache extends \Cherrycake\Module {
 	 * @return string The final cache key
 	 */
 	static function buildCacheKey($cacheKeyNamingOptions) {
-		global $e;
-		$key = $e->getAppName();
+		$key = Engine::e()->getAppName();
 
 		if (isset($cacheKeyNamingOptions["prefix"]))
 			$key .= "_".$cacheKeyNamingOptions["prefix"];

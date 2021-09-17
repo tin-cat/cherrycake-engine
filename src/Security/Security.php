@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Security;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 
 /**
@@ -88,8 +89,7 @@ class Security  extends \Cherrycake\Module {
 		// Check permanently banned Ips
 		if ($this->getConfig("permanentlyBannedIps"))
 			if (in_array($this->getClientIp(), $this->getConfig("permanentlyBannedIps"))) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Permanently banned Ip trying to access",
 					"data" => [
@@ -102,8 +102,7 @@ class Security  extends \Cherrycake\Module {
 		// Check automatically banned Ips
 		if ($this->getConfig("isAutoBannedIps"))
 			if ($this->isAutoBannedIp()) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Automatically banned Ip access trying to access",
 					"data" => [
@@ -116,8 +115,7 @@ class Security  extends \Cherrycake\Module {
 		// Check malicious browserstrings
 		if ($this->getConfig("isCheckMaliciousBadBrowsers"))
 			if (preg_match($this->maliciousBrowserStringsRegexp, $this->getClientBrowserString())) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Malicious browserstring detected",
 					"data" => [
@@ -400,7 +398,6 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean True if no issues found during checking, false otherwise.
 	 */
 	function checkRequest($request) {
-		global $e;
 
 		if ($request->isSecurityCsrf()) {
 			// Check host
@@ -413,8 +410,8 @@ class Security  extends \Cherrycake\Module {
 				if ($origin) {
 					if ($parsedOrigin = parse_url($origin)) {
 						if (strcmp($parsedOrigin["host"], $_SERVER["HTTP_HOST"]) !== 0) {
-							if ($e->isModuleLoaded("SystemLog"))
-								$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+							if (Engine::e()->isModuleLoaded("SystemLog"))
+								Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 									"subType" => "Csrf",
 									"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
 									"data" => [
@@ -432,13 +429,13 @@ class Security  extends \Cherrycake\Module {
 
 			// Check csrf token
 			if (!$request->isParameterReceived("csrfToken")) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: No token parameter received"
 					]));
 				else
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: No token parameter received"
 					);
@@ -446,13 +443,13 @@ class Security  extends \Cherrycake\Module {
 			}
 
 			if (!$this->isCsrfTokenInSession()) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: No token in session"
 					]));
 				else
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: No token in session"
 					);
@@ -460,13 +457,13 @@ class Security  extends \Cherrycake\Module {
 			}
 
 			if (!hash_equals($this->getCsrfTokenInSession(), $request->csrfToken)) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: Token parameter does not matches token in session"
 					]));
 				else
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_APP,
 						description: "CSRF Attack detected: Token parameter does not matches token in session"
 					);
@@ -493,18 +490,16 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean Whether there is a Csrf token stored on this session
 	 */
 	function isCsrfTokenInSession() {
-		global $e;
-		$e->loadCoreModule("Session");
-		return isset($e->Session->csrfToken);
+		Engine::e()->loadCoreModule("Session");
+		return isset(Engine::e()->Session->csrfToken);
 	}
 
 	/**
 	 * @return string The token stored in session. False if none was present in session.
 	 */
 	function getCsrfTokenInSession() {
-		global $e;
-		$e->loadCoreModule("Session");
-		return $e->Session->csrfToken;
+		Engine::e()->loadCoreModule("Session");
+		return Engine::e()->Session->csrfToken;
 	}
 
 	/**
@@ -512,9 +507,8 @@ class Security  extends \Cherrycake\Module {
 	 * @param boolean True if everything went ok, false otherwise.
 	 */
 	function setCsrfTokenInSession($token) {
-		global $e;
-		$e->loadCoreModule("Session");
-		$e->Session->csrfToken = $token;
+		Engine::e()->loadCoreModule("Session");
+		Engine::e()->Session->csrfToken = $token;
 		return true;
 	}
 
@@ -600,7 +594,6 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean Whether the given Ip has been auto banned or not
 	 */
 	function isAutoBannedIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -608,7 +601,7 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		if ($e->Cache->$cacheProviderName->get($cacheKey) > $this->getConfig("autoBannedIpsThreshold"))
+		if (Engine::e()->Cache->$cacheProviderName->get($cacheKey) > $this->getConfig("autoBannedIpsThreshold"))
 			return true;
 		else
 			return false;
@@ -621,7 +614,6 @@ class Security  extends \Cherrycake\Module {
 	 * @param $ip The Ip to ban. The current client's Ip is used if not specified
 	 */
 	function autoBanIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -629,12 +621,12 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		if ($e->Cache->$cacheProviderName->get($cacheKey)) {
-			$e->Cache->$cacheProviderName->increment($cacheKey);
-			$e->Cache->$cacheProviderName->touch($cacheKey, $this->getConfig("autoBannedIpsCacheTtl"));
+		if (Engine::e()->Cache->$cacheProviderName->get($cacheKey)) {
+			Engine::e()->Cache->$cacheProviderName->increment($cacheKey);
+			Engine::e()->Cache->$cacheProviderName->touch($cacheKey, $this->getConfig("autoBannedIpsCacheTtl"));
 		}
 		else
-			$e->Cache->$cacheProviderName->set($cacheKey, 1, $this->getConfig("autoBannedIpsCacheTtl"));
+			Engine::e()->Cache->$cacheProviderName->set($cacheKey, 1, $this->getConfig("autoBannedIpsCacheTtl"));
 	}
 
 	/**
@@ -644,7 +636,6 @@ class Security  extends \Cherrycake\Module {
 	 * @param $ip The Ip to unban. The current client's Ip is used if not specified
 	 */
 	function removeAutoBannedIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -652,7 +643,7 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		$e->Cache->$cacheProviderName->delete($cacheKey);
+		Engine::e()->Cache->$cacheProviderName->delete($cacheKey);
 	}
 
 	/**
@@ -661,8 +652,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return mixed The client's IP, or false if it was not available
 	 */
 	function getClientIp() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -676,8 +666,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return mixed The client's browserstring, or false if it was not available
 	 */
 	function getClientBrowserString() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}

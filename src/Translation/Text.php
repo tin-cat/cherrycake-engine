@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Translation;
 
+use Cherrycake\Engine;
+
 /**
  * A class that represents a translatable text
  */
@@ -24,17 +26,15 @@ class Text {
 	) {}
 
 	function __toString(): string {
-		global $e;
-		$e->loadCoreModule('Translation');
-		return $e->Translation->translate($this);
+		Engine::e()->loadCoreModule('Translation');
+		return Engine::e()->Translation->translate($this);
 	}
 
 	public function getBaseLanguage(): int {
 		if ($this->baseLanguage)
 			return $this->baseLanguage;
-		global $e;
-		$e->loadCoreModule('Translation');
-		return $e->Translation->getConfig('defaultBaseLanguage');
+		Engine::e()->loadCoreModule('Translation');
+		return Engine::e()->Translation->getConfig('defaultBaseLanguage');
 	}
 
 	private function buildKey(string $string): string {

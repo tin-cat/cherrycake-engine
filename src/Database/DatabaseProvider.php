@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Database;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 
 /**
@@ -102,7 +103,7 @@ class DatabaseProvider {
 	 *
 	 * Example:
 	 * <code>
-	 * $result = $e->Database->main->QueryCache(
+	 * $result = Engine::e()->Database->main->QueryCache(
 	 * 	"select * from stuff order by rand() limit 3", // The query
 	 * 	Cache::TTL_MINIMAL, // The TTL
 	 * 	[ // A key naming options array
@@ -128,15 +129,13 @@ class DatabaseProvider {
 		bool $isStoreInCacheWhenNoResults = true,
 		array $setup = []
 	): DatabaseResult {
-		global $e;
-
 		if (!$cacheTtl)
 			$cacheTtl = $this->getConfig("cacheDefaultTtl");
 
 		$cacheKey = $this->buildQueryCacheKey($sql, $cacheKeyNamingOptions);
 		$cacheProviderName = ($overrideCacheProviderName ? $overrideCacheProviderName : $this->getConfig("cacheProviderName"));
 
-		if ($data = $e->Cache->$cacheProviderName->get($cacheKey)) { // If the data for this query is stored in the cache
+		if ($data = Engine::e()->Cache->$cacheProviderName->get($cacheKey)) { // If the data for this query is stored in the cache
 			$result = $this->createDatabaseResultObject();
 			$result->init(false, $setup);
 			$result->setData($data);
@@ -145,7 +144,7 @@ class DatabaseProvider {
 		else { // If the data for this query is not stored in the cache
 			if ($result = $this->query($sql)) { // Run the query without caching
 				if ((!$isStoreInCacheWhenNoResults && $result->isAny()) || $isStoreInCacheWhenNoResults)
-					$e->Cache->$cacheProviderName->set($cacheKey, $result->getData(), $cacheTtl);
+					Engine::e()->Cache->$cacheProviderName->set($cacheKey, $result->getData(), $cacheTtl);
 			}
 			return $result;
 		}
@@ -161,10 +160,9 @@ class DatabaseProvider {
 		array $cacheKeyNamingOptions,
 		bool $overrideCacheProviderName = false,
 	): bool {
-		global $e;
 		$cacheKey = $this->buildQueryCacheKey(false, $cacheKeyNamingOptions);
 		$cacheProviderName = ($overrideCacheProviderName ? $overrideCacheProviderName : $this->getConfig("cacheProviderName"));
-		return $e->Cache->$cacheProviderName->delete($cacheKey);
+		return Engine::e()->Cache->$cacheProviderName->delete($cacheKey);
 	}
 
 	/**
@@ -179,7 +177,6 @@ class DatabaseProvider {
 		string $sql,
 		array $cacheKeyNamingOptions = [],
 	): string {
-		global $e;
 		$cacheKeyNamingOptions["prefix"] = $this->getConfig("cacheKeyPrefix");
 		$cacheKeyNamingOptions["hash"] = $sql;
 		return Cache::buildCacheKey($cacheKeyNamingOptions);
@@ -253,7 +250,6 @@ class DatabaseProvider {
 		bool $isStoreInCacheWhenNoResults = true,
 		array $setup = [],
 	): DatabaseResult {
-		global $e;
 
 		if (!$cacheTtl)
 			$cacheTtl = $this->getConfig("cacheDefaultTtl");
@@ -261,7 +257,7 @@ class DatabaseProvider {
 		$cacheKey = $this->buildPreparedQueryCacheKey($prepareResult["sql"], $parameters, $cacheKeyNamingOptions);
 		$cacheProviderName = ($overrideCacheProviderName ? $overrideCacheProviderName : $this->getConfig("cacheProviderName"));
 
-		if ($data = $e->Cache->$cacheProviderName->get($cacheKey)) { // If the data for this query is stored in the cache
+		if ($data = Engine::e()->Cache->$cacheProviderName->get($cacheKey)) { // If the data for this query is stored in the cache
 			$result = $this->createDatabaseResultObject();
 			$result->init(false, $setup);
 			$result->setData($data);
@@ -270,7 +266,7 @@ class DatabaseProvider {
 		else { // If the data for this query is not stored in the cache
 			if ($result = $this->execute($prepareResult, $parameters, $setup)) { // Run the query without caching
 				if ((!$isStoreInCacheWhenNoResults && $result->isAny()) || $isStoreInCacheWhenNoResults)
-					$e->Cache->$cacheProviderName->set($cacheKey, $result->getData(), $cacheTtl);
+					Engine::e()->Cache->$cacheProviderName->set($cacheKey, $result->getData(), $cacheTtl);
 			}
 			return $result;
 		}

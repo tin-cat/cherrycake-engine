@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 use Cherrycake\Errors\Errors;
 
@@ -37,7 +38,6 @@ class Request {
 
 	) {
 		if ($this->isSecurityCsrf()) {
-			global $e;
 			$this->parameters[] = new \Cherrycake\Actions\RequestParameter(
 				name: "csrfToken",
 				type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
@@ -50,9 +50,8 @@ class Request {
 	 * @return bool True if this request matches the current one made, false if not.
 	 */
 	function isCurrentRequest():bool {
-		global $e;
 
-		if (!$e->Actions->currentRequestPathComponentStrings) { // If the current request doesn't has pathComponents
+		if (!Engine::e()->Actions->currentRequestPathComponentStrings) { // If the current request doesn't has pathComponents
 
 			if (!$this->pathComponents) // If this request doesn't have pathComponents, this is the current Request
 				return true;
@@ -65,23 +64,23 @@ class Request {
 				return false;
 			} else { // Else this request has pathComponents, further analysis must be done
 
-				if (sizeof($this->pathComponents) != sizeof($e->Actions->currentRequestPathComponentStrings)) // If the number of this Request's pathComponents is different than the number of the current request's pathComponents, this is not the current Request
+				if (sizeof($this->pathComponents) != sizeof(Engine::e()->Actions->currentRequestPathComponentStrings)) // If the number of this Request's pathComponents is different than the number of the current request's pathComponents, this is not the current Request
 					return false;
 
 				$isCurrentRequest = true;
 				// Loop in parallel through the current request path components and this request's path components
 				foreach ($this->pathComponents as $index => $pathComponent) {
-					if (!isset($e->Actions->currentRequestPathComponentStrings[$index])) {
+					if (!isset(Engine::e()->Actions->currentRequestPathComponentStrings[$index])) {
 						$isCurrentRequest = false;
 						break;
 					}
 
-					if (!$pathComponent->isMatchesString($e->Actions->currentRequestPathComponentStrings[$index])) {
+					if (!$pathComponent->isMatchesString(Engine::e()->Actions->currentRequestPathComponentStrings[$index])) {
 						$isCurrentRequest = false;
 						break;
 					}
 				}
-				reset($e->Actions->currentRequestPathComponentStrings);
+				reset(Engine::e()->Actions->currentRequestPathComponentStrings);
 				reset($this->pathComponents);
 				return $isCurrentRequest;
 			}
@@ -94,7 +93,6 @@ class Request {
 	 * @return bool True if all the parameters have been retrieved correctly and no security issues found, false otherwise
 	 */
 	function retrieveParameterValues(): bool {
-		global $e;
 
 		// Retrieve parameters coming from path components
 		$isErrors = false;
@@ -105,11 +103,11 @@ class Request {
 					||
 					$pathComponent->type == \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_NUMERIC
 				) {
-					$this->pathComponents[$index]->setValue($e->Actions->currentRequestPathComponentStrings[$index]);
+					$this->pathComponents[$index]->setValue(Engine::e()->Actions->currentRequestPathComponentStrings[$index]);
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						$e->Errors->trigger(
+						Engine::e()->Errors->trigger(
 							type: Errors::ERROR_SYSTEM,
 							description: implode(" / ", $result->description),
 							variables: [
@@ -132,7 +130,7 @@ class Request {
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
 						description: implode(" / ", $result->description),
 						variables: [
@@ -242,9 +240,8 @@ class Request {
 				$url .= $_SERVER["HTTP_HOST"];
 			else {
 				// If we have a forced locale, use its domain. Requires the Locale module to be available.
-				global $e;
-				$e->loadAppModule("Locale");
-				$url .= $e->Locale->getMainDomain($locale);
+				Engine::e()->loadAppModule("Locale");
+				$url .= Engine::e()->Locale->getMainDomain($locale);
 			}
 		}
 		else
@@ -271,8 +268,7 @@ class Request {
 			$url .= "/";
 
 		if ($this->isSecurityCsrf()) {
-			global $e;
-			$parameterValues['csrfToken'] = $e->Security->getCsrfToken();
+			$parameterValues['csrfToken'] = Engine::e()->Security->getCsrfToken();
 		}
 
 		$count = 0;
@@ -348,7 +344,6 @@ class Request {
 
 		$key = substr($key, 1);
 
-		global $e;
 		$cacheKeyNamingOptions["prefix"] = $prefix;
 		$cacheKeyNamingOptions["key"] = $key;
 		return Cache::buildCacheKey($cacheKeyNamingOptions);
@@ -359,8 +354,7 @@ class Request {
 	 * @return boolean True if no issues found during checking, false otherwise.
 	 */
 	function securityCheck(): bool {
-		global $e;
-		return $e->Security->checkRequest($this);
+		return Engine::e()->Security->checkRequest($this);
 	}
 
 	/**

@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Engine;
+use Cherrycake\Errors\Errors;
+
 /**
  * Cache Provider based on Redis. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored.
  */
@@ -46,8 +49,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 		);
 
 		if (!$this->client) {
-			global $e;
-			$e->Errors->Trigger(
+			Engine::e()->Errors->Trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Error connecting to Redis"
 			);
@@ -66,8 +68,7 @@ class CacheProviderRedis extends CacheProvider implements CacheProviderInterface
 	function disconnect() {
 		if (!$this->GetConfig("isPersistentConnection")) {
 			if (!$this->client->close()) {
-				global $e;
-				$e->Errors->Trigger(
+				Engine::e()->Errors->Trigger(
 					type: Errors::ERROR_SYSTEM,
 					description: "Error disconnecting from Redis"
 				);

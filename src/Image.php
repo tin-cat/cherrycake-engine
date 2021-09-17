@@ -2,6 +2,8 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Errors\Errors;
+
 /**
  * Class that represents an image stored on the server.
  * * It allows for images to be stored in multiple sizes.
@@ -265,8 +267,7 @@ class Image {
 	 */
 	function getWidth($sizeName = false, $isHd = false) {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image width from given file",
 				variables: array_merge(
@@ -294,8 +295,7 @@ class Image {
 	 */
 	function getHeight($sizeName = false, $isHd = false) {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image height from given file",
 				variables: array_merge(
@@ -362,8 +362,7 @@ class Image {
 		$isDebug = false;
 
 		if (!$this->sizes) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Can't create size files from image because no sizes were defined"
 			);
@@ -371,8 +370,7 @@ class Image {
 		}
 
 		if (!$result = getimagesize($sourceFileName)) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Can't get image information from given file",
 				variables: array_merge(
@@ -409,8 +407,7 @@ class Image {
 		}
 
 		if (!$sourceImage) {
-			global $e;
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Can't create a GD image resource from given file",
 				variables: array_merge(
@@ -429,8 +426,7 @@ class Image {
 			if($isDebug) echo "Size ".$sizeName." source size: ".$sourceWidth."x".$sourceHeight." ";
 
 			if ($isCreateDirectory && !$this->createFileDirectory($sizeName)) {
-				global $e;
-				$e->Errors->trigger(
+				Engine::e()->Errors->trigger(
 					type: Errors::ERROR_SYSTEM,
 					description: "Can't create file directory for image"
 				);
@@ -487,8 +483,7 @@ class Image {
 							imageinterlace($tempImage, true);
 
 						if (!imagejpeg($tempImage, $finalFileName, $sizeSetup["jpgCompression"])) {
-							global $e;
-							$e->Errors->trigger(
+							Engine::e()->Errors->trigger(
 								type: Errors::ERROR_SYSTEM,
 								description: "Can't create JPG image",
 								variables: array_merge(
@@ -507,8 +502,7 @@ class Image {
 
 					case "png":
 						if (!imagepng($tempImage, $finalFileName, $sizeSetup["pngCompression"])) {
-							global $e;
-							$e->Errors->trigger(
+							Engine::e()->Errors->trigger(
 								type: Errors::ERROR_SYSTEM,
 								description: "Can't create PNG image",
 								variables: array_merge(
@@ -526,8 +520,7 @@ class Image {
 
 					case "gif":
 						if (!imagegif($tempImage, $finalFileName)) {
-							global $e;
-							$e->Errors->trigger(
+							Engine::e()->Errors->trigger(
 								type: Errors::ERROR_SYSTEM,
 								description: "Can't create GIF image",
 								variables: array_merge(
@@ -547,8 +540,7 @@ class Image {
 			}
 			else { // When "copy" image resize method is requested
 				if (!copy($sourceFileName, $finalFileName)) {
-					global $e;
-					$e->Errors->trigger(
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
 						description: "Can't copy image",
 						variables: array_merge(

@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+
 /**
  * A class that represents a path component of a Request
  */
@@ -66,8 +68,7 @@ class RequestPathComponent {
 	 * @param mixed $value The value for this path component
 	 */
 	function setValue(mixed $value) {
-		global $e;
-		$this->value = $e->Security->filterValue($value, $this->filters);
+		$this->value = Engine::e()->Security->filterValue($value, $this->filters);
 	}
 
 	/**
@@ -75,8 +76,7 @@ class RequestPathComponent {
 	 * @return Result A Result object, like Security::checkValue
 	 */
 	function checkValueSecurity(): \Cherrycake\Result {
-		global $e;
-		return $e->Security->checkValue($this->getValue(), $this->securityRules);
+		return Engine::e()->Security->checkValue($this->getValue(), $this->securityRules);
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Patterns;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 
 /**
@@ -66,8 +67,7 @@ class Patterns extends \Cherrycake\Module {
 		int $cacheTtl = 0,
 		string $cachePrefix = ''
 	) {
-		global $e;
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+		Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
 			code: $code,
 			payload: $this->parse(
 				patternName: $patternName,
@@ -122,7 +122,6 @@ class Patterns extends \Cherrycake\Module {
 		int $cacheTtl = 0,
 		string $cachePrefix = ''
 	): string {
-		global $e;
 
 		$patternFile = $this->getPatternFileName($patternName, $directoryOverride);
 
@@ -142,7 +141,7 @@ class Patterns extends \Cherrycake\Module {
 					"prefix" => $setup["cachePrefix"] ?? false ?: $this->getConfig("cachedPatterns")[$patternName]["cachePrefix"] ?? false ?: $this->getConfig("defaultCachePrefix"),
 					"uniqueId" => $patternFile
 				]);
-				if ($buffer = $e->Cache->$cacheProviderName->get($cacheKey))
+				if ($buffer = Engine::e()->Cache->$cacheProviderName->get($cacheKey))
 					return $buffer;
 			}
 
@@ -178,7 +177,7 @@ class Patterns extends \Cherrycake\Module {
 			||
 			$isCache
 		)
-			$e->Cache->$cacheProviderName->set(
+			Engine::e()->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$buffer,
 				$cacheTtl ?: $this->getConfig("cachedPatterns")[$patternName]["cacheTtl"] ?: $this->getConfig("defaultCacheTtl")
@@ -211,11 +210,10 @@ class Patterns extends \Cherrycake\Module {
 	function clearCache($patternName, $directoryOverride = false) {
 		if ($cache = $this->getConfig("cache"))
 			if ($cachePattern = $cache["items"][$patternName]) {
-				global $e;
 
 				$patternFile = $this->getPatternFileName($patternName, $directoryOverride);
 				$cacheProviderName = ($cachePattern["cacheProviderName"] ? $cachePattern["cacheProviderName"] : $cache["defaultCacheProviderName"]);
-				$e->Cache->$cache["cacheProviderName"]->delete($patternFile);
+				Engine::e()->Cache->$cache["cacheProviderName"]->delete($patternFile);
 			}
 	}
 

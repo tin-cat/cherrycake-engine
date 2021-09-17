@@ -196,7 +196,6 @@ abstract class Items implements \Iterator {
 	 * @return boolean True if everything went ok, false otherwise.
 	 */
 	function fillFromParameters($p = false) {
-		global $e;
 
 		self::treatParameters($p, [
 			"keyField" => ["default" => "id"],
@@ -283,7 +282,7 @@ abstract class Items implements \Iterator {
 			}
 
 			if (!$p["isForceNoCache"] && $this->isCache) {
-				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
+				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
 					$sql,
 					$fields,
 					$this->cacheTtl,
@@ -296,7 +295,7 @@ abstract class Items implements \Iterator {
 					$this->addCachedKey(Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
 			}
 			else
-				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
+				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
 					$sql,
 					$fields ?? false
 				);
@@ -323,7 +322,7 @@ abstract class Items implements \Iterator {
 			$sql = substr($sql, 0, -4);
 
 			if (!$p["isForceNoCache"] && $this->isCache)
-				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
+				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
 					$sql,
 					$fields,
 					$this->cacheTtl,
@@ -332,7 +331,7 @@ abstract class Items implements \Iterator {
 					$p["isStoreInCacheWhenNoResults"]
 				);
 			else
-				$result = $e->Database->{$this->databaseProviderName}->prepareAndExecute(
+				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
 					$sql,
 					$fields
 				);
@@ -363,12 +362,11 @@ abstract class Items implements \Iterator {
 	 * @return boolean True if the cache could be cleared, false otherwise
 	 */
 	function clearCache($p = false) {
-		global $e;
 		if (!$this->clearCachedKeysPool())
 			return false;
 		// If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters
-		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : $e->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
-		return $e->Cache->{$cacheProviderName}->delete($e->Cache->buildCacheKey($this->buildCacheKeyNamingOptions($p)));
+		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : Engine::e()->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
+		return Engine::e()->Cache->{$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey($this->buildCacheKeyNamingOptions($p)));
 	}
 
 	/**
@@ -378,12 +376,11 @@ abstract class Items implements \Iterator {
 	 * @return boolean True if the operation went well, false otherwise.
 	 */
 	function addCachedKey($cachedKey) {
-		global $e;
 
 		// If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters
-		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : $e->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
+		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : Engine::e()->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
 
-		return $e->Cache->{$cacheProviderName}->poolAdd(
+		return Engine::e()->Cache->{$cacheProviderName}->poolAdd(
 			$this->cachedKeysPoolName,
 			$cachedKey
 		);
@@ -398,13 +395,12 @@ abstract class Items implements \Iterator {
 		if (!$this->cachedKeysPoolName)
 			return true;
 
-		global $e;
 
 		// If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters
-		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : $e->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
+		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : Engine::e()->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
 
-		while ($cachedKey = $e->Cache->{$cacheProviderName}->poolPop($this->cachedKeysPoolName)) {
-			if (!$e->Cache->{$cacheProviderName}->delete($cachedKey))
+		while ($cachedKey = Engine::e()->Cache->{$cacheProviderName}->poolPop($this->cachedKeysPoolName)) {
+			if (!Engine::e()->Cache->{$cacheProviderName}->delete($cachedKey))
 				$isErrors = true;
 		}
 		return !$isErrors;

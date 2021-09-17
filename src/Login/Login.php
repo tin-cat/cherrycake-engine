@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Login;
 
+use Cherrycake\Engine;
+
 /**
  * Provides a standardized method for implementing secure user identification workflows for web apps.
  */
@@ -47,9 +49,7 @@ class Login extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		global $e;
-
-		if ($this->getConfig("isLoadUserOnInit") && $e->Session->isSession() && $e->Session->getSessionData("userId"))
+		if ($this->getConfig("isLoadUserOnInit") && Engine::e()->Session->isSession() && Engine::e()->Session->getSessionData("userId"))
 			return $this->loadUser();
 
 		return true;
@@ -60,11 +60,10 @@ class Login extends \Cherrycake\Module {
 	 * @return bool Whether the user was successfully retrieved. False if there's no logged user, or if there's an error while retrieving it.
 	 */
 	function loadUser(): bool {
-		global $e;
-		if (!$e->Session->isSession())
+		if (!Engine::e()->Session->isSession())
 			return false;
 
-		if (!$userId = $e->Session->getSessionData("userId"))
+		if (!$userId = Engine::e()->Session->getSessionData("userId"))
 			return false;
 
 		eval("\$this->user = new ".$this->getConfig("userClassName")."();");
@@ -160,16 +159,14 @@ class Login extends \Cherrycake\Module {
 	 * @return bool Whether the session info to log the user could be set or not
 	 */
 	function loginUserId(int $userId): bool {
-		global $e;
-		return $e->Session->setSessionData("userId", $userId);
+		return Engine::e()->Session->setSessionData("userId", $userId);
 	}
 
 	/**
 	 * Logs out the current user
 	 */
 	function logoutUser() {
-		global $e;
-		if (!$e->Session->removeSessionData("userId"))
+		if (!Engine::e()->Session->removeSessionData("userId"))
 			return \Cherrycake\Login\Login::RESULT_FAILED;
 		return \Cherrycake\Login\Login::RESULT_OK;
 	}

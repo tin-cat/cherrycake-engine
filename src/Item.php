@@ -222,8 +222,7 @@ class Item {
 	): \Cherrycake\Database\DatabaseRow|bool {
 		switch($method ? $method : static::$loadFromIdMethod) {
 			case "queryDatabaseCache":
-				global $e;
-				if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecuteCache(
+				if (!$result = Engine::e()->Database->{static::$databaseProviderName}->prepareAndExecuteCache(
 					static::getLoadFromIdDatabaseQuery($fieldName),
 					[
 						[
@@ -244,8 +243,7 @@ class Item {
 				break;
 
 			case "queryDatabase":
-				global $e;
-				if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecute(
+				if (!$result = Engine::e()->Database->{static::$databaseProviderName}->prepareAndExecute(
 					static::getLoadFromIdDatabaseQuery($fieldName),
 					[
 						[
@@ -291,13 +289,12 @@ class Item {
 	 * @return boolean True on success, false on failure
 	 */
 	function clearCache(array $fieldNames = []): bool {
-		global $e;
 
 		$fieldNames[] = static::$idFieldName;
 
 		$isErrors = false;
 		foreach ($fieldNames as $fieldName) {
-			if (!$e->Cache->{static::$cacheProviderName}->delete($e->Cache->buildCacheKey([
+			if (!Engine::e()->Cache->{static::$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey([
 				"prefix" => static::$cacheSpecificPrefix,
 				"uniqueId" => $fieldName."=".$this->{$fieldName}
 			])))
@@ -314,7 +311,6 @@ class Item {
 	 * @return boolean True if insertion went ok, false otherwise
 	 */
 	function insert(array $data = []): bool {
-		global $e;
 
 		foreach (static::$fields as $fieldName => $fieldData) {
 			if ($fieldName == static::$idFieldName)
@@ -355,12 +351,12 @@ class Item {
 
 			if ($fieldData["isMultiLanguage"] ?? false) { // If this field is multilanguage
 				if (is_array($value)) { // If we have an array value (expected to be a <language code> => <value> hash array)
-					foreach ($e->Locale->getAvailableLanguages() as $language) {
-						$fieldsData[$fieldName."_".$e->Locale->getLanguageCode($language)] = $value[$language];
+					foreach (Engine::e()->Locale->getAvailableLanguages() as $language) {
+						$fieldsData[$fieldName."_".Engine::e()->Locale->getLanguageCode($language)] = $value[$language];
 					}
 				}
 				else { // If we have a value that's not an array, assign it to the currently detected language
-					$fieldsData[$fieldName."_".$e->Locale->getLanguageCode()] = $value;
+					$fieldsData[$fieldName."_".Engine::e()->Locale->getLanguageCode()] = $value;
 				}
 			}
 			else { // If the field is not multilanguage
@@ -374,7 +370,7 @@ class Item {
 		}
 		reset(static::$fields);
 
-		if (!$result = $e->Database->{static::$databaseProviderName}->insert(static::$tableName, $fieldsData))
+		if (!$result = Engine::e()->Database->{static::$databaseProviderName}->insert(static::$tableName, $fieldsData))
 			return false;
 
 		if (static::$idFieldName)
@@ -438,9 +434,8 @@ class Item {
 		string $fieldName,
 		string $code
 	): bool {
-		global $e;
 
-		if (!$result = $e->Database->{static::$databaseProviderName}->prepareAndExecute(
+		if (!$result = Engine::e()->Database->{static::$databaseProviderName}->prepareAndExecute(
 			"select ".static::$idFieldName." from ".static::$tableName." where ".$fieldName." = ?",
 			[
 				[
@@ -461,10 +456,9 @@ class Item {
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function update(array $data = []): bool {
-		global $e;
 
 		if (!static::$idFieldName) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't update item on the database because it hasn't an idFieldName set up.",
 				variables: [
@@ -482,13 +476,12 @@ class Item {
 
 		foreach ($data as $fieldName => $fieldData) {
 			if (static::$fields[$fieldName]["isMultiLanguage"] ?? false) {
-				global $e;
 				if (is_array($fieldData)) {
 
-					foreach ($e->Locale->getAvailableLanguages() as $language) {
+					foreach (Engine::e()->Locale->getAvailableLanguages() as $language) {
 
-						$this->{$fieldName."_".$e->Locale->getLanguageCode($language)} = $fieldData[$language];
-						$fields[$fieldName."_".$e->Locale->getLanguageCode($language)] = [
+						$this->{$fieldName."_".Engine::e()->Locale->getLanguageCode($language)} = $fieldData[$language];
+						$fields[$fieldName."_".Engine::e()->Locale->getLanguageCode($language)] = [
 							"type" => static::$fields[$fieldName]["type"],
 							"value" => $fieldData[$language]
 						];
@@ -499,7 +492,7 @@ class Item {
 				else {
 
 					$this->$fieldName = $fieldData;
-					$fields[$fieldName."_".$e->Locale->getLanguageCode()] = [
+					$fields[$fieldName."_".Engine::e()->Locale->getLanguageCode()] = [
 						"type" => static::$fields[$fieldName]["type"],
 						"value" => $fieldData
 					];
@@ -517,7 +510,7 @@ class Item {
 			}
 		}
 
-		return $e->Database->{static::$databaseProviderName}->updateByUniqueField(
+		return Engine::e()->Database->{static::$databaseProviderName}->updateByUniqueField(
 			static::$tableName,
 			static::$idFieldName,
 			$this->{static::$idFieldName},
@@ -530,10 +523,9 @@ class Item {
 	 * @return boolean True on success, false on failure
 	 */
 	function delete(): bool {
-		global $e;
 
 		if (!static::$idFieldName) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "Couldn't delete item from the database because it hasn't an idFieldName set up.",
 				variables: [
@@ -543,7 +535,7 @@ class Item {
 			return false;
 		}
 
-		if (!$e->Database->{static::$databaseProviderName}->deleteByUniqueField(
+		if (!Engine::e()->Database->{static::$databaseProviderName}->deleteByUniqueField(
 			static::$tableName,
 			static::$idFieldName,
 			$this->{static::$idFieldName}
@@ -573,8 +565,7 @@ class Item {
 		if (isset(static::$fields) && isset(static::$fields[$key])) {
 			// If it's a language dependant field
 			if (isset(static::$fields[$key]["isMultiLanguage"])) {
-				global $e;
-				$key .= "_".$e->Locale->getLanguageCode();
+				$key .= "_".Engine::e()->Locale->getLanguageCode();
 			}
 		}
 
@@ -599,8 +590,7 @@ class Item {
 	function getForLanguage(string $key, int|bool  $language = false): mixed {
 		if (!static::$fields || static::$fields[$key]["isMultiLanguage"])
 			return false;
-		global $e;
-		$key .= "_".$e->Locale->getLanguageCode($language);
+		$key .= "_".Engine::e()->Locale->getLanguageCode($language);
 		return $this->$key;
 	}
 
@@ -618,10 +608,9 @@ class Item {
 		))
 			return false;
 
-		global $e;
 		if (!$value = $this->$key)
 			return $value;
-		return $e->Locale->convertTimestamp($value, $timeZone);
+		return Engine::e()->Locale->convertTimestamp($value, $timeZone);
 	}
 
 	/**
@@ -643,7 +632,6 @@ class Item {
 	 * @return string The HTML representing
 	 */
 	function getHumanized(string $key, array $setup = []): string {
-		global $e;
 
 		self::treatParameters($setup, [
 			"isHtml" => ["default" => true],
@@ -689,7 +677,7 @@ class Item {
 		switch (static::$fields[$key]["type"]) {
 			case \Cherrycake\Database\Database::TYPE_INTEGER:
 			case \Cherrycake\Database\Database::TYPE_TINYINT:
-				$r = $e->Locale->formatNumber(
+				$r = Engine::e()->Locale->formatNumber(
 					$r,
 					[
 						"decimals" => static::$fields[$key]["decimals"],
@@ -700,7 +688,7 @@ class Item {
 				);
 				break;
 			case \Cherrycake\Database\Database::TYPE_FLOAT:
-				$r = $e->Locale->formatNumber(
+				$r = Engine::e()->Locale->formatNumber(
 					$r,
 					[
 						"decimals" => static::$fields[$key]["decimals"],
@@ -722,7 +710,7 @@ class Item {
 
 				switch (static::$fields[$key]["type"]) {
 					case \Cherrycake\Database\Database::TYPE_DATE:
-						$r = $e->Locale->formatTimestamp(
+						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
 								"isHours" => false,
@@ -732,7 +720,7 @@ class Item {
 						break;
 					case \Cherrycake\Database\Database::TYPE_DATETIME:
 					case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
-						$r = $e->Locale->formatTimestamp(
+						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
 								"isHours" => true,
@@ -741,7 +729,7 @@ class Item {
 						);
 						break;
 					case \Cherrycake\Database\Database::TYPE_TIME:
-						$r = $e->Locale->formatTimestamp(
+						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
 								"isDay" => false,
@@ -755,7 +743,7 @@ class Item {
 				break;
 
 			case \Cherrycake\Database\Database::TYPE_YEAR:
-				$r = $e->Locale->formatTimestamp(
+				$r = Engine::e()->Locale->formatTimestamp(
 					$r,
 					[
 						"format" => "Y"

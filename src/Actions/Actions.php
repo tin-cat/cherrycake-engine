@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 use Cherrycake\Errors\Errors;
 
@@ -66,8 +67,7 @@ class Actions extends \Cherrycake\Module {
 		if (!parent::init())
 			return false;
 
-		global $e;
-		$e->callMethodOnAllModules("mapActions");
+		Engine::e()->callMethodOnAllModules("mapActions");
 
 		return true;
 	}
@@ -75,7 +75,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * Maps an action for a module (either an App or a Core module). Should be called within the mapActions method of your module, like this:
 	 *
-	 * $e->Actions->mapAction(
+	 * Engine::e()->Actions->mapAction(
 	 * 	"TableAdminGetRows",
 	 * 	new \Cherrycake\ActionHtml([
 	 * 		"moduleType" => MODULE_TYPE_CORE,
@@ -148,10 +148,9 @@ class Actions extends \Cherrycake\Module {
 	 * @return bool Returns false if an error occurred when executing the action or if the requested action is not coded and ACTION_NOT_FOUND has not been mapped.
 	 */
 	function run(string $requestUri): bool {
-		global $e;
 
-		if ($e->isDevel() && !$this->actions) {
-			$e->Errors->trigger(
+		if (Engine::e()->isDevel() && !$this->actions) {
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "No mapped actions"
 			);
@@ -170,7 +169,7 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$e->Errors->trigger(
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_NOT_FOUND,
 				description: "No mapped action found for this request"
 			);
@@ -190,7 +189,7 @@ class Actions extends \Cherrycake\Module {
 				return false;
 		}
 
-		$e->Errors->trigger(
+		Engine::e()->Errors->trigger(
 			type: Errors::ERROR_NOT_FOUND,
 			description: "No matching actions were productive",
 			variables: [

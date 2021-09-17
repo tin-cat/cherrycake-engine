@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+
 /**
  * A class that represents an Ajax JSON response, intended to be handled by the Javascript part of the Ajax module
  */
@@ -48,7 +50,6 @@ class AjaxResponseJson {
 	 * @return Response The response
 	 */
 	function getResponse() {
-		global $e;
 
 		$r["code"] = $this->code;
 
@@ -71,7 +72,6 @@ class AjaxResponseJson {
 	 * Outputs the ajax response
 	 */
 	function output() {
-		global $e;
-		$e->Output->setResponse($this->getResponse());
+		Engine::e()->Output->setResponse($this->getResponse());
 	}
 }

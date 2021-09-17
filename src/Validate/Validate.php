@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Validate;
 
+use Cherrycake\Engine;
+
 /**
  * Module to validate different types of data.
  *
@@ -140,7 +142,6 @@ class Validate extends \Cherrycake\Module {
 	 * @return Result A Result object
 	 */
 	function emailValidateWithMailgun($email) {
-		global $e;
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->getConfig("emailValidationMailgunConfig")["endpoint"]."?address=".$email);
@@ -150,7 +151,7 @@ class Validate extends \Cherrycake\Module {
 		curl_setopt($ch, CURLOPT_POST, false);
 		curl_setopt($ch, CURLOPT_USERPWD, "api:".$this->getConfig("emailValidationMailgunConfig")["publicKey"]);
 		if (!$result = curl_exec($ch)) {
-			$e->SystemLog->event(new SystemLogEventError([
+			Engine::e()->SystemLog->event(new SystemLogEventError([
 				"description" => "Error when trying to curl Mailgun API to validate an email",
 				"data" => [
 					"Email" => $email,
@@ -181,7 +182,6 @@ class Validate extends \Cherrycake\Module {
 	 * @return array An result array where the first element is a boolean indicating whether the operation has gone ok or not, and the second element is a hash array of additional information.
 	 */
 	function emailValidateWithMailboxLayer($email) {
-		global $e;
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL,
@@ -196,7 +196,7 @@ class Validate extends \Cherrycake\Module {
 		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 		curl_setopt($ch, CURLOPT_POST, false);
 		if (!$result = curl_exec($ch)) {
-			$e->SystemLog->event(new SystemLogEventError([
+			Engine::e()->SystemLog->event(new SystemLogEventError([
 				"description" => "Error when trying to curl Mailboxlayer API to validate an email",
 				"data" => [
 					"Email" => $email,

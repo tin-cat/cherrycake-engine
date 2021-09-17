@@ -14,10 +14,9 @@ class EngineCache {
 	 * @return string The cache key
 	 */
 	function buildKey($id) {
-		global $e;
 		return
 			"Cherrycake_".
-			$e->getAppName()."_".
+			Engine::e()->getAppName()."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}
 
@@ -27,10 +26,9 @@ class EngineCache {
 	 * @return string The cache key
 	 */
 	function buildKeyForBucket($bucket, $id) {
-		global $e;
 		return
 			"Cherrycake_".
-			$e->getAppName()."_".
+			Engine::e()->getAppName()."_".
 			$bucket."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}

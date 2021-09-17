@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Locale;
 
+use Cherrycake\Engine;
 use Cherrycake\Cache\Cache;
 
 /**
@@ -420,37 +421,35 @@ class Locale extends \Cherrycake\Module {
 	 * @return string The timezone name in the TZ standard
 	 */
 	function getTimeZoneName($timezone = false) {
-		global $e;
-
 		if (!$timezone)
 			$timezone = $this->getTimeZone();
 
-		$cacheKey = $e->Cache->buildCacheKey([
+		$cacheKey = Engine::e()->Cache->buildCacheKey([
 			"prefix" => $this->getConfig("timeZonesCacheKeyPrefix"),
 			"uniqueId" => $timezone
 		]);
 		$cacheProviderName = $this->getConfig("timeZonesCacheProviderName");
 
-		if (!$timeZoneName = $e->Cache->$cacheProviderName->get($cacheKey)) { // Get the timezone name from the cache
+		if (!$timeZoneName = Engine::e()->Cache->$cacheProviderName->get($cacheKey)) { // Get the timezone name from the cache
 			// If not in the cache, retrieve it from the DB
 			$databaseProviderName = $this->getConfig("textsDatabaseProviderName");
 
-			$result = $e->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".$e->Database->$databaseProviderName->safeString($timezone));
+			$result = Engine::e()->Database->$databaseProviderName->query("select timezone as timeZoneName from ".$this->getConfig("timeZonesTableName")." where id = ".Engine::e()->Database->$databaseProviderName->safeString($timezone));
 			if (!$result->isAny()) {
-				$e->Errors->trigger(
+				Engine::e()->Errors->trigger(
 					type: Errors::ERROR_SYSTEM,
 					description: "Requested timezone not found",
 					variables: ["timezone" => $timezone],
 					isSilent: true
 				);
-				return $e->getTimezoneName();
+				return Engine::e()->getTimezoneName();
 			}
 
 			$row = $result->getRow();
 			$timeZoneName = $row->getField("timeZoneName");
 
 			// Store in cache
-			$e->Cache->$cacheProviderName->set($cacheKey, $timeZoneName, $this->getConfig("timeZonesCacheDefaultTtl"));
+			Engine::e()->Cache->$cacheProviderName->set($cacheKey, $timeZoneName, $this->getConfig("timeZonesCacheDefaultTtl"));
 		}
 
 		return $timeZoneName;
@@ -469,8 +468,7 @@ class Locale extends \Cherrycake\Module {
 			return false;
 
 		if (!$fromTimeZone) {
-			global $e;
-			$fromTimeZone = $e->getTimezoneId();
+			$fromTimeZone = Engine::e()->getTimezoneId();
 		}
 
 		if (!$toTimeZone)
@@ -527,8 +525,7 @@ class Locale extends \Cherrycake\Module {
 	function formatTimestamp($timestamp, $setup = false) {
 		// If no fromTimeZone specified for the given timestamp, the engine TIMEZONE is assumed
 		if (!isset($setup["fromTimeZone"])) {
-			global $e;
-			$setup["fromTimeZone"] = $e->getTimezoneId();
+			$setup["fromTimeZone"] = Engine::e()->getTimezoneId();
 		}
 
 		if (!isset($setup["style"]))
@@ -602,10 +599,10 @@ class Locale extends \Cherrycake\Module {
 						case \Cherrycake\Locale\Locale::DATE_FORMAT_LITTLE_ENDIAN:
 							$r =
 								date("j", $timestamp).
-								($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
-								$e->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
+								($setup["isBrief"] ? " " : " ".Engine::e()->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
+								Engine::e()->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
-									($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
+									($setup["isBrief"] ? " " : " ".Engine::e()->Language->getFromArray($this->texts["prepositionOf"], $setup["language"])." ").
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
 								: null);
 							break;
@@ -615,14 +612,14 @@ class Locale extends \Cherrycake\Module {
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp).
 									" "
 								: null).
-								$e->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
+								Engine::e()->Language->getFromArray($this->texts[($setup["isBrief"] ? "monthsShort" : "monthsLong")], $setup["language"])[date("n", $timestamp) - 1].
 								" ".
 								date("j", $timestamp);
 
 							break;
 						case \Cherrycake\Locale\Locale::DATE_FORMAT_MIDDLE_ENDIAN:
 							$r =
-								$e->Language->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
+								Engine::e()->Language->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? false)[date("n", $timestamp) - 1].
 								" ".
 								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"] ?? false, "ordinalGender" => ORDINAL_GENDER_MALE]).
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
@@ -635,7 +632,7 @@ class Locale extends \Cherrycake\Module {
 
 				if ($setup["isHours"]) {
 					$r .=
-						($setup["isBrief"] ? " " : " ".$e->Language->getFromArray($this->texts["prepositionAt"], $setup["language"])." ");
+						($setup["isBrief"] ? " " : " ".Engine::e()->Language->getFromArray($this->texts["prepositionAt"], $setup["language"])." ");
 
 					if ($setup["hoursFormat"] == \Cherrycake\Locale\Locale::HOURS_FORMAT_12H)
 						$r .= date(" h:i".($setup["isSeconds"] ? ".s" : "")." a", $timestamp);
@@ -652,25 +649,25 @@ class Locale extends \Cherrycake\Module {
 
 					// Check is yesterday
 					if (mktime(0, 0, 0, date("n", $timestamp), date("j", $timestamp), date("Y", $timestamp)) == mktime(0, 0, 0, date("n"), date("j")-1, date("Y"))) {
-						$r = $e->Language->getFromArray($this->texts["yesterday"], $setup["language"]);
+						$r = Engine::e()->Language->getFromArray($this->texts["yesterday"], $setup["language"]);
 						break;
 					}
 
 					$minutesAgo = floor((time() - $timestamp) / 60);
 
 					if ($minutesAgo < 5) {
-						$r = $e->Language->getFromArray($this->texts["justNow"], $setup["language"]);
+						$r = Engine::e()->Language->getFromArray($this->texts["justNow"], $setup["language"]);
 						break;
 					}
 
 					if ($minutesAgo < 60) {
 						$r =
-							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							Engine::e()->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$minutesAgo.
 							" ".
-							($minutesAgo == 1 ? $e->Language->getFromArray($this->texts["minute"], $setup["language"]) : $e->Language->getFromArray($this->texts["minutes"], $setup["language"])).
+							($minutesAgo == 1 ? Engine::e()->Language->getFromArray($this->texts["minute"], $setup["language"]) : Engine::e()->Language->getFromArray($this->texts["minutes"], $setup["language"])).
 							" ".
-							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							Engine::e()->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
@@ -678,12 +675,12 @@ class Locale extends \Cherrycake\Module {
 
 					if ($hoursAgo < 24) {
 						$r =
-							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"] ?? false).
+							Engine::e()->Language->getFromArray($this->texts["agoPrefix"], $setup["language"] ?? false).
 							$hoursAgo.
 							" ".
-							($hoursAgo == 1 ? $e->Language->getFromArray($this->texts["hour"], $setup["language"] ?? false) : $e->Language->getFromArray($this->texts["hours"], $setup["language"] ?? false)).
+							($hoursAgo == 1 ? Engine::e()->Language->getFromArray($this->texts["hour"], $setup["language"] ?? false) : Engine::e()->Language->getFromArray($this->texts["hours"], $setup["language"] ?? false)).
 							" ".
-							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"] ?? false);
+							Engine::e()->Language->getFromArray($this->texts["agoSuffix"], $setup["language"] ?? false);
 						break;
 					}
 
@@ -691,12 +688,12 @@ class Locale extends \Cherrycake\Module {
 
 					if ($daysAgo < 30) {
 						$r =
-							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							Engine::e()->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$daysAgo.
 							" ".
-							($daysAgo == 1 ? $e->Language->getFromArray($this->texts["day"], $setup["language"]) : $e->Language->getFromArray($this->texts["days"], $setup["language"])).
+							($daysAgo == 1 ? Engine::e()->Language->getFromArray($this->texts["day"], $setup["language"]) : Engine::e()->Language->getFromArray($this->texts["days"], $setup["language"])).
 							" ".
-							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							Engine::e()->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
@@ -704,19 +701,19 @@ class Locale extends \Cherrycake\Module {
 
 					if ($monthsAgo < 4) {
 						$r =
-							$e->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
+							Engine::e()->Language->getFromArray($this->texts["agoPrefix"], $setup["language"]).
 							$monthsAgo.
 							" ".
-							($monthsAgo == 1 ? $e->Language->getFromArray($this->texts["month"], $setup["language"]) : $e->Language->getFromArray($this->texts["months"], $setup["language"])).
+							($monthsAgo == 1 ? Engine::e()->Language->getFromArray($this->texts["month"], $setup["language"]) : Engine::e()->Language->getFromArray($this->texts["months"], $setup["language"])).
 							" ".
-							$e->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
+							Engine::e()->Language->getFromArray($this->texts["agoSuffix"], $setup["language"]);
 						break;
 					}
 
 				}
 
 				// Other cases: Future timestamps, and timestamps not handled by the humanizer above
-				$monthNames = $e->Language->getFromArray($this->texts["monthsLong"], $setup["language"] ?? false);
+				$monthNames = Engine::e()->Language->getFromArray($this->texts["monthsLong"], $setup["language"] ?? false);
 				$r =
 					$monthNames[date("n", $timestamp)-1].
 					" ".

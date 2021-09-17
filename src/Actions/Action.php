@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
 use Cherrycake\Errors\Errors;
 
 /**
@@ -36,19 +37,17 @@ class Action {
 		private int $timeout = 0,
 		private bool $isCli = false
 	) {
-		global $e;
-
 		if (!$this->request)
 			$this->request = new Request;
 
 		if (!$this->cacheProviderName)
-			$this->cacheProviderName = $e->Actions->getConfig("defaultCacheProviderName");
+			$this->cacheProviderName = Engine::e()->Actions->getConfig("defaultCacheProviderName");
 
 		if (!$this->cacheTtl)
-			$this->cacheTtl = $e->Actions->getConfig("defaultCacheTtl");
+			$this->cacheTtl = Engine::e()->Actions->getConfig("defaultCacheTtl");
 
 		if (!$this->cachePrefix)
-			$this->cachePrefix = $e->Actions->getConfig("defaultCachePrefix");
+			$this->cachePrefix = Engine::e()->Actions->getConfig("defaultCachePrefix");
 	}
 
 	/**
@@ -65,10 +64,9 @@ class Action {
 	 * @return boolean True if the action was productive, false otherwise.
 	 */
 	function run() {
-		global $e;
 
-		if ($this->isCli && !$e->isCli()) {
-			$e->Errors->trigger(
+		if ($this->isCli && !Engine::e()->isCli()) {
+			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "This action only runs on the CLI interface"
 			);
@@ -79,8 +77,8 @@ class Action {
 			$cacheKey = $this->request->getCacheKey($this->cachePrefix);
 
 			// Retrieve and return the cached action results, if there are any
-			if ($cached = $e->Cache->{$this->cacheProviderName}->get($cacheKey)) {
-				$e->Output->setResponse(unserialize(substr($cached, 1)));
+			if ($cached = Engine::e()->Cache->{$this->cacheProviderName}->get($cacheKey)) {
+				Engine::e()->Output->setResponse(unserialize(substr($cached, 1)));
 				return $cached[0] == 0 ? false : null;
 			}
 		}
@@ -89,10 +87,10 @@ class Action {
 			set_time_limit($this->timeout);
 
 		if ($this->moduleType == \Cherrycake\Actions\Actions::MODULE_TYPE_CORE)
-			$e->loadCoreModule($this->moduleName);
+			Engine::e()->loadCoreModule($this->moduleName);
 		else
 		if ($this->moduleType == \Cherrycake\Actions\Actions::MODULE_TYPE_APP)
-			$e->loadAppModule($this->moduleName);
+			Engine::e()->loadAppModule($this->moduleName);
 
 		if (!$this->request->securityCheck())
 			return false;
@@ -100,30 +98,30 @@ class Action {
 		switch ($this->moduleType) {
 			case \Cherrycake\Actions\Actions::MODULE_TYPE_CORE:
 			case \Cherrycake\Actions\Actions::MODULE_TYPE_APP:
-				if (!method_exists($e->{$this->moduleName}, $this->methodName)) {
-					$e->Errors->trigger(
+				if (!method_exists(Engine::e()->{$this->moduleName}, $this->methodName)) {
+					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
 						description: "Mapped method ".$this->moduleName."::".$this->methodName." not found"
 					);
 					return true;
 				}
-				eval("\$return = \$e->".$this->moduleName."->".$this->methodName."(\$this->request);");
+				eval("\$return = \Cherrycake\Engine::e()->".$this->moduleName."->".$this->methodName."(\$this->request);");
 				break;
 		}
 
 		if ($this->isCache) {
 			// Store the current result into cache
-			$e->Cache->{$this->cacheProviderName}->set(
+			Engine::e()->Cache->{$this->cacheProviderName}->set(
 				$cacheKey,
-				($return === false ? "0" : "1").serialize($e->Output->getResponse()),
+				($return === false ? "0" : "1").serialize(Engine::e()->Output->getResponse()),
 				$this->cacheTtl
 			);
 		}
 
 		if ($this->isSensibleToBruteForceAttacks && $return == false)
 			sleep(rand(
-				$e->Actions->getConfig("sleepSecondsWhenActionSensibleToBruteForceAttacksFails")[0],
-				$e->Actions->getConfig("sleepSecondsWhenActionSensibleToBruteForceAttacksFails")[1]
+				Engine::e()->Actions->getConfig("sleepSecondsWhenActionSensibleToBruteForceAttacksFails")[0],
+				Engine::e()->Actions->getConfig("sleepSecondsWhenActionSensibleToBruteForceAttacksFails")[1]
 			));
 
 		return $return;

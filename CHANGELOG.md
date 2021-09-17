@@ -10,6 +10,7 @@ Changelog documentation for the Cherrycake engine. This project adheres to [Sema
 - Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.
 - Javascript and Css modules no longer merge different sets into one.
 - Constants are now stored inside each relevant class and module, the `.constants.php` file functionality is removed as a result. Constans now should be referenced using their correct namespace.
+- No longer need to acquire the engine using `global $e`, The Engine object is now a singleton that can be acquired anywhere using `Engine::e()`
 ### Bugs
 - Solved many minor bugs
 

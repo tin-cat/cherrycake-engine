@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Database;
 
+use Cherrycake\Engine;
+
 /**
  * Class that represents a row retrieved from a query to a database
  */
@@ -72,8 +74,7 @@ class DatabaseRow {
 	): mixed {
 		if ($fields && $fields[$key]["type"]) {
 			if ($fields[$key]["isMultiLanguage"]) {
-				global $e;
-				return $this->treatFieldData($this->data["key"].$e->Locale->getLanguage(), $fields[$key]["type"]);
+				return $this->treatFieldData($this->data["key"].Engine::e()->Locale->getLanguage(), $fields[$key]["type"]);
 			}
 			else
 				return $this->treatFieldData($this->data["key"], $fields[$key]["type"]);

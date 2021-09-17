@@ -1,5 +1,7 @@
 <?php
 
+use Cherrycake\Engine;
+
 /**
  * A JanitorTask to purge the SystemLog module database
  * Purges the old log items on the database to avoid unnecessary database cluttering.
@@ -46,12 +48,11 @@ class JanitorTaskSystemLogPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
-		global $e;
 
 		// Loads the needed modules
-		$e->loadCoreModule("SystemLog");
+		Engine::e()->loadCoreModule("SystemLog");
 
-		list($result, $resultDescription) = $e->SystemLog->purge();
+		list($result, $resultDescription) = Engine::e()->SystemLog->purge();
 		return [
 			$result ? \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 			$resultDescription
