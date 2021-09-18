@@ -114,7 +114,7 @@ class Item {
 	 * @param string $idFieldName The name of the field to match with the id to override static::$idFieldName
 	 * @param array $data
 	 * @param string $loadFromIdMethod
-	 * @param \Cherrycake\Database\DatabaseRow|null $databaseRow
+	 * @param \Cherrycake\Database\DatabaseRow $databaseRow
 	 * @throws Exception If the object could not be constructed
 	 */
 	function __construct(
@@ -123,7 +123,7 @@ class Item {
 		string $loadFromIdMethod = '',
 		string $idFieldName = '',
 		array $data = [],
-		\Cherrycake\Database\DatabaseRow|null $databaseRow = null
+		?\Cherrycake\Database\DatabaseRow $databaseRow = null
 	) {
 		if ($id !== 0 && !$loadMethod)
 			$loadMethod = 'fromId';

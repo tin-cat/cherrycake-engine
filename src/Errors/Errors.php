@@ -101,7 +101,7 @@ class Errors extends \Cherrycake\Module {
 	 * @param string $subType Code to easily group this type or errors later
 	 * @param string $description Description of the error
 	 * @param array $variables Additional variables relevant to the error.
-	 * @param bool|null $isForceLog Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
+	 * @param bool $isForceLog Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
 	 * @param bool $isSilent If set to true, nothing will be outputted. Used for only logging and/or sending email notification of the error
 	 */
 	function trigger(
@@ -109,7 +109,7 @@ class Errors extends \Cherrycake\Module {
 		string $subType = '',
 		string $description = '',
 		array $variables = [],
-		bool|null $isForceLog = null,
+		?bool $isForceLog = null,
 		bool $isSilent = false
 	) {
 

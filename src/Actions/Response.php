@@ -17,7 +17,7 @@ class Response {
 	private array $headers = [];
 
 	function __construct(
-		private int|null $code = \Cherrycake\Output\Output::RESPONSE_OK,
+		private ?int $code = \Cherrycake\Output\Output::RESPONSE_OK,
 		private string $url = '',
 		private string|array $payload = '',
 	) {}

@@ -74,7 +74,7 @@ class Engine {
 		string $appClassesDir = 'src',
 		string $timezoneName = 'Etc/UTC',
 		int $timezoneId = 532,
-		bool|null $isCli = null,
+		?bool $isCli = null,
 		array $underMaintenanceExceptionIps = [],
 		array $additionalAppConfigFiles = []
 	): bool {

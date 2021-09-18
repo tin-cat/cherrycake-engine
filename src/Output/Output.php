@@ -18,7 +18,7 @@ class Output extends \Cherrycake\Module {
 	/**
 	 * @var \Cherrycake\Actions\Response $response The Response that will be sent to the client
 	 */
-	private \Cherrycake\Actions\Response|null  $response = null;
+	private ?\Cherrycake\Actions\Response  $response = null;
 
 	/**
 	 * Sets the Response object that will be sent to the client
@@ -37,10 +37,10 @@ class Output extends \Cherrycake\Module {
 
 	/**
 	 * Sends the current response. If a response is passed, sets it as the current response and then sends it.
-	 * @param \Cherrycake\Actions\Response|null Optionally, the Response to send. If not specified, the current Response will be sent.
+	 * @param \Cherrycake\Actions\Response Optionally, the Response to send. If not specified, the current Response will be sent.
 	 */
 	function sendResponse(
-		\Cherrycake\Actions\Response|null $response = null
+		\Cherrycake\Actions\Response $response = null
 	) {
 		if (!is_null($response))
 			$this->setResponse($response);

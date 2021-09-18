@@ -50,19 +50,19 @@ class Patterns extends \Cherrycake\Module {
 	 * @param bool noParse: When set to true, the pattern is returned without any parsing
 	 * @param string|array fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
 	 * @param array variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" => $variable
-	 * @param bool|null isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
+	 * @param bool isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
 	 * @param string cacheProviderName: A cache provider name that will override the one set in the cachedPatterns or defaultCacheProviderName config key (if any)
 	 * @param int cacheTtl: A cache TTL that will override the one set in the cachedPatterns or defaultCacheTtl config key (if any)
 	 * @param string cachePrefix: A cache prefix that will override the one set in the cachedPatterns or defaultCachePrefix config key (if any)
 	 */
 	function out(
 		string $patternName,
-		int|null $code = null,
+		?int $code = null,
 		string $directoryOverride = '',
 		bool $noParse = false,
 		string|array $fileToIncludeBeforeParsing = '',
 		array $variables = [],
-		bool|null $isCache = null,
+		?bool $isCache = null,
 		string $cacheProviderName = '',
 		int $cacheTtl = 0,
 		string $cachePrefix = ''
@@ -104,7 +104,7 @@ class Patterns extends \Cherrycake\Module {
 	 * @param bool noParse: When set to true, the pattern is returned without any parsing
 	 * @param string|array fileToIncludeBeforeParsing: A file (or an array of files) to include whenever parsing this set files, usually for defining variables that can be later used inside the pattern
 	 * @param array variables: A hash array of variables passed to be available in-pattern, in the syntax: "variable name" => $variable
-	 * @param bool|null isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
+	 * @param ?bool isCache: Whether this pattern should be cached or not, independently of the cachedPatterns Cache config key.
 	 * @param string cacheProviderName: A cache provider name that will override the one set in the cachedPatterns or defaultCacheProviderName config key (if any)
 	 * @param int cacheTtl: A cache TTL that will override the one set in the cachedPatterns or defaultCacheTtl config key (if any)
 	 * @param string cachePrefix: A cache prefix that will override the one set in the cachedPatterns or defaultCachePrefix config key (if any)
@@ -117,7 +117,7 @@ class Patterns extends \Cherrycake\Module {
 		bool $noParse = false,
 		string|array $fileToIncludeBeforeParsing = '',
 		array $variables = [],
-		bool|null $isCache = null,
+		?bool $isCache = null,
 		string $cacheProviderName = '',
 		int $cacheTtl = 0,
 		string $cachePrefix = ''
