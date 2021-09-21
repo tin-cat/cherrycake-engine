@@ -20,8 +20,10 @@ class Action {
 	 * @param string $cachePefix The cache prefix to use when caching this action, defaults to the defaultCachePrefix config key for the Actions module
 	 * @param int $cacheTtl The TTL to use when caching this action, defaults to the defaultCacheTtl config key for the Actions module
 	 * @param bool $isSensibleToBruteForceAttacks Whether this action is sensible to brute force attacks or not. For example, an action that checks a given password and returns false if the password is incorrect. In such case, this request will sleep for some time when the password is wrong in order to discourage crackers.
-	 * @param mixed $timeout When set, this action must have this specific timeout.
+	 * @param mixed $timeout When set, this action must have this specific timeout
 	 * @param boolean $isCli When set to true, this action will only be able to be executed via the command line CLI interface
+	 * @param boolean $isRequireLogin When set to true, if the user is not logged in, it will be required to login to access this action
+	 * @param boolean $isFailOnNotLogged When set to true, if the user is not logged in, an ERROR_NO_PERMISSION will be triggered
 	 */
 	function __construct(
 		private string $moduleName,
@@ -35,7 +37,9 @@ class Action {
 		private int $cacheTtl = 0,
 		private bool $isSensibleToBruteForceAttacks = false,
 		private int $timeout = 0,
-		private bool $isCli = false
+		private bool $isCli = false,
+		private bool $isRequireLogin = false,
+		private bool $isFailOnNotLogged = false,
 	) {
 		if (!$this->request)
 			$this->request = new Request;
@@ -58,17 +62,31 @@ class Action {
 	}
 
 	/**
-	 * run
-	 *
 	 * Executes this action by loading the corresponding module and calling the proper method. Manages the cache for this action if needed.
 	 * @return boolean True if the action was productive, false otherwise.
 	 */
 	function run() {
-
 		if ($this->isCli && !Engine::e()->isCli()) {
 			Engine::e()->Errors->trigger(
 				type: Errors::ERROR_SYSTEM,
 				description: "This action only runs on the CLI interface"
+			);
+			return true;
+		}
+
+		if ($this->isRequireLogin && !Engine::e()->Login->isLogged()) {
+			Engine::e()->Output->setResponse(new \Cherrycake\Actions\Response(
+				code: \Cherrycake\Output\Output::RESPONSE_REDIRECT_FOUND,
+				url: Engine::e()->Actions->getAction(
+					Engine::e()->Actions->getConfig('loginActionName')
+				)->request->buildUrl()
+			));
+			return true;
+		}
+
+		if ($this->isFailOnNotLogged && !Engine::e()->Login->isLogged()) {
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_NO_PERMISSION
 			);
 			return true;
 		}
