@@ -17,7 +17,7 @@ class Item {
 	/**
 	 * @var string The name of the database table where this items are stored.
 	 */
-	static protected $tableName;
+	static public $tableName;
 
 	/**
 	 * @var string The name of the field on the table that uniquely identifies this item on the database table with a numeric id. It should be an autoincrement field.
@@ -294,10 +294,10 @@ class Item {
 
 		$isErrors = false;
 		foreach ($fieldNames as $fieldName) {
-			if (!Engine::e()->Cache->{static::$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey([
-				"prefix" => static::$cacheSpecificPrefix,
-				"uniqueId" => $fieldName."=".$this->{$fieldName}
-			])))
+			if (!Engine::e()->Cache->{static::$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey(
+				prefix: static::$cacheSpecificPrefix,
+				uniqueId: $fieldName."=".$this->{$fieldName}
+			)))
 				$isErrors = true;
 		}
 

@@ -344,9 +344,10 @@ class Request {
 
 		$key = substr($key, 1);
 
-		$cacheKeyNamingOptions["prefix"] = $prefix;
-		$cacheKeyNamingOptions["key"] = $key;
-		return Cache::buildCacheKey($cacheKeyNamingOptions);
+		return Cache::buildCacheKey(
+			prefix: $prefix,
+			key: $key,
+		);
 	}
 
 	/**

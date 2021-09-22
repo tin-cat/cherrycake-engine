@@ -92,8 +92,8 @@ class Log extends \Cherrycake\Module {
 	 * @return string The cache key to use when retrieveing and storing cache items
 	 */
 	function getCacheKey() {
-		return Engine::e()->Cache->buildCacheKey([
-			"uniqueId" => $this->getConfig("cacheKeyUniqueId")
-		]);
+		return Engine::e()->Cache->buildCacheKey(
+			uniqueId: $this->getConfig("cacheKeyUniqueId")
+		);
 	}
 }

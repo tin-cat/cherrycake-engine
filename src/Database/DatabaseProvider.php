@@ -170,16 +170,16 @@ class DatabaseProvider {
 	 * The cache key is always prefixed with the configuration value "cacheKeyPrefix", if set. (For clarity purposes when browsing the cached elements)
 	 * It uses MD4 algorithm to create a unique string based on the query because is faster, and we do not require any security here.  MD4 algorithm generates a 32-char hexadecimal code, allowing for 16^32 different keys (approx. 3.4*10^38, 340 undecillion different values)
 	 * @param $sql The SQL sentence.
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingParameters If specified, takes the parameters as specified in \Cherrycake\Cache::buildCacheKey as a hash array
 	 * @return string The cache key
 	 */
 	protected function buildQueryCacheKey(
 		string $sql,
-		array $cacheKeyNamingOptions = [],
+		?array $cacheKeyNamingParameters = null,
 	): string {
-		$cacheKeyNamingOptions["prefix"] = $this->getConfig("cacheKeyPrefix");
-		$cacheKeyNamingOptions["hash"] = $sql;
-		return Cache::buildCacheKey($cacheKeyNamingOptions);
+		$cacheKeyNamingParameters["prefix"] = $this->getConfig("cacheKeyPrefix");
+		$cacheKeyNamingParameters["hash"] = $sql;
+		return Cache::buildCacheKey(...$cacheKeyNamingParameters);
 	}
 
 	/**
@@ -305,13 +305,13 @@ class DatabaseProvider {
 	 * Builds a cache key that uniquely identifies a prepared query with the given parameters, based on the configuration provided via $cacheKeyNamingConfig
 	 * @param string $sql The SQL sentence.
 	 * @param array $parameters Hash array of the variables to be applied to the prepared query, with the same syntax as in the execute method
-	 * @param array $cacheKeyNamingOptions If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingParameters If specified, takes the configuration keys as specified in \Cherrycake\Cache::buildCacheKey
 	 * @return string The cache key
 	 */
 	protected function buildPreparedQueryCacheKey(
 		string $sql,
 		array $parameters,
-		array $cacheKeyNamingOptions = [],
+		?array $cacheKeyNamingParameters = null,
 	): string {
 		$hashString = $sql;
 
@@ -319,8 +319,8 @@ class DatabaseProvider {
 			foreach ($parameters as $parameter)
 				$hashString .= $parameter["value"];
 
-		$cacheKeyNamingOptions["hash"] = $hashString;
-		return Cache::buildCacheKey($cacheKeyNamingOptions);
+		$cacheKeyNamingParameters["hash"] = $hashString;
+		return Cache::buildCacheKey(...$cacheKeyNamingParameters);
 	}
 
 	/**

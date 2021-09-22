@@ -48,9 +48,9 @@ class Translation extends \Cherrycake\Module {
 		if (!Engine::e()->isDevel()) {
 			$cacheProviderName = $this->GetConfig('cacheProviderName');
 			$cacheTtl = $this->GetConfig('cacheTtl');
-			$cacheKey = Engine::e()->Cache->buildCacheKey([
-				'uniqueId' => $this->GetConfig('cacheUniqueId')
-			]);
+			$cacheKey = Engine::e()->Cache->buildCacheKey(
+				uniqueId: $this->GetConfig('cacheUniqueId')
+			);
 
 			if (Engine::e()->Cache->$cacheProviderName->isKey($cacheKey)) {
 				$this->translations = Engine::e()->Cache->$cacheProviderName->get($cacheKey);

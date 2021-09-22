@@ -4,51 +4,56 @@ namespace Cherrycake;
 
 use Cherrycake\BasicObject;
 use Cherrycake\Cache\Cache;
+use Cherrycake\Database\DatabaseRow;
+use Cherrycake\Database\DatabaseResult;
 
 /**
  * Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method
  * @todo  Check the caching and the cache clearing performed by the fillFromParameters, clearCache and buildCacheKeyNamingOptions methods
  */
-abstract class Items extends BasicObject implements \Iterator {
-	/**
-	 * @var string The name of the table where this items reside on the database
-	 */
-	protected $tableName;
+abstract class Items implements \Iterator {
+
+	const FILL_METHOD_FROM_ARRAY = 0;
+	const FILL_METHOD_FROM_PARAMETERS = 1;
+	const FILL_METHOD_FROM_DATABASERESULT = 2;
+
+	const ITEM_LOAD_METHOD_FROM_DATABASEROW = 0;
+	const ITEM_LOAD_METHOD_FROM_ID = 1;
 
 	/**
-	 * @var string The name of the Item class to use
+	 * @var string The class name of the items that will be loaded in this object
 	 */
-	protected $itemClassName = "Item";
+	protected string $itemClassName;
 
 	/**
 	 * @var array An array containing the Item objects
 	 */
-	private $items;
+	private array $items = [];
 
 	/**
-	 * @var integer Stores the number of resulting items after executing the get method if it's been executed with the numberOf. This stores the entire number of items even when parameters like isPaging have been used when calling the get method.
+	 * @var int Stores the number of resulting items after executing the get method if it's been executed with the numberOf. This stores the entire number of items even when parameters like isPaging have been used when calling the get method.
 	 */
-	private $totalNumberOf;
+	private int $totalNumberOf = 0;
 
 	/**
 	 * @var string The database provider name to use on the fillFromParameters method
 	 */
-	protected $databaseProviderName = "main";
+	protected string $databaseProviderName = "main";
 
 	/**
 	 * @var boolean Whether to cache the result or not on the fillFromParameters method
 	 */
-	protected $isCache = false;
+	protected bool $isCache = false;
 
 	/**
-	 * @var integer The cache ttl to use on the fillFromParameters method
+	 * @var int The cache ttl to use on the fillFromParameters method
 	 */
-	protected $cacheTtl = Cache::TTL_NORMAL;
+	protected int $cacheTtl = Cache::TTL_NORMAL;
 
 	/**
 	 * @var string The name of the cache provider to use on the fillFromParameters method
 	 */
-	protected $cacheProviderName = "engine";
+	protected string $cacheProviderName = "engine";
 
 	/**
 	 * The CachedKeysPool mechanism allows for the wiping of multiple cached queries at once that are related to the same Items set.
@@ -58,100 +63,105 @@ abstract class Items extends BasicObject implements \Iterator {
 	 *
 	 * @var string The name of the cachedKeys pool to use. False if no pool of cache keys is to be used.
 	 */
-	protected $cachedKeysPoolName = false;
+	protected string $cachedKeysPoolName;
 
 	/**
 	 * Constructor, allows to create an instance object which automatically fills itself in one of the available forms
-	 *
-	 * @param array $setup Specifications on how to create the Items object, or an array of objects to fill the list with
+	 * @param array $parameters The parameters use to fill the items when using the fillFromParameters fillMethod
+	 * @param array $items The Items to use when using the fromArray fillMethod
+	 * @param int $fillMethod The fill method to use to fill this object with items, one of the self::FILL_METHOD_FROM_*
+	 * @param int $itemLoadMethod The load method to use to load items, one of the self::ITEM_LOAD_METHOD_FROM_*
+	 * @param DatabaseResult $databaseResult The result to use when using FILL_METHOD_FROM_DATABASERESULT
+	 * @param string $keyField The name of the field to use as key for the list
 	 */
-	function __construct($setup = false) {
-		if ($setup["itemClassName"] ?? false)
-			$this->itemClassName = $setup["itemClassName"];
+	function __construct(
+		?array $parameters = null,
+		?array $items = null,
+		?int $fillMethod = null,
+		?int $itemLoadMethod = null,
+		?DatabaseResult $databaseResult = null,
+		?string $keyField = null,
+	) {
 
-		// Try to guess different type of shortcut calls to the constructo
-		if (
-			!isset($setup["itemClassName"])
-			&&
-			!isset($setup["itemLoadMethod"])
-			&&
-			!isset($setup["p"])
-			&&
-			($setup["fillMethod"] ?? false) != "fromParameters"
-		) {
-			$setup["fillMethod"] = "fromArray";
-			$setup["items"] = $setup;
-		}
-		else
-		if (isset($setup["p"]))
-			$setup["fillMethod"] = "fromParameters";
-
-		switch($setup["fillMethod"]) {
-			case "fromParameters":
-				return $this->fillFromParameters($setup["p"] ?? false);
-				break;
-
-			case "fromDatabaseResult":
-				return $this->fillFromDatabaseResult([
-					"itemLoadMethod" => $setup["itemLoadMethod"],
-					"databaseResult" => $setup["databaseResult"],
-					"keyField" => $setup["keyField"]
-				]);
-				break;
-			case "fromArray":
-				return $this->fillFromArray($setup["items"]);
-				break;
+		// If fillMethod not specified, guess it by the passed parameters
+		if (is_null($fillMethod)) {
+			if ($items)
+				$fillMethod = self::FILL_METHOD_FROM_ARRAY;
+			else
+			if ($parameters)
+				$fillMethod = self::FILL_METHOD_FROM_PARAMETERS;
+			else
+			if ($databaseResult)
+				$fillMethod = self::FILL_METHOD_FROM_DATABASERESULT;
+			else
+				return;
 		}
 
-		return;
+		switch ($fillMethod) {
+			case self::FILL_METHOD_FROM_PARAMETERS:
+				return $this->fillFromParameters(...$parameters);
+				break;
+
+			case self::FILL_METHOD_FROM_DATABASERESULT:
+				return $this->fillFromDatabaseResult(
+					itemLoadMethod: $itemLoadMethod,
+					databaseResult: $databaseResult,
+					keyField: $keyField,
+				);
+				break;
+			case self::FILL_METHOD_FROM_ARRAY:
+				return $this->fillFromArray($items);
+				break;
+		}
 	}
 
 	/**
 	 * Determines the Item class name that has to be created. When using a DatabaseRow, the DatabaseRow is passed as an argument to help determine the class name if needed. This is intended to be overloaded when different Item classes must be used depending on the specific implementation. If not overloaded, it just uses $this->itemClassName
 	 * @return string The Item class name
 	 */
-	function getItemClassName($databaseRow = false) {
+	function getItemClassName(?DatabaseRow $databaseRow): string {
 		return $this->itemClassName;
 	}
 
 	/**
 	 * Fills the list with Items loaded from the given DatabaseResult object
-	 *
-	 * Setup keys:
-	 *
-	 * * databaseResult: The DatabaseResult object
-	 * * keyField: The name of the field to be used as the key for the list
-	 * * itemLoadMethod: The method to use to load Items, available methods
-	 *  - fromDatabaseRow: Uses the method Item::loadFromDatabaseRow to load the item, passing each corresponding DatabaseRow
-	 * 	- fromId: Uses the method Item::loadFromId to load the item, passing the value of the field specified by keyField setup variable
-	 * * items: An array of objects (should be of the given type itemClassName) to be loaded into the list
-	 *
-	 * @param array $setup Specifications on how to fill the List with Items with the given DatabaseResult
+	 * @param DatabaseResult $databaseResult The result to use when using ITEM_LOAD_METHOD_FROM_DATABASEROW
+	 * @param array $items The items to fill this object with
+	 * @param int $itemLoadMethod The method to use to load items, one of the ITEM_LOAD_METHOD_FROM_*
+	 * @param string $keyField the name of the field to use as key for the list
 	 * @return boolean True on success, even if there are no results to fill the list, false on error
 	 */
-	function fillFromDatabaseResult($setup) {
-		if (!$setup["databaseResult"]->isAny())
+	function fillFromDatabaseResult(
+		DatabaseResult $databaseResult,
+		?array $items = null,
+		int $itemLoadMethod = self::ITEM_LOAD_METHOD_FROM_DATABASEROW,
+		?string $keyField = null,
+	): bool {
+		if (!$databaseResult->isAny())
 			return true;
 
-		if ($setup["items"] ?? false)
-			$this->items = $setup["items"];
-		else {
-			switch ($setup["itemLoadMethod"]) {
-				case "fromDatabaseRow":
-					while ($databaseRow = $setup["databaseResult"]->getRow()) {
-						eval("\$item = new ".$this->getItemClassName($databaseRow)."(loadMethod: \"fromDatabaseRow\", databaseRow: \$databaseRow);");
-						$this->addItem($item, $databaseRow->getField($setup["keyField"]));
-					}
-					break;
-
-				case "fromId":
-					while ($databaseRow = $setup["databaseResult"]->getRow()) {
-						eval("\$item = new ".$this->getItemClassName($databaseRow)."(loadMethod: \"fromId\", id: \$databaseRow->getField(\$setup[\"keyField\"]));");
-						$this->addItem($item, $databaseRow->getField($setup["keyField"]));
-					}
-					break;
-			}
+		if ($items) {
+			$this->items = $items;
+			return true;
 		}
+
+		switch ($itemLoadMethod) {
+			case self::ITEM_LOAD_METHOD_FROM_DATABASEROW:
+				while ($databaseRow = $databaseResult->getRow()) {
+					eval("\$item = new ".$this->getItemClassName($databaseRow)."(loadMethod: \"fromDatabaseRow\", databaseRow: \$databaseRow);");
+					$this->addItem($item, $databaseRow->getField($keyField));
+				}
+				break;
+
+			case self::ITEM_LOAD_METHOD_FROM_ID:
+				while ($databaseRow = $databaseResult->getRow()) {
+					eval("\$item = new ".$this->getItemClassName($databaseRow)."(loadMethod: \"fromId\", id: \$databaseRow->getField(\$setup[\"keyField\"]));");
+					$this->addItem($item, $databaseRow->getField($keyField));
+				}
+				break;
+		}
+
+		return true;
 	}
 
 	/**
@@ -159,7 +169,7 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @param array $items An array of items to fill the list with
 	 * @return boolean True on success, false on error
 	 */
-	function fillFromArray($items) {
+	function fillFromArray(array $items): bool {
 		foreach ($items as $idx => $item)
 			$this->addItem($item, $idx);
 		return true;
@@ -167,133 +177,128 @@ abstract class Items extends BasicObject implements \Iterator {
 
 	/**
 	 * Fills the list with items loaded according to the given parameters. Intended to be overloaded and called from a parent class.
-	 * @param array $p A hash array of parameters, with the following possible keys, plush the additional keys specifically needed in each implementation of this class, as specified on the implementation's get overloaded method, if any.
-	 *
-	 * * keyField: <string> Default: id. The name of the field on the database table that uniquely identifies each item, most probably the primary key.
-	 * * selects: <array> Default: All fields from this Object's tableName. An array of select SQL parts to select from. Example: ["tableName.*", "tableName2.id"]
-	 * * tables: <array> Default This object's tableName. An array of tables to be used on the SQL query.
-	 * * wheres: <array|false> Default: false. An array of where SQL clauses, where each item is a hash array containing the following keys:
-	 * * * sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
-	 * * * values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
-	 * * * * type: The type of the value, must be one of the \Cherrycake\Database\Database::TYPE_*
-	 * * * * value: The value
-	 * * limit: <integer|false> Default: false. Maximum number of items returned
-	 * * order <array|false> Default: false: An ordered array of orders to apply to results, on which each item can be one of the configured in the "orders" parameter
-	 * * orders <array|false> The order "random" is implemented by default. A hash array of the available orders to be applied to results, where each key is the order name as used in the "order" parameter, and the value is the SQL order part.
-	 * * orderRandomSeed <string|false> Default: false: The seed to use to randomize results when the "random" order is used.
-	 * * isPaging: <true|false> Default: false. Whether to page results based on the given page and itemsPerPage parameters
-	 * * page: <integer> Default: 0. The number of page to return when paging is active.
-	 * * itemsPerPage: <integer> Default: 10. The number of items per page when paging is active.
-	 * * isBuildTotalNumberOfItems: <true|false> Default: false. Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account limit, if specified.
-	 * * isFillItems: <true|false> Default: true. Whether to return the matching items or not in the "items" results key.
-	 * * isForceNoCache: <true|false> Default: false. If set to true, the query won't use cache, even if the object is configured to do so.
-	 * * cacheKeyNamingOptions: <array|false> Default: false. If specified, this cacheKeyNamingOptions will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
-	 * * isStoreInCacheWhenNoResults: <boolean> Default: true. Whether to store results in cache even when there are no results.
-	 *
 	 * Stores the results on the following object variables, so they can be later used by other methods:
-	 * *	items: An array of objects containing the matched items, if isFillItems has been set to true.
-	 * *	totalNumberOf: The total number of matching items found, whether paging has been used or not (it takes into account the specified limit, if specified), if isBuildTotalNumberOfItems has been set to true.
+	 * - items: An array of objects containing the matched items, if isFillItems has been set to true.
+	 * - totalNumberOf: The total number of matching items found, whether paging has been used or not (it takes into account the specified limit, if specified), if isBuildTotalNumberOfItems has been set to true.
 	 *
-	 * @return boolean True if everything went ok, false otherwise.
+	 * @param string $keyField The name of the field on the database table that uniquely identifies each item, most probably the primary key.
+	 * @param array $selects An array of select SQL parts to select from. Example: ["tableName.*", "tableName2.id"]. All fields are selectede if not specified.
+	 * @param array $tables An array of tables to be used on the SQL query. If not specified the tableName of this object's $itemClassName is used
+	 * @param array $wheres An array of where SQL clauses, where each item is a hash array containing the following keys:
+	 * - sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
+	 * - values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
+	 * -- type: The type of the value, must be one of the \Cherrycake\Database\Database::TYPE_*
+	 * -- value: The value
+	 * @param int $limit Maximum number of items returned. All items are selected if not specified
+	 * @param array $order An ordered array of orders to apply to results, on which each item can be one of the configured in the $orders parameter
+	 * @param array $orders A hash array of the available orders to be applied to results, where each key is the order name as used in the "order" parameter, and the value is the SQL order part. The order 'random' is implemented by default.
+	 * @param string $orderRandomSeed The seed to use to randomize results when the 'random' order is used
+	 * @param bool $isPaging Whether to page results based on the given page and itemsPerPage parameters
+	 * @param int $page The number of page to return when paging is active
+	 * @param int $itemsPerPage The number of items per page when paging is active
+	 * @param bool $isBuildTotalNumberOfItems Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account limit, if specified.
+	 * @param bool $isFillItems Whether to return the matching items or not in the "items" results key.
+	 * @param bool $isForceNoCache If set to true, the query won't use cache, even if the object is configured to do so.
+	 * @param array $cacheKeyNamingParameters If specified, this array of parameterName => value will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
+	 * @param bool $isStoreInCacheWhenNoResults Whether to store results in cache even when there are no results
+	 * @return boolean True if everything went ok, false otherwise
 	 */
-	function fillFromParameters($p = false) {
+	function fillFromParameters(
+		string $keyField = 'id',
+		?array $selects = null,
+		?array $tables = null,
+		?array $wheres = null,
+		?int $limit = null,
+		?array $order = null,
+		?array $orders = null,
+		?string $orderRandomSeed = null,
+		bool $isPaging = false,
+		int $page = 0,
+		int $itemsPerPage = 10,
+		bool $isBuildTotalNumberOfItems = false,
+		bool $isFillItems = true,
+		bool $isForceNoCache = false,
+		?array $cacheKeyNamingParameters = null,
+		bool $isStoreInCacheWhenNoResults = true
+	) {
+		if (!$selects)
+			$selects = [$this->itemClassName::$tableName.'.*'];
 
-		self::treatParameters($p, [
-			"keyField" => ["default" => "id"],
-			"selects" => ["addArrayValuesIfNotExist" => [$this->tableName.".*"]],
-			"tables" => ["addArrayValuesIfNotExist" => [$this->tableName]],
-			"wheres" => ["default" => false],
-			"limit" => ["default" => false],
-			"order" => ["default" => false],
-			"orders" => ["addArrayKeysIfNotExist" => [
-				"random" => "rand(".($p["orderRandomSeed"] ?? false ? $p["orderRandomSeed"] : "").")"
-			]],
-			"orderRandomSeed" => ["default" => false],
-			"isPaging" => ["default" => false],
-			"page" => ["default" => 0],
-			"itemsPerPage" => ["default" => 10],
-			"isBuildTotalNumberOfItems" => ["default" => false],
-			"isFillItems" => ["default" => true],
-			"isForceNoCache" => ["default" => false],
-			"cacheKeyNamingOptions" => false,
-			"isStoreInCacheWhenNoResults" => ["default" => true]
-		]);
+		if (!$tables)
+			$tables = [$this->itemClassName::$tableName];
+
+		if (!isset($orders['random']))
+			$orders['random'] = 'rand('.($p['orderRandomSeed'] ?? '').')';
 
 		// Build the cacheKeyNamingOptions if needed
-		if (!($p["isForceNoCache"] ?? false) && $this->isCache && !($p["cacheKeyNamingOptions"] ?? false))
-			$p["cacheKeyNamingOptions"] = $this->buildCacheKeyNamingOptions($p);
+		if (!$isForceNoCache && $this->isCache && !$cacheKeyNamingParameters)
+			$cacheKeyNamingParameters = $this->buildCacheKeyNamingOptions(func_get_args());
 
-		// Build $wheres and $fields based on the passed wheres
-		if (is_array($p["wheres"]))
-			foreach ($p["wheres"] as $where) {
-				$wheres[] = $where["sqlPart"];
-				if (isset($where["values"]))
-					foreach ($where["values"] as $value)
+		// Build $whereSqlParts and $fields based on the passed wheres
+		if ($wheres) {
+			foreach ($wheres as $where) {
+				$whereSqlParts[] = $where['sqlPart'];
+				if (isset($where['values']))
+					foreach ($where['values'] as $value)
 						$fields[] = $value;
 			}
+		}
 
 		// Fill this object with the query resulting item objects
-		if ($p["isFillItems"]) {
-			$sql = "select";
-			foreach (array_unique($p["selects"]) as $select)
-				$sql .= " ".$select.", ";
-			$sql = substr($sql, 0, -2);
-			$sql .= " from";
-			foreach (array_unique($p["tables"]) as $table)
-				$sql .= " ".$table.",";
-			$sql = substr($sql, 0, -1);
+		if ($isFillItems) {
+			$sql =
+				'select '.
+				implode(', ', array_unique($selects)).
+				' from '.
+				implode(', ', array_unique($tables)).
+				(isset($whereSqlParts) ?
+					' where '.
+					implode(' and ', $whereSqlParts)
+				: null);
 
-			if (isset($wheres) && is_array($wheres)) {
-				$sql .= " where ";
-				foreach ($wheres as $where)
-					$sql .= $where." and ";
-				reset ($wheres);
-				$sql = substr($sql, 0, -4);
-			}
-
-			if (is_array($p["order"])) {
+			if (is_array($order)) {
 				$orderSql = false;
-				foreach ($p["order"] as $orderItem) {
-					if (array_key_exists($orderItem, $p["orders"] ?? [])) {
-						$orderSql .= $p["orders"][$orderItem].", ";
+				foreach ($order as $orderItem) {
+					if (array_key_exists($orderItem, $orders ?? [])) {
+						$orderSql .= $orders[$orderItem].', ';
 					}
 				}
-				if ($orderSql ?? false)
-					$sql .= " order by ".substr($orderSql, 0, -2);
+				if ($orderSql)
+					$sql .= ' order by '.substr($orderSql, 0, -2);
 			}
 
-			if ($p["limit"]) {
-				$sql .= " limit ? ";
+			if ($limit) {
+				$sql .= ' limit ? ';
 				$fields[] = [
-					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
-					"value" => $p["limit"]
+					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'value' => $limit
 				];
 			}
 			else
-			if ($p["isPaging"]) {
-				$sql .= " limit ?,? ";
+			if ($isPaging) {
+				$sql .= ' limit ?,? ';
 				$fields[] = [
-					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
-					"value" => $p["page"] * $p["itemsPerPage"]
+					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'value' => $page * $itemsPerPage
 				];
 				$fields[] = [
-					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
-					"value" => $p["itemsPerPage"]
+					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'value' => $itemsPerPage
 				];
 			}
 
-			if (!$p["isForceNoCache"] && $this->isCache) {
+			if (!$isForceNoCache && $this->isCache) {
 				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
 					$sql,
 					$fields,
 					$this->cacheTtl,
-					$p["cacheKeyNamingOptions"],
+					$cacheKeyNamingOptions,
 					$this->cacheProviderName,
-					$p["isStoreInCacheWhenNoResults"]
+					$isStoreInCacheWhenNoResults
 				);
 
 				if ($this->cachedKeysPoolName)
-					$this->addCachedKey(Cache::buildCacheKey($p["cacheKeyNamingOptions"]));
+					$this->addCachedKey(Cache::buildCacheKey(...$cacheKeyNamingOptions));
 			}
 			else
 				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
@@ -304,32 +309,32 @@ abstract class Items extends BasicObject implements \Iterator {
 			if (!$result)
 				return false;
 
-			if (!$this->fillFromDatabaseResult([
-				"itemLoadMethod" => "fromDatabaseRow",
-				"databaseResult" => $result,
-				"keyField" => $p["keyField"]
-			]))
+			if (!$this->fillFromDatabaseResult(
+				itemLoadMethod: self::ITEM_LOAD_METHOD_FROM_DATABASEROW,
+				databaseResult: $result,
+				keyField: $keyField
+			))
 				return false;
 		}
 
 		// Build totalNumberOf
-		if ($p["isBuildTotalNumberOfItems"]) {
-			$sql = "select count(streams.id) as totalNumberOf from streams";
+		if ($isBuildTotalNumberOfItems) {
+			$sql = 'select count('.$this->itemClassName::$tableName.'.id) as totalNumberOf from '.$this->itemClassName::$tableName;
 			if (is_array($wheres))
-				$sql .= " where ";
+				$sql .= ' where ';
 			foreach ($wheres as $where)
-				$sql .= $where." and ";
+				$sql .= $where.' and ';
 			reset ($wheres);
 			$sql = substr($sql, 0, -4);
 
-			if (!$p["isForceNoCache"] && $this->isCache)
+			if (!$isForceNoCache && $this->isCache)
 				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecuteCache(
 					$sql,
 					$fields,
 					$this->cacheTtl,
-					$p["cacheKeyNamingOptions"],
+					$cacheKeyNamingOptions,
 					$this->cacheProviderName,
-					$p["isStoreInCacheWhenNoResults"]
+					$isStoreInCacheWhenNoResults
 				);
 			else
 				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
@@ -340,20 +345,20 @@ abstract class Items extends BasicObject implements \Iterator {
 			if (!$result)
 				return false;
 
-			$this->totalNumberOf = $result->getRow()->getField("totalNumberOf");
+			$this->totalNumberOf = $result->getRow()->getField('totalNumberOf');
 		}
 
 		return true;
 	}
 
 	/**
-	 * Builds a suitable cacheKeyNamingOptions array for performing queries and also clearing cache. Takes the same parameters as the fillFromParameters method. Intended to be overloaded.
-	 * @param array $p A hash array of options, with the same specs as the one passed to the fillFromParameters method. Only the relevant keys will be used.
+	 * Builds a suitable cacheKeyNamingOptions array for performing queries and also clearing cache. Intended to be overloaded.
+	 * Takes the same parameters as the fillFromParameters method.
 	 * @return array A cacheKeyNamingOptions hash array suitable to be used when performing queries to the database or clearing the queries cache.
 	 */
-	function buildCacheKeyNamingOptions($p = false) {
+	function buildCacheKeyNamingOptions(...$parameters): array {
 		return [
-			"uniqueId" => md5(serialize($p))
+			'uniqueId' => md5(serialize($parameters))
 		];
 	}
 
@@ -362,12 +367,12 @@ abstract class Items extends BasicObject implements \Iterator {
 	 * @param array $p A hash array of parameters that will be used to build the cache key to clear, so it has to be the same as the parameters passed to buildCacheKeyNamingOptions (and also to fillFromParameters, and to the constructor, if that's the case)
 	 * @return boolean True if the cache could be cleared, false otherwise
 	 */
-	function clearCache($p = false) {
+	function clearCache(...$parameters) {
 		if (!$this->clearCachedKeysPool())
 			return false;
 		// If a cacheProviderName is provided for this object, use it to clear cache also, which it's also been used on fillFromParameters. If not, get the databaseProvider default cacheProviderName, which is also the one that's being used on fillFromParameters
 		$cacheProviderName = $this->cacheProviderName ? $this->cacheProviderName : Engine::e()->Database->{$this->databaseProviderName}->getConfig("cacheProviderName");
-		return Engine::e()->Cache->{$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey($this->buildCacheKeyNamingOptions($p)));
+		return Engine::e()->Cache->{$cacheProviderName}->delete(Engine::e()->Cache->buildCacheKey(...$this->buildCacheKeyNamingOptions($parameters)));
 	}
 
 	/**
@@ -473,7 +478,6 @@ abstract class Items extends BasicObject implements \Iterator {
 
 	/**
 	 * Finds the item with the given key
-	 *
 	 * @param mixed $key The key to find
 	 * @return mixed The found Item, or false if it wasn't found
 	 */

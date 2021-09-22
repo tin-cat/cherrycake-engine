@@ -180,11 +180,11 @@ class Javascript extends \Cherrycake\Module {
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 		$cacheTtl = $this->GetConfig("cacheTtl");
-		$cacheKey = Engine::e()->Cache->buildCacheKey([
-			"prefix" => "javascriptParsedSet",
-			"setName" => $setName,
-			"uniqueId" => $this->getSetUniqueId($setName)
-		]);
+		$cacheKey = Engine::e()->Cache->buildCacheKey(
+			prefix: "javascriptParsedSet",
+			setName: $setName,
+			uniqueId: $this->getSetUniqueId($setName)
+		);
 		if (!Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
 			Engine::e()->Cache->$cacheProviderName->set(
 				$cacheKey,
@@ -307,10 +307,10 @@ class Javascript extends \Cherrycake\Module {
 
 		$js = '';
 
-		$cacheKey = Engine::e()->Cache->buildCacheKey([
-			"prefix" => "javascriptParsedSet",
-			"uniqueId" => $request->set.'_'.$this->getConfig("lastModifiedTimestamp")
-		]);
+		$cacheKey = Engine::e()->Cache->buildCacheKey(
+			prefix: "javascriptParsedSet",
+			uniqueId: $request->set.'_'.$this->getConfig("lastModifiedTimestamp")
+		);
 
 		if ($this->getConfig("isCache") && Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
 			$js = Engine::e()->Cache->$cacheProviderName->get($cacheKey);

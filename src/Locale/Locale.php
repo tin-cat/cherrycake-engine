@@ -424,10 +424,10 @@ class Locale extends \Cherrycake\Module {
 		if (!$timezone)
 			$timezone = $this->getTimeZone();
 
-		$cacheKey = Engine::e()->Cache->buildCacheKey([
-			"prefix" => $this->getConfig("timeZonesCacheKeyPrefix"),
-			"uniqueId" => $timezone
-		]);
+		$cacheKey = Engine::e()->Cache->buildCacheKey(
+			prefix: $this->getConfig("timeZonesCacheKeyPrefix"),
+			uniqueId: $timezone
+		);
 		$cacheProviderName = $this->getConfig("timeZonesCacheProviderName");
 
 		if (!$timeZoneName = Engine::e()->Cache->$cacheProviderName->get($cacheKey)) { // Get the timezone name from the cache

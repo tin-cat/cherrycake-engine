@@ -85,7 +85,7 @@ class Cache extends \Cherrycake\Module {
 	function addProvider(
 		string $key,
 		string $providerClassName,
-		array $config = [],
+		?array $config,
 	) {
 		eval("\$this->".$key." = new \\Cherrycake\\Cache\\".$providerClassName."();");
 		$this->$key->config($config);
@@ -97,30 +97,34 @@ class Cache extends \Cherrycake\Module {
 	 * <App namespace>_[<prefix>]_<uniqueId>
 	 * <App namespace>_[<prefix>]_[<specificPrefix>]_<key|encoded sql>
 	 *
-	 * @param $cacheKeyNamingOptions The config options to build the cache key, holds the following key-value options:
-	 * "prefix": A prefix to use
-	 * "uniqueId": A unique id for the cache key that will override any other specific key identifier config options
-	 * "specificPrefix": A secondary prefix to prepend to provided sql or key config values
-	 * "hash": A string to be hashed as the cache key instead of using "key". For example: A SQL query
-	 * "key": An arbitrary key to uniquely identify the cache key
-	 *
-	 * @return string The final cache key
+	 * @param string $prefix A prefix
+	 * @param string $uniqueId A unique id for the cache key that will override any other specific key identifier config options
+	 * @param string $specificPrefix A secondary prefix to prepend to provided sql or key config values
+	 * @param string $hash A string to be hashed as the cache key instead of using "key". For example: A SQL query
+	 * @param string $key An arbitrary key to uniquely identify the cache key
+	 * @return string The cache key
 	 */
-	static function buildCacheKey($cacheKeyNamingOptions) {
-		$key = Engine::e()->getAppName();
+	static function buildCacheKey(
+		?string $prefix = null,
+		?string $uniqueId = null,
+		?string $specificPrefix = null,
+		?string $hash = null,
+		?string $key = null
+	) {
+		$r = Engine::e()->getAppName();
 
-		if (isset($cacheKeyNamingOptions["prefix"]))
-			$key .= "_".$cacheKeyNamingOptions["prefix"];
+		if (isset($prefix))
+			$r .= "_".$prefix;
 
-		if (isset($cacheKeyNamingOptions["uniqueId"]))
-			return $key."_".$cacheKeyNamingOptions["uniqueId"];
+		if (isset($uniqueId))
+			return $r."_".$uniqueId;
 
-		if (isset($cacheKeyNamingOptions["specificPrefix"]))
-			$key .= "_".$cacheKeyNamingOptions["specificPrefix"];
+		if (isset($specificPrefix))
+			$r .= "_".$specificPrefix;
 
-		if (isset($cacheKeyNamingOptions["hash"]))
-			return  $key."_".hash("md5", $cacheKeyNamingOptions["hash"]);
+		if (isset($hash))
+			return  $r."_".hash("md5", $hash);
 
-		return $key."_".$cacheKeyNamingOptions["key"];
+		return $r."_".$key;
 	}
 }
