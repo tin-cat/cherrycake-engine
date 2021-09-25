@@ -167,7 +167,13 @@ class Patterns extends \Cherrycake\Module {
 		$this->lastTreatedFile = $patternFile;
 		$this->lastEvaluatedCode = file_get_contents($patternFile);
 		ob_start();
-		eval("?> ".$this->lastEvaluatedCode."<?php ");
+		eval(
+			"namespace ".Engine::e()->getAppNamespace().";".
+			"use Cherrycake\Engine;".
+			"?> ".
+				$this->lastEvaluatedCode.
+			"<?php "
+		);
 		$buffer = ob_get_contents();
 		ob_end_clean();
 
