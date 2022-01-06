@@ -1,6 +1,9 @@
 # Vendor directory is ignored since it's managed by composer
 /vendor
 
+# VSCode workspace
+workspace.code-workspace
+
 # Annoying files
 .DS_Store
 thumbs.db
