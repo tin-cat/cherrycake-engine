@@ -1,0 +1,9 @@
+// Ignore files for Synthing
+// Syncthing messes up git repositories
+.git
+
+// Docker
+docker/mariadb/data
+docker/mariadb-data
+docker/redis/data
+docker/redis-data
