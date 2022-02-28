@@ -156,20 +156,20 @@ class HtmlDocument extends \Cherrycake\Module {
 			"\" />\n";
 
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
-			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
+			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n"<
 
 		if (Engine::e()->Actions->currentAction) {
 			// Canonical
 			if (Engine::e()->Locale->getConfig("canonicalLocale"))
-				$r .= "<link rel=\"canonical\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("canonicalLocale"))."\" />\n";
+				$r .= "<link rel=\"canonical\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("canonicalLocale"), isAbsolute: true)."\" />\n";
 
 			// Alternates
 			foreach (Engine::e()->Locale->getConfig("availableLocales") as $localeName => $locale)
-				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: $localeName)."\" hreflang=\"".Engine::e()->Locale->getLanguageCode($locale["language"])."\" />\n";
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: $localeName, isAbsolute: true)."\" hreflang=\"".Engine::e()->Locale->getLanguageCode($locale["language"])."\" />\n";
 
 			// Default
 			if (Engine::e()->Locale->getConfig("defaultLocale"))
-				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("defaultLocale"))."\" hreflang=\"x-default\" />\n";
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("defaultLocale"), isAbsolute: true)."\" hreflang=\"x-default\" />\n";
 		}
 
 		// Css

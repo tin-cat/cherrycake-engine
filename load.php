@@ -1,11 +1,7 @@
 <?php
 
 /**
- * Load
- *
  * Loads cherrycake and prepares the environment to run a Cherrycake App.
- *
-
  */
 
 namespace Cherrycake;
