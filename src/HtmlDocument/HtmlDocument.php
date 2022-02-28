@@ -156,7 +156,7 @@ class HtmlDocument extends \Cherrycake\Module {
 			"\" />\n";
 
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
-			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n"<
+			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
 
 		if (Engine::e()->Actions->currentAction) {
 			// Canonical
