@@ -6,12 +6,12 @@ use Cherrycake\Engine;
  * A JanitorTask to maintain the Stats module
  * Commits the Stats events in cache to database
  */
-class JanitorTaskStatsCommit extends \Cherrycake\Janitor\JanitorTask {
+class JanitorTaskStatsCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
-		"executionPeriodicity" => \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 60
 	];
 
@@ -31,7 +31,7 @@ class JanitorTaskStatsCommit extends \Cherrycake\Janitor\JanitorTask {
 	 * Performs the tasks for what this JanitorTask is meant.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
 		// Loads the needed modules
@@ -39,7 +39,7 @@ class JanitorTaskStatsCommit extends \Cherrycake\Janitor\JanitorTask {
 
 		list($result, $resultDescription) = Engine::e()->Stats->commit();
 		return [
-			$result ? \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
+			$result ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 			$resultDescription
 		];
 	}

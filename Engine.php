@@ -2,7 +2,7 @@
 
 namespace Cherrycake;
 
-use Cherrycake\Errors\Errors;
+use Cherrycake\Modules\Errors\Errors;
 
 /**
  * The main class that loads modules and configurations, and the entry point of the application.
@@ -70,8 +70,8 @@ class Engine {
 		bool $isDevel = false,
 		bool $isUnderMaintenance = false,
 		string $configDir = 'config',
-		string $appModulesDir = 'src',
-		string $appClassesDir = 'src',
+		string $appModulesDir = 'src/Modules',
+		string $appClassesDir = 'src/Classes',
 		string $timezoneName = 'Etc/UTC',
 		int $timezoneId = 532,
 		?bool $isCli = null,
@@ -162,7 +162,7 @@ class Engine {
 	 * @return array The Core module names that implement the specified method
 	 */
 	private function getAvailableCoreModuleNamesWithMethod(string $methodName): array {
-		return $this->getAvailableModuleNamesWithMethod("Cherrycake", ENGINE_DIR."/src", $methodName);
+		return $this->getAvailableModuleNamesWithMethod("Cherrycake", ENGINE_DIR."/src/Modules", $methodName);
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Engine {
 	* @param string $nameSpace The namespace to use
 	* @param string $modulesDirectory The directory where the specified module is stored
 	* @param string $methodName the name of the method to check
-	* @return array The module names that imeplement the specified method, o,r false if no modules found
+	* @return array The module names that imeplement the specified method, or false if no modules found
 	*/
 	private function getAvailableModuleNamesWithMethod(string $nameSpace, string $modulesDirectory, string $methodName): array {
 		$cacheBucketName = "AvailableModuleNamesWithMethod";
@@ -211,7 +211,7 @@ class Engine {
 	 * @return boolean True if the specified module implements the specified method
 	 */
 	private function isModuleImplementsMethod(string $nameSpace, string $moduleName, string $methodName): bool {
-		return $this->isClassMethodImplemented($nameSpace."\\".$moduleName."\\".$moduleName, $methodName);
+		return $this->isClassMethodImplemented($nameSpace."\\Modules\\".$moduleName."\\".$moduleName, $methodName);
 	}
 
 	/**
@@ -379,7 +379,7 @@ class Engine {
 
 		$this->loadedModules[] = $moduleName;
 
-		eval("\$this->".$moduleName." = new \\".$namespace."\\".$moduleName."\\".$moduleName.";");
+		eval("\$this->".$moduleName." = new \\".$namespace."\\Modules\\".$moduleName."\\".$moduleName.";");
 
 		if ($this->isDevel())
 			$this->moduleLoadingHistory[$moduleLoadingHistoryId]["initStartHrTime"] = hrtime(true);
@@ -428,7 +428,7 @@ class Engine {
 	 * @return boolean Whether the specified module exists and is a core module
 	 */
 	private function isCoreModuleExists(string $moduleName): bool {
-		return $this->isModuleExists(ENGINE_DIR."/src", $moduleName);
+		return $this->isModuleExists(ENGINE_DIR."/src/Modules", $moduleName);
 	}
 
 	/**
@@ -448,14 +448,14 @@ class Engine {
 		$coreModuleNames = $this->getAvailableCoreModuleNamesWithMethod($methodName);
 		if (is_array($coreModuleNames)) {
 			foreach ($coreModuleNames as $coreModuleName)
-				forward_static_call(["\\Cherrycake\\".$coreModuleName."\\".$coreModuleName, $methodName]);
+				forward_static_call(["\\Cherrycake\\Modules\\".$coreModuleName."\\".$coreModuleName, $methodName]);
 			reset($coreModuleNames);
 		}
 
 		$appModuleNames = $this->getAvailableAppModuleNamesWithMethod($methodName);
 		if (is_array($appModuleNames)) {
 			foreach ($appModuleNames as $appModuleName)
-				forward_static_call(["\\".$this->getAppNamespace()."\\".$appModuleName."\\".$appModuleName, $methodName]);
+				forward_static_call(["\\".$this->getAppNamespace()."\\Modules\\".$appModuleName."\\".$appModuleName, $methodName]);
 			reset($appModuleNames);
 		}
 	}
@@ -684,8 +684,8 @@ class Engine {
 	 * @return Translation\Text A Text object for the given key
 	 */
 	public function t(...$parameters)
-	: Translation\Text {
-		return new Translation\Text(...$parameters);
+	: Modules\Translation\Text {
+		return new Modules\Translation\Text(...$parameters);
 	}
 }
 

@@ -3,9 +3,9 @@
 namespace Cherrycake;
 
 use Cherrycake\BasicObject;
-use Cherrycake\Cache\Cache;
-use Cherrycake\Database\DatabaseRow;
-use Cherrycake\Database\DatabaseResult;
+use Cherrycake\Modules\Cache\Cache;
+use Cherrycake\Modules\Database\DatabaseRow;
+use Cherrycake\Modules\Database\DatabaseResult;
 
 /**
  * Class that provides a way to retrieve, count and treat multiple items based on an App implementation of the get method
@@ -187,7 +187,7 @@ abstract class Items implements \Iterator {
 	 * @param array $wheres An array of where SQL clauses, where each item is a hash array containing the following keys:
 	 * - sqlPart: The SQL part of the where, on which each value must represented by a question mark. Example: "fieldName = ?"
 	 * - values: An array specifying each of the values used on the sqlPart, in the same order they're used there. Each item of the array must an array of the following keys:
-	 * -- type: The type of the value, must be one of the \Cherrycake\Database\Database::TYPE_*
+	 * -- type: The type of the value, must be one of the \Cherrycake\Modules\Database\Database::TYPE_*
 	 * -- value: The value
 	 * @param int $limit Maximum number of items returned. All items are selected if not specified
 	 * @param array $order An ordered array of orders to apply to results, on which each item can be one of the configured in the $orders parameter
@@ -199,7 +199,7 @@ abstract class Items implements \Iterator {
 	 * @param bool $isBuildTotalNumberOfItems Whether to return the total number of matching items or not in the "totalNumberOf" results key, not taking into account paging configuration. It takes into account limit, if specified.
 	 * @param bool $isFillItems Whether to return the matching items or not in the "items" results key.
 	 * @param bool $isForceNoCache If set to true, the query won't use cache, even if the object is configured to do so.
-	 * @param array $cacheKeyNamingParameters If specified, this array of parameterName => value will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Cache::buildCacheKey
+	 * @param array $cacheKeyNamingParameters If specified, this array of parameterName => value will be used instead of the ones built by the buildCacheKeyNamingOptions method. The cache key naming options as specified in \Cherrycake\Modules\Cache::buildCacheKey
 	 * @param bool $isStoreInCacheWhenNoResults Whether to store results in cache even when there are no results
 	 * @return boolean True if everything went ok, false otherwise
 	 */
@@ -270,7 +270,7 @@ abstract class Items implements \Iterator {
 			if ($limit) {
 				$sql .= ' limit ? ';
 				$fields[] = [
-					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'type' => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
 					'value' => $limit
 				];
 			}
@@ -278,11 +278,11 @@ abstract class Items implements \Iterator {
 			if ($isPaging) {
 				$sql .= ' limit ?,? ';
 				$fields[] = [
-					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'type' => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
 					'value' => $page * $itemsPerPage
 				];
 				$fields[] = [
-					'type' => \Cherrycake\Database\Database::TYPE_INTEGER,
+					'type' => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
 					'value' => $itemsPerPage
 				];
 			}

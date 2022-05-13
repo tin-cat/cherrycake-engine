@@ -74,14 +74,14 @@ function handleError(
 
 	if (defined("STDIN")) {
 		echo
-			\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
-			\Cherrycake\Errors\Errors::ANSI_WHITE.Engine::e()->getAppName()." Error ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errNo."\n".
-			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
-			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Message: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errStr."\n".
-			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."File: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errFile."\n".
-			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Line: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errLine."\n".
-			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
-			(Engine::e()->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+			\Cherrycake\Modules\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Modules\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
+			\Cherrycake\Modules\Errors\Errors::ANSI_WHITE.Engine::e()->getAppName()." Error ".\Cherrycake\Modules\Errors\Errors::ANSI_WHITE.$errNo."\n".
+			\Cherrycake\Modules\Errors\Errors::ANSI_NOCOLOR.
+			\Cherrycake\Modules\Errors\Errors::ANSI_DARK_GRAY."Message: ".\Cherrycake\Modules\Errors\Errors::ANSI_WHITE.$errStr."\n".
+			\Cherrycake\Modules\Errors\Errors::ANSI_DARK_GRAY."File: ".\Cherrycake\Modules\Errors\Errors::ANSI_WHITE.$errFile."\n".
+			\Cherrycake\Modules\Errors\Errors::ANSI_DARK_GRAY."Line: ".\Cherrycake\Modules\Errors\Errors::ANSI_WHITE.$errLine."\n".
+			\Cherrycake\Modules\Errors\Errors::ANSI_NOCOLOR.
+			(Engine::e()->isDevel() ? \Cherrycake\Modules\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Modules\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 
 		exit();
 	}
@@ -359,7 +359,7 @@ function handleError(
 					isset($stackItem["function"]) && $stackItem["function"] == "parse"
 				) {
 
-					// We have a pattern parsing error, and we're now dumping the Cherrycake\Patterns->parse method stack call
+					// We have a pattern parsing error, and we're now dumping the Cherrycake\Modules\Patterns->parse method stack call
 
 					$patternFileName = Engine::e()->Patterns->getPatternFileName($stackItem["args"][0]);
 
@@ -430,15 +430,15 @@ function handleError(
 		switch ($currentActionClass) {
 
 			case "Cherrycake\ActionHtml":
-				$response = new \Cherrycake\Actions\ResponseTextHtml(
+				$response = new \Cherrycake\Modules\Actions\ResponseTextHtml(
 					payload: Engine::e()->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
 				);
 				break;
 
 			case "Cherrycake\ActionAjax":
 				if (Engine::e()->isDevel()) {
-					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+					$ajaxResponseJson = new \Cherrycake\Modules\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Modules\Actions\AjaxResponseJson::ERROR,
 						"description" =>
 							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -465,8 +465,8 @@ function handleError(
 					$response = $ajaxResponseJson->getResponse();
 				}
 				else {
-					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+					$ajaxResponseJson = new \Cherrycake\Modules\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Modules\Actions\AjaxResponseJson::ERROR,
 						"description" => "Sorry, we've got an unexpected error"
 					]);
 					$response = $ajaxResponseJson->getResponse();
@@ -475,8 +475,8 @@ function handleError(
 
 			default:
 				if (Engine::e()->isDevel()) {
-					$response = new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+					$response = new \Cherrycake\Modules\Actions\ResponseTextHtml(
+						code: \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
 							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								E_ERROR => "Error",
@@ -502,8 +502,8 @@ function handleError(
 					);
 				}
 				else {
-					$response = new \Cherrycake\Actions\ResponseTextHtml(
-						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+					$response = new \Cherrycake\Modules\Actions\ResponseTextHtml(
+						code: \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload: "Error"
 					);
 				}

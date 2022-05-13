@@ -6,12 +6,12 @@ use Cherrycake\Engine;
  * A JanitorTask to purge the SystemLog module database
  * Purges the old log items on the database to avoid unnecessary database cluttering.
  */
-class JanitorTaskSystemLogPurge extends \Cherrycake\Janitor\JanitorTask {
+class JanitorTaskSystemLogPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */
 	protected array $config = [
-		"executionPeriodicity" => \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
+		"executionPeriodicity" => \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 240,
 		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
 	];
@@ -45,7 +45,7 @@ class JanitorTaskSystemLogPurge extends \Cherrycake\Janitor\JanitorTask {
 	 * Performs the tasks for what this JanitorTask is meant.
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
-	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
+	 * @return array A one-dimensional array with the keys: {<One of \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_? consts>, <Task result/error/health check description. Can be an array if different keys of information need to be given.>}
 	 */
 	function run($baseTimestamp) {
 
@@ -54,7 +54,7 @@ class JanitorTaskSystemLogPurge extends \Cherrycake\Janitor\JanitorTask {
 
 		list($result, $resultDescription) = Engine::e()->SystemLog->purge();
 		return [
-			$result ? \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_ERROR,
+			$result ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
 			$resultDescription
 		];
 	}

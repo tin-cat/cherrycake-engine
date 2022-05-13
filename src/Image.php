@@ -2,7 +2,7 @@
 
 namespace Cherrycake;
 
-use Cherrycake\Errors\Errors;
+use Cherrycake\Modules\Errors\Errors;
 
 /**
  * Class that represents an image stored on the server.

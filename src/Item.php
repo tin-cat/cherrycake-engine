@@ -2,8 +2,8 @@
 
 namespace Cherrycake;
 
-use Cherrycake\Cache\Cache;
-use Cherrycake\Errors\Errors;
+use Cherrycake\Modules\Cache\Cache;
+use Cherrycake\Modules\Errors\Errors;
 
 /**
  * Represents a generic item from a database.
@@ -46,7 +46,7 @@ class Item {
 
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
-	 * * type: The type of the field, one of the available \Cherrycake\Database\Database::TYPE_*
+	 * * type: The type of the field, one of the available \Cherrycake\Modules\Database\Database::TYPE_*
 	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
 	 * * * type: The type of the form item, one of the available \Cherrycake\ItemAdmin\FORM_ITEM_TYPE_*
 	 * * * selectType: For FORM_ITEM_TYPE_SELECT type: The select type: either FORM_ITEM_SELECT_TYPE_RADIOS or FORM_ITEM_SELECT_TYPE_COMBO
@@ -114,7 +114,7 @@ class Item {
 	 * @param string $idFieldName The name of the field to match with the id to override static::$idFieldName
 	 * @param array $data
 	 * @param string $loadFromIdMethod
-	 * @param \Cherrycake\Database\DatabaseRow $databaseRow
+	 * @param \Cherrycake\Modules\Database\DatabaseRow $databaseRow
 	 * @throws Exception If the object could not be constructed
 	 */
 	function __construct(
@@ -123,7 +123,7 @@ class Item {
 		string $loadFromIdMethod = '',
 		string $idFieldName = '',
 		array $data = [],
-		?\Cherrycake\Database\DatabaseRow $databaseRow = null
+		?\Cherrycake\Modules\Database\DatabaseRow $databaseRow = null
 	) {
 		if ($id !== 0 && !$loadMethod)
 			$loadMethod = 'fromId';
@@ -166,7 +166,7 @@ class Item {
 	 * @param DatabaseRow $databaseRow
 	 * @return boolean True on success, false on error
 	 */
-	function loadFromDatabaseRow(\Cherrycake\Database\DatabaseRow $databaseRow): bool {
+	function loadFromDatabaseRow(\Cherrycake\Modules\Database\DatabaseRow $databaseRow): bool {
 		return $this->loadFromData($databaseRow->getData(static::$fields));
 	}
 
@@ -219,7 +219,7 @@ class Item {
 		string $fieldName,
 		string|int $id,
 		string $method = ''
-	): \Cherrycake\Database\DatabaseRow|bool {
+	): \Cherrycake\Modules\Database\DatabaseRow|bool {
 		switch($method ? $method : static::$loadFromIdMethod) {
 			case "queryDatabaseCache":
 				if (!$result = Engine::e()->Database->{static::$databaseProviderName}->prepareAndExecuteCache(
@@ -325,22 +325,22 @@ class Item {
 			if (isset($fieldData["defaultValue"])) {
 
 				switch ($fieldData["defaultValue"]) {
-					case \Cherrycake\Database\Database::DEFAULT_VALUE:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE:
 						$value = $fieldData["value"];
 						break;
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_DATE:
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_DATETIME:
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_TIMESTAMP:
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_TIME:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_DATE:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_DATETIME:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_TIMESTAMP:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_TIME:
 						$value = time();
 						break;
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_YEAR:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_YEAR:
 						$value = date("Y");
 						break;
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_IP:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_IP:
 						$value = $this->getClientIp();
 						break;
-					case \Cherrycake\Database\Database::DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
 						$value = $this->getRandomAvailableUrlShortCode($fieldName);
 						break;
 				}
@@ -602,9 +602,9 @@ class Item {
 	 */
 	function getForTimezone(string $key, string $timeZone = ''): int {
 		if (!static::$fields || (
-			static::$fields[$key]["type"] !== \Cherrycake\Database\Database::TYPE_DATETIME
+			static::$fields[$key]["type"] !== \Cherrycake\Modules\Database\Database::TYPE_DATETIME
 			&&
-			static::$fields[$key]["type"] !== \Cherrycake\Database\Database::TYPE_TIME
+			static::$fields[$key]["type"] !== \Cherrycake\Modules\Database\Database::TYPE_TIME
 		))
 			return false;
 
@@ -675,8 +675,8 @@ class Item {
 		}
 
 		switch (static::$fields[$key]["type"]) {
-			case \Cherrycake\Database\Database::TYPE_INTEGER:
-			case \Cherrycake\Database\Database::TYPE_TINYINT:
+			case \Cherrycake\Modules\Database\Database::TYPE_INTEGER:
+			case \Cherrycake\Modules\Database\Database::TYPE_TINYINT:
 				$r = Engine::e()->Locale->formatNumber(
 					$r,
 					[
@@ -687,7 +687,7 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\Database::TYPE_FLOAT:
+			case \Cherrycake\Modules\Database\Database::TYPE_FLOAT:
 				$r = Engine::e()->Locale->formatNumber(
 					$r,
 					[
@@ -698,10 +698,10 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\Database::TYPE_DATE:
-			case \Cherrycake\Database\Database::TYPE_DATETIME:
-			case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
-			case \Cherrycake\Database\Database::TYPE_TIME:
+			case \Cherrycake\Modules\Database\Database::TYPE_DATE:
+			case \Cherrycake\Modules\Database\Database::TYPE_DATETIME:
+			case \Cherrycake\Modules\Database\Database::TYPE_TIMESTAMP:
+			case \Cherrycake\Modules\Database\Database::TYPE_TIME:
 
 				if (!$r) {
 					$r = $rEmpty;
@@ -709,7 +709,7 @@ class Item {
 				}
 
 				switch (static::$fields[$key]["type"]) {
-					case \Cherrycake\Database\Database::TYPE_DATE:
+					case \Cherrycake\Modules\Database\Database::TYPE_DATE:
 						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
@@ -718,8 +718,8 @@ class Item {
 							]
 						);
 						break;
-					case \Cherrycake\Database\Database::TYPE_DATETIME:
-					case \Cherrycake\Database\Database::TYPE_TIMESTAMP:
+					case \Cherrycake\Modules\Database\Database::TYPE_DATETIME:
+					case \Cherrycake\Modules\Database\Database::TYPE_TIMESTAMP:
 						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
@@ -728,7 +728,7 @@ class Item {
 							]
 						);
 						break;
-					case \Cherrycake\Database\Database::TYPE_TIME:
+					case \Cherrycake\Modules\Database\Database::TYPE_TIME:
 						$r = Engine::e()->Locale->formatTimestamp(
 							$r,
 							[
@@ -742,7 +742,7 @@ class Item {
 
 				break;
 
-			case \Cherrycake\Database\Database::TYPE_YEAR:
+			case \Cherrycake\Modules\Database\Database::TYPE_YEAR:
 				$r = Engine::e()->Locale->formatTimestamp(
 					$r,
 					[
@@ -750,16 +750,16 @@ class Item {
 					]
 				);
 				break;
-			case \Cherrycake\Database\Database::TYPE_BOOLEAN:
+			case \Cherrycake\Modules\Database\Database::TYPE_BOOLEAN:
 				$r = $r ? $rBooleanTrue : $rBooleanFalse;
 				break;
-			case \Cherrycake\Database\Database::TYPE_IP:
+			case \Cherrycake\Modules\Database\Database::TYPE_IP:
 				if (!$r) {
 					$r = $rEmpty;
 					break;
 				}
 				break;
-			case \Cherrycake\Database\Database::TYPE_SERIALIZED:
+			case \Cherrycake\Modules\Database\Database::TYPE_SERIALIZED:
 				$value = $r;
 
 				if (!$value) {
@@ -784,10 +784,10 @@ class Item {
 				$table .= "</table>";
 				$r = $table;
 				break;
-			case \Cherrycake\Database\Database::TYPE_STRING:
-			case \Cherrycake\Database\Database::TYPE_TEXT:
-			case \Cherrycake\Database\Database::TYPE_BLOB:
-			case \Cherrycake\Database\Database::TYPE_COLOR:
+			case \Cherrycake\Modules\Database\Database::TYPE_STRING:
+			case \Cherrycake\Modules\Database\Database::TYPE_TEXT:
+			case \Cherrycake\Modules\Database\Database::TYPE_BLOB:
+			case \Cherrycake\Modules\Database\Database::TYPE_COLOR:
 			default:
 				if (!$r) {
 					$r = $rEmpty;
