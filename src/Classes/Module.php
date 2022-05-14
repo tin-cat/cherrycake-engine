@@ -1,6 +1,8 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
+
+use Cherrycake\Classes\Engine;
 
 /**
  * The base class for modules. Intented to be overloaded by specific functionality classes

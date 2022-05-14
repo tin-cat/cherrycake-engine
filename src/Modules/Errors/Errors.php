@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Errors;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Module to manage application and core errors.
@@ -30,7 +30,7 @@ use Cherrycake\Engine;
  * ];
  * </code>
  */
-class Errors extends \Cherrycake\Module {
+class Errors extends \Cherrycake\Classes\Module {
 
 	const ERROR_SYSTEM = 0; // Errors caused by bad programming
 	const ERROR_APP = 1; // Errors caused by bad usering

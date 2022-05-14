@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 /**
  * Class that represents a result from a method when it needs to provide complex results

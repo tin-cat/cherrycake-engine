@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Patterns;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
@@ -12,7 +12,7 @@ use Cherrycake\Modules\Cache\Cache;
  *
  * Be very careful by not allowing user-entered data or data received via a request to be parsed. Never parse a user-entered information as a pattern.
  */
-class Patterns extends \Cherrycake\Module {
+class Patterns extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -169,7 +169,7 @@ class Patterns extends \Cherrycake\Module {
 		ob_start();
 		eval(
 			"namespace ".Engine::e()->getAppNamespace().";".
-			"use Cherrycake\Engine;".
+			"use Cherrycake\Classes\Engine;".
 			"?> ".
 				$this->lastEvaluatedCode.
 			"<?php "

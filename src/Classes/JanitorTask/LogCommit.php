@@ -1,12 +1,12 @@
 <?php
 
-use Cherrycake\Engine;
+namespace Cherrycake\Classes\JanitorTask;
 
 /**
- * A JanitorTask to maintain the Stats module
- * Commits the Stats events in cache to database
+ * A JanitorTask to maintain the Log module
+ * Stores the cached events queue into database, then empties the cache
  */
-class JanitorTaskStatsCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
+class LogCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */
@@ -18,12 +18,12 @@ class JanitorTaskStatsCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var string $name The name of the task
 	 */
-	protected $name = "Stats commit";
+	protected $name = "Log commit";
 
 	/**
 	 * @var string $description The description of the task
 	 */
-	protected $description = "Stores cache-queded stats events into database and purges the queue cache";
+	protected $description = "Stores cache-queded events into database and purges the queue cache";
 
 	/**
 	 * run
@@ -35,12 +35,12 @@ class JanitorTaskStatsCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
 	 */
 	function run($baseTimestamp) {
 		// Loads the needed modules
-		Engine::e()->loadCoreModule("Stats");
+		Engine::e()->loadCoreModule("Log");
 
-		list($result, $resultDescription) = Engine::e()->Stats->commit();
+		$result = Engine::e()->Log->commit();
 		return [
-			$result ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
-			$resultDescription
+			$result[0] ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
+			isset($result[1]) ? $result[1] : false
 		];
 	}
 }

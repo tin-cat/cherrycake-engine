@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 /**
  * Class that sends HTTP Cache-related headers to let the client browser recognize cached elements

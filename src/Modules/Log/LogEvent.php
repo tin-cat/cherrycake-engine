@@ -2,12 +2,12 @@
 
 namespace Cherrycake\Modules\Log;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Base class to represent log events for the Log module
  */
-class LogEvent extends \Cherrycake\Item {
+class LogEvent extends \Cherrycake\Classes\Item {
 	protected $tableName = "log";
 	protected $cacheSpecificPrefix = "Log";
 

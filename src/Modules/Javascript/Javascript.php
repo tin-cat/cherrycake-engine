@@ -2,13 +2,13 @@
 
 namespace Cherrycake\Modules\Javascript;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
  * Module that manages Javascript code.
  */
-class Javascript extends \Cherrycake\Module {
+class Javascript extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

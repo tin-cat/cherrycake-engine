@@ -29,7 +29,7 @@ namespace Cherrycake\Modules\Database;
  * ];
  * </code>
  */
-class Database extends \Cherrycake\Module {
+class Database extends \Cherrycake\Classes\Module {
 
 	const TYPE_INTEGER = 0;
 	const TYPE_TINYINT = 1;

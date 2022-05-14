@@ -2,12 +2,12 @@
 
 namespace Cherrycake\Modules\HtmlDocument;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
  */
-class HtmlDocument extends \Cherrycake\Module {
+class HtmlDocument extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

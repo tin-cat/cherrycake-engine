@@ -6,7 +6,7 @@ namespace Cherrycake\Modules\Output;
  * Manages the final output produced by the app.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
  */
-class Output extends \Cherrycake\Module {
+class Output extends \Cherrycake\Classes\Module {
 
 	const RESPONSE_OK = 200;
 	const RESPONSE_NOT_FOUND = 404;

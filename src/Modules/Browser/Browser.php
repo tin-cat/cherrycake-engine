@@ -7,7 +7,7 @@ namespace Cherrycake\Modules\Browser;
  * Strongly based on Browser.php by Chris Schuld (http://chrisschuld.com/), 99% of the code by him.
  * @author Chris Schuld
  */
-class Browser extends \Cherrycake\Module {
+class Browser extends \Cherrycake\Classes\Module {
 	private $_agent = '';
 	private $_browser_name = '';
 	private $_version = '';

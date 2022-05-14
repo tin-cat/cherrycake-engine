@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\SystemLog;
 /**
  * Class that represents a list of SystemLogEvent objects
  */
-class SystemLogEvents extends \Cherrycake\Items {
+class SystemLogEvents extends \Cherrycake\Classes\Items {
     protected $tableName = "cherrycake_systemLog";
     protected $itemClassName = "\Cherrycake\Modules\SystemLogEvent";
 

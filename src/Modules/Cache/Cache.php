@@ -2,14 +2,14 @@
 
 namespace Cherrycake\Modules\Cache;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
  * Manages cache providers.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
  */
-class Cache extends \Cherrycake\Module {
+class Cache extends \Cherrycake\Classes\Module {
 
 	const TTL_1_MINUTE = 60;
 	const TTL_5_MINUTES = 300;

@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\Log;
 /**
  * Class that represents a list of LogEvent objects
  */
-class LogEvents extends \Cherrycake\Items {
+class LogEvents extends \Cherrycake\Classes\Items {
     protected $tableName = "log";
     protected $itemClassName = "\Cherrycake\Modules\LogEvent";
 

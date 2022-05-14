@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Translation;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * A class that represents a translatable text

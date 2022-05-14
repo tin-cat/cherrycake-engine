@@ -1,13 +1,13 @@
 <?php
 
-use Cherrycake\Engine;
+namespace Cherrycake\Classes\JanitorTask;
 
 /**
  * A JanitorTask to maintain the Session module.
  * Purges sessions older than the given seconds. A different configuration is given for differentiating the purging sessions without any data stored (sessions that haven't been used in any way) between sessions with data stored (sessions that have been actually used somehow)
  * To avoid unnecessary database cluttering and minimize session id collision risk.
  */
-class JanitorTaskSessionPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
+class SessionPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

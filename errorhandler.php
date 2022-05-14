@@ -8,6 +8,8 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Classes\Engine;
+
 function logError(
 	$errNo,
 	$errStr = false,

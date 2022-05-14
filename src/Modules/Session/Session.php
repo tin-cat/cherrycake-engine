@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Session;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
@@ -18,7 +18,7 @@ use Cherrycake\Modules\Cache\Cache;
  *
  * Important note: You cannot use session keys starting with "_pool_", since it's used for the pools functionality.
  */
-class Session extends \Cherrycake\Module {
+class Session extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

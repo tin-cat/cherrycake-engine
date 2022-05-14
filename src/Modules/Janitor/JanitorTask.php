@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Janitor;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Base class for Janitor tasks.

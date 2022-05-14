@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\Stats;
 /**
  * Class that represents a list of StatsEvent objects
  */
-class StatsEvents extends \Cherrycake\Items {
+class StatsEvents extends \Cherrycake\Classes\Items {
     protected $tableName = "cherrycake_stats";
 	protected $itemClassName = "\Cherrycake\Modules\StatsEvent";
 

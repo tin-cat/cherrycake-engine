@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Actions;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * A class that represents a path component of a Request
@@ -75,7 +75,7 @@ class RequestPathComponent {
 	 * Checks this path component's value against its configured security rules (and/or the Security defaulted rules)
 	 * @return Result A Result object, like Security::checkValue
 	 */
-	function checkValueSecurity(): \Cherrycake\Result {
+	function checkValueSecurity(): \Cherrycake\Classes\Result {
 		return Engine::e()->Security->checkValue($this->getValue(), $this->securityRules);
 	}
 

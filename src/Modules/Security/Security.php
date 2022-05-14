@@ -2,14 +2,14 @@
 
 namespace Cherrycake\Modules\Security;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
  */
-class Security  extends \Cherrycake\Module {
+class Security  extends \Cherrycake\Classes\Module {
 
 	const RULE_NOT_NULL = 0; // The value must be not null (typically used to check whether a parameter has been passed or not. An empty field in a form will not trigger this rule)
 	const RULE_NOT_EMPTY = 1; // The value must not be empty (typically used to check whether a parameter has been passed or not. An empty field in a form _will_ trigger this rule)
@@ -148,7 +148,7 @@ class Security  extends \Cherrycake\Module {
 	 */
 	function checkValue($value = NULL, $rules = false, $isFixedRules = true) {
 		if (is_null($value))
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 
 		if (!is_array($rules))
 			$rules = [];
@@ -157,7 +157,7 @@ class Security  extends \Cherrycake\Module {
 			$rules = array_merge($this->fixedParameterRulesForValues, $rules);
 
 		if (!$rules)
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 
 		$isError = false;
 
@@ -263,11 +263,11 @@ class Security  extends \Cherrycake\Module {
 		}
 
 		if ($isError)
-			return new \Cherrycake\ResultKo([
+			return new \Cherrycake\Classes\ResultKo([
 				"description" => $description
 			]);
 		else
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 	}
 
 	/**
@@ -279,13 +279,13 @@ class Security  extends \Cherrycake\Module {
 	 */
 	function checkFile($file = NULL, $rules = false) {
 		if (is_null($file))
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 
 		if (!is_array($rules))
 			$rules = [];
 
 		if (!$rules)
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 
 		$isError = false;
 
@@ -327,11 +327,11 @@ class Security  extends \Cherrycake\Module {
 		}
 
 		if ($isError)
-			return new \Cherrycake\ResultKo([
+			return new \Cherrycake\Classes\ResultKo([
 				"description" => $description
 			]);
 		else
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 	}
 
 	/**
@@ -743,13 +743,13 @@ class Security  extends \Cherrycake\Module {
 		if ($this->filterValue($file["name"], [
 			self::FILTER_XSS
 		]) != $file["name"]) {
-			return new \Cherrycake\ResultKo([
+			return new \Cherrycake\Classes\ResultKo([
 				"description" => "File name contained was suspicious of XSS attack"
 			]);
 		}
 
 		if (!is_uploaded_file($file["tmp_name"])) {
-			return new \Cherrycake\ResultKo(["description" => "Didn't receive an uploaded file"]);
+			return new \Cherrycake\Classes\ResultKo(["description" => "Didn't receive an uploaded file"]);
 		}
 
 		if ($setup["allowedImageTypes"])
@@ -783,14 +783,14 @@ class Security  extends \Cherrycake\Module {
 				// No error after all
 				break;
 			case UPLOAD_ERR_NO_FILE:
-				return new \Cherrycake\ResultKo(["description" => "No file uploaded"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "No file uploaded"]);
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				return new \Cherrycake\ResultKo(["description" => "Exceeded file size limit"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Exceeded file size limit"]);
 				break;
 			default:
-				return new \Cherrycake\ResultKo(["description" => "Unknown file uploading error"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Unknown file uploading error"]);
 				break;
 		}
 
@@ -799,12 +799,12 @@ class Security  extends \Cherrycake\Module {
 			$imageSizeResult = getimagesize($file["tmp_name"]);
 			$imageType = $imageSizeResult[2];
 			if (!$imageSizeResult) {
-				return new \Cherrycake\ResultKo(["description" => "Received uploaded file is not recognized as an image"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file is not recognized as an image"]);
 			}
 			else {
 				// Check if the uploaded file is in one of the allowed image types
 				if (!in_array($imageType, $setup["allowedImageTypes"])) {
-					return new \Cherrycake\ResultKo(["description" => "Received uploaded file is not in one of the allowed image types"]);
+					return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file is not in one of the allowed image types"]);
 				}
 			}
 		}
@@ -813,7 +813,7 @@ class Security  extends \Cherrycake\Module {
 		if ($setup["allowedFileExtensions"]) {
 			$fileExtension = strtolower(substr($file["name"], strrpos($file["name"], '.') + 1));
 			if (!in_array($fileExtension, $setup["allowedFileExtensions"])) {
-				return new \Cherrycake\ResultKo(["description" => "Received uploaded file hasn't any of the allowed extensions"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file hasn't any of the allowed extensions"]);
 			}
 		}
 
@@ -840,11 +840,11 @@ class Security  extends \Cherrycake\Module {
 					$image = imagecreatefromwebp($file["tmp_name"]);
 					break;
 				default:
-					return new \Cherrycake\ResultKo(["description" => "Image was not in any of the supported imagetTypes for final moving"]);
+					return new \Cherrycake\Classes\ResultKo(["description" => "Image was not in any of the supported imagetTypes for final moving"]);
 					break;
 			}
 			if (!$image) {
-				return new \Cherrycake\ResultKo(["description" => "Final image could not be created from the uploaded file"]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Final image could not be created from the uploaded file"]);
 			}
 			switch ($imageType) {
 				case IMAGETYPE_GIF:
@@ -859,11 +859,11 @@ class Security  extends \Cherrycake\Module {
 					break;
 			}
 			if (!$result) {
-				return new \Cherrycake\ResultKo(["description" => "Final image could not be saved to ".$file["tmp_name"]]);
+				return new \Cherrycake\Classes\ResultKo(["description" => "Final image could not be saved to ".$file["tmp_name"]]);
 			}
 		}
 
-		return new \Cherrycake\ResultOk();
+		return new \Cherrycake\Classes\ResultOk();
 	}
 
 }

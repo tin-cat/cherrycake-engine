@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Actions;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
@@ -123,7 +123,7 @@ class Action {
 					);
 					return true;
 				}
-				eval("\$return = \Cherrycake\Engine::e()->".$this->moduleName."->".$this->methodName."(\$this->request);");
+				eval("\$return = \Cherrycake\Classes\Engine::e()->".$this->moduleName."->".$this->methodName."(\$this->request);");
 				break;
 		}
 

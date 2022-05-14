@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Validate;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Module to validate different types of data.
@@ -27,7 +27,7 @@ use Cherrycake\Engine;
  * ];
  * </code>
  */
-class Validate extends \Cherrycake\Module {
+class Validate extends \Cherrycake\Classes\Module {
 
 	const USERNAME_INSTAGRAM = 0; // Value must be a valid Instagram username
 	const USERNAME_TWITTER = 1; // Value must be a valid Twitter username
@@ -91,11 +91,11 @@ class Validate extends \Cherrycake\Module {
 		}
 
 		if ($isError)
-			return new \Cherrycake\ResultKo([
+			return new \Cherrycake\Classes\ResultKo([
 				"descriptions" => $descriptions
 			]);
 		else
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Validate extends \Cherrycake\Module {
 		string $email,
 		int|bool $forceMethod = false,
 		bool $isFallbackToSimpleMethod = true
-	): \Cherrycake\Result {
+	): \Cherrycake\Classes\Result {
 		$method = $forceMethod ? $forceMethod : $this->getConfig("emailValidationMethod");
 
 		if ($isFallbackToSimpleMethod && $method > \Cherrycake\Modules\Validate\Validate::EMAIL_METHOD_SIMPLE)
@@ -122,9 +122,9 @@ class Validate extends \Cherrycake\Module {
 		switch ($method) {
 			case \Cherrycake\Modules\Validate\Validate::EMAIL_METHOD_SIMPLE:
 				if (filter_var($email, FILTER_VALIDATE_EMAIL))
-					return new \Cherrycake\ResultOk;
+					return new \Cherrycake\Classes\ResultOk;
 				else
-					return new \Cherrycake\ResultKo;
+					return new \Cherrycake\Classes\ResultKo;
 				break;
 			case \Cherrycake\Modules\Validate\Validate::EMAIL_METHOD_MAILGUN:
 				return $this->emailValidateWithMailgun($email);
@@ -158,7 +158,7 @@ class Validate extends \Cherrycake\Module {
 					"Curl error" => curl_error($ch)
 				]
 			]));
-			return new \Cherrycake\ResultKo;
+			return new \Cherrycake\Classes\ResultKo;
 		}
 
 		curl_close($ch);
@@ -167,13 +167,13 @@ class Validate extends \Cherrycake\Module {
 
 		if (!$result->is_valid) {
 			if ($result->did_you_mean)
-				return new \Cherrycake\ResultKo([
+				return new \Cherrycake\Classes\ResultKo([
 					"didYouMean" => $result->did_you_mean
 				]);
-			return new \Cherrycake\ResultKo;
+			return new \Cherrycake\Classes\ResultKo;
 		}
 		else
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 	}
 
 	/**
@@ -203,12 +203,12 @@ class Validate extends \Cherrycake\Module {
 					"Curl error" => curl_error($ch)
 				]
 			]));
-			return new \Cherrycake\ResultKo;
+			return new \Cherrycake\Classes\ResultKo;
 		}
 
 		if (!$result) {
 			$this->system_log_and_email("Error while trying to verify an email via Mailboxlayer", array("Email" => $email, "Mailboxlayer error" => curl_error($ch)));
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 		}
 
 		curl_close($ch);
@@ -226,13 +226,13 @@ class Validate extends \Cherrycake\Module {
 
 		if (!$isValid) {
 			if ($result->did_you_mean)
-				return new \Cherrycake\ResultKo([
+				return new \Cherrycake\Classes\ResultKo([
 					"didYouMean" => $result->did_you_mean
 				]);
-			return new \Cherrycake\ResultKo;
+			return new \Cherrycake\Classes\ResultKo;
 		}
 		else
-			return new \Cherrycake\ResultOK;
+			return new \Cherrycake\Classes\ResultOK;
 	}
 
 	/**
@@ -289,9 +289,9 @@ class Validate extends \Cherrycake\Module {
 			$resultInfo["weaknesses"][] = \Cherrycake\Modules\Validate\Validate::PASSWORD_STRENGTH_WEAKNESS_MATCHES_USERNAME;
 
 		if ($resultInfo["weaknesses"])
-			return new \Cherrycake\ResultKo($resultInfo);
+			return new \Cherrycake\Classes\ResultKo($resultInfo);
 		else
-			return new \Cherrycake\ResultOk;
+			return new \Cherrycake\Classes\ResultOk;
 	}
 
 }

@@ -2,14 +2,14 @@
 
 namespace Cherrycake\Modules\Translation;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
  * The Language module provides text translations for multilingual sites, working in conjunction with the Locale module.
  */
-class Translation extends \Cherrycake\Module {
+class Translation extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

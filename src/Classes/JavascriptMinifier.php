@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 /*
  * This file is part of the JShrink package.

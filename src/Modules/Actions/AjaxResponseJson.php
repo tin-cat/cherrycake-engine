@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Actions;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * A class that represents an Ajax JSON response, intended to be handled by the Javascript part of the Ajax module

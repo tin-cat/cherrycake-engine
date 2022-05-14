@@ -7,7 +7,7 @@ namespace Cherrycake\Modules\Pdf;
  * Reqires PHP >= 5.6 && <=7.3, mbstring and gd extensions. zlib, bcmath and xml extensions are required for some extended functionality.
  * Generates PDF files
  */
-class Pdf extends \Cherrycake\Module {
+class Pdf extends \Cherrycake\Classes\Module {
     function init(): bool {
         if (!parent::init())
             return false;

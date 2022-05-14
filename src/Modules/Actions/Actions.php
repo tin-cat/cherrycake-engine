@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Actions;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
 
@@ -10,7 +10,7 @@ use Cherrycake\Modules\Errors\Errors;
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
  * It takes configuration from the App-layer configuration file.
  */
-class Actions extends \Cherrycake\Module {
+class Actions extends \Cherrycake\Classes\Module {
 
 	const MODULE_TYPE_CORE = 0;
 	const MODULE_TYPE_APP = 1;

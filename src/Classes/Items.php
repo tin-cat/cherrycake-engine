@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 use Cherrycake\BasicObject;
 use Cherrycake\Modules\Cache\Cache;

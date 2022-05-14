@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 const GRADIENT_STYLE_HORIZONTAL = 0;
 const GRADIENT_STYLE_VERTICAL = 1;

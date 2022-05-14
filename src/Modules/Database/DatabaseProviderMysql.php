@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Database;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Errors\Errors;
 
 /**

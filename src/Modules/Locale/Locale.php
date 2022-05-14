@@ -2,13 +2,13 @@
 
 namespace Cherrycake\Modules\Locale;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
  * The Locale module provides localization functionalities for multilingual web sites with automatic detection, plus the handling of currencies, dates, timezones and more.
  */
-class Locale extends \Cherrycake\Module {
+class Locale extends \Cherrycake\Classes\Module {
 
 	const SPANISH = 1;
 	const ENGLISH = 2;

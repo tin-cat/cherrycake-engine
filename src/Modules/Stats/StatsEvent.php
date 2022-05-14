@@ -2,12 +2,12 @@
 
 namespace Cherrycake\Modules\Stats;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Base class to represent a stats event for the Stats module
  */
-class StatsEvent extends \Cherrycake\Item {
+class StatsEvent extends \Cherrycake\Classes\Item {
 
 	const TIME_RESOLUTION_MINUTE = 0;
 	const TIME_RESOLUTION_HOUR = 1;

@@ -1,7 +1,9 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
+use Cherrycake\Classes\Module;
+use Cherrycake\Classes\EngineCache;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
@@ -306,7 +308,7 @@ class Engine {
 		int $origin = Module::MODULE_LOADING_ORIGIN_MANUAL,
 		bool $requiredByModuleName = false
 	): bool {
-		return $this->loadModule(ENGINE_DIR."/src", $this->getConfigDir(), $moduleName, __NAMESPACE__, $origin, $requiredByModuleName);
+		return $this->loadModule(ENGINE_DIR."/src", $this->getConfigDir(), $moduleName, "Cherrycake", $origin, $requiredByModuleName);
 	}
 
 	/**
@@ -684,8 +686,8 @@ class Engine {
 	 * @return Translation\Text A Text object for the given key
 	 */
 	public function t(...$parameters)
-	: Modules\Translation\Text {
-		return new Modules\Translation\Text(...$parameters);
+	: \Cherrycake\Modules\Translation\Text {
+		return new \Cherrycake\Modules\Translation\Text(...$parameters);
 	}
 }
 

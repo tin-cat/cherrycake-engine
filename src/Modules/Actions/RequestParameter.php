@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Actions;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * A class that represents a parameter passed to a Request via Get or Post
@@ -87,7 +87,7 @@ class RequestParameter {
 	 * @return array Status information
 	 */
 	function getStatus() {
-		$r["brief"] = $this->name."=".($this->value ?? "none");
+		$r["brief"] = $this->name."=".(is_array($this->value) ? json_encode($this->value) : $this->value ?? "none");
 		$r["name"] = $this->name ?? "unnamed";
 		$r["value"] = $this->value ?? "none";
 		if ($this->securityRules) {

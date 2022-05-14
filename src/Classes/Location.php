@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 const LOCATION_DATABASE_PROVIDER_NAME = "main"; // The name of the DatabaseProvider to use when requesting location data from the Database, as defined in database.config.php
 const LOCATION_CACHE_PROVIDER_NAME = "engine"; // The name of the CacheProvider to use, as defined in cache.config.php

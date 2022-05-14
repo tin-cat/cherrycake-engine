@@ -1,7 +1,8 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
 

@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Janitor;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Allows an app to program tasks to be executed automatically and periodically.
@@ -15,7 +15,7 @@ use Cherrycake\Engine;
  *  /janitor/status
  *      Presents a page with a tasks report status
  */
-class Janitor extends \Cherrycake\Module {
+class Janitor extends \Cherrycake\Classes\Module {
 
 	const EXECUTION_RETURN_WARNING = 0; // Return code for JanitorTask run when task returned a warning.
 	const EXECUTION_RETURN_ERROR = 1; // Return code for JanitorTask run when task returned an error.

@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\Janitor;
 /**
  * Class to work with janitorlog items
  */
-class JanitorLogItems extends \Cherrycake\Items {
+class JanitorLogItems extends \Cherrycake\Classes\Items {
 	protected $tableName = "cherrycake_janitor_log";
 	protected $itemClassName = "\Cherrycake\Modules\JanitorLogItem";
 	protected $isCache = false;

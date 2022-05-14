@@ -1,6 +1,6 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
 
 /**
  * The base class for UI components. Intented to be overloaded by specific functionality classes

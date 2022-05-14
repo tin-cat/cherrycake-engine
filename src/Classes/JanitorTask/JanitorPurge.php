@@ -1,12 +1,12 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes\JanitorTask;
 
 /**
  * A JanitorTask to maintain the Janitor module itself
  * Purges the old log items on the database to avoid unnecessary database cluttering.
  */
-class JanitorTaskJanitorPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
+class JanitorPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 	/**
 	 * @var array $config Default configuration options
 	 */

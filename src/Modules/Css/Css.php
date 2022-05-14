@@ -2,13 +2,13 @@
 
 namespace Cherrycake\Modules\Css;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 
 /**
  * Module that manages Css code.
  */
-class Css extends \Cherrycake\Module {
+class Css extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

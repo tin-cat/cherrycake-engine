@@ -1,6 +1,8 @@
 <?php
 
-namespace Cherrycake;
+namespace Cherrycake\Classes;
+
+use Cherrycake\Classes\Engine;
 
 /**
  * Provides a bottom level cache aimed to provide engine-level speed optimizations with a small-size, high performance cache.

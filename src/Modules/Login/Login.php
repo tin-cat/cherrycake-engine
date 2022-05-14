@@ -2,12 +2,12 @@
 
 namespace Cherrycake\Modules\Login;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Provides a standardized method for implementing secure user identification workflows for web apps.
  */
-class Login extends \Cherrycake\Module {
+class Login extends \Cherrycake\Classes\Module {
 
 	const LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2 = 0;
 
@@ -84,7 +84,7 @@ class Login extends \Cherrycake\Module {
 	function encryptPassword(string $password): string|bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
 			case \Cherrycake\Modules\Login\Login::LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
-				$pbkdf2 = new \Cherrycake\Pbkdf2;
+				$pbkdf2 = new \Cherrycake\Classes\Pbkdf2;
 				return $pbkdf2->createHash($password);
 				break;
 			default:
@@ -101,7 +101,7 @@ class Login extends \Cherrycake\Module {
 	function checkPassword(string $passwordToCheck, string $encryptedPassword): bool {
 		switch ($this->getConfig("passwordAuthenticationMethod")) {
 			case \Cherrycake\Modules\Login\Login::LOGIN_PASSWORD_ENCRYPTION_METHOD_PBKDF2:
-				$pbkdf2 = new \Cherrycake\Pbkdf2;
+				$pbkdf2 = new \Cherrycake\Classes\Pbkdf2;
 				return $pbkdf2->checkPassword($passwordToCheck, $encryptedPassword);
 				break;
 			default:

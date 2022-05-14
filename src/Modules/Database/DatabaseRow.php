@@ -2,7 +2,7 @@
 
 namespace Cherrycake\Modules\Database;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Class that represents a row retrieved from a query to a database

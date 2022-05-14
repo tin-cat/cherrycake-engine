@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\Login;
 /**
  * An abstract class to be extended by the App class that represents a user when interacting with the Login module
  */
-abstract class LoginUser extends \Cherrycake\Item {
+abstract class LoginUser extends \Cherrycake\Classes\Item {
 	/**
 	 * @var $userNameFieldName The field name that holds the username user to identify this user in the Login process
 	 */

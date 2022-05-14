@@ -2,12 +2,12 @@
 
 namespace Cherrycake\Modules\Stats;
 
-use Cherrycake\Engine;
+use Cherrycake\Classes\Engine;
 
 /**
  * Stores and manages statistical information
  */
-class Stats extends \Cherrycake\Module {
+class Stats extends \Cherrycake\Classes\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */

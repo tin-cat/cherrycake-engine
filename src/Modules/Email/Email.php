@@ -22,7 +22,7 @@ use \PHPMailer\PHPMailer\Exception;
  *
  * @todo Implement an email queueing system
  */
-class Email extends \Cherrycake\Module {
+class Email extends \Cherrycake\Classes\Module {
 
 	const SMTP_ENCRYPTION_TLS = 0;
 	const SMTP_ENCRYPTION_SSL = 1;
@@ -99,9 +99,9 @@ class Email extends \Cherrycake\Module {
             $this->phpMailer->ClearAddresses();
 
         } catch (\PHPMailer\PHPMailer\Exception $e) {
-            return new \Cherrycake\ResultKo(["descriptions" => [$this->phpMailer->ErrorInfo]]);
+            return new \Cherrycake\Classes\ResultKo(["descriptions" => [$this->phpMailer->ErrorInfo]]);
         }
-        return new \Cherrycake\ResultOk;
+        return new \Cherrycake\Classes\ResultOk;
     }
 
     function end() {

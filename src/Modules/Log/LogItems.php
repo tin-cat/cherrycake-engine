@@ -5,7 +5,7 @@ namespace Cherrycake\Modules\Log;
 /**
  * Class to work with log items
  */
-class LogItems extends \Cherrycake\Items {
+class LogItems extends \Cherrycake\Classes\Items {
 	protected $tableName = "log";
 	protected $itemClassName = "\Cherrycake\Modules\LogItem";
 	protected $isCache = false;
