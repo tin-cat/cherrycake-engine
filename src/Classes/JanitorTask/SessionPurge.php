@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Classes\JanitorTask;
 
+use Cherrycake\Classes\Engine;
+
 /**
  * A JanitorTask to maintain the Session module.
  * Purges sessions older than the given seconds. A different configuration is given for differentiating the purging sessions without any data stored (sessions that haven't been used in any way) between sessions with data stored (sessions that have been actually used somehow)

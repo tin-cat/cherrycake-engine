@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Modules\ObjectStorage;
 
+use Exception;
+
 abstract class ObjectStorageProvider {
 	protected $name;
 	protected $config;

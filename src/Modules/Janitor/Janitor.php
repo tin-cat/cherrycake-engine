@@ -36,12 +36,12 @@ class Janitor extends \Cherrycake\Classes\Module {
 		"logDatabaseProviderName" => "main", // The name of the DatabaseProvider to use for storing Janitor log.
 		"logTableName" => "cherrycake_janitor_log", // The name of the table used to store Janitor log.
 		"coreJanitorTasks" => [ // An array of names of Cherrycake core JanitorTask classes to run.
-			"JanitorTaskJanitorPurge",
-			"JanitorTaskLogCommit",
-			"JanitorTaskSessionPurge",
-			"JanitorTaskStatsCommit",
-			"JanitorTaskSystemLogCommit",
-			"JanitorTaskSystemLogPurge"
+			"JanitorPurge",
+			"LogCommit",
+			"SessionPurge",
+			"StatsCommit",
+			"SystemLogCommit",
+			"SystemLogPurge"
 		],
 		"appJanitorTasks" => [] // An array of names of App JanitorTask classes to run.
 	];
@@ -146,7 +146,7 @@ class Janitor extends \Cherrycake\Classes\Module {
 	 */
 	function addCherrycakeJanitorTask($janitorTaskName) {
 		if (!isset($this->janitorTasks[$janitorTaskName])) {
-			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\Cherrycake\\Janitor\\".$janitorTaskName."();");
+			eval("\$this->janitorTasks[\"".$janitorTaskName."\"] = new \\Cherrycake\\Classes\\JanitorTask\\".$janitorTaskName."();");
 			$this->janitorTasks[$janitorTaskName]->init();
 		}
 	}

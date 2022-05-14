@@ -36,9 +36,9 @@ class Engine {
 	 */
 	private int $executionStartHrTime;
 
-	protected function __construct() {}
-	protected function __clone() {}
-	protected function __wakeup() {
+	public function __construct() {}
+	public function __clone() {}
+	public function __wakeup() {
 		throw new \Exception('Can\'t unserialize Engine singleton');
 	}
 

@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Modules\ObjectStorage;
 
+use Exception;
+
 class ObjectStorageProviderS3 extends ObjectStorageProvider {
 	private $s3Client = null;
 

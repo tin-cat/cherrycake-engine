@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Classes\JanitorTask;
 
+use Cherrycake\Classes\Engine;
+
 /**
  * A JanitorTask to maintain the System Log module
  * Commits the system log events in cache to database

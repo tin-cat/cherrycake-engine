@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Modules\ObjectStorage;
 
+use Exception;
+
 class ObjectStorage extends \Cherrycake\Classes\Module {
 	const SYSTEM_S3 = 0;
 
@@ -13,10 +15,6 @@ class ObjectStorage extends \Cherrycake\Classes\Module {
 	private $systemClassNames = [
 		self::SYSTEM_S3 => "ObjectStorageProviderS3"
 	];
-
-	public function test(): string {
-		return $this->getConfig('test');
-	}
 
 	public static function getProvider($providerName) {
 		if (!self::$instance instanceof self)

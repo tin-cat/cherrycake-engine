@@ -2,8 +2,6 @@
 
 /**
  * Error handler
- *
-
  */
 
 namespace Cherrycake;

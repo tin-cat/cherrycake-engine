@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Classes\JanitorTask;
 
+use Cherrycake\Classes\Engine;
+
 /**
  * A JanitorTask to maintain the Stats module
  * Commits the Stats events in cache to database

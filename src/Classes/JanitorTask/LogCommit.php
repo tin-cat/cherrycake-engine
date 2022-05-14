@@ -2,6 +2,8 @@
 
 namespace Cherrycake\Classes\JanitorTask;
 
+use Cherrycake\Classes\Engine;
+
 /**
  * A JanitorTask to maintain the Log module
  * Stores the cached events queue into database, then empties the cache
