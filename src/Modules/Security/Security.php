@@ -57,14 +57,14 @@ class Security  extends \Cherrycake\Classes\Module {
 	];
 
 	/**
-	 * @var array $fixedParameterRulesForValues Contains the rules that must be always met when checking parameter values
+	 * @var array $fixedParameterRulesForValues Contains the rules that, whenever possible, must be always met when checking parameter values
 	 */
 	var $fixedParameterRulesForValues = [
 		self::RULE_SQL_INJECTION
 	];
 
 	/**
-	 * @var array $fixedParametersFilters Contains the filters that must be always applied when retrieving parameter values
+	 * @var array $fixedParametersFilters Contains the filters that, whenever possible, must be always applied when retrieving parameter values
 	 */
 	var $fixedParametersFilters = [
 		self::FILTER_XSS
@@ -733,6 +733,13 @@ class Security  extends \Cherrycake\Classes\Module {
 			IMAGETYPE_ICO => "ico"
 		];
 
+		// Check that the upload did not include multiple images
+		if (is_array($file["name"])) {
+			return new \Cherrycake\Classes\ResultKo([
+				"description" => "Upload for multiple files received, only single file uploads are allowed."
+			]);
+		}
+
 		// Check file name
 		$result = $this->checkValue($file["name"], [
 			self::RULE_SQL_INJECTION
@@ -752,7 +759,7 @@ class Security  extends \Cherrycake\Classes\Module {
 			return new \Cherrycake\Classes\ResultKo(["description" => "Didn't receive an uploaded file"]);
 		}
 
-		if ($setup["allowedImageTypes"])
+		if (isset($setup["allowedImageTypes"]))
 			$setup["isRequireImage"] = true;
 
 		// If allowedImageTypes is not specified, but isRequireImage is, generate an allowedImageTypes array with all the image types supported by GD
@@ -797,15 +804,13 @@ class Security  extends \Cherrycake\Classes\Module {
 		// Check if the uploaded file is an image
 		if ($setup["isRequireImage"]) {
 			$imageSizeResult = getimagesize($file["tmp_name"]);
-			$imageType = $imageSizeResult[2];
 			if (!$imageSizeResult) {
 				return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file is not recognized as an image"]);
 			}
-			else {
-				// Check if the uploaded file is in one of the allowed image types
-				if (!in_array($imageType, $setup["allowedImageTypes"])) {
-					return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file is not in one of the allowed image types"]);
-				}
+			$imageType = $imageSizeResult[2];
+			// Check if the uploaded file is in one of the allowed image types
+			if (!in_array($imageType, $setup["allowedImageTypes"])) {
+				return new \Cherrycake\Classes\ResultKo(["description" => "Received uploaded file is not in one of the allowed image types"]);
 			}
 		}
 
