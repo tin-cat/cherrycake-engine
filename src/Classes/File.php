@@ -16,14 +16,26 @@ class File {
 		 */
 		private string $dir,
 		/**
-		 * var $nameUrl The name of the file that an HTTP client can use to load it
+		 * var $nameUrl The name of the file that an HTTP client can use to load it. Null if the file was uploaded and is not public on the network.
 		 */
-		private string $urlName,
+		private ?string $urlName = null,
 		/**
-		 * var $baseUrl string The base URL where the file can be loaded by an HTTP client, without a trailing slash
+		 * var $baseUrl string The base URL where the file can be loaded by an HTTP client, without a trailing slash. Null if the file was uploaded and is not public on the network.
 		 */
-		private string $urlBase,
+		private ?string $urlBase = null,
+		/**
+		 * var $originalName string The original name of the file if it was uploaded. Null if the file was not uploaded.
+		 */
+		private ?string $originalName = null,
 	) {}
+
+	static function buildFromUploadedFile($file) {
+		return new File(
+			name: basename($file['tmp_name']),
+			dir: dirname($file['tmp_name']),
+			originalName: $file['name']
+		);
+	}
 
 	/**
 	 * @return string The name of the file
