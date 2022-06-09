@@ -2,8 +2,6 @@
 
 namespace Cherrycake\Classes;
 
-use Cherrycake\Modules\Errors\Errors;
-
 /**
  * Class that represents an image that's available in multiple sizes
  */
@@ -31,5 +29,10 @@ abstract class MultisizeImage {
  	 * ]
 	 * ```
 	 */
-	var $sizes;
+	protected $sizes;
+
+	/**
+	 * An array of Image objects corresponding to each of the sizes available
+	 */
+	protected $images;
 }

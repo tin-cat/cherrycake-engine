@@ -45,6 +45,13 @@ class File {
 	}
 
 	/**
+	 * @return string The original name of the file. If the file was uploaded, its original name. If not, the name of the file on disk.
+	 */
+	function getOriginalName(): string {
+		return $this->originalName ?: $this->getName();
+	}
+
+	/**
 	 * @return string The local path of the file to be accessed by the code
 	 */
 	function getLocalPath(): string {
