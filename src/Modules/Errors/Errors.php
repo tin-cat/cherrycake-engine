@@ -149,9 +149,9 @@ class Errors extends \Cherrycake\Classes\Module {
 			)
 		)
 			Engine::e()->SystemLog->event(new \Cherrycake\Modules\SystemLog\SystemLogEventError([
-				"subType" => isset($subType) ? $subType : false,
-				"description" => isset($description) ? $description : false,
-				"data" => isset($variables) ? $variables : false
+				"subType" => $subType ?: false,
+				"description" => $description ?: false,
+				"data" => $variables ?: false,
 			]));
 
 		if (
@@ -204,10 +204,10 @@ class Errors extends \Cherrycake\Classes\Module {
 		}
 		else {
 			switch (get_class(Engine::e()->Actions->currentAction)) {
-				case "Cherrycake\Actions\ActionHtml":
+				case "Cherrycake\Modules\Actions\ActionHtml":
 					$outputType = "pattern";
 					break;
-				case "Cherrycake\Actions\ActionAjax":
+				case "Cherrycake\Modules\Actions\ActionAjax":
 					$outputType = "ajax";
 					break;
 				default:

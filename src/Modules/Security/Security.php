@@ -314,7 +314,7 @@ class Security  extends \Cherrycake\Classes\Module {
 					$file,
 					array_merge(
 						[
-							"isRequireImage" => true
+							"isRequireImage" => true,
 						],
 						($ruleParameter ? $ruleParameter : [])
 					)
@@ -822,9 +822,9 @@ class Security  extends \Cherrycake\Classes\Module {
 			}
 		}
 
-		// If an image was required, re-generate it using the imagecreatefrom* method for security
+		// If an image was required, and security regeneration was requested, re-generate the image using the imagecreatefrom* method for security
 		// Images other than jpg, png or gif are converted to png
-		if (($setup["isRequireImage"] ?? false) && $imageType) {
+		if (($setup["isRequireImage"] ?? false) && ($setup["isSecurityRegenerate"] ?? false) && $imageType) {
 			switch ($imageType) {
 				case IMAGETYPE_BMP:
 					$image = imagecreatefrombmp($file["tmp_name"]);
