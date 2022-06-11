@@ -2,7 +2,9 @@
 
 namespace Cherrycake\Modules\Actions;
 
+use Exception;
 use Cherrycake\Classes\Engine;
+use Cherrycake\Classes\AppException;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
@@ -123,7 +125,24 @@ class Action {
 					);
 					return true;
 				}
-				eval("\$return = \Cherrycake\Classes\Engine::e()->".$this->moduleName."->".$this->methodName."(\$this->request);");
+				try {
+					eval("\$return = \Cherrycake\Classes\Engine::e()->".$this->moduleName."->".$this->methodName."(\$this->request);");
+				} catch (AppException $e) {
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_APP,
+						description: $e->getMessage(),
+						variables: [
+							'extendedDescription' => $e->getDescription()
+						]
+					);
+					return true;
+				} catch (Exception $e) {
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_APP,
+						description: $e->getMessage()
+					);
+					return true;
+				}
 				break;
 		}
 

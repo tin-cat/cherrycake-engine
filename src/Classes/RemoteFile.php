@@ -14,7 +14,7 @@ class RemoteFile {
 		/**
 		 * var $baseUrl string The base URL where the file can be loaded by an HTTP client, without a trailing slash.
 		 */
-		public ?string $urlBase,
+		public string $urlBase,
 	) {}
 
 	/**

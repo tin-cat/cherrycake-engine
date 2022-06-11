@@ -61,7 +61,7 @@ class LocalImage extends LocalFile {
 	 * @return float The number of megapixels of this image
 	 */
 	public function getMegapixels(): float {
-		return $this->getWidth() * $this->getheight();
+		return $this->getWidth() * $this->getheight() / 1000000;
 	}
 
 	private function loadType() {
