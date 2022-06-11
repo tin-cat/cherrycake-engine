@@ -5,9 +5,9 @@ namespace Cherrycake\Classes;
 use Exception;
 
 /**
- * A class that represents a file that resides locally
+ * A class that represents a file
  */
-class LocalFile {
+class File {
 	/**
 	 * var $baseDir string The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
 	 */

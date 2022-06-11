@@ -3,9 +3,9 @@
 namespace Cherrycake\Classes;
 
 /**
- * Class that represents an image that resides locally
+ * Class that represents an image
  */
-class LocalImage extends LocalFile {
+class Image extends File {
 	/**
 	 * @return int The width of the image in pixels
 	 */
