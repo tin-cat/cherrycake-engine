@@ -3,25 +3,37 @@
 namespace Cherrycake\Classes\ImageResizeAlgorithm;
 
 use Exception;
+use Cherrycake\Classes\JpegIcc;
 
 abstract class ImageResizeAlgorithm {
 	/**
+	 * @var string $jpegIccProfileData The ICC profile data for JPEG images when isKeepOriginalIccProfile is used.
+	 */
+	private string $jpegIccProfileData;
+
+	/**
 	 * @param int $outputImageType The imagetype of the output, one of the IMAGETYPE_* constants (https://www.php.net/manual/es/image.constants.php)
-	 * @param int $jpegQuality The JPEG quality of the output when using IMAGETYPE_JPEG, ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
+	 * @param int $jpegQuality The JPEG compression quality of the output when using IMAGETYPE_JPEG, ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
+	 * @param int $pngQuality The PNG compressoin quality of the output when using IMAGETYPE_PNG, ranges from 0 (no compression) to 9. -1 uses the zlib compression default.
+	 * @param int $webpQuality The WEBP compressoin quality of the output when using IMAGETYPE_WEBP, ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
 	 * @param bool $isInterlaced Whether the output image should be interlaced, when the outputImageType supports it.
 	 * @param bool $isCorrectOrientation Whether to rotate the image to bring it to the correct orientation based on EXIF data.
+	 * @param bool $isKeepOriginalIccProfile Whether to keep the original ICC color profile in generated images
 	 */
 	public function __construct(
 		protected int $outputImageType,
 		protected int $jpegQuality = 90,
+		protected int $pngQuality = -1,
+		protected int $webpQuality = -1,
 		protected bool $isInterlaced = true,
 		protected bool $isCorrectOrientation = true,
+		protected bool $isKeepOriginalIccProfile = true,
 	) {}
 
 	/**
 	 * Loads the specified image and returns a GdImage object along its width, height and image type.
 	 * It also corrects the image orientation based on EXIF data if needed.
-	 * @param string $file The path to the image's local file
+	 * @param string $sourceFilePath The path to the image's local file
 	 * @return array An array containing the following keys
 	 * - gdImage: A GdImage object that can be handled by GD
 	 * - width: The width of the image
@@ -30,29 +42,38 @@ abstract class ImageResizeAlgorithm {
 	 * @throws UnrecognizedFileTypeException if the provided source image is not recognized as a file Type
 	 */
 	protected function loadImage(
-		string $file
+		string $sourceFilePath,
 	): array {
-		if (!$imageSpecs = getimagesize($file))
+		if (!$imageSpecs = getimagesize($sourceFilePath))
 			throw new UnrecognizedFileTypeException('The provided file could not be recognized as an image');
 
 		list($width, $height, $type) = $imageSpecs;
 
 		switch ($type) {
 			case IMAGETYPE_GIF:
-				$image = imageCreateFromGif($file);
+				$image = imageCreateFromGif($sourceFilePath);
 				break;
 			case IMAGETYPE_PNG:
-				$image = imageCreateFromPng($file);
+				$image = imageCreateFromPng($sourceFilePath);
 				break;
 			case IMAGETYPE_JPEG:
-				$image = imagecreateFromJpeg($file);
+				if ($this->isKeepOriginalIccProfile) {
+					$jpegIcc = new JpegIcc;
+					try {
+						if ($jpegIcc->LoadFromJPEG($sourceFilePath))
+							$this->jpegIccProfileData = $jpegIcc->GetProfile();
+					} catch (Exception $e) {
+						throw new ResizeException($e);
+					}
+				}
+				$image = imagecreateFromJpeg($sourceFilePath);
 				break;
 		}
 
 		if ($this->isCorrectOrientation) {
 			if (!function_exists('exif_read_data'))
 				throw new Exception('EXIF extension required to retrieve orientation data');
-			if ($exif = exif_read_data($file) && isset($exif["Orientation"])) {
+			if ($exif = exif_read_data($sourceFilePath) && isset($exif["Orientation"])) {
 				$orientation = $exif["Orientation"];
 				if ($orientation == 6 || $orientation == 5)
 					$image = imagerotate($image, 270, 0);
@@ -78,5 +99,61 @@ abstract class ImageResizeAlgorithm {
 			'height' => $height,
 			'type' => $type,
 		];
+	}
+
+	/**
+	 * Stores a GdImage object into its final destination and type
+	 * @param Object $image A GdImage object
+	 * @param string $destinationFilePath The full file path of the destination image
+	 */
+	function storeImage(
+		Object $image,
+		string $destinationFilePath,
+	) {
+		switch ($this->outputImageType) {
+			case IMAGETYPE_GIF:
+				imageinterlace($image, $this->isInterlaced);
+				if (!imagegif(
+					image: $image,
+					file: $destinationFilePath,
+				))
+					throw new ResizeException('Error creating GIF image');
+				break;
+			case IMAGETYPE_PNG:
+				if (!imagepng(
+					image: $image,
+					file: $destinationFilePath,
+					quality: $this->pngQuality,
+				))
+					throw new ResizeException('Error creating PNG image');
+				break;
+			case IMAGETYPE_JPEG:
+				imageinterlace($image, $this->isInterlaced);
+				if (!imagejpeg(
+					image: $image,
+					filename: $destinationFilePath,
+					quality: $this->jpegQuality,
+				))
+					throw new ResizeException('Error creating JPEG image');
+
+				if ($this->isKeepOriginalIccProfile && $this->jpegIccProfileData) {
+					$jpegIcc = new JpegIcc;
+					try {
+						if ($jpegIcc->setProfile($this->jpegIccProfileData))
+							$jpegIcc->SaveToJPEG($destinationFilePath);
+					} catch (Exception $e) {
+						throw new ResizeException($e);
+					}
+				}
+				break;
+			case IMAGETYPE_WEBP:
+				if (!imagewebp(
+					image: $image,
+					to: $destinationFilePath,
+					quality: $this->webpQuality,
+				))
+					throw new ResizeException('Error creating WEBP image');
+				break;
+		}
 	}
 }

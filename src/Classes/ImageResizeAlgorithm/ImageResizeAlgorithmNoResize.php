@@ -11,9 +11,16 @@ class ImageResizeAlgorithmNoResize extends ImageResizeAlgorithm implements Image
 		string $destinationFilePath,
 	) {
 		$imageData = $this->loadImage($sourceFilePath);
-		$this->storeImage(
-			$imageData['gdImage'],
-			$destinationFilePath,
-		);
+		// If the source image is the same type as the destination image, simply copy the file
+		if ($imageData['type'] === $this->outputImageType) {
+			copy($sourceFilePath, $destinationFilePath);
+		}
+		else {
+			// The source image is of a different type than the destination image, store it without any processing
+			$this->storeImage(
+				$imageData['gdImage'],
+				$destinationFilePath,
+			);
+		}
 	}
 }

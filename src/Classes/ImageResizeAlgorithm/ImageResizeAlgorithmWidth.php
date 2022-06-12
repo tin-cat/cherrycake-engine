@@ -15,21 +15,33 @@ class ImageResizeAlgorithmWidth extends ImageResizeAlgorithm implements ImageRes
 	 */
 	public function __construct(
 		private int $width,
-		protected int $outputImageType,
-		protected int $jpegQuality = 90,
-		protected bool $isInterlaced = true,
+		...$parameters
 	) {
-		parent::__construct(
-			outputImageType: $outputImageType,
-			jpegQuality: $jpegQuality,
-			isInterlaced: $isInterlaced,
-		);
+		parent::__construct(...$parameters);
 	}
 
 	public function resize(
 		string $sourceFilePath,
-		string $detinationFilePath,
+		string $destinationFilePath,
 	) {
-		copy($sourceFilePath, $detinationFilePath);
+		$imageData = $this->loadImage($sourceFilePath);
+		$height = floor(($this->width * $imageData['height']) / $imageData['width']);
+		$image = imageCreateTrueColor($this->width, $height);
+		imagecopyresampled(
+			dst_image: $image,
+			src_image: $imageData['gdImage'],
+			dst_x: 0,
+			dst_y: 0,
+			src_x: 0,
+			src_y: 0,
+			dst_width: $this->width,
+			dst_height: $height,
+			src_width: $imageData['width'],
+			src_height: $imageData['height']
+		);
+		$this->storeImage(
+			image: $image,
+			destinationFilePath: $destinationFilePath,
+		);
 	}
 }
