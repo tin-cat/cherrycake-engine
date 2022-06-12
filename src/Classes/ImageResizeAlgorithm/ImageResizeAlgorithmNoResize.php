@@ -5,11 +5,15 @@ namespace Cherrycake\Classes\ImageResizeAlgorithm;
 /**
  * An image resizing algorithm that does not resize the image at all
  */
-class ImageResizeAlgorithmNoResize implements ImageResizeAlgorithm {
+class ImageResizeAlgorithmNoResize extends ImageResizeAlgorithm implements ImageResizeAlgorithmInterface {
 	public function resize(
 		string $sourceFilePath,
-		string $detinationFilePath,
+		string $destinationFilePath,
 	) {
-		copy($sourceFilePath, $detinationFilePath);
+		$imageData = $this->loadImage($sourceFilePath);
+		$this->storeImage(
+			$imageData['gdImage'],
+			$destinationFilePath,
+		);
 	}
 }
