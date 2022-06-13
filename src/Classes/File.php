@@ -5,40 +5,78 @@ namespace Cherrycake\Classes;
 use Exception;
 
 /**
- * A class that represents a file
+ * A class that represents a file stored in disk in a controlled path and name structure, based on an automatically generated id.
  */
 class File {
-	/**
-	 * var $baseDir string The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
-	 */
-	protected string $baseDir;
-
-	/**
-	 * var $baseUrl string The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
-	 */
-	protected string $urlBase = '';
-
-	/**
-	 * var $uniqIdNumberOfCharacters The number of characters in the generated unique ids for images. Must be at least 3
-	 */
-	protected int $uniqIdNumberOfCharacters = 16;
-
 	public function __construct(
 		/**
 		 * var string $originalName The original name of the file, including extension
 		 */
-		public string $originalName,
+		protected string $originalName,
 		/**
-		 * var string $id The unique identified of the file
+		 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
 		 */
-		public string $id,
-	) {}
+		protected string $baseDir,
+		/**
+		 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
+		 */
+		protected string $urlBase,
+		/**
+		 * var int $uniqIdNumberOfCharacters The number of characters in the generated unique ids for images. Must be at least 3
+		 */
+		protected int $uniqIdNumberOfCharacters = 16,
+		/**
+		 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
+		 */
+		protected ?string $id = null,
+	) {
+		if (!$id)
+			$this->id = $this->buildUniqueFileIdentifier();
+	}
+
+	/**
+	 * Creates the file on disk for this File object from the given local file.
+	 * @param string $sourceDir The directory where the source file resides, without trailing slash.
+	 * @param string $sourceName The source file name.
+	 * @return bool Whether the operation completed succesfully.
+	 */
+	public function copyFromLocalFile(
+		string $sourceDir,
+		string $sourceName,
+	) {
+		$this->createBaseDir();
+		if (!copy(
+			from: $sourceDir.'/'.$sourceName,
+			to: $this->getPath()
+		))
+			return false;
+	}
+
+	/**
+	 * Creates the base dir if it doesn't exists
+	 */
+	public function createBaseDir() {
+		if (!file_exists($this->getDir())) {
+			mkdir(
+				directory: $this->getDir(),
+				permissions: 0777,
+				recursive: true,
+			);
+		}
+	}
 
 	/**
 	 * @return string A random unique identifier to identify files
 	 */
 	private function buildUniqueFileIdentifier(): string {
 		return bin2hex(random_bytes($this->uniqIdNumberOfCharacters));
+	}
+
+	/**
+	 * @return string The file extension, null if the file has no extension
+	 */
+	private function getExtension(): ?string {
+		return pathinfo($this->originalName, PATHINFO_EXTENSION) ?? null;
 	}
 
 	/**
@@ -52,14 +90,14 @@ class File {
 	 * @return string The file name
 	 */
 	private function getName(): string {
-		return $this->id.'.'.$this->name;
+		return $this->id.($this->getExtension() ? '.'.$this->getExtension() : null);
 	}
 
 	/**
 	 * @return string The local path of the file to be accessed by the code
 	 */
 	public function getPath(): string {
-		return $this->getDir().'/'.$this->id[0].$this->id[1].$this->id[2].'/'.$this->getName();
+		return $this->getDir().'/'.$this->getName();
 	}
 
 	/**

@@ -2,14 +2,25 @@
 
 namespace Cherrycake\Classes;
 
+use Cherrycake\Classes\File;
+
 /**
  * Class that represents an image that's available in multiple sizes
  */
 abstract class MultisizeImage {
 	/**
+	 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
+	 */
+	static protected string $baseDir;
+	/**
+	 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
+	 */
+	static protected string $urlBase;
+
+	/**
 	 * The sizes on which the image is available, as an array of ImageResizeAlgorithm objects
 	 */
-	private array $sizes;
+	protected array $sizes;
 
 	/**
 	 * An array of Image objects corresponding to each of the sizes available
@@ -30,7 +41,25 @@ abstract class MultisizeImage {
 	): MultisizeImage {
 		if (!$originalName)
 			$originalName = $name;
+
 		$className = get_called_class();
-		return new $className;
+		$multisizeImage = new $className;
+
+		$image = $className::getImageObject();
+
+		echo $image->getPath();
+
+		return $multisizeImage;
+	}
+
+	/**
+	 * @return Image An Image object to work with images for this MultisizeImage
+	 */
+	static public function getImageObject(): Image {
+		return new Image(
+			originalName: '',
+			baseDir: static::$baseDir,
+			urlBase: static::$urlBase,
+		);
 	}
 }
