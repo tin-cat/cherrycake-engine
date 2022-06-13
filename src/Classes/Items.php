@@ -220,7 +220,7 @@ abstract class Items implements \Iterator {
 		bool $isForceNoCache = false,
 		?array $cacheKeyNamingParameters = null,
 		bool $isStoreInCacheWhenNoResults = true
-	) {
+	): bool {
 		if (!$selects)
 			$selects = [$this->itemClassName::$tableName.'.*'];
 
