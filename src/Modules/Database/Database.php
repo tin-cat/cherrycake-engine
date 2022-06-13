@@ -46,6 +46,7 @@ class Database extends \Cherrycake\Classes\Module {
 	const TYPE_IP = 12;
 	const TYPE_SERIALIZED = 13;
 	const TYPE_COLOR = 14;
+	const TYPE_OBJECT = 15;
 
 	const DEFAULT_VALUE = 0;
 	const DEFAULT_VALUE_DATE = 1;

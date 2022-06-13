@@ -128,6 +128,9 @@ class Item {
 	) {
 		if ($id !== 0 && !$loadMethod)
 			$loadMethod = 'fromId';
+		else
+		if ($data && !$loadMethod)
+			$loadMethod = 'fromData';
 
 		if ($loadMethod)
 			switch($loadMethod) {
@@ -784,6 +787,9 @@ class Item {
 							"</tr>";
 				$table .= "</table>";
 				$r = $table;
+				break;
+			case \Cherrycake\Modules\Database\Database::TYPE_OBJECT:
+				$r = print_r($value, true);
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_STRING:
 			case \Cherrycake\Modules\Database\Database::TYPE_TEXT:

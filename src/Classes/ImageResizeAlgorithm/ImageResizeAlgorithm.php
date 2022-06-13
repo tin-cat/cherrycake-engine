@@ -31,6 +31,13 @@ abstract class ImageResizeAlgorithm {
 	) {}
 
 	/**
+	 * @return array The names of the object properties to serialize
+	 */
+	function __sleep() {
+		return [];
+	}
+
+	/**
 	 * Loads the specified image and returns a GdImage object along its width, height and image type.
 	 * It also corrects the image orientation based on EXIF data if needed.
 	 * @param string $sourceFilePath The path to the image's local file
@@ -67,6 +74,9 @@ abstract class ImageResizeAlgorithm {
 					}
 				}
 				$image = imagecreateFromJpeg($sourceFilePath);
+				break;
+			case IMAGETYPE_WEBP:
+				$image = imagecreateFromWebp($sourceFilePath);
 				break;
 		}
 
@@ -112,27 +122,33 @@ abstract class ImageResizeAlgorithm {
 	) {
 		switch ($this->outputImageType) {
 			case IMAGETYPE_GIF:
+				if (!function_exists('imagegif'))
+					throw new UnsupportedFileTypeException('Creation of GIF images is not supported');
 				imageinterlace($image, $this->isInterlaced);
 				if (!imagegif(
-					image: $image,
-					file: $destinationFilePath,
+					$image,
+					$destinationFilePath,
 				))
 					throw new ResizeException('Error creating GIF image');
 				break;
 			case IMAGETYPE_PNG:
+				if (!function_exists('imagepng'))
+					throw new UnsupportedFileTypeException('Creation of PNG images is not supported');
 				if (!imagepng(
-					image: $image,
-					file: $destinationFilePath,
-					quality: $this->pngQuality,
+					$image,
+					$destinationFilePath,
+					$this->pngQuality,
 				))
 					throw new ResizeException('Error creating PNG image');
 				break;
 			case IMAGETYPE_JPEG:
+				if (!function_exists('imagejpeg'))
+					throw new UnsupportedFileTypeException('Creation of JPEG images is not supported');
 				imageinterlace($image, $this->isInterlaced);
 				if (!imagejpeg(
-					image: $image,
-					filename: $destinationFilePath,
-					quality: $this->jpegQuality,
+					$image,
+					$destinationFilePath,
+					$this->jpegQuality,
 				))
 					throw new ResizeException('Error creating JPEG image');
 
@@ -147,10 +163,12 @@ abstract class ImageResizeAlgorithm {
 				}
 				break;
 			case IMAGETYPE_WEBP:
+				if (!function_exists('imagewebp'))
+					throw new UnsupportedFileTypeException('Creation of WEBP images is not supported');
 				if (!imagewebp(
-					image: $image,
-					to: $destinationFilePath,
-					quality: $this->webpQuality,
+					$image,
+					$destinationFilePath,
+					$this->webpQuality,
 				))
 					throw new ResizeException('Error creating WEBP image');
 				break;

@@ -56,6 +56,9 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		\Cherrycake\Modules\Database\Database::TYPE_SERIALIZED => [
 			"stmtBindParamType" => "s"
 		],
+		\Cherrycake\Modules\Database\Database::TYPE_OBJECT => [
+			"stmtBindParamType" => "s"
+		],
 		\Cherrycake\Modules\Database\Database::TYPE_COLOR => [
 			"stmtBindParamType" => "s"
 		]
@@ -218,7 +221,8 @@ class DatabaseProviderMysql extends DatabaseProvider {
 						$value = ip2long($parameter["value"]);
 						break;
 					case \Cherrycake\Modules\Database\Database::TYPE_SERIALIZED:
-						$value = json_encode($parameter["value"], JSON_FORCE_OBJECT);
+					case \Cherrycake\Modules\Database\Database::TYPE_OBJECT:
+						$value = serialize($parameter["value"]);
 						break;
 					case \Cherrycake\Modules\Database\Database::TYPE_COLOR:
 						$value = $parameter["value"]->getHex();

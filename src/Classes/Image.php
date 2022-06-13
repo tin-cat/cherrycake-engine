@@ -32,6 +32,17 @@ class Image extends File {
 	private ?array $exifMetadata = null;
 
 	/**
+	 * @return array The names of the object properties to serialize
+	 */
+	function __sleep() {
+		return array_merge(parent::__sleep(), [
+			'width',
+			'height',
+			'type'
+		]);
+	}
+
+	/**
 	 * Loads this image size, width and type by reading the file and analyzing its contents.
 	 * If this information was loaded before, it doesn't loads it again.
 	 */

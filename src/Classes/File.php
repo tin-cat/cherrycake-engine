@@ -3,11 +3,22 @@
 namespace Cherrycake\Classes;
 
 use Exception;
+use Ramsey\Uuid\Uuid;
 
 /**
  * A class that represents a file stored in disk in a controlled path and name structure, based on an automatically generated id.
  */
 class File {
+	/**
+	 * @return array The names of the object properties to serialize
+	 */
+	function __sleep() {
+		return [
+			'originalName',
+			'id'
+		];
+	}
+
 	public function __construct(
 		/**
 		 * var string $originalName The original name of the file, including extension
@@ -21,10 +32,6 @@ class File {
 		 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
 		 */
 		protected string $urlBase,
-		/**
-		 * var int $uniqIdNumberOfCharacters The number of characters in the generated unique ids for images. Must be at least 3
-		 */
-		protected int $uniqIdNumberOfCharacters = 16,
 		/**
 		 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
 		 */
@@ -56,7 +63,7 @@ class File {
 	 * Creates the base dir if it doesn't exists
 	 */
 	public function createBaseDir() {
-		if (!file_exists($this->getDir())) {
+		if (!file_exists($this->getDir().'/')) {
 			mkdir(
 				directory: $this->getDir(),
 				permissions: 0777,
@@ -69,7 +76,8 @@ class File {
 	 * @return string A random unique identifier to identify files
 	 */
 	private function buildUniqueFileIdentifier(): string {
-		return bin2hex(random_bytes($this->uniqIdNumberOfCharacters));
+		$uuid = Uuid::uuid4();
+		return $uuid->toString();
 	}
 
 	/**
@@ -104,7 +112,7 @@ class File {
 	 * @return string The URL where the file can be accessed by an HTTP client
 	 */
 	public function getUrl(): string {
-		return $this->urlBase.'/'.$this->name;
+		return $this->urlBase.'/'.$this->id[0].$this->id[1].$this->id[2].'/'.$this->getName();
 	}
 
 	/**

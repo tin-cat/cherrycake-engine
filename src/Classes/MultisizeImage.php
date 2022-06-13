@@ -2,8 +2,6 @@
 
 namespace Cherrycake\Classes;
 
-use Cherrycake\Classes\File;
-
 /**
  * Class that represents an image that's available in multiple sizes
  */
@@ -28,7 +26,22 @@ abstract class MultisizeImage {
 	protected $images;
 
 	/**
-	 * Creates a multisize image from the given local image.
+	 * Returns an Image object to work with this MultisizeImage
+	 * @param string $originalName The original name of the file, including extension
+	 * @return Image An Image object to work with images for this MultisizeImage
+	 */
+	static public function getImageObject(
+		?string $originalName,
+	): Image {
+		return new Image(
+			originalName: $originalName,
+			baseDir: static::$baseDir,
+			urlBase: static::$urlBase,
+		);
+	}
+
+	/**
+	 * Creates a MultisizeImage object from the given local image.
 	 * @param string $name The file name
 	 * @param string $dir The local directory where the source image file resides
 	 * @param string $originalName The original file name, if it's different than $name
@@ -45,21 +58,51 @@ abstract class MultisizeImage {
 		$className = get_called_class();
 		$multisizeImage = new $className;
 
-		$image = $className::getImageObject();
-
-		echo $image->getPath();
+		$multisizeImage->createSizesFromFiles(
+			name: $name,
+			dir: $dir,
+			originalName: $originalName,
+		);
 
 		return $multisizeImage;
 	}
 
 	/**
-	 * @return Image An Image object to work with images for this MultisizeImage
+	 * Creates all the image sizes from the given local image.
+	 * @param string $name The file name
+	 * @param string $dir The local directory where the source image file resides
+	 * @param string $originalName The original file name, if it's different than $name
 	 */
-	static public function getImageObject(): Image {
-		return new Image(
-			originalName: '',
-			baseDir: static::$baseDir,
-			urlBase: static::$urlBase,
-		);
+	public function createSizesFromFiles(
+		string $name,
+		string $dir,
+		?string $originalName = null,
+	) {
+		// Loop through sizes
+		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
+
+			$image = new Image(
+				originalName: $originalName,
+				baseDir: static::$baseDir,
+				urlBase: static::$urlBase,
+			);
+
+			$image->createBaseDir();
+
+			$imageResizeAlgorithm->resize(
+				sourceFilePath: $dir.'/'.$name,
+				destinationFilePath: $image->getPath(),
+			);
+
+			$this->images[$sizeName] = $image;
+		}
+	}
+
+	/**
+	 * Returns the Image for the specified size for this MultisizeImage, null if the image doesn't exist
+	 * @return Image The Image
+	 */
+	public function getSizeImage(string $sizeName) {
+		return $this->sizes[$sizeName] ?? null;
 	}
 }

@@ -38,7 +38,8 @@ class DatabaseRowMysql extends DatabaseRow {
 				return $data ? long2ip($data) : false;
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_SERIALIZED:
-				return json_decode($data, true);
+			case \Cherrycake\Modules\Database\Database::TYPE_OBJECT:
+				return unserialize($data);
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_COLOR:
 				return $data ? new Color("withHex", $data) : false;
