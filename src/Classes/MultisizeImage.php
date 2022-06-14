@@ -103,6 +103,19 @@ abstract class MultisizeImage {
 	 * @return Image The Image
 	 */
 	public function getSizeImage(string $sizeName) {
-		return $this->sizes[$sizeName] ?? null;
+		if (!isset($this->images[$sizeName]))
+			return null;
+		/**
+		 * We force the baseDir and urlBase properties of the image to be the
+		 * same as this MultisizeImage because those properties are set upon
+		 * construction in the File and Image classes, not as a static variable
+		 * that's specific to each image type on the app.
+		 * Because of this, the baseDir and urlBase properties are not set
+		 * properly after a serialization-unserialization process.
+		 */
+		$image = $this->images[$sizeName];
+		$image->setBaseDir(static::$baseDir);
+		$image->setUrlBase(static::$urlBase);
+		return $image;
 	}
 }

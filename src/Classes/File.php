@@ -41,6 +41,14 @@ class File {
 			$this->id = $this->buildUniqueFileIdentifier();
 	}
 
+	public function setBaseDir($baseDir) {
+		$this->baseDir = $baseDir;
+	}
+
+	public function setUrlBase($urlBase) {
+		$this->urlBase = $urlBase;
+	}
+
 	/**
 	 * Creates the file on disk for this File object from the given local file.
 	 * @param string $sourceDir The directory where the source file resides, without trailing slash.
