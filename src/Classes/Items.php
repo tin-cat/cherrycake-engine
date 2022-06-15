@@ -538,4 +538,11 @@ abstract class Items implements \Iterator {
 			if (!$function($index, $item))
 				$this->remove($index);
 	}
+
+	/**
+	 * @return array An array of Item objects
+	 */
+	function toArray(): array {
+		return $this->items;
+	}
 }
