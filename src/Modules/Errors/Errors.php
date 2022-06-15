@@ -19,6 +19,7 @@ use Cherrycake\Classes\Engine;
  *		self::ERROR_NO_PERMISSION => "errors/error.html"
  *	], // An array of pattern names to user when an error occurs. If a patterns is not specified, a generic error is triggered.
  * 	"isLogSystemErrors" => true, // Whether or not to log system errors. Defaults to true
+ *  "isLogSecurityErrors" => true, // Whether or not to log security errors. Defaults to true
  * 	"isLogAppErrors" => true // Whether or not to log app errors.  Defaults to true
  *	"isLogNotFoundErrors" => false // Whether or not to log "Not found" errors. Defaults to false
  *	"isLogNoPermissionErrors" => false // Whether or not to log "No permission errors. Defaults to false
@@ -33,9 +34,10 @@ use Cherrycake\Classes\Engine;
 class Errors extends \Cherrycake\Classes\Module {
 
 	const ERROR_SYSTEM = 0; // Errors caused by bad programming
-	const ERROR_APP = 1; // Errors caused by bad usering
-	const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
-	const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
+	const ERROR_SECURITY = 1; // Errors caused by security issues
+	const ERROR_APP = 2; // Errors caused by bad usering
+	const ERROR_NOT_FOUND = 3; // Errors caused when something requested was not found
+	const ERROR_NO_PERMISSION = 4; // Errors causes when the user didn't have permission to access what they've requested
 
 	const ANSI_NOCOLOR = "\033[0m";
 	const ANSI_BLACK = "\033[0;30m";
@@ -62,11 +64,13 @@ class Errors extends \Cherrycake\Classes\Module {
 		"isHtmlOutput" => true,
 		"patternName" => [
 			self::ERROR_SYSTEM => "errors/error.html",
+			self::ERROR_SECURITY => "errors/error.html",
 			self::ERROR_APP => "errors/error.html",
 			self::ERROR_NOT_FOUND => "errors/error.html",
 			self::ERROR_NO_PERMISSION => "errors/error.html"
 		],
 		"isLogSystemErrors" => true,
+		"isLogSecuritymErrors" => true,
 		"isLogAppErrors" => true,
 		"isLogNotFoundErrors" => false,
 		"isLogNoPermissionErrors" => false,
@@ -101,7 +105,7 @@ class Errors extends \Cherrycake\Classes\Module {
 	 * @param string $subType Code to easily group this type or errors later
 	 * @param string $description Description of the error
 	 * @param array $variables Additional variables relevant to the error.
-	 * @param bool $isForceLog Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
+	 * @param bool $isForceLog Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors, isLogSecurityErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors, isLogSecurityErrors and isLogAppErrors
 	 * @param bool $isSilent If set to true, nothing will be outputted. Used for only logging and/or sending email notification of the error
 	 */
 	function trigger(
@@ -138,6 +142,8 @@ class Errors extends \Cherrycake\Classes\Module {
 			&&
 			(
 				($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
+				||
+				($type == self::ERROR_SECURITY && $this->getConfig("isLogSecurityErrors"))
 				||
 				($type == self::ERROR_APP && $this->getConfig("isLogAppErrors"))
 				||
@@ -233,6 +239,7 @@ class Errors extends \Cherrycake\Classes\Module {
 						],
 						code: [
 							self::ERROR_SYSTEM => \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_SECURITY => \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 							self::ERROR_APP => \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 							self::ERROR_NOT_FOUND => \Cherrycake\Modules\Output\Output::RESPONSE_NOT_FOUND,
 							self::ERROR_NO_PERMISSION => \Cherrycake\Modules\Output\Output::RESPONSE_NO_PERMISSION

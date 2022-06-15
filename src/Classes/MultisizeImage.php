@@ -118,4 +118,12 @@ abstract class MultisizeImage {
 		$image->setUrlBase(static::$urlBase);
 		return $image;
 	}
+
+	/**
+	 * Deletes all the files for this MultisizeImage
+	 * @return bool Whether the operation was succesful
+	 */
+	public function delete(): bool {
+		return true;
+	}
 }

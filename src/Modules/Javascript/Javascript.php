@@ -296,7 +296,7 @@ class Javascript extends \Cherrycake\Classes\Module {
 	function dump($request) {
 
 		if ($this->getConfig("isHttpCache"))
-			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
+			\Cherrycake\Classes\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if (!$request->set) {
 			Engine::e()->Output->setResponse(new \Cherrycake\Modules\Actions\ResponseTextCss);

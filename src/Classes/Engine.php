@@ -34,7 +34,7 @@ class Engine {
 	/**
 	 * @var int $executionStartHrTime The system's high resolution time where the execution started
 	 */
-	private int $executionStartHrTime;
+	private int $executionStartHrTime = 0;
 
 	public function __construct() {}
 	public function __clone() {}

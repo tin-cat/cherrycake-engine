@@ -6,6 +6,7 @@ use Exception;
 use Cherrycake\Classes\Engine;
 use Cherrycake\Classes\AppException;
 use Cherrycake\Modules\Errors\Errors;
+use Cherrycake\Classes\SecurityException;
 
 /**
  * A class that represents an action requested to the engine. It uses a Request object. It implements Action-level cache.
@@ -136,9 +137,18 @@ class Action {
 						]
 					);
 					return true;
+				} catch (SecurityException $e) {
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_SECURITY,
+						description: $e->getMessage(),
+						variables: [
+							'extendedDescription' => $e->getDescription()
+						]
+					);
+					return true;
 				} catch (Exception $e) {
 					Engine::e()->Errors->trigger(
-						type: Errors::ERROR_APP,
+						type: Errors::ERROR_SYSTEM,
 						description: $e->getMessage()
 					);
 					return true;

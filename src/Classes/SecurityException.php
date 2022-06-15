@@ -5,9 +5,9 @@ namespace Cherrycake\Classes;
 use Exception;
 
 /**
- * A generic exception class to be thrown whenever App-related exceptions happen
+ * A generic exception class to be thrown whenever security-related exceptions happen
  */
-class AppException extends Exception {
+class SecurityException extends Exception {
 	/**
 	 * @var string $description The exception description, wich provides additional context to the user about the error
 	 */
