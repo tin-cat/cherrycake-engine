@@ -3,39 +3,31 @@
 namespace Cherrycake\Modules\ObjectStorage;
 
 abstract class ObjectStorageObject {
-	protected $providerName;
-	protected $remoteKey;
-	protected $additionalData;
 
-	function __construct($p) {
-		$this->providerName = $p["providerName"];
-		$this->remoteKey = $p["remoteKey"];
-		$this->additionalData = $p["additionalData"];
-	}
+	/**
+	 * @param string $providerName The object storage provider name
+	 * @param string $id The unique identifier for this object in the object storage
+	 */
+	function __construct(
+		protected string $providerName,
+		protected string $id,
+	) {}
 
 	/**
 	 * @return string The public URL of this object
 	 */
-	abstract public function getUrl();
+	abstract public function getUrl(): string;
 
 	/**
 	 * Deletes this object
+	 * @return bool Whether this object was deleted succesfully
+	 * @throws ObjectStorageException
 	 */
-	abstract public function delete();
+	abstract public function delete(): bool;
 
 	/**
-	 * @return boolean Whether this object exists in the storage
+	 * @return bool Whether this object exists on the object storage
+	 * @throws ObjectStorageException
 	 */
-	abstract public function exists();
-
-	public function getAdditionalData($key) {
-		return $this->additionalData[$key];
-	}
-
-	/**
-	 * @return string A serialized version of this object
-	 */
-	public function serialize() {
-		return serialize($this);
-	}
+	abstract public function exists(): bool;
 }

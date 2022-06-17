@@ -2,13 +2,21 @@
 
 namespace Cherrycake\Classes;
 
-use Exception;
 use Ramsey\Uuid\Uuid;
 
 /**
  * A class that represents a file stored in disk in a controlled path and name structure, based on an automatically generated id.
  */
-class File {
+abstract class File {
+	/**
+	 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
+	 */
+	static protected string $baseDir;
+	/**
+	 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
+	 */
+	static protected string $urlBase;
+
 	/**
 	 * @return array The names of the object properties to serialize
 	 */
@@ -25,28 +33,12 @@ class File {
 		 */
 		protected string $originalName,
 		/**
-		 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
-		 */
-		protected string $baseDir,
-		/**
-		 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
-		 */
-		protected string $urlBase,
-		/**
 		 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
 		 */
 		protected ?string $id = null,
 	) {
 		if (!$id)
 			$this->id = $this->buildUniqueFileIdentifier();
-	}
-
-	public function setBaseDir($baseDir) {
-		$this->baseDir = $baseDir;
-	}
-
-	public function setUrlBase($urlBase) {
-		$this->urlBase = $urlBase;
 	}
 
 	/**
@@ -99,7 +91,7 @@ class File {
 	 * @return string The directory where this file resides
 	 */
 	private function getDir(): string {
-		return $this->baseDir.'/'.$this->id[0].$this->id[1].$this->id[2];
+		return static::$baseDir.'/'.$this->id[0].$this->id[1].$this->id[2];
 	}
 
 	/**
@@ -120,7 +112,7 @@ class File {
 	 * @return string The URL where the file can be accessed by an HTTP client
 	 */
 	public function getUrl(): string {
-		return $this->urlBase.'/'.$this->id[0].$this->id[1].$this->id[2].'/'.$this->getName();
+		return static::$urlBase.'/'.$this->id[0].$this->id[1].$this->id[2].'/'.$this->getName();
 	}
 
 	/**
@@ -135,5 +127,13 @@ class File {
 	 */
 	public function getSize(): int {
 		return filesize($this->getPath());
+	}
+
+	/**
+	 * Deletes the file
+	 * @return bool Whether the file was deleted succesfully
+	 */
+	public function delete(): bool {
+		return unlink($this->getPath());
 	}
 }

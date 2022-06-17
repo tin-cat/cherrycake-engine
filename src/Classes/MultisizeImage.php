@@ -7,16 +7,12 @@ namespace Cherrycake\Classes;
  */
 abstract class MultisizeImage {
 	/**
-	 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
+	 * var string $imageClassName The image class name to use, normally an App-level class that extends the core Image class
 	 */
-	static protected string $baseDir;
-	/**
-	 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
-	 */
-	static protected string $urlBase;
+	static protected string $imageClassName;
 
 	/**
-	 * The sizes on which the image is available, as an array of ImageResizeAlgorithm objects
+	 * var array $sizes The sizes on which the image is available, as an array of ImageResizeAlgorithm objects
 	 */
 	protected array $sizes;
 
@@ -28,15 +24,13 @@ abstract class MultisizeImage {
 	/**
 	 * Returns an Image object to work with this MultisizeImage
 	 * @param string $originalName The original name of the file, including extension
-	 * @return Image An Image object to work with images for this MultisizeImage
+	 * @return Image An Image object of the this::imageClassName to work with images for this MultisizeImage
 	 */
 	static public function getImageObject(
 		?string $originalName,
 	): Image {
-		return new Image(
+		return new self::$imageClassName(
 			originalName: $originalName,
-			baseDir: static::$baseDir,
-			urlBase: static::$urlBase,
 		);
 	}
 
@@ -81,10 +75,8 @@ abstract class MultisizeImage {
 		// Loop through sizes
 		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
 
-			$image = new Image(
+			$image = new static::$imageClassName(
 				originalName: $originalName,
-				baseDir: static::$baseDir,
-				urlBase: static::$urlBase,
 			);
 
 			$image->createBaseDir();
@@ -100,30 +92,38 @@ abstract class MultisizeImage {
 
 	/**
 	 * Returns the Image for the specified size for this MultisizeImage, null if the image doesn't exist
-	 * @return Image The Image
+	 * @return Image The Image, an object of the class this::imageClassName
 	 */
 	public function getSizeImage(string $sizeName) {
 		if (!isset($this->images[$sizeName]))
 			return null;
-		/**
-		 * We force the baseDir and urlBase properties of the image to be the
-		 * same as this MultisizeImage because those properties are set upon
-		 * construction in the File and Image classes, not as a static variable
-		 * that's specific to each image type on the app.
-		 * Because of this, the baseDir and urlBase properties are not set
-		 * properly after a serialization-unserialization process.
-		 */
-		$image = $this->images[$sizeName];
-		$image->setBaseDir(static::$baseDir);
-		$image->setUrlBase(static::$urlBase);
-		return $image;
+		return $this->images[$sizeName];
 	}
 
 	/**
-	 * Deletes all the files for this MultisizeImage
-	 * @return bool Whether the operation was succesful
+	 * Returnsa all Image objects contained in this multisize image where each key is the size name and each value is an Image object.
+	 * If a size Image is not set, it won't be set on the returned array either.
+	 * @return array An array of Image objects
+	 */
+	public function getImages(): array {
+		return array_filter(array_map(function($sizeName) {
+			return $this->getSizeImage($sizeName);
+		}, array_keys($this->sizes)));
+	}
+
+	/**
+	 * Deletes all the files for this MultisizeImage.
+	 * Tries to delete all images even if some image fails deletion.
+	 * @return bool Whether all the images for this multisize image were deleted succesfuly. If there weren't any images on the multisize image, also returns true.
 	 */
 	public function delete(): bool {
-		return true;
+		if (!$images = $this->getImages())
+			return true;
+		$isAllImagesDeleted = true;
+		foreach ($images as $image) {
+			if (!$image->delete())
+				$isAllImagesDeleted = false;
+		}
+		return $isAllImagesDeleted;
 	}
 }

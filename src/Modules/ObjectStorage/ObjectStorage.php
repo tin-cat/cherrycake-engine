@@ -2,10 +2,32 @@
 
 namespace Cherrycake\Modules\ObjectStorage;
 
-use Exception;
-
+/**
+ * Manages object storage providers.
+ * It takes configuration from the App-layer configuration file.
+ *
+ * Configuration example for ObjectStorage.config.php:
+ * <code>
+ * $ObjectStorageConfig = [
+ * 	'providers' => [
+ * 		'main' => [
+ * 			'providerClassName' => 'ObjectStorageProviderAwsS3',
+ * 			'config' => [
+ * 				'region' => 'eu-west-3',
+ * 				'bucket' => 'static-devel.rawlock.com',
+ * 				'publicEndpoint' => 'https://static-devel.rawlock.com',
+ * 				'credentials' => [
+ * 					'AccessKeyId' => '',
+ * 					'SecretAccessKey' => ''
+ * 				]
+ * 			]
+ * 		]
+ * 	]
+ * ];
+ * </code>
+ */
 class ObjectStorage extends \Cherrycake\Classes\Module {
-	const SYSTEM_S3 = 0;
+	const SYSTEM_AWS_S3 = 0;
 
 	private static $instance;
 
@@ -13,49 +35,47 @@ class ObjectStorage extends \Cherrycake\Classes\Module {
 	private $providers;
 
 	private $systemClassNames = [
-		self::SYSTEM_S3 => "ObjectStorageProviderS3"
+		self::SYSTEM_AWS_S3 => "ObjectStorageProviderAwsS3"
 	];
 
-	public static function getProvider($providerName) {
-		if (!self::$instance instanceof self)
-			self::$instance = new self();
+	/**
+	 * Initializes the module and loads the providers
+	 * @return boolean Whether the module has been initted ok
+	 */
+	function init(): bool {
+		if (!parent::init())
+			return false;
 
-		if (isset(self::$instance->providers[$providerName]))
-			return self::$instance->providers[$providerName];
+		// Sets up providers
+		if (is_array($providers = $this->getConfig("providers")))
+			foreach ($providers as $key => $provider)
+				$this->addProvider($key, $provider["providerClassName"], $provider["config"]);
 
-		if (!isset(self::$instance->providersConfig[$providerName]))
-			throw new Exception("Object storage provider $providerName not found");
-
-		if (!isset(self::$instance->systemClassNames[self::$instance->providersConfig[$providerName]["system"]]))
-			throw new Exception("Unknown object storage system specified for $providerName");
-
-		return self::$instance->providers[$providerName] = new self::$instance->systemClassNames[self::$instance->providersConfig[$providerName]["system"]]($providerName, self::$instance->providersConfig[$providerName]);
-	}
-
-	public static function serializeObjectStorageObject($objectStorageObject) {
-		return serialize($objectStorageObject);
-	}
-
-	public static function unserializeObjectStorageObject($serializedObjectStorageObject) {
-		return unserialize($serializedObjectStorageObject);
-	}
-
-	public static function serializeObjectStorageObjects($objectStorageObjects) {
-		return serialize($objectStorageObjects);
-	}
-
-	public static function unserializeObjectStorageObjects($serializedObjectStorageObjects) {
-		return unserialize($serializedObjectStorageObjects);
+		return true;
 	}
 
 	/**
-	 * An array of classes that implement ObjectStorageObject
+	 * Adds a provider
+	 * @param string $key The key to later access the provider
+	 * @param string $providerClassName The provider class name
+	 * @param array $config The configuration for the provider
 	 */
-	public function getClassNames() {
-		foreach ($this->providersConfig as $providerConfig) {
-			if (isset($providerConfig["className"]))
-				$r[] = $providerConfig["className"];
-		}
-		return $r;
+	function addProvider(string $key, string $providerClassName, array $config) {
+		$providerClassName = '\\Cherrycake\\Modules\\ObjectStorage\\'.$providerClassName;
+		$this->$key = new $providerClassName(
+			providerName: $key,
+			config: $config
+		);
+	}
+
+	/**
+	 * @param string $providerName
+	 * @return ObjectStorageProvider
+	 * @throws ObjectStorageException
+	 */
+	public function getProvider($providerName) {
+		if (!isset($this->$providerName))
+			throw new ObjectStorageException("Object storage provider $providerName not found");
+		return $this->$providerName;
 	}
 }

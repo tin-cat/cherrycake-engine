@@ -10,7 +10,7 @@ namespace Cherrycake\Modules\Database;
  * * Results from queries are always stored on memory and database is released from them as soon as the data is retrieved.
  * * Because of the above, avoid performing queries containing data that will not be used. I.e: Filter the queried rows in the sql, not in the code. Request only the needed fields.
  *
- * Configuration example for database.config.php:
+ * Configuration example for Database.config.php:
  * <code>
  * $databaseConfig = [
  * 	"providers" => [

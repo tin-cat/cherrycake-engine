@@ -27,7 +27,8 @@
         "webonyx/graphql-php": "^14.7",
         "scssphp/scssphp": "^1.6",
         "yosymfony/toml": "^1.0",
-        "ramsey/uuid": "^4.3"
+        "ramsey/uuid": "^4.3",
+        "aws/aws-sdk-php": "^3.226"
     },
     "suggest": {
         "mpdf/mpdf": "Provides server-side PDF creation capabilities"
