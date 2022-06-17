@@ -23,7 +23,9 @@ abstract class File {
 	function __sleep() {
 		return [
 			'originalName',
-			'id'
+			'baseDir',
+			'urlBase',
+			'id',
 		];
 	}
 
@@ -97,7 +99,7 @@ abstract class File {
 	/**
 	 * @return string The file name
 	 */
-	private function getName(): string {
+	protected function getName(): string {
 		return $this->id.($this->getExtension() ? '.'.$this->getExtension() : null);
 	}
 
