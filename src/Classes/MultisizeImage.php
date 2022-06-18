@@ -86,6 +86,8 @@ abstract class MultisizeImage {
 				destinationFilePath: $image->getPath(),
 			);
 
+			$image->loadMetadata();
+
 			$this->images[$sizeName] = $image;
 		}
 	}

@@ -100,7 +100,7 @@ class ObjectStorageProviderAwsS3 extends ObjectStorageProvider {
 		}
 	}
 
-	public function exists(
+	public function isExists(
 		string $id
 	): bool {
 		$this->requireConnection();
@@ -111,6 +111,23 @@ class ObjectStorageProviderAwsS3 extends ObjectStorageProvider {
 			);
 		} catch (S3Exception $e) {
 			throw new ObjectStorageException("Could not check existence of object $id: ".$e->getAwsErrorMessage());
+		} catch (Exception $e) {
+			throw new ObjectStorageException($e);
+		}
+	}
+
+	public function getSize(
+		string $id,
+	): int {
+		$this->requireConnection();
+		try {
+			$objectData = $this->s3Client->headObject([
+				'Bucket' => $this->config["bucket"],
+				'Key' => $id
+			]);
+			return $objectData['ContentLength'];
+		} catch (S3Exception $e) {
+			throw new ObjectStorageException("Could not get size of object $id: ".$e->getAwsErrorMessage());
 		} catch (Exception $e) {
 			throw new ObjectStorageException($e);
 		}

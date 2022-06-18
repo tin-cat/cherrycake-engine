@@ -66,9 +66,18 @@ abstract class ObjectStorageProvider {
 	 * @return boolean Whether an object exists in the storage
 	 * @throws ObjectStorageException
 	 */
-	abstract public function exists(
+	abstract public function isExists(
 		string $id,
 	): bool;
+
+	/**
+	 * @param string $id The object id on the object storage
+	 * @return int The object size in bytes
+	 * @throws ObjectStorageException
+	 */
+	abstract public function getSize(
+		string $id,
+	): int;
 
 	/**
 	 * @return string The public endpoint URL

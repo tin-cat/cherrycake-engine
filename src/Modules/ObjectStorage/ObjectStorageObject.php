@@ -3,7 +3,6 @@
 namespace Cherrycake\Modules\ObjectStorage;
 
 abstract class ObjectStorageObject {
-
 	/**
 	 * @param string $providerName The object storage provider name
 	 * @param string $id The unique identifier for this object in the object storage
@@ -29,5 +28,11 @@ abstract class ObjectStorageObject {
 	 * @return bool Whether this object exists on the object storage
 	 * @throws ObjectStorageException
 	 */
-	abstract public function exists(): bool;
+	abstract public function isExists(): bool;
+
+	/**
+	 * @return int The size of the file on disk in bytes
+	 * @throws ObjectStorageException
+	 */
+	abstract public function getSize(): int;
 }

@@ -32,14 +32,44 @@ abstract class IdBasedImage extends IdBasedFile {
 	protected ?array $exifMetadata = null;
 
 	/**
+	 * @var array The red, green and blue values of the average color of the image, in the form of an hash array with the `red`, `green`, `blue` and `alpha` keys
+	 */
+	protected ?array $averageColorRgba = null;
+
+	/**
 	 * @return array The names of the object properties to serialize
 	 */
 	function __sleep() {
 		return array_merge(parent::__sleep(), [
 			'width',
 			'height',
-			'type'
+			'type',
+			'averageColorRgba',
 		]);
+	}
+
+	public function copyFromLocalFile(
+		string $sourceDir,
+		string $sourceName,
+	): bool {
+		if (!parent::copyFromLocalFile(
+			sourceDir: $sourceDir,
+			sourceName: $sourceName
+		))
+			return false;
+		$this->loadMetadata();
+		return true;
+	}
+
+	/**
+	 * Loads all the available metadata for this image
+	 */
+	public function loadMetadata() {
+		$this->loadSizes();
+		$this->loadType();
+		// $this->loadIptcMetadata();
+		// $this->loadExifMetadata();
+		$this->loadAverageColorRgba();
 	}
 
 	/**
@@ -49,7 +79,7 @@ abstract class IdBasedImage extends IdBasedFile {
 	private function loadSizes() {
 		if (!is_null($this->width) && !is_null($this->height))
 			return;
-		list($this->width, $this->height, $this->type) = getimagesize($this->getPath());
+		list($this->width, $this->height) = getimagesize($this->getPath());
 	}
 
 	/**
@@ -128,7 +158,15 @@ abstract class IdBasedImage extends IdBasedFile {
 	private function loadExifMetadata() {
 		if (!is_null($this->exifMetadata))
 			return;
-		$this->exifMetadata = exif_read_data($this->getPath());
+		if (
+			!exif_imagetype($this->getPath())
+			||
+			!$exifMetadata = exif_read_data($this->getPath())
+		) {
+			$this->exifMetadata = [];
+			return;
+		}
+		$this->exifMetadata = $exifMetadata;
 	}
 
 	/**
@@ -139,5 +177,68 @@ abstract class IdBasedImage extends IdBasedFile {
 	public function getExifMetadata(string $key): ?string {
 		$this->loadExifMetadata();
 		return $this->exifMetadata[$key] ?? null;
+	}
+
+	/**
+	 * Retrieves the image average color and alpha
+	 */
+	private function loadAverageColorRgba() {
+		if (!is_null($this->averageColorRgba))
+			return $this->averageColorRgba;
+
+		list($width, $height, $type) = getimagesize($this->getPath());
+
+		$image = match($type) {
+			IMAGETYPE_GIF => imageCreateFromGif($this->getPath()),
+			IMAGETYPE_PNG => imageCreateFromPng($this->getPath()),
+			IMAGETYPE_JPEG => imagecreateFromJpeg($this->getPath()),
+			IMAGETYPE_WEBP => imagecreateFromWebp($this->getPath()),
+		};
+
+		if (!$image) {
+			$this->averageColorRgba = [];
+			return [];
+		}
+
+		$tempImage = ImageCreateTrueColor(1,1);
+		ImageCopyResampled($tempImage, $image, 0, 0, 0, 0, 1, 1, $width, $height);
+		$colorIndex = ImageColorAt($tempImage, 0, 0);
+
+		if ($colorIndex === false) {
+			$this->averageColorRgba = [];
+			return [];
+		}
+
+		$this->averageColorRgba = imagecolorsforindex($tempImage, $colorIndex);
+	}
+
+	/**
+	 * @return array The red, green and blue values of the average color of the image, in the form of an hash array with the `red`, `green`, `blue` and `alpha` keys
+	 */
+	public function getAverageColorRgba(): array {
+		$this->loadAverageColorRgba();
+		return $this->averageColorRgba;
+	}
+
+	/**
+	 * @param bool $isAlpha Whether to include the last hexadecimal value for the alpha component
+	 * @return string The average color of the image, in the form of an hexadecimal string suitable for HTML and CSS
+	 */
+	public function getAverageColorHex(
+		bool $isAlpha = false
+	): string {
+		$averageColorRgba = $this->getAverageColorRgba();
+
+		$hex = [];
+		foreach (
+			($isAlpha ? ['red', 'green', 'blue', 'alpha'] : ['red', 'green', 'blue'])
+			as $component
+		) {
+			$averageColorRgba[$component] = max(255, min(0, $averageColorRgba[$component]));
+
+			if (strlen($hex[$component] = dechex($averageColorRgba[$component])) == 1)
+				$hex[$component] = '0'.$hex[$component];
+		}
+		return implode($hex);
 	}
 }

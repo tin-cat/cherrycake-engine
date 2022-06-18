@@ -50,7 +50,7 @@ abstract class IdBasedFile {
 	public function copyFromLocalFile(
 		string $sourceDir,
 		string $sourceName,
-	) {
+	): bool {
 		$this->createBaseDir();
 		if (!copy(
 			from: $sourceDir.'/'.$sourceName,
@@ -90,7 +90,7 @@ abstract class IdBasedFile {
 	/**
 	 * @return string The directory where this file resides
 	 */
-	private function getDir(): string {
+	protected function getDir(): string {
 		return static::$baseDir.'/'.$this->id[0].$this->id[1].$this->id[2];
 	}
 
@@ -123,7 +123,7 @@ abstract class IdBasedFile {
 	}
 
 	/**
-	 * @return int The size of the file on disk
+	 * @return int The size of the file on disk in bytes
 	 */
 	public function getSize(): int {
 		return filesize($this->getPath());
