@@ -7,9 +7,9 @@ namespace Cherrycake\Classes;
  */
 abstract class MultisizeImage {
 	/**
-	 * var string $imageClassName The image class name to use, normally an App-level class that extends the core Image class
+	 * var string $idBasedImageClassName The image class name to use, normally an App-level class that extends the core IdBasedImage class
 	 */
-	static protected string $imageClassName;
+	static protected string $idBasedImageClassName;
 
 	/**
 	 * var array $sizes The sizes on which the image is available, as an array of ImageResizeAlgorithm objects
@@ -24,12 +24,12 @@ abstract class MultisizeImage {
 	/**
 	 * Returns an Image object to work with this MultisizeImage
 	 * @param string $originalName The original name of the file, including extension
-	 * @return Image An Image object of the this::imageClassName to work with images for this MultisizeImage
+	 * @return IdBasedImage An IdBasedImage object of the this::idBasedImageClassName class to work with images for this MultisizeImage
 	 */
 	static public function getImageObject(
 		?string $originalName,
-	): Image {
-		return new self::$imageClassName(
+	): IdBasedImage {
+		return new static::$idBasedImageClassName(
 			originalName: $originalName,
 		);
 	}
@@ -75,7 +75,7 @@ abstract class MultisizeImage {
 		// Loop through sizes
 		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
 
-			$image = new static::$imageClassName(
+			$image = self::getImageObject(
 				originalName: $originalName,
 			);
 
@@ -92,7 +92,7 @@ abstract class MultisizeImage {
 
 	/**
 	 * Returns the Image for the specified size for this MultisizeImage, null if the image doesn't exist
-	 * @return Image The Image, an object of the class this::imageClassName
+	 * @return Image The Image, an object of the class this::idBasedImageClassName
 	 */
 	public function getSizeImage(string $sizeName) {
 		if (!isset($this->images[$sizeName]))

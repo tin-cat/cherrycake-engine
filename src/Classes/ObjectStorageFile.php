@@ -5,7 +5,7 @@ namespace Cherrycake\Classes;
 /**
  * An abstract class to be extended that represents a file that is first stored locally in a controlled path and name structure just like with a regular File object, but has the additional ability to be migrated to an object storage provider and used from there
  */
-abstract class ObjectStorageFile extends File {
+abstract class ObjectStorageFile extends IdBasedFile {
 	/**
 	 * var string $objectStorageProviderName The name of the object storage provider
 	 */
@@ -24,22 +24,6 @@ abstract class ObjectStorageFile extends File {
 			'isInObjectStorage',
 			'objectStorageProviderName',
 		]);
-	}
-
-	public function __construct(
-		/**
-		 * var string $originalName The original name of the file, including extension
-		 */
-		protected string $originalName,
-		/**
-		 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
-		 */
-		protected ?string $id = null,
-	) {
-		parent::__construct(
-			originalName: $originalName,
-			id: $id
-		);
 	}
 
 	/**

@@ -5,31 +5,31 @@ namespace Cherrycake\Classes;
 /**
  * Class that represents an image stored on disk in a controlled path and name structure, based on an automatically generated id.
  */
-abstract class Image extends File {
+abstract class IdBasedImage extends IdBasedFile {
 	/**
 	 * @return int The width of the image in pixels
 	 */
-	private ?int $width = null;
+	protected ?int $width = null;
 
 	/**
 	 * @var int The height of the image in pixels
 	 */
-	private ?int $height = null;
+	protected ?int $height = null;
 
 	/**
 	 * @var int The type of the image, one of the IMG_* constants (https://www.php.net/manual/en/image.constants.php)
 	 */
-	private ?int $type = null;
+	protected ?int $type = null;
 
 	/**
 	 * @var array The image IPTC metadata (https://www.php.net/manual/en/function.iptcparse.php)
 	 */
-	private ?array $iptcMetadata = null;
+	protected ?array $iptcMetadata = null;
 
 	/**
 	 * @var array The image EXIF metadata
 	 */
-	private ?array $exifMetadata = null;
+	protected ?array $exifMetadata = null;
 
 	/**
 	 * @return array The names of the object properties to serialize

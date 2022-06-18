@@ -7,7 +7,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * A class that represents a file stored in disk in a controlled path and name structure, based on an automatically generated id.
  */
-abstract class File {
+abstract class IdBasedFile {
 	/**
 	 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
 	 */
@@ -23,8 +23,6 @@ abstract class File {
 	function __sleep() {
 		return [
 			'originalName',
-			'baseDir',
-			'urlBase',
 			'id',
 		];
 	}
