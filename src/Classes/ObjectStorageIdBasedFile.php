@@ -25,6 +25,19 @@ abstract class ObjectStorageIdBasedFile {
 	protected ?ObjectStorageObject $objectStorageObject = null;
 
 	/**
+	 * Builds an ObjectStorageIdBasedFile object based on the given IdBasedFile
+	 * @param IdBasedFile $idBasedFile
+	 * @return ObjectStorageIdBasedFile
+	 */
+	static public function build(
+		IdBasedFile $idBasedFile,
+	): ObjectStorageIdBasedFile {
+		$className = get_called_class();
+		$objectStorageIdBasedFile = new $className;
+		return $objectStorageIdBasedFile;
+	}
+
+	/**
 	 * @return bool Whether this file has been stored in object storage
 	 */
 	public function isInObjectStorage(): bool {

@@ -22,67 +22,27 @@ abstract class MultisizeImage {
 	protected $images;
 
 	/**
-	 * Returns an Image object to work with this MultisizeImage
-	 * @param string $originalName The original name of the file, including extension
-	 * @return IdBasedImage An IdBasedImage object of the this::idBasedImageClassName class to work with images for this MultisizeImage
-	 */
-	static public function getImageObject(
-		?string $originalName,
-	): IdBasedImage {
-		return new static::$idBasedImageClassName(
-			originalName: $originalName,
-		);
-	}
-
-	/**
-	 * Creates a MultisizeImage object from the given local image.
-	 * @param string $name The file name
-	 * @param string $dir The local directory where the source image file resides
-	 * @param string $originalName The original file name, if it's different than $name
-	 * @return MultisizeImage The created multisize image
-	 */
-	static public function createFromFile(
-		string $name,
-		string $dir,
-		?string $originalName = null,
-	): MultisizeImage {
-		if (!$originalName)
-			$originalName = $name;
-
-		$className = get_called_class();
-		$multisizeImage = new $className;
-
-		$multisizeImage->createSizesFromFiles(
-			name: $name,
-			dir: $dir,
-			originalName: $originalName,
-		);
-
-		return $multisizeImage;
-	}
-
-	/**
-	 * Creates all the image sizes from the given local image.
-	 * @param string $name The file name
-	 * @param string $dir The local directory where the source image file resides
+	 * @param string $sourceImagefilePath The file path of the source image file, from which all sizes will be created
 	 * @param string $originalName The original file name, if it's different than $name
 	 */
-	public function createSizesFromFiles(
-		string $name,
-		string $dir,
+	function __construct(
+		string $sourceImageFilePath,
 		?string $originalName = null,
 	) {
+		if (!$originalName)
+			$originalName = basename($sourceImageFilePath);
+
 		// Loop through sizes
 		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
 
-			$image = self::getImageObject(
+			$image = new static::$idBasedImageClassName(
 				originalName: $originalName,
 			);
 
 			$image->createBaseDir();
 
 			$imageResizeAlgorithm->resize(
-				sourceFilePath: $dir.'/'.$name,
+				sourceFilePath: $sourceImageFilePath,
 				destinationFilePath: $image->getPath(),
 			);
 

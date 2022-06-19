@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Classes;
 
+use Exception;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -18,6 +19,16 @@ abstract class IdBasedFile {
 	static protected string $urlBase;
 
 	/**
+	 * var string $originalName The original name of the file, including extension
+	 */
+	protected string $originalName;
+
+	/**
+	 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
+	 */
+	protected string $id;
+
+	/**
 	 * @return array The names of the object properties to serialize
 	 */
 	function __sleep() {
@@ -27,33 +38,47 @@ abstract class IdBasedFile {
 		];
 	}
 
-	public function __construct(
-		/**
-		 * var string $originalName The original name of the file, including extension
-		 */
-		protected string $originalName,
-		/**
-		 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
-		 */
-		protected ?string $id = null,
+	/**
+	 * @param string $filePath The complete path to the origin file. If not passed, no file is stored on disk.
+	 * @param string $originalName The original file name, if it's different than $name
+	 * @param string $id The unique identifier for this file. If left to null, a random one is generated
+	 */
+	function __construct(
+		?string $filePath = null,
+		?string $originalName = null,
+		?string $id = null,
 	) {
 		if (!$id)
-			$this->id = $this->buildUniqueFileIdentifier();
+			$id = $this->buildUniqueFileIdentifier();
+
+		if ($filePath) {
+			if (!$originalName)
+				$originalName = basename($filePath);
+
+			$className = get_called_class();
+			$idBasedFile = new $className;
+			if (!$idBasedFile->copyFromLocalFile(
+				filePath: $filePath,
+			))
+				throw new Exception('Could not create IdBasedFile from specified origin file '.$filePath);
+		}
+
+		$this->id = $id;
+		$this->originalName = $originalName;
 	}
 
 	/**
 	 * Creates the file on disk for this File object from the given local file.
-	 * @param string $sourceDir The directory where the source file resides, without trailing slash.
+	 * @param string $filePath The complete path to the origin file
 	 * @param string $sourceName The source file name.
 	 * @return bool Whether the operation completed succesfully.
 	 */
 	public function copyFromLocalFile(
-		string $sourceDir,
-		string $sourceName,
+		string $filePath
 	): bool {
 		$this->createBaseDir();
 		if (!copy(
-			from: $sourceDir.'/'.$sourceName,
+			from: $filePath,
 			to: $this->getPath()
 		))
 			return false;
@@ -102,14 +127,14 @@ abstract class IdBasedFile {
 	}
 
 	/**
-	 * @return string The local path of the file to be accessed by the code
+	 * @return string The local path of the file
 	 */
 	public function getPath(): string {
 		return $this->getDir().'/'.$this->getName();
 	}
 
 	/**
-	 * @return string The URL where the file can be accessed by an HTTP client
+	 * @return string The URL where the file can be accessed via an HTTP request
 	 */
 	public function getUrl(): string {
 		return static::$urlBase.'/'.$this->id[0].$this->id[1].$this->id[2].'/'.$this->getName();
@@ -127,6 +152,13 @@ abstract class IdBasedFile {
 	 */
 	public function getSize(): int {
 		return filesize($this->getPath());
+	}
+
+	/**
+	 * @return string The mime type of the file
+	 */
+	public function getMimeType(): string {
+		return mime_content_type($this->getPath());
 	}
 
 	/**

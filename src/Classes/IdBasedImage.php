@@ -49,12 +49,10 @@ abstract class IdBasedImage extends IdBasedFile {
 	}
 
 	public function copyFromLocalFile(
-		string $sourceDir,
-		string $sourceName,
+		string $filePath
 	): bool {
 		if (!parent::copyFromLocalFile(
-			sourceDir: $sourceDir,
-			sourceName: $sourceName
+			filePath: $filePath,
 		))
 			return false;
 		$this->loadMetadata();
@@ -65,7 +63,7 @@ abstract class IdBasedImage extends IdBasedFile {
 	 * Loads all the available metadata for this image
 	 */
 	public function loadMetadata() {
-		$this->loadSizes();
+		$this->loadSize();
 		$this->loadType();
 		// $this->loadIptcMetadata();
 		// $this->loadExifMetadata();
@@ -76,7 +74,7 @@ abstract class IdBasedImage extends IdBasedFile {
 	 * Loads this image size, width and type by reading the file and analyzing its contents.
 	 * If this information was loaded before, it doesn't loads it again.
 	 */
-	private function loadSizes() {
+	private function loadSize() {
 		if (!is_null($this->width) && !is_null($this->height))
 			return;
 		list($this->width, $this->height) = getimagesize($this->getPath());
@@ -86,7 +84,7 @@ abstract class IdBasedImage extends IdBasedFile {
 	 * @return int The width of the image in pixels
 	 */
 	public function getWidth(): int {
-		$this->loadSizes();
+		$this->loadSize();
 		return $this->width;
 	}
 
@@ -94,7 +92,7 @@ abstract class IdBasedImage extends IdBasedFile {
 	 * @return int The height of the image in pixels
 	 */
 	public function getHeight(): int {
-		$this->loadSizes();
+		$this->loadSize();
 		return $this->height;
 	}
 
@@ -119,12 +117,9 @@ abstract class IdBasedImage extends IdBasedFile {
 		return $this->type;
 	}
 
-	/**
-	 * @return string The mime type of the image
-	 */
 	public function getMimeType(): string {
 		$this->loadType();
-		return exif_imagetype($this->type);
+		return image_type_to_mime_type(exif_imagetype($this->type));
 	}
 
 	/**
