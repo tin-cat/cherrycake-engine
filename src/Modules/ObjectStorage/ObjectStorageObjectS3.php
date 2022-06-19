@@ -8,14 +8,14 @@ use Cherrycake\Classes\Engine;
 class ObjectStorageObjectS3 extends ObjectStorageObject {
 	public function getUrl(): string {
 		return
-			Engine::e()->ObjectStorage->getProvider($this->providerName)->getPublicEndpointUrl().
+			Engine::e()->ObjectStorage->getProvider(static::$providerName)->getPublicEndpointUrl().
 			'/'.
 			$this->id;
 	}
 
 	public function delete(): bool {
 		try {
-			return Engine::e()->ObjectStorage->getProvider($this->providerName)->delete(id: $this->id);
+			return Engine::e()->ObjectStorage->getProvider(static::$providerName)->delete(id: $this->id);
 		} catch (Exception $e) {
 			throw new ObjectStorageException($e);
 		}
@@ -23,7 +23,7 @@ class ObjectStorageObjectS3 extends ObjectStorageObject {
 
 	public function isExists(): bool {
 		try {
-			return Engine::e()->ObjectStorage->getProvider($this->providerName)->isExists(id: $this->id);
+			return Engine::e()->ObjectStorage->getProvider(static::$providerName)->isExists(id: $this->id);
 		} catch (Exception $e) {
 			throw new ObjectStorageException($e);
 		}
@@ -31,8 +31,8 @@ class ObjectStorageObjectS3 extends ObjectStorageObject {
 
 	public function getSize(): int {
 		try {
-			return Engine::e()->ObjectStorage->getProvider($this->providerName)->getSize(id: $this->id);
-		} catch (Exception $e) {s
+			return Engine::e()->ObjectStorage->getProvider(static::$providerName)->getSize(id: $this->id);
+		} catch (Exception $e) {
 			throw new ObjectStorageException($e);
 		}
 	}

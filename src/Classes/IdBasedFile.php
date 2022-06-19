@@ -90,14 +90,14 @@ abstract class IdBasedFile {
 	/**
 	 * @return string The directory where this file resides
 	 */
-	protected function getDir(): string {
+	public function getDir(): string {
 		return static::$baseDir.'/'.$this->id[0].$this->id[1].$this->id[2];
 	}
 
 	/**
 	 * @return string The file name
 	 */
-	protected function getName(): string {
+	public function getName(): string {
 		return $this->id.($this->getExtension() ? '.'.$this->getExtension() : null);
 	}
 

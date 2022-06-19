@@ -30,7 +30,7 @@ abstract class ObjectStorageProvider {
 	abstract protected function connect(): bool;
 
 	/**
-	 * Puts an file in the object storage
+	 * Puts a file in the object storage
 	 * @param string $originFilePath The origin file local path
 	 * @param string $id The object id on the object storage
 	 * @return bool Whether the object was stored sucessfully

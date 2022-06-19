@@ -8,11 +8,16 @@ use Cherrycake\Modules\ObjectStorage\ObjectStorageException;
 /**
  * An abstract class to be extended that represents a file that is first stored locally in a controlled path and name structure just like with a regular IdBasedFile object, but has the additional ability to be migrated to an object storage provider
  */
-abstract class ObjectStorageIdBasedFile extends IdBasedFile {
+abstract class ObjectStorageIdBasedFile {
 	/**
-	 * var string $objectStorageProviderName The name of the object storage provider
+	 * @var string $providerName The object storage provider name
 	 */
-	static protected string $objectStorageProviderName;
+	static protected string $providerName;
+
+	/**
+	 * var IdBasedFile $idBasedFile When this file has not yet been put in object storage, the IdBasedFile object. Null if this file has been put in object storage.
+	 */
+	protected ?IdBasedFile $idBasedFile = null;
 
 	/**
 	 * @var ObjectStorageObject When this file is in object storage, the ObjectStorageObject object. Null if this file is not in object storage.
@@ -20,19 +25,10 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	protected ?ObjectStorageObject $objectStorageObject = null;
 
 	/**
-	 * @return array The names of the object properties to serialize
-	 */
-	function __sleep() {
-		return array_merge(parent::__sleep(), [
-			'objectStorageObject',
-		]);
-	}
-
-	/**
 	 * @return bool Whether this file has been stored in object storage
 	 */
 	public function isInObjectStorage(): bool {
-		return $this->objectStorageProviderName ? true : false;
+		return !is_null($this->objectStorageObject);
 	}
 
 	/**
@@ -44,20 +40,19 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	public function putInObjectStorage(
 		bool $isDeleteLocally = false,
 	): bool {
-		if (Engine::e()->ObjectStorage->getProvider(static::$objectStorageProviderName)->put(
-			originFilePath: $this->getPath(),
-			id: $this->getName()
-		)) {
-			if ($isDeleteLocally)
-				$this->delete();
+		if ($this->isInObjectStorage())
+			throw new ObjectStorageException('Cannot put file in object storage because it already is');
 
-			$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider(static::$objectStorageProviderName)->get(
-				id: $this->getName()
-			);
+		if (!$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider(self::$providerName)->put(
+			originFilePath: $this->idBasedFile->getPath(),
+			id: $this->idBasedFile->getName()
+		))
+			return false;
 
-			return true;
-		}
-		return false;
+		if ($isDeleteLocally)
+			$this->idBasedFile->delete();
+
+		return true;
 	}
 
 	/**
@@ -69,7 +64,7 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	): bool {
 		if ($this->isInObjectStorage())
 			throw new ObjectStorageException('Cannot copy from local file because this file is already in object storage');
-		return parent::copyFromLocalFile(
+		return $this->idBasedFile->copyFromLocalFile(
 			sourceDir: $sourceDir,
 			sourceName: $sourceName,
 		);
@@ -78,28 +73,11 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	/**
 	 * @throws ObjectStorageException
 	 */
-	protected function getDir(): string {
-		if ($this->isInObjectStorage())
-			throw new ObjectStorageException('Cannot get file directory because this file is already in object storage');
-		return parent::getDir();
-	}
-
-	/**
-	 * @throws ObjectStorageException
-	 */
-	public function getPath(): string {
-		if ($this->isInObjectStorage())
-			throw new ObjectStorageException('Cannot get file path because this file is already in object storage');
-		return parent::getPath();
-	}
-
-	/**
-	 * @throws ObjectStorageException
-	 */
 	public function getUrl(): string {
 		if ($this->isInObjectStorage())
 			return $this->objectStorageObject->getUrl();
-		return parent::getUrl();
+		else
+			return $this->idBasedFile->getUrl();
 	}
 
 	/**
@@ -108,7 +86,8 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	public function isExists(): bool {
 		if ($this->isInObjectStorage())
 			return $this->objectStorageObject->isExists();
-		return parent::isExists();
+		else
+			return $this->idBasedFile->isExists();
 	}
 
 	/**
@@ -117,7 +96,8 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	public function getSize(): int {
 		if ($this->isInObjectStorage())
 			return $this->objectStorageObject->getSize();
-		return filesize($this->getSize());
+		else
+			return $this->idBasedFile->getSize();
 	}
 
 	/**
@@ -126,6 +106,7 @@ abstract class ObjectStorageIdBasedFile extends IdBasedFile {
 	public function delete(): bool {
 		if ($this->isInObjectStorage())
 			return $this->objectStorageObject->delete();
-		return unlink($this->delete());
+		else
+			return $this->idBasedFile->delete();
 	}
 }
