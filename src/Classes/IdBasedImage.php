@@ -147,6 +147,14 @@ abstract class IdBasedImage extends IdBasedFile {
 	}
 
 	/**
+	 * @return array All the IPTC metadata
+	 */
+	public function getAllIptcMetadata(): array {
+		$this->loadIptcMetadata();
+		return $this->iptcMetadata;
+	}
+
+	/**
 	 * Loads this image EXIF metadata by analyzing its contents.
 	 * If this information was loaded before, it doesn't loads it again.
 	 */
@@ -165,13 +173,21 @@ abstract class IdBasedImage extends IdBasedFile {
 	}
 
 	/**
-	 * Retrieves an IPTC metadata value
-	 * @param string $key The IPTC metadata key to retrieve
-	 * @return string The IPTC metadata value for the specified key, null if it didn't exist
+	 * Retrieves an EXIF metadata value
+	 * @param string $key The EXIF metadata key to retrieve
+	 * @return string The EXIF metadata value for the specified key, null if it didn't exist
 	 */
 	public function getExifMetadata(string $key): ?string {
 		$this->loadExifMetadata();
 		return $this->exifMetadata[$key] ?? null;
+	}
+
+	/**
+	 * @return array All the EXIF metadata
+	 */
+	public function getAllExifMetadata(): array {
+		$this->loadExifMetadata();
+		return $this->exifMetadata;
 	}
 
 	/**
@@ -224,16 +240,9 @@ abstract class IdBasedImage extends IdBasedFile {
 	): string {
 		$averageColorRgba = $this->getAverageColorRgba();
 
-		$hex = [];
-		foreach (
-			($isAlpha ? ['red', 'green', 'blue', 'alpha'] : ['red', 'green', 'blue'])
-			as $component
-		) {
-			$averageColorRgba[$component] = max(255, min(0, $averageColorRgba[$component]));
-
-			if (strlen($hex[$component] = dechex($averageColorRgba[$component])) == 1)
-				$hex[$component] = '0'.$hex[$component];
-		}
-		return implode($hex);
+		if ($isAlpha)
+			return sprintf("%02x%02x%02x%02x", $averageColorRgba['red'], $averageColorRgba['green'], $averageColorRgba['blue'], $averageColorRgba['alpha']);
+		else
+			return sprintf("%02x%02x%02x", $averageColorRgba['red'], $averageColorRgba['green'], $averageColorRgba['blue']);
 	}
 }
