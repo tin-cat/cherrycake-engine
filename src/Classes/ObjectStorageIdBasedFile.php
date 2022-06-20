@@ -8,11 +8,11 @@ use Cherrycake\Modules\ObjectStorage\ObjectStorageException;
 /**
  * An abstract class to be extended that represents a file that is first stored locally in a controlled path and name structure just like with a regular IdBasedFile object, but has the additional ability to be migrated to an object storage provider
  */
-abstract class ObjectStorageIdBasedFile {
+class ObjectStorageIdBasedFile {
 	/**
 	 * @var string $providerName The object storage provider name
 	 */
-	static protected string $providerName;
+	protected string $providerName;
 
 	function __construct(
 		/**
@@ -23,7 +23,14 @@ abstract class ObjectStorageIdBasedFile {
 		 * @param ObjectStorageObject When this file is in object storage, the ObjectStorageObject object. Null if this file is not in object storage.
 		 */
 		protected ?ObjectStorageObject $objectStorageObject = null,
-	) {}
+		/**
+		 * @param string $providerName The object storage provider name to use, if it's different than the statically declared providerName
+		 */
+		?string $providerName = null,
+	) {
+		if ($providerName)
+			$this->providerName = $providerName;
+	}
 
 	/**
 	 * @return bool Whether this file is stored locally
@@ -47,7 +54,7 @@ abstract class ObjectStorageIdBasedFile {
 	public function moveToObjectStorage(): bool {
 		if (!$this->putInObjectStorage())
 			return false;
-		return $this->deleteLocally();;
+		return $this->deleteLocally();
 	}
 
 	/**
@@ -71,13 +78,13 @@ abstract class ObjectStorageIdBasedFile {
 		if ($this->isInObjectStorage())
 			throw new ObjectStorageException('Can\'t put file in object storage because it already is');
 
-		if (!Engine::e()->ObjectStorage->getProvider(static::$providerName)->put(
+		if (!Engine::e()->ObjectStorage->getProvider($this->providerName)->put(
 			originFilePath: $this->idBasedFile->getPath(),
 			id: $this->idBasedFile->getName()
 		))
 			return false;
 
-		$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider(static::$providerName)->get(
+		$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider($this->providerName)->get(
 			id: $this->idBasedFile->getName()
 		);
 
