@@ -165,6 +165,7 @@ class ObjectStorageIdBasedFile {
 
 		if (!$this->objectStorageObject->delete())
 			return false;
+
 		$this->objectStorageObject = null;
 		return true;
 	}

@@ -303,7 +303,7 @@ abstract class Items implements \Iterator {
 			else
 				$result = Engine::e()->Database->{$this->databaseProviderName}->prepareAndExecute(
 					$sql,
-					$fields ?? false
+					$fields ?? []
 				);
 
 			if (!$result)

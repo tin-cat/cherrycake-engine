@@ -90,9 +90,9 @@ class ObjectStorageProviderAwsS3 extends ObjectStorageProvider {
 				"Bucket" => $this->config["bucket"],
 				"Key" => $id
 			]);
-			if ($result['DeleteMarker'])
-				return true;
-			return false;
+			// We do not check $result['DeleteMarker'] to see if the object was indeed deleted because it's not a reliable way of telling if the object has been effectively removed from S3.
+			// this might be related to the way buckets with versioning enabled work (https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeleteMarker.html)
+			return true;
 		} catch (S3Exception $e) {
 			throw new ObjectStorageException("Could not delete object $id: ".$e->getAwsErrorMessage());
 		} catch (Exception $e) {

@@ -73,4 +73,28 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 		}
 		return $isSuccess;
 	}
+
+	/**
+	 * @return bool Whether all files are stored locally
+	 */
+	public function isLocal(): bool {
+		$isLocal = true;
+		foreach ($this->getImages() as $image) {
+			if (!$image->isLocal())
+				$isLocal = false;
+		}
+		return $isLocal;
+	}
+
+	/**
+	 * @return bool Whether all files are stored in the object storage
+	 */
+	public function isInObjectStorage(): bool {
+		$isInObjectStorage = true;
+		foreach ($this->getImages() as $image) {
+			if (!$image->isInObjectStorage())
+				$isInObjectStorage = false;
+		}
+		return $isInObjectStorage;
+	}
 }

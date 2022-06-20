@@ -232,7 +232,8 @@ class DatabaseProviderMysql extends DatabaseProvider {
 			}
 			reset($parameters);
 
-			$prepareResult["statement"]->bind_param($types, ...$values);
+			if ($values ?? false)
+				$prepareResult["statement"]->bind_param($types, ...$values);
 		}
 
 		if (!$prepareResult["statement"]->execute()) {
