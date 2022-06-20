@@ -14,73 +14,74 @@ abstract class ObjectStorageIdBasedFile {
 	 */
 	static protected string $providerName;
 
-	/**
-	 * var IdBasedFile $idBasedFile When this file has not yet been put in object storage, the IdBasedFile object. Null if this file has been put in object storage.
-	 */
-	protected ?IdBasedFile $idBasedFile = null;
+	function __construct(
+		/**
+		 * param IdBasedFile $idBasedFile When this file has not yet been put in object storage, the IdBasedFile object. Null if this file has been put in object storage.
+		 */
+		protected ?IdBasedFile $idBasedFile = null,
+		/**
+		 * @param ObjectStorageObject When this file is in object storage, the ObjectStorageObject object. Null if this file is not in object storage.
+		 */
+		protected ?ObjectStorageObject $objectStorageObject = null,
+	) {}
 
 	/**
-	 * @var ObjectStorageObject When this file is in object storage, the ObjectStorageObject object. Null if this file is not in object storage.
+	 * @return bool Whether this file is stored locally
 	 */
-	protected ?ObjectStorageObject $objectStorageObject = null;
-
-	/**
-	 * Builds an ObjectStorageIdBasedFile object based on the given IdBasedFile
-	 * @param IdBasedFile $idBasedFile
-	 * @return ObjectStorageIdBasedFile
-	 */
-	static public function build(
-		IdBasedFile $idBasedFile,
-	): ObjectStorageIdBasedFile {
-		$className = get_called_class();
-		$objectStorageIdBasedFile = new $className;
-		return $objectStorageIdBasedFile;
+	public function isLocal(): bool {
+		return !is_null($this->idBasedFile);
 	}
 
 	/**
-	 * @return bool Whether this file has been stored in object storage
+	 * @return bool Whether this file is stored in the object storage
 	 */
 	public function isInObjectStorage(): bool {
 		return !is_null($this->objectStorageObject);
 	}
 
 	/**
-	 * Puts this file in object storage
-	 * @param bool $isDeleteLocally Whether to delete the file locally if the file is sucessfully put in object storage
+	 * Puts this file in object storage and deletes the local file
 	 * @return bool Whether the operation completed succesfully
 	 * @throws ObjectStorageException
 	 */
-	public function putInObjectStorage(
-		bool $isDeleteLocally = false,
-	): bool {
-		if ($this->isInObjectStorage())
-			throw new ObjectStorageException('Cannot put file in object storage because it already is');
+	public function moveToObjectStorage(): bool {
+		if (!$this->putInObjectStorage())
+			return false;
+		return $this->deleteLocally();;
+	}
 
-		if (!$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider(self::$providerName)->put(
+	/**
+	 * Puts this file in object storage, keeps the local file
+	 * @return bool Whether the operation completed succesfully
+	 * @throws ObjectStorageException
+	 */
+	public function copyToObjectStorage(): bool {
+		return $this->putInObjectStorage();
+	}
+
+	/**
+	 * Puts this file in object storage
+	 * @return bool Whether the operation completed succesfully
+	 * @throws ObjectStorageException
+	 */
+	private function putInObjectStorage(): bool {
+		if (!$this->isLocal())
+			throw new ObjectStorageException('Can\'t put the file in object storage because it\'s not stored locally');
+
+		if ($this->isInObjectStorage())
+			throw new ObjectStorageException('Can\'t put file in object storage because it already is');
+
+		if (!Engine::e()->ObjectStorage->getProvider(static::$providerName)->put(
 			originFilePath: $this->idBasedFile->getPath(),
 			id: $this->idBasedFile->getName()
 		))
 			return false;
 
-		if ($isDeleteLocally)
-			$this->idBasedFile->delete();
+		$this->objectStorageObject = Engine::e()->ObjectStorage->getProvider(static::$providerName)->get(
+			id: $this->idBasedFile->getName()
+		);
 
 		return true;
-	}
-
-	/**
-	 * @throws ObjectStorageException
-	 */
-	public function copyFromLocalFile(
-		string $sourceDir,
-		string $sourceName,
-	): bool {
-		if ($this->isInObjectStorage())
-			throw new ObjectStorageException('Cannot copy from local file because this file is already in object storage');
-		return $this->idBasedFile->copyFromLocalFile(
-			sourceDir: $sourceDir,
-			sourceName: $sourceName,
-		);
 	}
 
 	/**
@@ -114,12 +115,51 @@ abstract class ObjectStorageIdBasedFile {
 	}
 
 	/**
+	 * Deletes the file both from local and in object storage
+	 * @return bool Whether the operation completed succesfully
 	 * @throws ObjectStorageException
 	 */
 	public function delete(): bool {
-		if ($this->isInObjectStorage())
-			return $this->objectStorageObject->delete();
-		else
-			return $this->idBasedFile->delete();
+		if (!$this->isLocal() && !$this->isInObjectStorage())
+			throw new ObjectStorageException('Can\'t delete the file because it wasn\'t stored either locally nor in object storage');
+
+		if ($this->isInObjectStorage() && !$this->deleteInObjectStorage())
+			return false;
+
+		if ($this->isLocal() && !$this->deleteLocally())
+			return false;
+
+		return true;
 	}
+
+	/**
+	 * Deletes the local file
+	 * @return bool Whether the operation completed succesfully
+	 * @throws ObjectStorageException
+	 */
+	public function deleteLocally() {
+		if (!$this->isLocal())
+			throw new ObjectStorageException('Can\'t delete local file because it\'s not stored locally');
+
+		if (!$this->idBasedFile->delete())
+			return false;
+		$this->idBasedFile = null;
+		return true;
+	}
+
+	/**
+	 * Deletes the file in object storage
+	 * @return bool Whether the operation completed succesfully
+	 * @throws ObjectStorageException
+	 */
+	public function deleteInObjectStorage() {
+		if (!$this->isInObjectStorage())
+			throw new ObjectStorageException('Can\'t delete local file because it\'s not stored in object storage');
+
+		if (!$this->objectStorageObject->delete())
+			return false;
+		$this->objectStorageObject = null;
+		return true;
+	}
+
 }

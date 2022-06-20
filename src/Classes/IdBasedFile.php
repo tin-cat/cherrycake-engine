@@ -21,7 +21,7 @@ abstract class IdBasedFile {
 	/**
 	 * var string $originalName The original name of the file, including extension
 	 */
-	protected string $originalName;
+	protected ?string $originalName;
 
 	/**
 	 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
@@ -39,7 +39,7 @@ abstract class IdBasedFile {
 	}
 
 	/**
-	 * @param string $filePath The complete path to the origin file. If not passed, no file is stored on disk.
+	 * @param string $filePath The complete path to the origin file. If not passed, no file is stored on disk (Used for procedures that will create the file for this IdBasedFile by their own, like MultisizeImage)
 	 * @param string $originalName The original file name, if it's different than $name
 	 * @param string $id The unique identifier for this file. If left to null, a random one is generated
 	 */
@@ -48,23 +48,18 @@ abstract class IdBasedFile {
 		?string $originalName = null,
 		?string $id = null,
 	) {
-		if (!$id)
-			$id = $this->buildUniqueFileIdentifier();
+		$this->id = $id ?? $this->buildUniqueFileIdentifier();
+		$this->originalName = $originalName;
 
 		if ($filePath) {
-			if (!$originalName)
-				$originalName = basename($filePath);
+			if (!$this->originalName)
+				$this->originalName = basename($filePath);
 
-			$className = get_called_class();
-			$idBasedFile = new $className;
-			if (!$idBasedFile->copyFromLocalFile(
+			if (!$this->copyFromLocalFile(
 				filePath: $filePath,
 			))
 				throw new Exception('Could not create IdBasedFile from specified origin file '.$filePath);
 		}
-
-		$this->id = $id;
-		$this->originalName = $originalName;
 	}
 
 	/**
@@ -77,11 +72,10 @@ abstract class IdBasedFile {
 		string $filePath
 	): bool {
 		$this->createBaseDir();
-		if (!copy(
+		return copy(
 			from: $filePath,
 			to: $this->getPath()
-		))
-			return false;
+		);
 	}
 
 	/**
