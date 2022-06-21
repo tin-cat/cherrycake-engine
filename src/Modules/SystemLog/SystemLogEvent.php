@@ -8,7 +8,7 @@ use Cherrycake\Classes\Engine;
  * Base class to represent system log events for the SystemLog module
  */
 class SystemLogEvent extends \Cherrycake\Classes\Item {
-	protected $tableName = "cherrycake_systemLog";
+	static public $tableName = "cherrycake_systemLog";
 	protected $cacheSpecificPrefix = "SystemLog";
 
 	protected $fields = [

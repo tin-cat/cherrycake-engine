@@ -9,6 +9,11 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 	static protected string $providerName;
 
 	/**
+	 * The name of the class based on ObjectStorageIdBasedFile to use to store images in object storage
+	 */
+	static protected string $objectStorageIdBasedFileClassName = 'Cherrycake\Classes\ObjectStorageIdBasedFile';
+
+	/**
 	 * @param string $sourceImagefilePath The file path of the source image file, from which all sizes will be created
 	 * @param string $originalName The original file name, if it's different than $name
 	 */
@@ -37,7 +42,7 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 
 			$idBasedImage->loadMetadata();
 
-			$objectStorageIdBasedFile = new ObjectStorageIdBasedFile(
+			$objectStorageIdBasedFile = new static::$objectStorageIdBasedFileClassName(
 				providerName: static::$providerName,
 				idBasedFile: $idBasedImage,
 			);
