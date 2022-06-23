@@ -52,4 +52,11 @@ class Result {
 	function __isset($key) {
 		return isset($this->payload[$key]);
 	}
+
+	/**
+	 * @return boolean Whether this result evaluates as Ok
+	 */
+	function isOk() {
+		return $this->isOk;
+	}
 }

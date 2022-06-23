@@ -26,6 +26,7 @@ class Security  extends \Cherrycake\Classes\Module {
 	const RULE_LIMITED_VALUES = 12; // The value must be exactly one of the specified values.
 	const RULE_UPLOADED_FILE = 13; // The value must be a valid uploaded file. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
 	const RULE_UPLOADED_FILE_IMAGE = 14; // The value must be an uploaded image. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_UPLOADED_FILES = 15; // The value must be a valid array of multiple uploaded files. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
 	const RULE_SQL_INJECTION = 100; // The value must not contain SQL injection suspicious strings
 	const RULE_TYPICAL_ID = 1000; // Same as RULE_NOT_EMPTY + RULE_INTEGER + RULE_POSITIVE
 
@@ -272,7 +273,7 @@ class Security  extends \Cherrycake\Classes\Module {
 
 	/**
 	 * Checks the given file received via $_FILE against the given rules
-	 * @param mixed $value The value to check
+	 * @param mixed $file The files to check
 	 * @param array $rules A hash array of the check rules to perform, with the same syntax as Security::checkValue
 	 * @return Result A Result object with optionally the following additional payloads:
 	 * * description: An array containing the list of errors found when checking the value
@@ -324,12 +325,49 @@ class Security  extends \Cherrycake\Classes\Module {
 					$description[] = $result->description;
 				}
 			}
+
 		}
 
 		if ($isError)
 			return new \Cherrycake\Classes\ResultKo([
 				"description" => $description
 			]);
+		else
+			return new \Cherrycake\Classes\ResultOk;
+	}
+
+	/**
+	 * Checks the given array of files received via $_FILE against the given rules
+	 * @param array $files The array of files to check
+	 * @param array $rules A hash array of the check rules to perform, with the same syntax as Security::checkValue
+	 * @return Result A Result object with optionally the following additional payloads:
+	 * * description: An array containing the list of errors found when checking the value
+	 */
+	function checkFiles($files = NULL, $rules = false) {
+		if (is_null($files))
+			return new \Cherrycake\Classes\ResultOk;
+
+		if (!is_array($rules))
+			$rules = [];
+
+		if (!$rules)
+			return new \Cherrycake\Classes\ResultOk;
+
+		$isError = false;
+		$errorDescriptions = [];
+		foreach ($files as $file) {
+			$result = $this->checkFile($file, $rules);
+			if (!$result->isOk()) {
+				$isError = true;
+				$errorDescriptions[] = $result->description;
+			}
+		}
+
+		if ($isError) {
+			return new \Cherrycake\Classes\ResultKo([
+				"description" => implode(' / ', $errorDescriptions)
+			]);
+		}
 		else
 			return new \Cherrycake\Classes\ResultOk;
 	}

@@ -34,6 +34,10 @@ class RequestParameter {
 				if (isset($_FILES[$this->name]))
 					$this->setValue($_FILES[$this->name]);
 				break;
+			case \Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILES:
+				if (isset($_FILES))
+					$this->setValue($_FILES);
+				break;
 		}
 	}
 
@@ -53,6 +57,8 @@ class RequestParameter {
 			return null;
 		return
 			$this->type == \Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILE
+			||
+			$this->type == \Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILES
 			?
 			$this->value
 			:
@@ -76,11 +82,11 @@ class RequestParameter {
 	 */
 	function checkValueSecurity() {
 		return
-			$this->type == \Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILE
-			?
-			Engine::e()->Security->checkFile($this->value, $this->securityRules)
-			:
-			Engine::e()->Security->checkValue($this->value, $this->securityRules);
+			match ($this->type) {
+				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILE => Engine::e()->Security->checkFile($this->value, $this->securityRules),
+				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILES => Engine::e()->Security->checkFiles($this->value, $this->securityRules),
+				default => Engine::e()->Security->checkValue($this->value, $this->securityRules)
+			};
 	}
 
 	/**
