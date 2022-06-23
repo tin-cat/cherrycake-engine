@@ -22,19 +22,44 @@ abstract class MultisizeImage {
 	protected $images;
 
 	/**
-	 * @var array The image IPTC metadata (https://www.php.net/manual/en/function.iptcparse.php)
+	 * @return int The width of the original image that generated this MultisizeImage in pixels
+	 */
+	protected ?int $width = null;
+
+	/**
+	 * @var int The height of the original image that generated this MultisizeImage in pixels
+	 */
+	protected ?int $height = null;
+
+	/**
+	 * @var int The type of the original image that generated this MultisizeImage, one of the IMG_* constants (https://www.php.net/manual/en/image.constants.php)
+	 */
+	protected ?int $type = null;
+
+	/**
+	 * @var array the IPTC metadata (https://www.php.net/manual/en/function.iptcparse.php) of the original image that generated this MultisizeImage
 	 */
 	protected ?array $iptcMetadata = null;
 
 	/**
-	 * @var array The image EXIF metadata
+	 * @var array the EXIF metadata of the original image that generated this MultisizeImage
 	 */
 	protected ?array $exifMetadata = null;
 
 	/**
-	 * @var array The red, green and blue values of the average color of the image, in the form of an hash array with the `red`, `green`, `blue` and `alpha` keys
+	 * @var array The red, green and blue values of the average color of the original image that generated this MultisizeImage, in the form of an hash array with the `red`, `green`, `blue` and `alpha` keys
 	 */
 	protected ?array $averageColorRgba = null;
+
+	/**
+	 * var boolean $isReadIptcMetadata Whether to read IPTC metadada
+	 **/
+	static public bool $isReadIptcMetadata = false;
+
+	/**
+	 * var boolean $isReadExifMetadata Whether to read EXIF metadada
+	 **/
+	static public bool $isReadExifMetadata = false;
 
 	/**
 	 * @param string $sourceImagefilePath The file path of the source image file, from which all sizes will be created
@@ -47,8 +72,9 @@ abstract class MultisizeImage {
 		if (!$originalName)
 			$originalName = basename($sourceImageFilePath);
 
+		$this->loadMetadata($sourceImageFilePath);
+
 		// Loop through sizes
-		$isFirst = true;
 		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
 
 			$image = new static::$idBasedImageClassName(
@@ -62,27 +88,62 @@ abstract class MultisizeImage {
 				destinationFilePath: $image->getPath(),
 			);
 
-			$image->loadMetadata();
-
 			$this->images[$sizeName] = $image;
-
-			if ($isFirst) {
-				$this->setMetadataFromImage($image);
-				$isFirst = false;
-			}
 		}
 	}
 
 	/**
-	 * Sets image-related metadata for this MultisizeImage object based on the given IdBasedImage
-	 * @param IdBasedImage $idBasedImage The image from which to take the metadata
+	 * Loads all the available metadata for this image
 	 */
-	protected function setMetadataFromImage(
-		IdBasedImage $idBasedImage
+	public function loadMetadata(
+		string $sourceImageFilePath,
 	) {
-		// $this->iptcMetadata = $idBasedImage->getAllIptcMetadata();
-		// $this->exifMetadata = $idBasedImage->getAllExifMetadata();
-		$this->averageColorRgba = $idBasedImage->getAverageColorRgba();
+		// Load sizes
+		list($this->width, $this->height) = getimagesize($sourceImageFilePath);
+
+		// Load type
+		$this->type = exif_imagetype($sourceImageFilePath);
+
+		// Load IPTC metadata
+		if (static::$isReadIptcMetadata) {
+			getimagesize($sourceImageFilePath, $metadata);
+			if (!isset($metadata['APP13']))
+				$this->iptcMetadata = [];
+			else
+				$this->iptcMetadata = iptcparse($metadata['APP13']);
+		}
+
+		// Load EXIF metadata
+		if (static::$isReadExifMetadata) {
+			if (
+				$exifMetadata = exif_read_data($sourceImageFilePath)
+			)
+				$this->exifMetadata = $exifMetadata;
+		}
+
+		// Load average color
+		$image = match($this->type) {
+			IMAGETYPE_GIF => imageCreateFromGif($sourceImageFilePath),
+			IMAGETYPE_PNG => imageCreateFromPng($sourceImageFilePath),
+			IMAGETYPE_JPEG => imagecreateFromJpeg($sourceImageFilePath),
+			IMAGETYPE_WEBP => imagecreateFromWebp($sourceImageFilePath),
+		};
+
+		if (!$image) {
+			$this->averageColorRgba = [];
+			return [];
+		}
+
+		$tempImage = ImageCreateTrueColor(1,1);
+		ImageCopyResampled($tempImage, $image, 0, 0, 0, 0, 1, 1, $this->width, $this->height);
+		$colorIndex = ImageColorAt($tempImage, 0, 0);
+
+		if ($colorIndex === false) {
+			$this->averageColorRgba = [];
+			return [];
+		}
+
+		$this->averageColorRgba = imagecolorsforindex($tempImage, $colorIndex);
 	}
 
 	/**

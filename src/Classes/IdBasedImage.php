@@ -37,6 +37,16 @@ abstract class IdBasedImage extends IdBasedFile {
 	protected ?array $averageColorRgba = null;
 
 	/**
+	 * var boolean $isReadIptcMetadata Whether to read IPTC metadada
+	 **/
+	static public bool $isReadIptcMetadata = false;
+
+	/**
+	 * var boolean $isReadExifMetadata Whether to read EXIF metadada
+	 **/
+	static public bool $isReadExifMetadata = false;
+
+	/**
 	 * @return array The names of the object properties to serialize
 	 */
 	function __sleep() {
@@ -65,8 +75,10 @@ abstract class IdBasedImage extends IdBasedFile {
 	public function loadMetadata() {
 		$this->loadSize();
 		$this->loadType();
-		// $this->loadIptcMetadata();
-		// $this->loadExifMetadata();
+		if (static::$isReadIptcMetadata)
+			$this->loadIptcMetadata();
+		if (static::$isReadExifMetadata)
+			$this->loadExifMetadata();
 		$this->loadAverageColorRgba();
 	}
 

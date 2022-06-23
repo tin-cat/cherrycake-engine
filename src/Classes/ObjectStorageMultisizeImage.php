@@ -24,8 +24,9 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 		if (!$originalName)
 			$originalName = basename($sourceImageFilePath);
 
+		$this->loadMetadata($sourceImageFilePath);
+
 		// Loop through sizes
-		$isFirst = true;
 		foreach ($this->sizes as $sizeName => $imageResizeAlgorithm) {
 
 			$idBasedImage =
@@ -48,11 +49,6 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 			);
 
 			$this->images[$sizeName] = $objectStorageIdBasedFile;
-
-			if ($isFirst) {
-				$this->setMetadataFromImage($idBasedImage);
-				$isFirst = false;
-			}
 		}
 	}
 

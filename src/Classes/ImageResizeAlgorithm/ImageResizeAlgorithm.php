@@ -83,7 +83,8 @@ abstract class ImageResizeAlgorithm {
 		if ($this->isCorrectOrientation) {
 			if (!function_exists('exif_read_data'))
 				throw new Exception('EXIF extension required to retrieve orientation data');
-			if ($exif = exif_read_data($sourceFilePath) && isset($exif["Orientation"])) {
+			$exif = exif_read_data($sourceFilePath);
+			if (($exif = exif_read_data($sourceFilePath)) && isset($exif["Orientation"])) {
 				$orientation = $exif["Orientation"];
 				if ($orientation == 6 || $orientation == 5)
 					$image = imagerotate($image, 270, 0);
