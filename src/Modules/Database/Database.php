@@ -56,6 +56,9 @@ class Database extends \Cherrycake\Classes\Module {
 	const DEFAULT_VALUE_YEAR = 5;
 	const DEFAULT_VALUE_IP = 6;
 	const DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE = 7;
+	const DEFAULT_VALUE_NULL = 8;
+	const DEFAULT_VALUE_TRUE = 9;
+	const DEFAULT_VALUE_FALSE = 10;
 
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app

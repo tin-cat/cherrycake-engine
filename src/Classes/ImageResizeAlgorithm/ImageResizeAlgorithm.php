@@ -80,10 +80,17 @@ abstract class ImageResizeAlgorithm {
 				break;
 		}
 
-		if ($this->isCorrectOrientation) {
+		if (
+			$this->isCorrectOrientation
+			&&
+			in_array($type, [
+				IMAGETYPE_JPEG,
+				IMAGETYPE_TIFF_II,
+				IMAGETYPE_TIFF_MM,
+			])
+		) {
 			if (!function_exists('exif_read_data'))
 				throw new Exception('EXIF extension required to retrieve orientation data');
-			$exif = exif_read_data($sourceFilePath);
 			if (($exif = exif_read_data($sourceFilePath)) && isset($exif["Orientation"])) {
 				$orientation = $exif["Orientation"];
 				if ($orientation == 6 || $orientation == 5)

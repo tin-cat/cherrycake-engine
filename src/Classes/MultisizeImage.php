@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Classes;
 
+use Exception;
+use Throwable;
+
 /**
  * Class that represents an image that's available in multiple sizes
  */
@@ -114,10 +117,16 @@ abstract class MultisizeImage {
 		}
 
 		// Load EXIF metadata
-		if (static::$isReadExifMetadata) {
-			if (
-				$exifMetadata = exif_read_data($sourceImageFilePath)
-			)
+		if (
+			static::$isReadExifMetadata
+			&&
+			in_array($this->type, [
+				IMAGETYPE_JPEG,
+				IMAGETYPE_TIFF_II,
+				IMAGETYPE_TIFF_MM,
+			])
+		) {
+			if ($exifMetadata = exif_read_data($sourceImageFilePath))
 				$this->exifMetadata = $exifMetadata;
 		}
 

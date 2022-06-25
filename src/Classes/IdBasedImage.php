@@ -173,8 +173,18 @@ abstract class IdBasedImage extends IdBasedFile {
 	private function loadExifMetadata() {
 		if (!is_null($this->exifMetadata))
 			return;
+
+		if (!$type = exif_imagetype($this->getPath())) {
+			$this->exifMetadata = [];
+			return;
+		}
+
 		if (
-			!exif_imagetype($this->getPath())
+			!in_array($type, [
+				IMAGETYPE_JPEG,
+				IMAGETYPE_TIFF_II,
+				IMAGETYPE_TIFF_MM,
+			])
 			||
 			!$exifMetadata = exif_read_data($this->getPath())
 		) {

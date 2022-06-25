@@ -347,6 +347,15 @@ class Item {
 					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_AVAILABLE_URL_SHORT_CODE:
 						$value = $this->getRandomAvailableUrlShortCode($fieldName);
 						break;
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_NULL:
+						$value = null;
+						break;
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_TRUE:
+						$value = true;
+						break;
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_FALSE:
+						$value = false;
+						break;
 				}
 
 			}
