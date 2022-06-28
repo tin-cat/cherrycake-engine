@@ -253,6 +253,7 @@ class Translation extends \Cherrycake\Classes\Module {
 
 	private function getTranslation($text) {
 		$translation = $this->translations[$text->getCategory()][$text->getKey()][Engine::e()->Locale->getLanguage()] ?? '';
+		$translation = $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], Engine::e()->Locale->getLanguage());
 		if (!$text->replacements)
 			return $translation;
 		else
@@ -261,6 +262,18 @@ class Translation extends \Cherrycake\Classes\Module {
 				array_values($text->replacements),
 				$translation
 			);
+	}
+
+	/**
+	 * @param $data All the available translations
+	 * @param int $language The language to get the translation in
+	 * @return mixed The data in the specified language. Null if there wasn't any data for the specified language.
+	 */
+	public function getFromArray(
+		array $data,
+		?int $language = null
+	): mixed {
+		return $data[is_null($language) ? Engine::e()->Locale->getLanguage(): $language] ?? null;
 	}
 
 	public function translate($text) {
