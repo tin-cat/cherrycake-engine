@@ -27,6 +27,8 @@ class Security  extends \Cherrycake\Classes\Module {
 	const RULE_UPLOADED_FILE = 13; // The value must be a valid uploaded file. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
 	const RULE_UPLOADED_FILE_IMAGE = 14; // The value must be an uploaded image. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
 	const RULE_UPLOADED_FILES = 15; // The value must be a valid array of multiple uploaded files. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_CLASS_NAME = 16; // The value must be the class name of a valid class.
+	const RULE_CLASS_NAME_MUST_EXTEND = 17; // The value must be a class name of a valid class, which must extend the class name passed as parameter
 	const RULE_SQL_INJECTION = 100; // The value must not contain SQL injection suspicious strings
 	const RULE_TYPICAL_ID = 1000; // Same as RULE_NOT_EMPTY + RULE_INTEGER + RULE_POSITIVE
 
@@ -151,6 +153,16 @@ class Security  extends \Cherrycake\Classes\Module {
 		if (is_null($value))
 			return new \Cherrycake\Classes\ResultOk;
 
+		// If the value is an array, check each value recursively
+		if (is_array($value)) {
+			foreach ($value as $eachValue) {
+				$result = $this->checkValue($eachValue, $rules, $isFixedRules);
+				if (!$result->isOk)
+					return $result;
+			}
+			return new \Cherrycake\Classes\ResultOk;
+		}
+
 		if (!is_array($rules))
 			$rules = [];
 
@@ -260,6 +272,25 @@ class Security  extends \Cherrycake\Classes\Module {
 						$isError = false;
 				if ($isError)
 					$description[] = "Parameter hasn't any of the possible values [".implode("|", $ruleParameter)."]";
+			}
+
+			if ($rule == self::RULE_CLASS_NAME) {
+				if (!class_exists($value)) {
+					$isError = true;
+					$description[] = "Parameter is not a valid class name";
+				}
+			}
+
+			if ($rule == self::RULE_CLASS_NAME_MUST_EXTEND) {
+				if (!class_exists($value)) {
+					$isError = true;
+					$description[] = "Parameter is not a valid class name";
+				}
+				else
+				if (!is_subclass_of($value, $ruleParameter)) {
+					$isError = true;
+					$description[] = "Parameter is a valid class name but it doesn't extends the required class ".$ruleParameter;
+				}
 			}
 		}
 
@@ -711,11 +742,17 @@ class Security  extends \Cherrycake\Classes\Module {
 
 	/**
 	 * Cleans string coming from untrusted sources like user input. Should prevent XSS attacks.
-	 * @param  string $string The string to clean
+	 * @param string|array $string The string to clean, or an array of strings
 	 * @return string The cleaned string
 	 */
 	function clean($string) {
-		require_once APP_DIR."/vendor/autoload.php";
+		// If $string is an array, clean it iteratively
+		if (is_array($string)) {
+			foreach ($string as $index => $eachString)
+				$string[$index] = $this->clean($eachString);
+			return $string;
+		}
+
 		$config = \HTMLPurifier_Config::createDefault();
 
 		$config->set('Core.Encoding', 'UTF-8');

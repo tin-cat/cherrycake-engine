@@ -319,12 +319,15 @@ class Errors extends \Cherrycake\Classes\Module {
 					Engine::e()->Output->setResponse(new \Cherrycake\Modules\Actions\ResponseTextHtml(
 						code: \Cherrycake\Modules\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
 						payload:
-							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
-								self::ERROR_SYSTEM => "System error",
-								self::ERROR_APP => "App error",
-								self::ERROR_NOT_FOUND => "Not found",
-								self::ERROR_NO_PERMISSION => "No permission"
-							][$type]."\n".
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".
+								match ($type) {
+									self::ERROR_SYSTEM => "System error",
+									self::ERROR_SECURITY => "Security error",
+									self::ERROR_APP => "App error",
+									self::ERROR_NOT_FOUND => "Not found",
+									self::ERROR_NO_PERMISSION => "No permission",
+								}.
+								"\n".
 							($subType ?? false ? "Subtype: ".$subType."\n" : null).
 							($description ?? false ? "Description: ".$description."\n" : null).
 							($variables ?? false ? "Variables:\n".print_r($variables, true)."\n" : null).
