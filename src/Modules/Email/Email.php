@@ -2,27 +2,45 @@
 
 namespace Cherrycake\Modules\Email;
 
-use \PHPMailer\PHPMailer\PHPMailer;
-use \PHPMailer\PHPMailer\Exception;
-
 /**
- * Sends emails
- * Configuration example for email.config.php:
- * <code>
- * $emailConfig = [
- *  "method" => "internal", // The method used for sending, either "internal" or "SMTP"
- *  "SMTPHost" => "", // The SMTP host name
- *  "SMTPPort" => 587, // The SMTP port
- *  "SMTPAuth" => true, // Enable or disable SMTP authentication
- *  "SMTPSecure" => SMTP_ENCRYPTION_TLS, // Type of encryption, one of the SMTP_ENCRYPTION_* available
- *  "SMTPUsername" => "", // The user name to authenticate on the SMTP server
- *  "SMTPPassword" => "" // The password for authenticating on the SMTP server
- * ];
- * </code>
- *
- * @todo Implement an email queueing system
+ * Manages email providers.
+ * It takes configuration from the App-layer configuration file. See there to find available configuration options.
  */
 class Email extends \Cherrycake\Classes\Module {
+
+	protected bool $isConfigFileRequired = false;
+
+	function init(): bool {
+		if (!parent::init())
+			return false;
+
+		// Sets up providers
+		if (is_array($providers = $this->getConfig("providers")))
+			foreach ($providers as $key => $provider)
+				$this->addProvider($key, $provider["providerClassName"], $provider["config"] ?? []);
+
+		return true;
+	}
+
+	/**
+	 * Adds an email provider
+	 * @param string $key The key to later access the email provider
+	 * @param string $providerClassName The email provider class name
+	 * @param array $config The configuration for the email provider
+	 */
+	function addProvider(
+		string $key,
+		string $providerClassName,
+		?array $config,
+	) {
+		eval("\$this->".$key." = new \\Cherrycake\\Modules\\Email\\".$providerClassName."();");
+		$this->$key->config($config);
+	}
+
+
+
+
+
 
 	const SMTP_ENCRYPTION_TLS = 0;
 	const SMTP_ENCRYPTION_SSL = 1;
@@ -45,7 +63,6 @@ class Email extends \Cherrycake\Classes\Module {
      */
 	function send($tos, $subject, $setup) {
         set_time_limit(30);
-        require_once APP_DIR."/vendor/autoload.php";
         $this->phpMailer = new \PHPMailer\PHPMailer\PHPMailer(true);
         try {
 
@@ -61,7 +78,7 @@ class Email extends \Cherrycake\Classes\Module {
                 $this->phpMailer->Port = $this->getConfig("SMTPPort");
                 if ($this->getConfig("SMTPAuth")) {
                     $this->phpMailer->SMTPAuth = true;
-                    $this->phpMailer->SMTPSecure = [SMTP_ENCRYPTION_TLS => "tls", SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
+                    $this->phpMailer->SMTPSecure = [self::SMTP_ENCRYPTION_TLS => "tls", self::SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
                     $this->phpMailer->Username = $this->getConfig("SMTPUsername");
                     $this->phpMailer->Password = $this->getConfig("SMTPPassword");
                 }
