@@ -17,11 +17,13 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 	public function send(
 		array $recipients,
 		string $subject,
-		string $body,
+		?string $htmlBody = null,
+		?string $plainBody = null,
 		?array $from = null,
 		?array $replyTo = null,
 		?array $carbonCopy = null,
 		?array $blindCarbonCopy = null,
+		?array $attachFiles = null,
 	): bool {
 
 		// Default variables to config
@@ -58,7 +60,10 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 			}
 
             if ($from)
-                $this->phpMailer->setFrom($from['email'], $from['name']);
+                $this->phpMailer->setFrom(
+					is_array($from) ? $from['address'] : $from,
+					is_array($from) ? $from['name'] : false
+				);
 
             foreach ($recipients as $recipient)
                 $this->phpMailer->addAddress(
@@ -90,31 +95,33 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 					);
 			}
 
-			// Todo
-
-
-            if (isset($setup["attachments"]) && is_array($setup["attachments"]))
-                foreach ($setup["attachments"] as $attachment)
-                    $this->phpMailer->addAttachment($attachment[0], $attachment[1]);
+			if ($attachFiles) {
+				foreach ($attachFiles as $attachFile)
+                    $this->phpMailer->addAttachment(
+						$attachFile['path'],
+						$attachFile['name']
+					);
+			}
 
             $this->phpMailer->Subject = $subject;
 
-            if (isset($setup["contentHTML"])) {
+            if ($htmlBody) {
                 $this->phpMailer->isHTML(true);
-                $this->phpMailer->Body = $setup["contentHTML"];
-                if (!isset($setup["contentPlain"]))
-                    $setup["contentPlain"] = strip_tags($setup["contentHTML"]);
-                $this->phpMailer->AltBody = $setup["contentPlain"];
+                $this->phpMailer->Body = $htmlBody;
+                $this->phpMailer->AltBody = $plainBody ?: strip_tags($htmlBody);
             }
             else
-                $this->phpMailer->Body = $setup["contentPlain"];
+                $this->phpMailer->Body = $plainBody;
 
             $this->phpMailer->send();
             $this->phpMailer->ClearAddresses();
 
         } catch (\PHPMailer\PHPMailer\Exception $e) {
-            return new \Cherrycake\Classes\ResultKo(["descriptions" => [$this->phpMailer->ErrorInfo]]);
+			throw new EmailProviderException(
+				message: 'Error sending email',
+				description: $e->getMessage()
+			);
         }
-        return new \Cherrycake\Classes\ResultOk;
+        return true;
 	}
 }
