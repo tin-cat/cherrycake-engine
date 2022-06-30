@@ -36,10 +36,15 @@ interface EmailProviderInterface {
 		string $subject,
 		?string $htmlBody = null,
 		?string $plainBody = null,
-		?array $from = null,
+		string|array $from = null,
 		?array $replyTo = null,
 		?array $carbonCopy = null,
 		?array $blindCarbonCopy = null,
 		?array $attachFiles = null,
 	): bool;
+
+	/**
+	 * Finalizes the provider. Normally, by closing any connections.
+	 */
+	public function end();
 }

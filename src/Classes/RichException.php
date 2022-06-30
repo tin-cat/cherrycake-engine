@@ -29,4 +29,12 @@ class RichException extends Exception {
 	function getDescription(): null|string {
 		return $this->description;
 	}
+
+	function __toString(): string {
+		return
+			$this->message.
+			($this->description ?
+				' ('.$this->description.')'
+			: null);
+	}
 }

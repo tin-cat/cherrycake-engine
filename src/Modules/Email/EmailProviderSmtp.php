@@ -19,7 +19,7 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 		string $subject,
 		?string $htmlBody = null,
 		?string $plainBody = null,
-		?array $from = null,
+		string|array $from = null,
 		?array $replyTo = null,
 		?array $carbonCopy = null,
 		?array $blindCarbonCopy = null,
@@ -33,7 +33,7 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 			'carbonCopy',
 			'blindCarbonCopy',
 		] as $key) {
-			if (!$$key && $this->getConfig($key))
+			if (is_null($$key) && $this->getConfig($key))
 				$$key = $this->getConfig($key);
 		}
 
@@ -41,7 +41,9 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 			$replyTo = $this->getConfig('replyTo');
 
 		set_time_limit(30);
+
         $this->phpMailer = new PHPMailer(true);
+
         try {
 
             $this->phpMailer->CharSet = "UTF-8";
@@ -59,48 +61,54 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
 				$this->phpMailer->Password = $this->getConfig("password");
 			}
 
-            if ($from)
+            if ($from) {
                 $this->phpMailer->setFrom(
 					is_array($from) ? $from['address'] : $from,
-					is_array($from) ? $from['name'] : false
+					is_array($from) ? $from['name'] : false,
 				);
+			}
 
-            foreach ($recipients as $recipient)
+            foreach ($recipients as $recipient) {
                 $this->phpMailer->addAddress(
 					is_array($recipient) ? $recipient['address'] : $recipient,
-					is_array($recipient) ? $recipient['name'] : false
+					is_array($recipient) ? $recipient['name'] : false,
 				);
+			}
 
 			if ($replyTo) {
-				foreach ($replyTo as $eachReplyTo)
+				foreach ($replyTo as $eachReplyTo) {
 					$this->phpMailer->addReplyTo(
 						is_array($eachReplyTo) ? $eachReplyTo['address'] : $eachReplyTo,
 						is_array($eachReplyTo) ? $eachReplyTo['name'] : false
 					);
+				}
 			}
 
 			if ($carbonCopy) {
-				foreach ($carbonCopy as $eachCarbonCopy)
+				foreach ($carbonCopy as $eachCarbonCopy) {
 					$this->phpMailer->addCC(
 						is_array($eachCarbonCopy) ? $eachCarbonCopy['address'] : $eachCarbonCopy,
 						is_array($eachCarbonCopy) ? $eachCarbonCopy['name'] : false
 					);
+				}
 			}
 
 			if ($blindCarbonCopy) {
-				foreach ($blindCarbonCopy as $eachBlindCarbonCopy)
+				foreach ($blindCarbonCopy as $eachBlindCarbonCopy) {
 					$this->phpMailer->addBCC(
 						is_array($eachBlindCarbonCopy) ? $eachBlindCarbonCopy['address'] : $eachBlindCarbonCopy,
 						is_array($eachBlindCarbonCopy) ? $eachBlindCarbonCopy['name'] : false
 					);
+				}
 			}
 
 			if ($attachFiles) {
-				foreach ($attachFiles as $attachFile)
+				foreach ($attachFiles as $attachFile) {
                     $this->phpMailer->addAttachment(
 						$attachFile['path'],
 						$attachFile['name']
 					);
+				}
 			}
 
             $this->phpMailer->Subject = $subject;
@@ -117,11 +125,13 @@ class EmailProviderSmtp extends EmailProvider implements EmailProviderInterface 
             $this->phpMailer->ClearAddresses();
 
         } catch (\PHPMailer\PHPMailer\Exception $e) {
-			throw new EmailProviderException(
-				message: 'Error sending email',
-				description: $e->getMessage()
-			);
+			throw new EmailProviderException('Error sending email: '.$e->getMessage());
         }
         return true;
 	}
+
+	public function end() {
+        if ($this->phpMailer)
+            $this->phpMailer->SmtpClose();
+    }
 }

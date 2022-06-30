@@ -27,7 +27,17 @@ use Cherrycake\Classes\Engine;
  *  "isEmailAppErrors" => false, // Whether or not to email app errors. Defaults to false
  *  "isEmailNotFoundErrors" => false, // Whether or not to email "Not found" errors. Defaults to false
  *  "isEmailNoPermissionErrors" => false, // Whether or not to email "No permission" errors. Defaults to false
- *  "notificationEmail" => false // The email address to send the error report.
+ *  "notificationEmailProviderName" => "main", // The name of the Email provider to use.
+ * 	"notificationEmailRecipients" => [ // The email address to send the error report, the same specification as for the parameter $recipients in EmailProviderInterface::send
+ * 		[
+ *			'address' => 'webmaster@rawlock.com',
+ *			'name' => 'Rawlock webmaster',
+ *		]
+ *	],
+ *	"notificationEmailFrom" => [ // The email address to send the error report from, the same specification as for the parameter $from in EmailProviderInterface::send
+ *		'address' => 'webmaster@rawlock.com',
+ *		'name' => 'Rawlock webmaster',
+ *	],
  * ];
  * </code>
  */
@@ -379,13 +389,11 @@ class Errors extends \Cherrycake\Classes\Module {
 		else
 			$message = $data;
 
-		Engine::e()->loadCoreModule("Email");
-		Engine::e()->Email->send(
-			[[$this->getConfig("notificationEmail")]],
-			"[".Engine::e()->getAppNamespace()."] Error",
-			[
-				"contentHTML" => $message
-			]
+		Engine::e()->Email->getProvider($this->getConfig('notificationEmailProviderName'))->send(
+			from: $this->getConfig("notificationEmailFrom"),
+			recipients: $this->getConfig("notificationEmailRecipients"),
+			subject: "[".Engine::e()->getAppNamespace()."] Error",
+			htmlBody: $message
 		);
 	}
 }
