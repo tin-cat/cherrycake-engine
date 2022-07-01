@@ -268,7 +268,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Gets the name of the current locale
 	 * @return string The name of the current locale, as specified in the availableLocales config key.
 	 */
-	function getLocaleName() {
+	public function getLocaleName() {
 		return $this->localeName;
 	}
 
@@ -277,7 +277,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param string $localeName The name of the locale to use, as specified in the availableLocales config key.
 	 * @return boolean True if the locale could be set, false if the locale wasn't configured in the availableLocales config key.
 	 */
-	function setLocale($localeName) {
+	public function setLocale($localeName) {
 		if (!isset($this->getConfig("availableLocales")[$localeName]))
 			return false;
 		$this->locale = $this->getConfig("availableLocales")[$localeName];
@@ -290,7 +290,9 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param string $localeName The name of the locale for which to get the main domain
 	 * @return string The main domain for the specified locale, or for the current locale if no $locale specified. False if the locale was not found.
 	 */
-	function getMainDomain($localeName = false) {
+	public function getMainDomain($localeName = false) {
+		if (!$localeName)
+			$localeName = $this->getLocaleName();
 		if (!isset($this->getConfig("availableLocales")[$localeName]))
 			return false;
 		if (
@@ -303,10 +305,19 @@ class Locale extends \Cherrycake\Classes\Module {
 	}
 
 	/**
+	 * Gets the base URL for the current locale, or for the specified locale
+	 * @param string $localeName The name of the locale for which to get the main domain
+	 * @return string The base URL
+	 */
+	public function getBaseUrl($localeName = false) {
+		return 'http://'.$this->getMainDomain($localeName);
+	}
+
+	/**
 	 * Gets the languages that are available on the App, taken from the configured `availableLocales`
 	 * @return array The languages available
 	 */
-	function getAvailaleLanguages() {
+	public function getAvailaleLanguages() {
 		$languages = [];
 		foreach ($this->getConfig("availableLocales") as $locale)
 			$languages[] = $locale['language'];
@@ -320,7 +331,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 *                       - forceLanguage: Use this language instead of the passed in $language
 	 * @return mixed The language name, false if the specified language is not configured.
 	 */
-	function getLanguageName($language, $setup = false) {
+	public function getLanguageName($language, $setup = false) {
 		if (!isset($this->languageNames[$language]))
 			return false;
 		return $this->languageNames[$language][$setup["forceLanguage"] ?? false ?: $this->getLanguage()];
@@ -331,7 +342,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param integer $language The language
 	 * @return mixed The language code, or false if the specified language is not configured.
 	 */
-	function getLanguageCode($language = false) {
+	public function getLanguageCode($language = false) {
 		if (!$language)
 			$language = $this->getLanguage();
 		if (!isset($this->languageCodes[$language]))
@@ -343,7 +354,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the date format to use
 	 * @param integer $dateFormat The desired dateFormat, one of the available \Cherrycake\Modules\Locale\Locale::DATE_FORMAT_*
 	 */
-	function setDateFormat($dateFormat) {
+	public function setDateFormat($dateFormat) {
 		$this->locale["dateFormat"] = $dateFormat;
 	}
 
@@ -351,7 +362,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the temperature units to use
 	 * @param integer $temperatureUnits The desired temperature units, one of the available TEMPERATURE_UNITS_*
 	 */
-	function setTemperatureUnits($temperatureUnits) {
+	public function setTemperatureUnits($temperatureUnits) {
 		$this->locale["temperatureUnits"] = $temperatureUnits;
 	}
 
@@ -359,7 +370,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the currency to use
 	 * @param integer $currency The desired currency, one of the available CURRENCY_*
 	 */
-	function setCurrency($currency) {
+	public function setCurrency($currency) {
 		$this->locale["currency"] = $currency;
 	}
 
@@ -367,7 +378,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the decimal mark to use
 	 * @param integer $decimalMark The desired decimal mark, one of the available DECIMAL_MARK_*
 	 */
-	function setDecimalMark($decimalMark) {
+	public function setDecimalMark($decimalMark) {
 		$this->locale["decimalMark"] = $decimalMark;
 	}
 
@@ -375,7 +386,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the measurement system to use
 	 * @param integer $measurementSystem The desired measurement system, one of the available MEASUREMENT_SYSTEM_*
 	 */
-	function setMeasurementSystem($measurementSystem) {
+	public function setMeasurementSystem($measurementSystem) {
 		$this->locale["measurementSystem"] = $measurementSystem;
 	}
 
@@ -383,21 +394,21 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the language to use
 	 * @param integer $language The language
 	 */
-	function setLanguage($language) {
+	public function setLanguage($language) {
 		$this->locale["language"] = $language;
 	}
 
 	/**
 	 * @return integer The language that is being currently used, one of the \Cherrycake\Modules\Locale\Locale::*
 	 */
-	function getLanguage() {
+	public function getLanguage() {
 		return $this->locale["language"];
 	}
 
 	/**
 	 * @return integer The language that is being currently used, one of the \Cherrycake\Modules\Locale\Locale::*
 	 */
-	function getCurrency() {
+	public function getCurrency() {
 		return $this->locale["currency"];
 	}
 
@@ -405,14 +416,14 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Sets the Timezone to use
 	 * @param integer $timeZone The desired timezone, one of defined in PHP constants as specified in http://php.net/manual/en/timezones.php
 	 */
-	function setTimeZone($timeZone) {
+	public function setTimeZone($timeZone) {
 		$this->locale["timeZone"] = $timeZone;
 	}
 
 	/**
 	 * @return integer The timezone being used
 	 */
-	function getTimeZone() {
+	public function getTimeZone() {
 		return $this->locale["timeZone"];
 	}
 
@@ -420,7 +431,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param integer $timezone The timezone id to obtain the name of. If not specified, the current locale timezone is used
 	 * @return string The timezone name in the TZ standard
 	 */
-	function getTimeZoneName($timezone = false) {
+	public function getTimeZoneName($timezone = false) {
 		if (!$timezone)
 			$timezone = $this->getTimeZone();
 
@@ -463,7 +474,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param bool $fromTimeZone The timezone on which the given $timestamp is considered to be in. If not specified the default cherrycake timezone is used, as set in Engine::init
 	 * @return mixed The converted timestamp, or false if it couldn't be converted.
 	 */
-	function convertTimestamp($timestamp, $toTimeZone = false, $fromTimeZone = false) {
+	public function convertTimestamp($timestamp, $toTimeZone = false, $fromTimeZone = false) {
 		if (!$timestamp)
 			return false;
 
@@ -494,7 +505,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param array $setup A hash array with setup options, just like the Locale::formatTimestamp method
 	 * @return string The formatted date
 	 */
-	function formatDate($dateTimestamp, $setup = false) {
+	public function formatDate($dateTimestamp, $setup = false) {
 		return $this->formatTimestamp($dateTimestamp, (is_array($setup) ? $setup : []) + [
 			"fromTimeZone" => false,
 			"isDay" => true,
@@ -522,7 +533,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * * format: If specified this format as used in the date PHP function is used instead of internal formatting. Default: false.
 	 * @return string The formatted timestamp
 	 */
-	function formatTimestamp($timestamp, $setup = false) {
+	public function formatTimestamp($timestamp, $setup = false) {
 		// If no fromTimeZone specified for the given timestamp, the engine TIMEZONE is assumed
 		if (!isset($setup["fromTimeZone"])) {
 			$setup["fromTimeZone"] = Engine::e()->getTimezoneId();
@@ -737,7 +748,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * * multiplier: A multiplier, or false if no multiplier should be applied. Default: false
 	 * @return string The formatted number.
 	 */
-	function formatNumber($number, $setup = false) {
+	public function formatNumber($number, $setup = false) {
 		self::treatParameters($setup, [
             "decimals" => ["default" => 0],
 			"showDecimalsForWholeNumbers" => ["default" => false],
@@ -763,7 +774,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * @param array $setup An optional hash array with setup options, with the following possible keys:
 	 * * currency: The currency to format the given amount to. One of the available CURRENCY_?. If not specified, the current Locale setting is used.
 	 */
-	function formatCurrency($amount, $setup = false) {
+	public function formatCurrency($amount, $setup = false) {
 		switch ($this->getCurrency()) {
 			case \Cherrycake\Modules\Locale\Locale::CURRENCY_USD:
 				return "USD".$this->formatNumber($amount, [
@@ -787,7 +798,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * * ordinalGender: default: ORDINAL_GENDER_MALE. Some languages have different ordinals depending on the gender of what's being counted. Specify this gender here, one of the ORDINAL_GENDER_* available ones.
 	 * @return string The abbreviated ordinal number string corresponding to the given number
 	 */
-	function getAbbreviatedOrdinal($number, $setup = false) {
+	public function getAbbreviatedOrdinal($number, $setup = false) {
 		if (!$setup["language"])
 			$setup["language"] = $this->getLanguage();
 
@@ -822,7 +833,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * This method tries to detect the user's location using the configured geolocationMethod. If contry-only methods like GEOLOCATION_METHOD_CLOUDFLARE are configured, only the country will be set in the returned Location object.
 	 * @return mixed A Location object specifying the user's location, or false if it could not be determined.
 	 */
-	function guessLocation() {
+	public function guessLocation() {
 		switch ($this->getConfig("geolocationMethod")) {
 			case GEOLOCATION_METHOD_CLOUDFLARE:
 				if (!isset($_SERVER["HTTP_CF_IPCOUNTRY"]))
