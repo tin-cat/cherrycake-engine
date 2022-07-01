@@ -308,6 +308,7 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Gets the base URL for the current locale, or for the specified locale
 	 * @param string $localeName The name of the locale for which to get the main domain
 	 * @return string The base URL
+	 * @todo Properly return http or https URLs
 	 */
 	public function getBaseUrl($localeName = false) {
 		return 'http://'.$this->getMainDomain($localeName);
