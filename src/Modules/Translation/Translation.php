@@ -5,6 +5,7 @@ namespace Cherrycake\Modules\Translation;
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
+use Cherrycake\Modules\Translation\Text;
 
 /**
  * The Language module provides text translations for multilingual sites, working in conjunction with the Locale module.
@@ -145,10 +146,11 @@ class Translation extends \Cherrycake\Classes\Module {
 	/**
 	 * Adds the provided $text to the currently loaded translations and sets the flag to recreate translation files on module's end
 	 */
-	private function storeText($text) {
+	private function storeText(Text $text) {
 		$this->textsToStore[] = $text;
-		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language)
+		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language) {
 			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->baseLanguageText;
+		}
 		$this->isCreateFilesOnEnd = true;
 	}
 
@@ -247,13 +249,23 @@ class Translation extends \Cherrycake\Classes\Module {
 			$this->createFiles();
 	}
 
-	private function isTextStored($text) {
+	private function isTextStored(Text $text) {
 		return isset($this->translations[$text->getCategory()][$text->getKey()]);
 	}
 
-	private function getTranslation($text) {
-		$translation = $this->translations[$text->getCategory()][$text->getKey()][Engine::e()->Locale->getLanguage()] ?? '';
-		$translation = $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], Engine::e()->Locale->getLanguage());
+	/**
+	 * @param string $text The text object
+	 * @param int $language The language to translate the text to. The current language will be used if not specified.
+	 * @return string The translated text
+	 */
+	private function getTranslation(
+		Text $text,
+		?int $language = null
+	): string {
+		if (is_null($language))
+			$language = Engine::e()->Locale->getLanguage();
+		$translation = $this->translations[$text->getCategory()][$text->getKey()][$language] ?? '';
+		$translation = $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], $language);
 		if (!$text->replacements)
 			return $translation;
 		else
@@ -276,11 +288,19 @@ class Translation extends \Cherrycake\Classes\Module {
 		return $data[is_null($language) ? Engine::e()->Locale->getLanguage(): $language] ?? null;
 	}
 
-	public function translate($text) {
+	/**
+	 * @param string $text The text object
+	 * @param int $language The language to translate the text to. The current language will be used if not specified.
+	 * @return string The translated text
+	 */
+	public function translate(
+		Text $text,
+		?int $language = null
+	):string {
 		if (!$this->isTextStored($text))
 			$this->storeText($text);
 
-		return $this->getTranslation($text);
+		return $this->getTranslation($text, $language);
 	}
 
 	private function buildToml($data, $language) {

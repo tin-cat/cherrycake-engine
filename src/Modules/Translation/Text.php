@@ -26,8 +26,15 @@ class Text {
 	) {}
 
 	function __toString(): string {
-		Engine::e()->loadCoreModule('Translation');
 		return Engine::e()->Translation->translate($this);
+	}
+
+	/**
+	 * @param int $language The language
+	 * @return string The text translated to the specified language
+	 */
+	function getForLanguage($language): string {
+		return Engine::e()->Translation->translate($this, $language);
 	}
 
 	public function getBaseLanguage(): int {
@@ -41,7 +48,7 @@ class Text {
 		$key = '';
 		foreach(str_split($string) as $character) {
 
-			if (stristr('¿?!¡.', $character))
+			if (!stristr('abcdefghijklmnopqrstuvwxyzàáäèéëìíïòóöùúü0123456789_- ', $character))
 				continue;
 
 			foreach ([
@@ -69,6 +76,11 @@ class Text {
 		// Prevent keys from starting with a number to solve issue with TOML standards
 		if (ctype_digit(substr($key, 0, 1)))
 			$key = 'x'.substr($key, 1);
+
+
+		// Prevent too long keys
+		if (strlen($key) > 64)
+			$key = substr($key, 0, 64);
 
 		return $key;
 	}

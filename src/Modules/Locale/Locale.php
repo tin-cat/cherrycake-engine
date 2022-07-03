@@ -53,6 +53,7 @@ class Locale extends \Cherrycake\Classes\Module {
 		/*
 			A hash array of available localizations the app supports, where each key is the locale name, and each value a hash array with the following keys:
 				domains: An array of domains that will trigger this localization when the request to the app comes from one of them, or false if this is the only locale to be used always.
+				isHttps: A boolean indicating whether requests to the locale should be done via HTTPS.
 				language: The language used in this localization, one of the available \Cherrycake\Modules\Locale\Locale::? constants.
 				dateFormat: The date format used in this localization, one of the available \Cherrycake\Modules\Locale\Locale::DATE_FORMAT_? constants.
 				temperatureUnits: The temperature units used in this localization, one of the available TEMPERATURE_UNITS_? constants.
@@ -65,6 +66,7 @@ class Locale extends \Cherrycake\Classes\Module {
 		[
 			"main" => [
 				"domains" => false,
+				"isHttps" => true,
 				"language" => \Cherrycake\Modules\Locale\Locale::ENGLISH,
 				"dateFormat" => \Cherrycake\Modules\Locale\Locale::DATE_FORMAT_MIDDLE_ENDIAN,
 				"temperatureUnits" => \Cherrycake\Modules\Locale\Locale::TEMPERATURE_UNITS_FAHRENHEIT,
@@ -308,10 +310,19 @@ class Locale extends \Cherrycake\Classes\Module {
 	 * Gets the base URL for the current locale, or for the specified locale
 	 * @param string $localeName The name of the locale for which to get the main domain
 	 * @return string The base URL
-	 * @todo Properly return http or https URLs
 	 */
 	public function getBaseUrl($localeName = false) {
-		return 'http://'.$this->getMainDomain($localeName);
+		if (!$localeName)
+			$localeName = $this->getLocaleName();
+		return
+			(
+				$this->getConfig('availableLocales')[$localeName]['isHttps'] ?? $_SERVER["HTTPS"]
+				?
+				'https://'
+				:
+				'http://'
+			).
+			$this->getMainDomain($localeName);
 	}
 
 	/**
