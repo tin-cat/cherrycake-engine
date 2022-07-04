@@ -685,8 +685,7 @@ class Engine {
 	 * @param int $baseLanguage The language on which the provided $baseLanguageText is. If not specified, the `defaultBaseLanguage` Translation configuration is assumed.
 	 * @return Translation\Text A Text object for the given key
 	 */
-	public function t(...$parameters)
-	: \Cherrycake\Modules\Translation\Text {
+	public function t(...$parameters): \Cherrycake\Modules\Translation\Text {
 		return new \Cherrycake\Modules\Translation\Text(...$parameters);
 	}
 }

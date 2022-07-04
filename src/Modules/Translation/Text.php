@@ -48,7 +48,7 @@ class Text {
 		$key = '';
 		foreach(str_split($string) as $character) {
 
-			if (!stristr('abcdefghijklmnopqrstuvwxyzàáäèéëìíïòóöùúü0123456789_- ', $character))
+			if (!stristr("abcdefghijklmnopqrstuvwxyzàáäèéëìíïòóöùúü0123456789_-\n ", $character))
 				continue;
 
 			foreach ([
