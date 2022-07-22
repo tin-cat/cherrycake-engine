@@ -8,22 +8,27 @@ use Cherrycake\Classes\Engine;
  * A class that represents a translatable text
  */
 class Text {
-	/**
-	 * @param string $baseLanguageText The translated text in the base language.
-	 * @param string $category An optional text category name, to better organize translation files.
-	 * @param int $baseLanguage The language on which the provided $baseLanguageText is. If not specified, the `defaultBaseLanguage` Translation configuration is assumed.
-	 * @return Text A Text object for the given key
-	*/
 	public static function build(...$parameters): Text {
 		return new Text(...$parameters);
 	}
 
+	/**
+	 * @param string $key The key that identifies this text uniquely within its category.
+	 * @param string $category An optional text category name, to better organize translation files.
+	 * @param array $replacements A hash array of the replacements to be done on the translated resulting text.
+	 * @return Text A Text object for the given key
+	*/
 	function __construct(
-		public string $baseLanguageText,
+		public string $key,
 		public string $category = '',
-		public int $baseLanguage = 0,
 		public array $replacements = [],
-	) {}
+	) {
+		if (stristr($key, '/')) {
+			list($category, $key) = explode('/', $key);
+			$this->key = $key;
+			$this->category = $category;
+		}
+	}
 
 	function __toString(): string {
 		return Engine::e()->Translation->translate($this);
@@ -44,49 +49,27 @@ class Text {
 		return Engine::e()->Translation->getConfig('defaultBaseLanguage');
 	}
 
-	private function buildKey(string $string): string {
-		$key = '';
-		foreach(str_split($string) as $character) {
-
-			if (!stristr("abcdefghijklmnopqrstuvwxyzàáäèéëìíïòóöùúü0123456789_-\n ", $character))
+	private function simplifyKey(string $string): string {
+		$string = trim(preg_replace('/[\s-]+/', '-', preg_replace('/[^A-Za-z0-9-]+/', '-', preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $string))))), '-');
+		$resultingString = '';
+		$isNextUppercase = true;
+		foreach (str_split($string) as $character) {
+			if ($character == '-') {
+				$isNextUppercase = true;
 				continue;
-
-			foreach ([
-				'àáä' => 'a',
-				'èéë' => 'e',
-				'ìíï' => 'i',
-				'òóö' => 'o',
-				'ùúü' => 'u'
-			] as $search => $replace) {
-				if (stristr($search, $character)) {
-					$character = $replace;
-					break;
-				}
 			}
-
-			if (stristr('abcdefghijklmnopqrstuvwxyz0123456789', $character))
-				$key .= strtolower($character);
+			if ($isNextUppercase) {
+				$resultingString .= strtoupper($character);
+				$isNextUppercase = false;
+			}
 			else
-				$key .= '_';
-
+				$resultingString .= $character;
 		}
-		$key = substr(md5($string), 0, 5).'_'.$key;
-
-
-		// Prevent keys from starting with a number to solve issue with TOML standards
-		if (ctype_digit(substr($key, 0, 1)))
-			$key = 'x'.substr($key, 1);
-
-
-		// Prevent too long keys
-		if (strlen($key) > 64)
-			$key = substr($key, 0, 64);
-
-		return $key;
+		return $resultingString;
 	}
 
 	public function getKey(): string {
-		return $this->buildKey($this->baseLanguageText);
+		return $this->simplifyKey($this->key);
 	}
 
 	public function getCategory(): string|int {

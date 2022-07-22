@@ -18,9 +18,7 @@ class Translation extends \Cherrycake\Classes\Module {
 		'cacheProviderName' => 'engine', // The default cache provider name to use.
 		'cacheTtl' => Cache::TTL_NORMAL, // The default TTL to use.
 		'cacheUniqueId' => 'TranslationData', // The prefix string to add to cached keys
-		'defaultBaseLanguage' => \Cherrycake\Modules\Locale\Locale::ENGLISH, // The default language on which the texts will be specified
 		'dataFilesDir' => APP_DIR.'/translation', // The directory where translations will be stored
-		'valueWhenNotTranslated' => false // The value to use when a translation is not available, has to be a string. Set to false to use the base language text instead.
 	];
 
 	/**
@@ -109,7 +107,7 @@ class Translation extends \Cherrycake\Classes\Module {
 				description: 'Couln\'t parse translation TOML file',
 				variables: [
 					'file' => $filePath,
-					'error' => Engine::e()->getMessage()
+					'error' => $e->getMessage()
 				]
 			);
 			return false;
@@ -149,7 +147,7 @@ class Translation extends \Cherrycake\Classes\Module {
 	private function storeText(Text $text) {
 		$this->textsToStore[] = $text;
 		foreach (Engine::e()->Locale->getAvailaleLanguages() as $language) {
-			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->baseLanguageText;
+			$this->translations[$text->getCategory()][$text->getKey()][$language] = $text->getKey();
 		}
 		$this->isCreateFilesOnEnd = true;
 	}
@@ -188,7 +186,7 @@ class Translation extends \Cherrycake\Classes\Module {
 		// Create the data for the newly found texts on textsToStore, if any
 		if (is_array($this->textsToStore)) {
 			foreach ($this->textsToStore as $text) {
-				$data[$text->getCategory()][$text->getKey()] = $text->baseLanguageText;
+				$data[$text->getCategory()][$text->getKey()] = $text->getKey();
 			}
 		}
 
@@ -267,7 +265,7 @@ class Translation extends \Cherrycake\Classes\Module {
 		$translation = $this->translations[$text->getCategory()][$text->getKey()][$language] ?? '';
 		$translation = $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], $language);
 		if (!$text->replacements)
-			return $translation;
+			return $translation ?? '';
 		else
 			return str_replace(
 				array_map(function($item) { return '{'.$item.'}'; }, array_keys($text->replacements)),
