@@ -44,7 +44,7 @@ abstract class ObjectStorageProvider {
 	/**
 	 * Gets an object from the object storage
 	 * @param string $id The object id on the object storage
-	 * @return ObjectStorageObject The ObjectStorageObject object in the
+	 * @return ObjectStorageObject The ObjectStorageObject object
 	 * @throws ObjectStorageException
 	 */
 	abstract public function get(

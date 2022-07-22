@@ -19,7 +19,8 @@ namespace Cherrycake\Modules\ObjectStorage;
  * 				'credentials' => [
  * 					'AccessKeyId' => '',
  * 					'SecretAccessKey' => ''
- * 				]
+ * 				],
+ * 				'folder' => ''
  * 			]
  * 		]
  * 	]
