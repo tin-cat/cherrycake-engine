@@ -3,24 +3,25 @@
 namespace Cherrycake\Modules\Log;
 
 use Cherrycake\Classes\Engine;
+use Cherrycake\Modules\Database\Database;
 
 /**
  * Base class to represent log events for the Log module
  */
 class LogEvent extends \Cherrycake\Classes\Item {
-	protected $tableName = "log";
-	protected $cacheSpecificPrefix = "Log";
+	static public $tableName = 'log';
+	static protected $cacheSpecificPrefix = 'Log';
 
-	protected $fields = [
-		"id" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER],
-		"timestamp" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_DATETIME],
-		"type" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_STRING],
-		"subType" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_STRING],
-		"ip" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_IP],
-		"user_id" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER],
-		"outher_id" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER],
-		"secondaryOuther_id" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER],
-		"additionalData" => ["type" => \Cherrycake\Modules\Database\Database::TYPE_SERIALIZED]
+	static protected $fields = [
+		'id' => ['type' => Database::TYPE_INTEGER],
+		'timestamp' => ['type' => Database::TYPE_DATETIME],
+		'type' => ['type' => Database::TYPE_STRING],
+		'subType' => ['type' => Database::TYPE_STRING],
+		'ip' => ['type' => Database::TYPE_IP],
+		'user_id' => ['type' => Database::TYPE_INTEGER],
+		'outher_id' => ['type' => Database::TYPE_INTEGER],
+		'secondaryOuther_id' => ['type' => Database::TYPE_INTEGER],
+		'additionalData' => ['type' => Database::TYPE_SERIALIZED]
 	];
 
 	/**
@@ -48,13 +49,11 @@ class LogEvent extends \Cherrycake\Classes\Item {
 	 */
 	protected $secondaryOutherIdDescription;
 
-	/**
-	 * Loads the item when no loadMethod has been provided on construction. This is the usual way of creating LogEvent objects for logging
-	 *
+	/*
 	 * @param array $data A hash array with the data
 	 * @return boolean True on success, false on error
 	 */
-	function loadInline($data = false) {
+	function __construct($data = false) {
 		$this->type = get_called_class();
 		$this->subType = $data["subType"] ?? false;
 
@@ -88,19 +87,7 @@ class LogEvent extends \Cherrycake\Classes\Item {
 		if (isset($data["additionalData"]))
 			$this->additionalData = $data["additionalData"];
 
-		return parent::loadInline($data);
-	}
-
-	/**
-	 * getClientIp
-	 *
-	 * @return string The client's IP
-	 */
-	function getClientIp() {
-		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-			return $_SERVER["HTTP_X_FORWARDED_FOR"];
-		else
-			return $_SERVER["REMOTE_ADDR"];
+		return parent::__construct();
 	}
 
 	/**

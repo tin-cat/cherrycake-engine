@@ -8,6 +8,7 @@ use Cherrycake\Modules\Errors\Errors;
 /**
  * Manages cache providers.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
+ * For many processes like log committing via janitor tasks, ensure that `appName` are equal both in `index.php` and in `cli.php`
  */
 class Cache extends \Cherrycake\Classes\Module {
 

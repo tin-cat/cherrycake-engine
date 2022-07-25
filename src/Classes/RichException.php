@@ -13,13 +13,24 @@ class RichException extends Exception {
 	 */
 	private ?string $description = null;
 
+	/**
+	 * @var string $develDescription The exception description for developers, wich provides additional context to the developer about the error
+	 */
+	private ?string $develDescription = null;
+
+	/**
+	 * @param $description An extended description of the exception, additional to the Exception's message
+	 * @param $develDescription An extended description of the exception intended only for developers
+	 */
 	public function __construct(
 		string $message,
 		int $code = 0,
 		?Exception $previous = null,
 		string $description = null,
+		string $develDescription = null,
 	) {
         $this->description = $description;
+		$this->develDescription = $develDescription;
         parent::__construct($message, $code, $previous);
     }
 
@@ -27,7 +38,16 @@ class RichException extends Exception {
 	 * @return string The error description, wich provides additional context to the user about the error
 	 */
 	function getDescription(): null|string {
-		return $this->description;
+		return
+			$this->description.
+			($this->develDescription && Engine::e()->isDevel() ? ' ('.$this->develDescription.')' : null);
+	}
+
+	/**
+	 * @return string The error description for developers, wich provides additional context to the developer about the error
+	 */
+	function getDevelDescription(): null|string {
+		return $this->develDescription;
 	}
 
 	function __toString(): string {
@@ -35,6 +55,9 @@ class RichException extends Exception {
 			$this->message.
 			($this->description ?
 				' ('.$this->description.')'
+			: null).
+			($this->develDescription ?
+				' ('.$this->develDescription.')'
 			: null);
 	}
 }
