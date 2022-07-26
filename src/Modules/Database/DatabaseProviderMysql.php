@@ -61,7 +61,10 @@ class DatabaseProviderMysql extends DatabaseProvider {
 		],
 		\Cherrycake\Modules\Database\Database::TYPE_COLOR => [
 			"stmtBindParamType" => "s"
-		]
+		],
+		\Cherrycake\Modules\Database\Database::TYPE_UUID4 => [
+			"stmtBindParamType" => "s"
+		],
 	];
 
 	/**
@@ -203,6 +206,7 @@ class DatabaseProviderMysql extends DatabaseProvider {
 					case \Cherrycake\Modules\Database\Database::TYPE_STRING:
 					case \Cherrycake\Modules\Database\Database::TYPE_TEXT:
 					case \Cherrycake\Modules\Database\Database::TYPE_BLOB:
+					case \Cherrycake\Modules\Database\Database::TYPE_UUID4:
 						$value = $parameter["value"];
 						break;
 					case \Cherrycake\Modules\Database\Database::TYPE_BOOLEAN:

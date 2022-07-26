@@ -4,6 +4,7 @@ namespace Cherrycake\Modules\Security;
 
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
+use Ramsey\Uuid\Validator\GenericValidator;
 
 /**
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
@@ -29,6 +30,7 @@ class Security  extends \Cherrycake\Classes\Module {
 	const RULE_UPLOADED_FILES = 15; // The value must be a valid array of multiple uploaded files. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
 	const RULE_CLASS_NAME = 16; // The value must be the class name of a valid class.
 	const RULE_CLASS_NAME_MUST_EXTEND = 17; // The value must be a class name of a valid class, which must extend the class name passed as parameter
+	const RULE_UUID4 = 18; // The value must be a valid UUID4
 	const RULE_SQL_INJECTION = 100; // The value must not contain SQL injection suspicious strings
 	const RULE_TYPICAL_ID = 1000; // Same as RULE_NOT_EMPTY + RULE_INTEGER + RULE_POSITIVE
 
@@ -150,9 +152,6 @@ class Security  extends \Cherrycake\Classes\Module {
 	 * * description: An array containing the list of errors found when checking the value
 	 */
 	function checkValue($value = NULL, $rules = false, $isFixedRules = true) {
-		if (is_null($value))
-			return new \Cherrycake\Classes\ResultOk;
-
 		// If the value is an array, check each value recursively
 		if (is_array($value)) {
 			foreach ($value as $eachValue) {
@@ -183,87 +182,100 @@ class Security  extends \Cherrycake\Classes\Module {
 				$rule = $rule[0];
 			}
 
-			if ($rule == self::RULE_SQL_INJECTION)
+			if ($rule == self::RULE_SQL_INJECTION) {
 				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
 					$isError = true;
 					$description[] = "Suspicious of SQL injection";
 					$this->autoBanIp();
 					break;
 				}
+			}
 
-			if ($rule == self::RULE_NOT_NULL)
+			if ($rule == self::RULE_NOT_NULL) {
 				if (is_null($value)) {
 					$isError = true;
 					$description[] = "Parameter not passed";
 					break;
 				}
+			}
 
-			if ($rule == self::RULE_NOT_EMPTY)
+			if ($rule == self::RULE_NOT_EMPTY) {
 				if (trim($value) == "") {
 					$isError = true;
 					$description[] = "Parameter is empty";
 					break;
 				}
+			}
 
-			if ($rule == self::RULE_INTEGER || $rule == self::RULE_TYPICAL_ID)
+			if ($rule == self::RULE_INTEGER || $rule == self::RULE_TYPICAL_ID) {
 				if ($value && (!is_numeric($value) || stristr($value, "."))) {
 					$isError = true;
 					$description[] = "Parameter is not integer";
 				}
+			}
 
-			if ($rule == self::RULE_POSITIVE || $rule == self::RULE_TYPICAL_ID)
+			if ($rule == self::RULE_POSITIVE || $rule == self::RULE_TYPICAL_ID) {
 				if ($value < 0) {
 					$isError = true;
 					$description[] = "Parameter is not positive";
 				}
+			}
 
-			if ($rule == self::RULE_MAX_VALUE)
+			if ($rule == self::RULE_MAX_VALUE) {
 				if ($value > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is greater than ".$ruleParameter;
 				}
+			}
 
-			if ($rule == self::RULE_MIN_VALUE)
+			if ($rule == self::RULE_MIN_VALUE) {
 				if ($value < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter;
 				}
+			}
 
-			if ($rule == self::RULE_MAX_CHARS)
+			if ($rule == self::RULE_MAX_CHARS) {
 				if (strlen($value) > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is bigger than ".$ruleParameter." characters";
 				}
+			}
 
-			if ($rule == self::RULE_MIN_CHARS)
+			if ($rule == self::RULE_MIN_CHARS) {
 				if (strlen($value) < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter." characters";
 				}
+			}
 
-			if ($rule == self::RULE_BOOLEAN)
+			if ($rule == self::RULE_BOOLEAN) {
 				if (intval($value) !== 0 && intval($value) !== 1) {
 					$isError = true;
 					$description[] = "Parameter is not boolean";
 				}
+			}
 
-			if ($rule == self::RULE_SLUG)
+			if ($rule == self::RULE_SLUG) {
 				if (preg_match("/[^0-9A-Za-z\-_]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a slug";
 				}
+			}
 
-			if ($rule == self::RULE_URL_SHORT_CODE)
+			if ($rule == self::RULE_URL_SHORT_CODE) {
 				if (preg_match("/[^0-9A-Za-z]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a url short code";
 				}
+			}
 
-			if ($rule == self::RULE_URL_ROUTE)
+			if ($rule == self::RULE_URL_ROUTE) {
 				if (preg_match("/[^0-9A-Za-z\-_\/]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not an URL route";
 				}
+			}
 
 			if ($rule == self::RULE_LIMITED_VALUES) {
 				$isError = true;
@@ -290,6 +302,14 @@ class Security  extends \Cherrycake\Classes\Module {
 				if (!is_subclass_of($value, $ruleParameter)) {
 					$isError = true;
 					$description[] = "Parameter is a valid class name but it doesn't extends the required class ".$ruleParameter;
+				}
+			}
+
+			if ($rule == self::RULE_UUID4) {
+				$validator = new \Ramsey\Uuid\Validator\GenericValidator;
+				if (!is_string($value) || !$validator->validate($value)) {
+					$isError = true;
+					$description[] = "Parameter is not a valid UUID4";
 				}
 			}
 		}

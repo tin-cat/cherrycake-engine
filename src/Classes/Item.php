@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Classes;
 
+use Ramsey\Uuid\Uuid;
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
@@ -355,6 +356,9 @@ class Item {
 						break;
 					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_FALSE:
 						$value = false;
+						break;
+					case \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_RANDOM_UUID4:
+						$value = Uuid::uuid4()->toString();
 						break;
 				}
 
@@ -804,6 +808,7 @@ class Item {
 			case \Cherrycake\Modules\Database\Database::TYPE_TEXT:
 			case \Cherrycake\Modules\Database\Database::TYPE_BLOB:
 			case \Cherrycake\Modules\Database\Database::TYPE_COLOR:
+			case \Cherrycake\Modules\Database\Database::TYPE_UUID4:
 			default:
 				if (!$r) {
 					$r = $rEmpty;

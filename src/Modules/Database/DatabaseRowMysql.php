@@ -23,6 +23,7 @@ class DatabaseRowMysql extends DatabaseRow {
 			case \Cherrycake\Modules\Database\Database::TYPE_FLOAT:
 			case \Cherrycake\Modules\Database\Database::TYPE_STRING:
 			case \Cherrycake\Modules\Database\Database::TYPE_BLOB:
+			case \Cherrycake\Modules\Database\Database::TYPE_UUID4:
 				return $data;
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_BOOLEAN:

@@ -47,6 +47,7 @@ class Database extends \Cherrycake\Classes\Module {
 	const TYPE_SERIALIZED = 13;
 	const TYPE_COLOR = 14;
 	const TYPE_OBJECT = 15;
+	const TYPE_UUID4 = 16;
 
 	const DEFAULT_VALUE = 0;
 	const DEFAULT_VALUE_DATE = 1;
@@ -59,6 +60,7 @@ class Database extends \Cherrycake\Classes\Module {
 	const DEFAULT_VALUE_NULL = 8;
 	const DEFAULT_VALUE_TRUE = 9;
 	const DEFAULT_VALUE_FALSE = 10;
+	const DEFAULT_VALUE_RANDOM_UUID4 = 11;
 
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
