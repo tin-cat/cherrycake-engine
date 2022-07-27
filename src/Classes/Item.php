@@ -22,9 +22,14 @@ class Item {
 	static public $tableName;
 
 	/**
-	 * @var string The name of the field on the table that uniquely identifies this item on the database table with a numeric id. It should be an autoincrement field.
+	 * @var string The name of the field on the table that uniquely identifies this item on the database table with a numeric id.
 	 */
 	static protected $idFieldName = "id";
+
+	/**
+	 * @var bool Whehter the id field on the table that uniquely identifies this item is an autoincremental field.
+	 */
+	static protected $isIdFieldAutoincremental = true;
 
 	/**
 	 * @var string The name of the cache provider to use.
@@ -176,6 +181,19 @@ class Item {
 	}
 
 	/**
+	 * Returns an instance of this Item with the given DatabaseRow object data
+	 * Accepts the same parameters as loadFromDatabaseRow
+	 * @return Item The Item object, or false if it could not be build
+	 */
+	public static function buildFromDatabaseRow(...$parameters): Item|bool {
+		$className = get_called_class();
+		$item = new $className;
+		if (!$item->loadFromDatabaseRow(...$parameters))
+			return false;
+		return $item;
+	}
+
+	/**
 	 * Fills the Item's data with the given data array
 	 * @param array $data A hash array with the data
 	 * @return boolean True on success, false on error
@@ -183,6 +201,19 @@ class Item {
 	function loadFromData(array $data): bool {
 		$this->itemData = $data;
 		return $this->init();
+	}
+
+	/**
+	 * Returns an instance of this Item with the given data
+	 * Accepts the same parameters as loadFromData
+	 * @return Item The Item object, or false if it could not be build
+	 */
+	public static function buildFromData(...$parameters): Item|bool {
+		$className = get_called_class();
+		$item = new $className;
+		if (!$item->loadFromData(...$parameters))
+			return false;
+		return $item;
 	}
 
 	/**
@@ -209,6 +240,19 @@ class Item {
 		}
 
 		return $this->init();
+	}
+
+	/**
+	 * Returns an instance of this Item for the given $id
+	 * Accepts the same parameters as loadFromId
+	 * @return Item The Item object, or false if it could not be build
+	 */
+	public static function buildFromId(...$parameters): Item|bool {
+		$className = get_called_class();
+		$item = new $className;
+		if (!$item->loadFromId(...$parameters))
+			return false;
+		return $item;
 	}
 
 	/**
@@ -318,7 +362,7 @@ class Item {
 	function insert(array $data = []): bool {
 
 		foreach (static::$fields as $fieldName => $fieldData) {
-			if ($fieldName == static::$idFieldName)
+			if ($fieldName == static::$idFieldName && static::$isIdFieldAutoincremental)
 				continue;
 
 			if (isset($data[$fieldName]))
@@ -390,7 +434,7 @@ class Item {
 		if (!$result = Engine::e()->Database->{static::$databaseProviderName}->insert(static::$tableName, $fieldsData))
 			return false;
 
-		if (static::$idFieldName)
+		if (static::$idFieldName && static::$isIdFieldAutoincremental)
 			$data[static::$idFieldName] = $result->getInsertId();
 
 		$this->loadFromData($data);
