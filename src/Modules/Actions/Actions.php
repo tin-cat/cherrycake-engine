@@ -4,6 +4,7 @@ namespace Cherrycake\Modules\Actions;
 
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
+use Cherrycake\Classes\AppException;
 use Cherrycake\Modules\Errors\Errors;
 
 /**
@@ -137,7 +138,7 @@ class Actions extends \Cherrycake\Classes\Module {
 	*/
 	public function getAction(string $name): Action {
 		if (!$this->isAction($name))
-			return false;
+			throw new AppException("Action $name not found");
 
 		return $this->actions[$name];
 	}
