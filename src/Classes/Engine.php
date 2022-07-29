@@ -133,7 +133,7 @@ class Engine {
 
 		if (!is_dir($directory)) {
 			$this->engineCache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
-			return false;
+			return [];
 		}
 
 		$moduleNames = [];
@@ -191,7 +191,7 @@ class Engine {
 
 		if (!$moduleNames = $this->getAvailableModuleNamesOnDirectory($modulesDirectory)) {
 			$this->engineCache->setInBucket($cacheBucketName, $cacheKey, [], $cacheTtl);
-			return false;
+			return [];
 		}
 
 		foreach ($moduleNames as $moduleName) {
