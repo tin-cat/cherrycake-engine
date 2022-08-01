@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Modules\Database;
 
+use Exception;
+use Throwable;
+
 /**
  * Class that represents a row retrieved from a query to a database, specific for MySql
  */
@@ -40,7 +43,13 @@ class DatabaseRowMysql extends DatabaseRow {
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_SERIALIZED:
 			case \Cherrycake\Modules\Database\Database::TYPE_OBJECT:
-				return unserialize($data);
+				try {
+					return unserialize($data);
+				} catch (Throwable $e) {
+					echo "Exception: ".$e->getMessage()."<br>";
+					echo $data."<hr>";
+					return null;
+				}
 				break;
 			case \Cherrycake\Modules\Database\Database::TYPE_COLOR:
 				return $data ? new Color("withHex", $data) : false;

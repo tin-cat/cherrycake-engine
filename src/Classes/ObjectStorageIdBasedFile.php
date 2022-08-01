@@ -2,6 +2,7 @@
 
 namespace Cherrycake\Classes;
 
+use Cherrycake\Classes\IdBasedFile;
 use Cherrycake\Modules\ObjectStorage\ObjectStorageObject;
 use Cherrycake\Modules\ObjectStorage\ObjectStorageException;
 

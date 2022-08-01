@@ -15,6 +15,9 @@ function logError(
 	$errLine = false,
 	$errContext = false
 ) {
+	// If the error supression operator was used, do not
+	if (0 !== error_reporting())
+		return true;
 	switch ($errNo) {
 		case E_DEPRECATED:
 			break;

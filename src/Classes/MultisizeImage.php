@@ -113,7 +113,7 @@ abstract class MultisizeImage {
 			if (!isset($metadata['APP13']))
 				$this->iptcMetadata = [];
 			else
-				$this->iptcMetadata = iptcparse($metadata['APP13']);
+				$this->iptcMetadata = iptcparse($metadata['APP13']) ?: [];
 		}
 
 		// Load EXIF metadata
@@ -126,7 +126,7 @@ abstract class MultisizeImage {
 				IMAGETYPE_TIFF_MM,
 			])
 		) {
-			if ($exifMetadata = exif_read_data($sourceImageFilePath))
+			if ($exifMetadata = @exif_read_data($sourceImageFilePath))
 				$this->exifMetadata = $exifMetadata;
 		}
 
