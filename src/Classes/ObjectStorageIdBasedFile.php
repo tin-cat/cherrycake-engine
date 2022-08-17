@@ -34,6 +34,16 @@ class ObjectStorageIdBasedFile {
 	}
 
 	/**
+	 * @return string The original name of the file, including extension
+	 */
+	public function getOriginalName(): string {
+		if ($this->isInObjectStorage())
+			return $this->objectStorageObject->getOriginalName();
+		else
+			return $this->idBasedFile->getOriginalName();
+	}
+
+	/**
 	 * @return bool Whether this file is stored locally
 	 */
 	public function isLocal(): bool {

@@ -343,6 +343,7 @@ class DatabaseProvider {
 	 * Updates a single row in the database identified by the given $idFieldName and $idFieldValue with the given $fields data. More complex updates should be done by the app by calling other methods on this class like prepareAndExecute
 	 * @param string $tableName The table name
 	 * @param string $idFieldName The name of the field that uniquely identified the row to be updated
+	 * @param int $idFieldType The field type of the id field, one of the Database::TYPE_* constants
 	 * @param mixed $idFieldValue The field value for the row to be update
 	 * @param array $fields A hash array of field values
 	 * @return boolean True if everything went ok, false otherwise
@@ -350,12 +351,13 @@ class DatabaseProvider {
 	function updateByUniqueField(
 		string $tableName,
 		string $idFieldName,
+		int $idFieldType,
 		string|int $idFieldValue,
 		array $fields,
 	): bool {
 		$query = "update ".$tableName." set ".implode(" = ?, ",array_keys($fields))." = ? where ".$idFieldName." = ?;";
 		$fields[$idFieldName] = [
-			"type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
+			"type" => $idFieldType,
 			"value" => $idFieldValue
 		];
 		if ($this->prepareAndExecute(
@@ -371,12 +373,14 @@ class DatabaseProvider {
 	 * Deletes a single row in the database identified by the given $idFieldName and $idFieldValue. More complex deletes should be done by the app by calling other methods on this class like prepareAndExecute
 	 * @param string $tableName The table name
 	 * @param string $idFieldName The name of the field that uniquely identified the row to be updated
+	 * @param int $idFieldType The field type of the id field, one of the Database::TYPE_* constants
 	 * @param mixed $idFieldValue The field value for the row to be update
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function deleteByUniqueField(
 		string $tableName,
 		string $idFieldName,
+		int $idFieldType,
 		string|int $idFieldValue,
 	): bool {
 		$query = "delete from ".$tableName." where ".$idFieldName." = ?;";
@@ -384,7 +388,7 @@ class DatabaseProvider {
 			$query,
 			[
 				[
-					"type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
+					"type" => $idFieldType,
 					"value" => $idFieldValue
 				]
 			]

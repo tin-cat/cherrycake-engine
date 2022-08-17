@@ -63,6 +63,13 @@ abstract class IdBasedFile {
 	}
 
 	/**
+	 * @return string The original name of the file, including extension
+	 */
+	public function getOriginalName(): string {
+		return $this->originalName;
+	}
+
+	/**
 	 * Creates the file on disk for this File object from the given local file.
 	 * @param string $filePath The complete path to the origin file
 	 * @param string $sourceName The source file name.

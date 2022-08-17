@@ -27,6 +27,11 @@ class Item {
 	static protected $idFieldName = "id";
 
 	/**
+	 * @var int $idFieldType The field type of the id field, one of the Database::TYPE_* constants
+	 */
+	static protected $idFieldType = \Cherrycake\Modules\Database\Database::TYPE_INTEGER;
+
+	/**
 	 * @var bool Whehter the id field on the table that uniquely identifies this item is an autoincremental field.
 	 */
 	static protected $isIdFieldAutoincremental = true;
@@ -572,10 +577,11 @@ class Item {
 		}
 
 		return Engine::e()->Database->{static::$databaseProviderName}->updateByUniqueField(
-			static::$tableName,
-			static::$idFieldName,
-			$this->{static::$idFieldName},
-			$fields
+			tableName: static::$tableName,
+			idFieldName: static::$idFieldName,
+			idFieldType: static::$idFieldType,
+			idFieldValue: $this->{static::$idFieldName},
+			fields: $fields
 		);
 	}
 
@@ -597,9 +603,10 @@ class Item {
 		}
 
 		if (!Engine::e()->Database->{static::$databaseProviderName}->deleteByUniqueField(
-			static::$tableName,
-			static::$idFieldName,
-			$this->{static::$idFieldName}
+			tableName: static::$tableName,
+			idFieldName: static::$idFieldName,
+			idFieldType: static::$idFieldType,
+			idFieldValue: $this->{static::$idFieldName}
 		))
 			return false;
 
