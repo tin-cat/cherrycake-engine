@@ -15,6 +15,11 @@ class ObjectStorageIdBasedFile {
 	 */
 	protected string $providerName;
 
+	/**
+	 * var string $originalName The original name of the file, including extension
+	 */
+	protected ?string $originalName;
+
 	function __construct(
 		/**
 		 * param IdBasedFile $idBasedFile When this file has not yet been put in object storage, the IdBasedFile object. Null if this file has been put in object storage.
@@ -31,16 +36,15 @@ class ObjectStorageIdBasedFile {
 	) {
 		if ($providerName)
 			$this->providerName = $providerName;
+		if ($idBasedFile)
+			$this->originalName = $idBasedFile->getOriginalName();
 	}
 
 	/**
 	 * @return string The original name of the file, including extension
 	 */
 	public function getOriginalName(): string {
-		if ($this->isInObjectStorage())
-			return $this->objectStorageObject->getOriginalName();
-		else
-			return $this->idBasedFile->getOriginalName();
+		return $this->originalName;
 	}
 
 	/**
