@@ -29,7 +29,7 @@ class RichException extends Exception {
 		string $description = null,
 		string $develDescription = null,
 	) {
-        $this->description = $description;
+		$this->description = $description;
 		$this->develDescription = $develDescription;
         parent::__construct($message, $code, $previous);
     }
@@ -39,7 +39,6 @@ class RichException extends Exception {
 	 */
 	function getDescription(): null|string {
 		return
-			$this->description.
 			($this->develDescription && Engine::e()->isDevel() ? ' ('.$this->develDescription.')' : null);
 	}
 
