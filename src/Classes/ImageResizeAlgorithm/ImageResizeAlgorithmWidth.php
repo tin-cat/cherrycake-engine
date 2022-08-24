@@ -26,6 +26,7 @@ class ImageResizeAlgorithmWidth extends ImageResizeAlgorithm implements ImageRes
 		string $sourceFilePath,
 		string $destinationFilePath,
 	) {
+		$destinationFilePath = $this->renameDestinationFilePath($destinationFilePath);
 		$imageData = $this->loadImage($sourceFilePath);
 
 		// If isUpscale is deactivated and the desired width is greater than the source width, or if the desired width is equal to the source width, do not resize

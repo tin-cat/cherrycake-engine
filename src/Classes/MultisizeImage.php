@@ -82,6 +82,7 @@ abstract class MultisizeImage {
 
 			$image = new static::$idBasedImageClassName(
 				originalName: $originalName,
+				extension: $imageResizeAlgorithm->getFileExtension(),
 			);
 
 			$image->createBaseDir();

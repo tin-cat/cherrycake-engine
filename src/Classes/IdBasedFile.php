@@ -10,23 +10,28 @@ use Ramsey\Uuid\Uuid;
  */
 abstract class IdBasedFile {
 	/**
-	 * var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
+	 * @var string $baseDir The base directory where files of this class reside locally, without a trailing slash. For example: '/var/www/web/public/files'
 	 */
 	static protected string $baseDir;
 	/**
-	 * var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
+	 * @var string $baseUrl The base URL where files of this class can be loaded by an HTTP client, without a trailing slash. For example: '/files'
 	 */
 	static protected string $urlBase;
 
 	/**
-	 * var string $originalName The original name of the file, including extension
+	 * @var string $originalName The original name of the file, including extension
 	 */
 	protected ?string $originalName;
 
 	/**
-	 * var string $id The unique identifier of the file. If not passed, a new one is automatically generated
+	 * @var string $id The unique identifier of the file. If not passed, a new one is automatically generated
 	 */
 	protected string $id;
+
+	/**
+	 * @var string $extension The extension of the file, if it's different than the one in $originalName
+	 */
+	protected ?string $extension;
 
 	/**
 	 * @return array The names of the object properties to serialize
@@ -35,6 +40,7 @@ abstract class IdBasedFile {
 		return [
 			'originalName',
 			'id',
+			'extension',
 		];
 	}
 
@@ -42,14 +48,17 @@ abstract class IdBasedFile {
 	 * @param string $filePath The complete path to the origin file. If not passed, no file is stored on disk (Used for procedures that will create the file for this IdBasedFile by their own, like MultisizeImage)
 	 * @param string $originalName The original file name, if it's different than $name
 	 * @param string $id The unique identifier for this file. If left to null, a random one is generated
+	 * @param string $extension The extension of the file, if it's different than the one in $originalName
 	 */
 	function __construct(
 		?string $filePath = null,
 		?string $originalName = null,
 		?string $id = null,
+		?string $extension = null,
 	) {
 		$this->id = $id ?? $this->buildUniqueFileIdentifier();
 		$this->originalName = $originalName;
+		$this->extension = $extension;
 
 		if ($filePath) {
 			if (!$this->originalName)
@@ -110,7 +119,7 @@ abstract class IdBasedFile {
 	 * @return string The file extension, null if the file has no extension
 	 */
 	private function getExtension(): ?string {
-		return pathinfo($this->originalName, PATHINFO_EXTENSION) ?? null;
+		return $this->extension ?? (pathinfo($this->originalName, PATHINFO_EXTENSION) ?? null);
 	}
 
 	/**

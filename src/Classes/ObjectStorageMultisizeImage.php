@@ -32,6 +32,7 @@ class ObjectStorageMultisizeImage extends MultisizeImage {
 			$idBasedImage =
 				new static::$idBasedImageClassName(
 					originalName: $originalName,
+					extension: $imageResizeAlgorithm->getFileExtension(),
 				);
 
 			$idBasedImage->createBaseDir();

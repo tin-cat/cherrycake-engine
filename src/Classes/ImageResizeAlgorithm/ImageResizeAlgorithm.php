@@ -182,4 +182,30 @@ abstract class ImageResizeAlgorithm {
 				break;
 		}
 	}
+
+	/**
+	 * @return string The file extension for images resulting from this image resize algorithm
+	 */
+	public function getFileExtension(): string {
+		return match($this->outputImageType) {
+			IMAGETYPE_GIF => 'gif',
+			IMAGETYPE_PNG => 'png',
+			IMAGETYPE_JPEG => 'jpg',
+			IMAGETYPE_WEBP => 'webp'
+		};
+	}
+
+	/**
+	 * @param string $filePath The file path to rename
+	 * @return string The specified file path renamed to match the file extension for this resizing algorithm
+	 */
+	public function renameDestinationFilePath(string $filePath): string {
+		$pathinfo = pathinfo($filePath);
+		return
+			$pathinfo['dirname'].
+			'/'.
+			$pathinfo['filename'].
+			'.'.
+			$this->getFileExtension();
+	}
 }
