@@ -10,12 +10,16 @@ use Cherrycake\Classes\Engine;
 class RequestPathComponent {
 	private mixed $value = false;
 
+	/**
+	 * @param string $forItemClassName If the request parameter receives data that will be stored in an Item object, the name of that Item class. This mechanism allows for the automatic creation of security rules for this action that match the Item's fields specification.
+	 */
 	function __construct(
 		public int $type,
 		public string $string = '',
 		public string $name = '',
 		private array $securityRules = [],
 		private array $filters = [],
+		private string $forItemClassName = '',
 	) {}
 
 	/**

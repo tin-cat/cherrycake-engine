@@ -59,12 +59,6 @@ class Item {
 	/**
 	 * @var array Hash array specification of the fields on the database table for this item type, where each key is the field name and the value is a hash array with the following keys:
 	 * * type: The type of the field, one of the available \Cherrycake\Modules\Database\Database::TYPE_*
-	 * * formItem: A hash array containing the specification of this field for forms, used by ItemAdmin
-	 * * * type: The type of the form item, one of the available \Cherrycake\ItemAdmin\FORM_ITEM_TYPE_*
-	 * * * selectType: For FORM_ITEM_TYPE_SELECT type: The select type: either FORM_ITEM_SELECT_TYPE_RADIOS or FORM_ITEM_SELECT_TYPE_COMBO
-	 * * * items: For FORM_ITEM_TYPE_SELECT type: A hash array of the items for the selection, where each key is the value
-	 * * * * title
-	 * * * * subTitle
 	 * * isMultiLanguage: Whether this field stores multilanguage data, meaning there are more than one actual fields on the database, one for each available language
 	 * * title: The title of the field, to be used when representing data
 	 * * prefix: The prefix string to add when humanizing the field value
@@ -75,7 +69,6 @@ class Item {
 	 * * humanizePreMethodName: A method name to call with the field value before any other humanization is done. It will receive the Item object as the first and only parameter
 	 * * humanizePostMethodName: A method name to call with the field value after any other humanization is done. It will receive the already treated value as the first parameter and the Item object as the second
 	 * * representFunction: An anonymous function that will be passed the Item object, the returned value will be shown to represent this field current value in ItemAdmin, for example
-	 * * requestSecurityRules: An array of security rules from the available RULE_* that should be applied whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
      * * requestFilters: An array of filter from the available FILTER_* that should be appled whenever receiving values for this field in a request, just like the RequestParameter class accepts. Used for example in ItemAdmin
 	 * * validationMethod: An anonymous function to validate the received value for this field, or an array where the first element is the class name, and the second the method name, just like the call_user_func PHP function would expect it. Must return an AjaxResponse object. Used for example in ItemAdmin
 	 */
@@ -167,13 +160,6 @@ class Item {
 	 */
 	function getFields(): array {
 		return static::$fields;
-	}
-
-	/**
-	 * @return array The meta fields for this Item
-	 */
-	function getMetaFields(): array {
-		return $this->metaFields;
 	}
 
 	/**

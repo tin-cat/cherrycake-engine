@@ -8,12 +8,17 @@ use Cherrycake\Classes\Engine;
  * A class that represents a parameter passed to a Request via Get or Post
  */
 class RequestParameter {
+
+	/**
+	 * @param string $forItemClassName If the request parameter receives data that will be stored in an Item object, the name of that Item class. This mechanism allows for the automatic creation of security rules for this action that match the Item's fields specification.
+	 */
 	function __construct(
 		public int $type,
 		public string $name,
 		public mixed $value = null,
 		private array $securityRules = [],
-		private array $filters = []
+		private array $filters = [],
+		private string $forItemClassName = '',
 	) {}
 
 	/**

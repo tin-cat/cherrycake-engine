@@ -25,6 +25,12 @@ class Ui {
 		return $this;
 	}
 
+	public function get(
+		string $key,
+	): mixed {
+		return $this->$key;
+	}
+
 	/**
 	 * @return string The HTML of the Ui component
 	 */
