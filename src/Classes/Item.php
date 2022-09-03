@@ -6,6 +6,8 @@ use Ramsey\Uuid\Uuid;
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
+use Cherrycake\Modules\Database\Database;
+use Cherrycake\Modules\Security\Security;
 
 /**
  * Represents a generic item from a database.
@@ -160,6 +162,14 @@ class Item {
 	 */
 	function getFields(): array {
 		return static::$fields;
+	}
+
+	/**
+	 * @param string $fieldName The field name
+	 * @return array The specification for this Item's specified field name
+	 */
+	public static function getField($fieldName): array {
+		return static::$fields[$fieldName] ?? [];
 	}
 
 	/**
@@ -890,5 +900,32 @@ class Item {
 	 */
 	function __isset(string $key): bool {
 		return isset($this->itemData[$key]);
+	}
+
+	/**
+	 * @param string $fieldName The field name to retrieve security rules for
+	 * @return array The security rules, as accepted by RequestParameter::securityRulest, that should be additionally applied when receiving data in a request for the specified field name, according the the field specifications
+	 */
+	public static function getSecurityRules($fieldName): array {
+		if (!$field = self::getField($fieldName))
+			return [];
+
+		$securityRules = [];
+		switch ($field['type']) {
+			case Database::TYPE_BOOLEAN:
+				$securityRules[] = Security::RULE_BOOLEAN;
+				break;
+			case Database::TYPE_INTEGER:
+				$securityRules[] = Security::RULE_INTEGER;
+				break;
+			case Database::TYPE_STRING:
+				$securityRules[] = [Security::RULE_MAX_CHARS, $field['maxLength'] ?? 255];
+				break;
+			case Database::TYPE_TEXT:
+				$securityRules[] = [Security::RULE_MAX_CHARS, $field['maxLength'] ?? 65535];
+				break;
+		}
+
+		return $securityRules;
 	}
 }

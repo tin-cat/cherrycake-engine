@@ -10,7 +10,7 @@ use Ramsey\Uuid\Validator\GenericValidator;
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
  */
-class Security  extends \Cherrycake\Classes\Module {
+class Security extends \Cherrycake\Classes\Module {
 
 	const RULE_NOT_NULL = 0; // The value must be not null (typically used to check whether a parameter has been passed or not. An empty field in a form will not trigger this rule)
 	const RULE_NOT_EMPTY = 1; // The value must not be empty (typically used to check whether a parameter has been passed or not. An empty field in a form _will_ trigger this rule)

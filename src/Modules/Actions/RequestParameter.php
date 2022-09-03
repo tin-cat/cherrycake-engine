@@ -79,6 +79,21 @@ class RequestParameter {
 	}
 
 	/**
+	 * @return array The security rules to apply when receiving values for this request parameter
+	 */
+	private function getSecurityRules(): array {
+		$securityRules = $this->securityRules;
+
+		// If this request parameter is for a value that matches a field in an Item class, add the field's specific security rules
+		if ($this->forItemClassName) {
+			$forItemClassName = $this->forItemClassName;
+			$securityRules = array_merge($securityRules, $forItemClassName::getSecurityRules($this->name));
+		}
+
+		return $securityRules;
+	}
+
+	/**
 	 * checkValueSecurity
 	 *
 	 * Checks this parameter's value against its configured security rules (and/or the Security defaulted rules)
@@ -88,9 +103,9 @@ class RequestParameter {
 	function checkValueSecurity() {
 		return
 			match ($this->type) {
-				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILE => Engine::e()->Security->checkFile($this->value, $this->securityRules),
-				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILES => Engine::e()->Security->checkFiles($this->value, $this->securityRules),
-				default => Engine::e()->Security->checkValue($this->value, $this->securityRules)
+				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILE => Engine::e()->Security->checkFile($this->value, $this->getSecurityRules()),
+				\Cherrycake\Modules\Actions\Request::PARAMETER_TYPE_FILES => Engine::e()->Security->checkFiles($this->value, $this->getSecurityRules()),
+				default => Engine::e()->Security->checkValue($this->value, $this->getSecurityRules())
 			};
 	}
 
