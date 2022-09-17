@@ -31,7 +31,7 @@ class Text {
 	}
 
 	function __toString(): string {
-		return Engine::e()->Translation->translate($this);
+		return $this->parse(Engine::e()->Translation->translate($this));
 	}
 
 	/**
@@ -74,5 +74,42 @@ class Text {
 
 	public function getCategory(): string|int {
 		return $this->category ?: 0;
+	}
+
+	/**
+	 * Parses the passed text, performing replacements and other operations that transform the final string
+	 * @param string $text The string to parse
+	 */
+	private function parse(
+		string $text
+	): string {
+
+		// Perform replacements
+		if ($this->replacements) {
+			$text = str_replace(
+				array_map(function($item) { return '{'.$item.'}'; }, array_keys($this->replacements)),
+				array_values($this->replacements),
+				$text
+			);
+		}
+
+		// `pluralize` command
+		// Syntax: {pluralize|<variableName>|<valueWhenSingular>|<valueWhenPlural>}
+		if (preg_match_all("/{pluralize\|(.*)\|(.*)\|(.*)}/U", $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				// Check if variableName exists
+				if (!isset($this->replacements[$match[1]]))
+					continue;
+				$text = str_replace(
+					$match[0],
+					$this->replacements[$match[1]] <= 1 ?
+						$match[2]
+						:
+						$match[3],
+					$text);
+			}
+		}
+
+		return $text;
 	}
 }

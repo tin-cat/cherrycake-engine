@@ -263,15 +263,7 @@ class Translation extends \Cherrycake\Classes\Module {
 		if (is_null($language))
 			$language = Engine::e()->Locale->getLanguage();
 		$translation = $this->translations[$text->getCategory()][$text->getKey()][$language] ?? '';
-		$translation = $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], $language);
-		if (!$text->replacements)
-			return $translation ?? '';
-		else
-			return str_replace(
-				array_map(function($item) { return '{'.$item.'}'; }, array_keys($text->replacements)),
-				array_values($text->replacements),
-				$translation
-			);
+		return $this->getFromArray($this->translations[$text->getCategory()][$text->getKey()], $language);
 	}
 
 	/**

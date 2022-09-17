@@ -644,7 +644,7 @@ class Locale extends \Cherrycake\Classes\Module {
 							$r =
 								Engine::e()->Translation->getFromArray($this->texts[($setup["isBrief"] ?? false ? "monthsShort" : "monthsLong")], $setup["language"] ?? null ?? false)[date("n", $timestamp) - 1].
 								" ".
-								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"] ?? null ?? false, "ordinalGender" => ORDINAL_GENDER_MALE]).
+								$this->getAbbreviatedOrdinal(date("j", $timestamp), ["language" => $setup["language"] ?? null ?? false, "ordinalGender" => self::ORDINAL_GENDER_MALE]).
 								((!$setup["isAvoidYearIfCurrent"] && $isCurrentYear) || !$isCurrentYear ?
 									", ".
 									date(($setup["isBrief"] && $setup["isShortYear"] ? "y" : "Y"), $timestamp)
