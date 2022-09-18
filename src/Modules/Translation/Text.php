@@ -106,7 +106,53 @@ class Text {
 						$match[2]
 						:
 						$match[3],
-					$text);
+					$text
+				);
+			}
+		}
+
+		// `lowercase` command
+		// Syntax: {lowercase|<variableName>}
+		if (preg_match_all("/{lowercase\|(.*)}/U", $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				// Check if variableName exists
+				if (!isset($this->replacements[$match[1]]))
+					continue;
+				$text = str_replace(
+					$match[0],
+					strtolower($this->replacements[$match[1]]),
+					$text
+				);
+			}
+		}
+
+		// `uppercase` command
+		// Syntax: {uppercase|<variableName>}
+		if (preg_match_all("/{uppercase\|(.*)}/U", $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				// Check if variableName exists
+				if (!isset($this->replacements[$match[1]]))
+					continue;
+				$text = str_replace(
+					$match[0],
+					strtoupper($this->replacements[$match[1]]),
+					$text
+				);
+			}
+		}
+
+		// `capitalize` command
+		// Syntax: {capitalize|<variableName>}
+		if (preg_match_all("/{capitalize\|(.*)}/U", $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				// Check if variableName exists
+				if (!isset($this->replacements[$match[1]]))
+					continue;
+				$text = str_replace(
+					$match[0],
+					ucfirst($this->replacements[$match[1]]),
+					$text
+				);
 			}
 		}
 
