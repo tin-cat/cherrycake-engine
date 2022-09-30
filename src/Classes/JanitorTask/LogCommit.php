@@ -42,7 +42,9 @@ class LogCommit extends \Cherrycake\Modules\Janitor\JanitorTask {
 		$result = Engine::e()->Log->commit();
 		return [
 			$result[0] ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
-			isset($result[1]) ? $result[1] : false
+			[
+				"logEventsComitted" => $result[1] ?? 0,
+			]
 		];
 	}
 }

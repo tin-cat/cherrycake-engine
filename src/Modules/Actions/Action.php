@@ -122,7 +122,11 @@ class Action {
 				if (!method_exists(Engine::e()->{$this->moduleName}, $this->methodName)) {
 					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
-						description: "Mapped method ".$this->moduleName."::".$this->methodName." not found"
+						subType: $this->moduleName,
+						description: "Mapped method ".$this->moduleName."::".$this->methodName." not found",
+						variables: [
+							'actionStatus' => $this->getStatus(),
+						]
 					);
 					return true;
 				}
@@ -131,25 +135,33 @@ class Action {
 				} catch (AppException $e) {
 					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_APP,
+						subType: $this->moduleName,
 						description: $e->getMessage(),
 						variables: [
-							'extendedDescription' => $e->getDescription()
+							'extendedDescription' => $e->getDescription(),
+							'actionStatus' => $this->getStatus(),
 						]
 					);
 					return true;
 				} catch (SecurityException $e) {
 					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SECURITY,
+						subType: $this->moduleName,
 						description: $e->getMessage(),
 						variables: [
-							'extendedDescription' => $e->getDescription()
+							'extendedDescription' => $e->getDescription(),
+							'actionStatus' => $this->getStatus(),
 						]
 					);
 					return true;
 				} catch (Exception $e) {
 					Engine::e()->Errors->trigger(
 						type: Errors::ERROR_SYSTEM,
-						description: $e->getMessage()
+						subType: $this->moduleName,
+						description: $e->getMessage(),
+						variables: [
+							'actionStatus' => $this->getStatus(),
+						]
 					);
 					return true;
 				}

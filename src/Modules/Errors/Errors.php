@@ -148,27 +148,26 @@ class Errors extends \Cherrycake\Classes\Module {
 					: null);
 
 		if (
-			Engine::e()->isModuleLoaded("SystemLog")
-			&&
-			(
-				($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
-				||
-				($type == self::ERROR_SECURITY && $this->getConfig("isLogSecurityErrors"))
-				||
-				($type == self::ERROR_APP && $this->getConfig("isLogAppErrors"))
-				||
-				($type == self::ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
-				||
-				($type == self::ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
-				||
-				isset($isForceLog) && $isForceLog == true
-			)
-		)
-			Engine::e()->SystemLog->event(new \Cherrycake\Modules\SystemLog\SystemLogEventError([
-				"subType" => $subType ?: false,
-				"description" => $description ?: false,
-				"data" => $variables ?: false,
-			]));
+			($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
+			||
+			($type == self::ERROR_SECURITY && $this->getConfig("isLogSecurityErrors"))
+			||
+			($type == self::ERROR_APP && $this->getConfig("isLogAppErrors"))
+			||
+			($type == self::ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
+			||
+			($type == self::ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
+			||
+			isset($isForceLog) && $isForceLog == true
+		) {
+			Engine::e()->SystemLog->event(
+				\Cherrycake\Modules\SystemLog\SystemLogEventError::build([
+					"subType" => $subType ?: false,
+					"description" => $description ?: false,
+					"data" => $variables ?: false,
+				])
+			);
+		}
 
 		if (
 			($type == self::ERROR_SYSTEM && $this->getConfig("isEmailSystemErrors"))
@@ -187,7 +186,7 @@ class Errors extends \Cherrycake\Classes\Module {
 				"backtrace" => implode("<br>Backtrace: ", $backtrace_info)
 			]);
 
-		if (isset($isSilent) && $isSilent && !Engine::e()->isDevel())
+		if (isset($isSilent) && $isSilent)
 			return;
 
 		$patternNames = $this->getConfig("patternNames");

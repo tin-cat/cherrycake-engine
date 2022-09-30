@@ -15,7 +15,7 @@ class SystemLogPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 	protected array $config = [
 		"executionPeriodicity" => \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 240,
-		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
+		"purgeLogsOlderThanSeconds" => 2592000 // Log entries older than this seconds will be purged. // 2592000 = 30 days, 31536000 = 365 days
 	];
 
 	/**
@@ -54,10 +54,59 @@ class SystemLogPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 		// Loads the needed modules
 		Engine::e()->loadCoreModule("SystemLog");
 
-		list($result, $resultDescription) = Engine::e()->SystemLog->purge();
+		$baseTimestamp = time();
+
+		$result = Engine::e()->Database->{Engine::e()->SystemLog->getConfig("databaseProviderName")}->prepareAndExecute(
+			"select count(*) as numberOf from ".Engine::e()->SystemLog->getConfig("tableName")." where dateAdded < ?",
+			[
+				[
+					"type" => \Cherrycake\Modules\Database\Database::TYPE_DATETIME,
+					"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
+				]
+			]
+		);
+
+		if (!$result)
+			return [
+				false,
+				"Could not query the database"
+			];
+
+		$row = $result->getRow();
+		$numberOfLogEntriesToPurge = $row->getField("numberOf");
+
+		if ($numberOfLogEntriesToPurge > 0) {
+			$result = Engine::e()->Database->{Engine::e()->SystemLog->getConfig("databaseProviderName")}->prepareAndExecute(
+				"delete from ".Engine::e()->SystemLog->getConfig("tableName")." where dateAdded < ?",
+				[
+					[
+						"type" => \Cherrycake\Modules\Database\Database::TYPE_DATETIME,
+						"value" => $baseTimestamp - $this->getConfig("purgeLogsOlderThanSeconds")
+					]
+				]
+			);
+
+			if (!$result)
+				return [
+					false,
+					"Could not delete log entries from the database"
+				];
+		}
+
 		return [
-			$result ? \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_OK : \Cherrycake\Modules\Janitor\Janitor::EXECUTION_RETURN_ERROR,
-			$resultDescription
+			true,
+			[
+				"Log entries older than ".$this->getConfig("purgeLogsOlderThanSeconds")." seconds purged" => $numberOfLogEntriesToPurge
+			]
 		];
+	}
+
+	/**
+	 * Purges logs older than purgeLogsOlderThanSeconds
+	 * @return array An array where the first element is a boolean indicating wether the operation went ok or not, and the second element is a description of what happened.
+	 */
+	function purge() {
+
+
 	}
 }

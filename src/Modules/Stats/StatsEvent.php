@@ -64,14 +64,14 @@ class StatsEvent extends \Cherrycake\Classes\Item {
 	 * Loads the item when no loadMethod has been provided on construction. This is the usual way of creating LogEvent objects for logging
 	 *
 	 * @param array $data A hash array with the data
-	 * @return boolean True on success, false on error
+	 * @return StatsEvent
 	 */
-	function loadInline($data = false) {
-		$this->type = get_called_class();
-		$this->subType = $data["subType"] ?? null;
-		$this->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : time();
-		$this->resolution = $this->timeResolution;
-		return parent::loadInline($data);
+	function loadInline($data = false): StatsEvent {
+		$statsEvent = new StatsEvent;
+		$statsEvent->type = get_called_class();
+		$statsEvent->subType = $data["subType"] ?? null;
+		$statsEvent->timestamp = isset($data["timestamp"]) ? $data["timestamp"] : time();
+		return $statsEvent;
 	}
 
 	/**

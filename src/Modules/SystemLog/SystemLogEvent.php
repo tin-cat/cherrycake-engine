@@ -9,16 +9,17 @@ use Cherrycake\Classes\Engine;
  */
 class SystemLogEvent extends \Cherrycake\Classes\Item {
 	static public $tableName = "cherrycake_systemLog";
-	protected $cacheSpecificPrefix = "SystemLog";
+	static protected $cacheSpecificPrefix = "SystemLog";
 
-	protected $fields = [
+	static protected $fields = [
 		"id" => [
 			"type" => \Cherrycake\Modules\Database\Database::TYPE_INTEGER,
 			"title" => "Id"
 		],
 		"dateAdded" => [
 			"type" => \Cherrycake\Modules\Database\Database::TYPE_DATETIME,
-			"title" => "Date added"
+			"title" => "Date added",
+			"defaultValue" => \Cherrycake\Modules\Database\Database::DEFAULT_VALUE_DATETIME
 		],
 		"type" => [
 			"type" => \Cherrycake\Modules\Database\Database::TYPE_STRING,
@@ -59,50 +60,50 @@ class SystemLogEvent extends \Cherrycake\Classes\Item {
 	];
 
 	/**
-	 * Loads the item when no loadMethod has been provided on construction. This is the usual way of creating LogEvent objects for logging
-	 *
 	 * @param array $data A hash array with the data
 	 * @return boolean True on success, false on error
 	 */
-	function loadInline($data = false) {
-		$this->type = get_called_class();
-		$this->class = debug_backtrace()[2]["class"];
+	static function build($data = false): SystemLogEvent {
+		$systemLogEvent = new SystemLogEvent;
+
+		$systemLogEvent->type = get_called_class();
+		$systemLogEvent->class = debug_backtrace()[2]["class"];
 
 		if (isset($data["dateAdded"]))
-			$this->dateAdded = $data["dateAdded"];
+			$systemLogEvent->dateAdded = $data["dateAdded"];
 		else
-			$this->dateAdded = time();
+			$systemLogEvent->dateAdded = time();
 
 		if (isset($data["subType"]))
-			$this->subType = $data["subType"];
+			$systemLogEvent->subType = $data["subType"];
 
 		if (isset($data["ip"]))
-			$this->ip = $data["ip"];
+			$systemLogEvent->ip = $data["ip"];
 		else
-			$this->ip = $this->getClientIp();
+			$systemLogEvent->ip = $systemLogEvent->getClientIp();
 
 		if (isset($data["httpHost"]))
-			$this->httpHost = $data["httpHost"];
+			$systemLogEvent->httpHost = $data["httpHost"];
 		else
-			$this->httpHost = $this->getHttpHost();
+			$systemLogEvent->httpHost = $systemLogEvent->getHttpHost();
 
 		if (isset($data["requestUri"]))
-			$this->requestUri = $data["requestUri"];
+			$systemLogEvent->requestUri = $data["requestUri"];
 		else
-			$this->requestUri = $this->getRequestUri();
+			$systemLogEvent->requestUri = $systemLogEvent->getRequestUri();
 
 		if (isset($data["browserString"]))
-			$this->browserString = $data["browserString"];
+			$systemLogEvent->browserString = $data["browserString"];
 		else
-			$this->browserString = $this->getClientBrowserString();
+			$systemLogEvent->browserString = $systemLogEvent->getClientBrowserString();
 
 		if (isset($data["description"]))
-			$this->description = $data["description"];
+			$systemLogEvent->description = $data["description"];
 
 		if (isset($data["data"]))
-			$this->data = $data["data"];
+			$systemLogEvent->data = $data["data"];
 
-		return parent::loadInline($data);
+		return $systemLogEvent;
 	}
 
 	/**
@@ -116,11 +117,11 @@ class SystemLogEvent extends \Cherrycake\Classes\Item {
 	}
 
 	/**
-	 * @return mixed The client's IP, or false if it wasn't available
+	 * @return mixed The client's IP, or an empty string if it wasn't available
 	 */
-	function getClientIp() {
+	function getClientIp(): string {
 		if (Engine::e()->isCli())
-			return false;
+			return '';
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
 		else

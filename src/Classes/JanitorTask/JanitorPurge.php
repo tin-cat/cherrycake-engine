@@ -15,7 +15,7 @@ class JanitorPurge extends \Cherrycake\Modules\Janitor\JanitorTask {
 	protected array $config = [
 		"executionPeriodicity" => \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, // The periodicity for this task execution. One of the available CONSTs. \Cherrycake\Modules\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL by default.
 		"periodicityEachSeconds" => 86400, // (86400 = 1 day)
-		"purgeLogsOlderThanSeconds" => 31536000 // Log entries older than this seconds will be purged. (31536000 = 365 days)
+		"purgeLogsOlderThanSeconds" => 2592000 // Log entries older than this seconds will be purged. // 2592000 = 30 days, 31536000 = 365 days
 	];
 
 	/**

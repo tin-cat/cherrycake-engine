@@ -35,8 +35,8 @@ class JanitorTask {
 	 * Loads the configuration file for this JanitorTask, if there's one
 	 */
 	function loadConfigFile() {
-		$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-		$fileName = Engine::e()->getConfigDir()."/".$className.".config.php";
+		$className = substr(get_class($this), strrpos(get_class($this), "\\")+1);
+		$fileName = Engine::e()->getConfigDir()."/Janitor/".$className.".config.php";
 		if (!file_exists($fileName))
 			return;
 		include $fileName;
