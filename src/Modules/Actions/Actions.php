@@ -6,6 +6,7 @@ use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Classes\AppException;
 use Cherrycake\Modules\Errors\Errors;
+use Cherrycake\Modules\Actions\InvalidParametersException;
 
 /**
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
@@ -177,17 +178,24 @@ class Actions extends \Cherrycake\Classes\Module {
 			return false;
 		}
 
-		foreach ($matchingActions as $actionName => $action) {
-			$this->currentActionName = $actionName;
-			$this->currentAction = $action;
-			if (!$action->request->retrieveParameterValues())
-				continue;
-			if ($action->run() === false) {
-				$nonproductiveMatchingActions[] = $actionName;
-				continue;
+		try {
+
+			foreach ($matchingActions as $actionName => $action) {
+				$this->currentActionName = $actionName;
+				$this->currentAction = $action;
+				if (!$action->request->retrieveParameterValues())
+					continue;
+				if ($action->run() === false) {
+					$nonproductiveMatchingActions[] = $actionName;
+					continue;
+				}
+				else
+					return false;
 			}
-			else
-				return false;
+
+		} catch (InvalidParametersException $e) {
+			echo "!";
+			return false;
 		}
 
 		Engine::e()->Errors->trigger(

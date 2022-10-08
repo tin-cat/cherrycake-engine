@@ -2,9 +2,11 @@
 
 namespace Cherrycake\Modules\Actions;
 
+use Exception;
 use Cherrycake\Classes\Engine;
 use Cherrycake\Modules\Cache\Cache;
 use Cherrycake\Modules\Errors\Errors;
+use Cherrycake\Modules\Actions\InvalidParametersException;
 
 /**
  * A class that represents a request to the engine, mainly used via an Action mapped into Actions module.
@@ -108,14 +110,6 @@ class Request {
 					$result = $pathComponent->checkValueSecurity();
 					if (!$result->isOk) {
 						$isErrors = true;
-						Engine::e()->Errors->trigger(
-							type: Errors::ERROR_SYSTEM,
-							description: implode(" / ", $result->description),
-							variables: [
-								"pathComponent name" => $pathComponent->name,
-								"pathComponent value" => $pathComponent->getValue()
-							]
-						);
 					}
 					else
 						$this->parameterValues[$pathComponent->name] = $pathComponent->getValue();
@@ -131,14 +125,6 @@ class Request {
 				$result = $parameter->checkValueSecurity();
 				if (!$result->isOk) {
 					$isErrors = true;
-					Engine::e()->Errors->trigger(
-						type: Errors::ERROR_SYSTEM,
-						description: implode(" / ", $result->description),
-						variables: [
-							"parameter name" => $parameter->name,
-							"parameter value" => $parameter->getValue()
-						]
-					);
 				}
 				else {
 					if ($parameter->isReceived())
