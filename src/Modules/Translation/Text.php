@@ -39,7 +39,7 @@ class Text {
 	 * @return string The text translated to the specified language
 	 */
 	function getForLanguage($language): string {
-		return Engine::e()->Translation->translate($this, $language);
+		return $this->parse(Engine::e()->Translation->translate($this, $language));
 	}
 
 	public function getBaseLanguage(): int {

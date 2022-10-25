@@ -38,6 +38,8 @@ class ObjectStorageIdBasedFile {
 			$this->providerName = $providerName;
 		if ($idBasedFile)
 			$this->originalName = $idBasedFile->getOriginalName();
+		if ($idBasedFile)
+			$this->hash = $idBasedFile->getHash();
 	}
 
 	/**
@@ -45,6 +47,13 @@ class ObjectStorageIdBasedFile {
 	 */
 	public function getOriginalName(): string {
 		return $this->originalName;
+	}
+
+	/**
+	 * @return string The hash of the file
+	 */
+	public function getHash(): string {
+		return $this->hash ?? '(no hash)';
 	}
 
 	/**

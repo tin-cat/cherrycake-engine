@@ -19,9 +19,24 @@ abstract class IdBasedFile {
 	static protected string $urlBase;
 
 	/**
+	 * @var bool $isHash Whether to retrieve the file hash
+	 */
+	static protected bool $isHash = false;
+
+	/**
+	 * @var string $hashAlgorithm The algorithm to use to retrieve the file hash (https://www.php.net/manual/en/function.hash-algos.php)
+	 */
+	static protected string $hashAlgorithm = 'sha512';
+
+	/**
 	 * @var string $originalName The original name of the file, including extension
 	 */
 	protected ?string $originalName;
+
+	/**
+	 * @var string $hash The hash of the file
+	 */
+	protected ?string $hash;
 
 	/**
 	 * @var string $id The unique identifier of the file. If not passed, a new one is automatically generated
@@ -39,6 +54,7 @@ abstract class IdBasedFile {
 	function __sleep() {
 		return [
 			'originalName',
+			'hash',
 			'id',
 			'extension',
 		];
@@ -53,16 +69,22 @@ abstract class IdBasedFile {
 	function __construct(
 		?string $filePath = null,
 		?string $originalName = null,
+		?string $hash = '',
 		?string $id = null,
 		?string $extension = null,
 	) {
 		$this->id = $id ?? $this->buildUniqueFileIdentifier();
 		$this->originalName = $originalName;
+		$this->hash = $hash;
 		$this->extension = $extension;
 
 		if ($filePath) {
 			if (!$this->originalName)
 				$this->originalName = basename($filePath);
+
+			if (static::$isHash) {
+				$this->hash = hash_file(static::$hashAlgorithm, $filePath);
+			}
 
 			if (!$this->copyFromLocalFile(
 				filePath: $filePath,
@@ -76,6 +98,13 @@ abstract class IdBasedFile {
 	 */
 	public function getOriginalName(): string {
 		return $this->originalName;
+	}
+
+	/**
+	 * @return string The hash of the file
+	 */
+	public function getHash(): string {
+		return $this->hash;
 	}
 
 	/**

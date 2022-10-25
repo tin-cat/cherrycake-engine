@@ -286,7 +286,7 @@ class Translation extends \Cherrycake\Classes\Module {
 	public function translate(
 		Text $text,
 		?int $language = null
-	):string {
+	): string {
 		if (!$this->isTextStored($text))
 			$this->storeText($text);
 
