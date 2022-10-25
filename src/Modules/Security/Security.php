@@ -182,15 +182,6 @@ class Security extends \Cherrycake\Classes\Module {
 				$rule = $rule[0];
 			}
 
-			if ($rule == self::RULE_SQL_INJECTION) {
-				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
-					$isError = true;
-					$description[] = "Suspicious of SQL injection";
-					$this->autoBanIp();
-					break;
-				}
-			}
-
 			if ($rule == self::RULE_NOT_NULL) {
 				if (is_null($value)) {
 					$isError = true;
@@ -207,8 +198,22 @@ class Security extends \Cherrycake\Classes\Module {
 				}
 			}
 
+			// Because we've checked now the rules that required a parameter to be passed,
+			// If it hasn't been passed at this point, we can consider the parameter correct
+			if ($value === null)
+				break;
+
+			if ($rule == self::RULE_SQL_INJECTION) {
+				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
+					$isError = true;
+					$description[] = "Suspicious of SQL injection";
+					$this->autoBanIp();
+					break;
+				}
+			}
+
 			if ($rule == self::RULE_INTEGER || $rule == self::RULE_TYPICAL_ID) {
-				if ($value && (!is_numeric($value) || stristr($value, "."))) {
+				if (!is_numeric($value) || stristr($value, ".")) {
 					$isError = true;
 					$description[] = "Parameter is not integer";
 				}
@@ -314,11 +319,11 @@ class Security extends \Cherrycake\Classes\Module {
 			}
 		}
 
-		if ($isError)
+		if ($isError) {
 			return new \Cherrycake\Classes\ResultKo([
 				"description" => $description
 			]);
-		else
+		} else
 			return new \Cherrycake\Classes\ResultOk;
 	}
 

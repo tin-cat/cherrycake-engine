@@ -93,7 +93,7 @@ class Request {
 
 	/**
 	 * Retrieves all the parameters bonded to this Request, coming either from path component strings, get or post. It also performs security checks on them when needed
-	 * @return bool True if all the parameters have been retrieved correctly and no security issues found, false otherwise
+	 * @return bool True if all the required parameters have been retrieved correctly and no security issues found, false otherwise
 	 */
 	function retrieveParameterValues(): bool {
 

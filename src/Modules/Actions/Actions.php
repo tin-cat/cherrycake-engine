@@ -194,7 +194,8 @@ class Actions extends \Cherrycake\Classes\Module {
 			}
 
 		} catch (InvalidParametersException $e) {
-			echo "!";
+			// @todo Adequately control this error case
+			echo "Invalid parameters";
 			return false;
 		}
 
