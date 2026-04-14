@@ -4,9 +4,6 @@ namespace Cherrycake\Log;
 
 /**
  * Class that represents a list of LogEvent objects
- *
- * @package Cherrycake
- * @category Classes
  */
 class LogEvents extends \Cherrycake\Items {
     protected $tableName = "log";
@@ -42,7 +39,7 @@ class LogEvents extends \Cherrycake\Items {
 				"sqlPart" => "type = ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+						"type" => \Cherrycake\Database\Database::TYPE_STRING,
 						"value" => $p["type"]
 					]
 				]
@@ -53,7 +50,7 @@ class LogEvents extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["fromTimestamp"]
 					]
 				]
@@ -64,7 +61,7 @@ class LogEvents extends \Cherrycake\Items {
 				"sqlPart" => "dateAdded >= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["toTimestamp"]
 					]
 				]

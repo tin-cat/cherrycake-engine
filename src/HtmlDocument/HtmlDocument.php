@@ -2,22 +2,21 @@
 
 namespace Cherrycake\HtmlDocument;
 
+use Cherrycake\Engine;
+
 /**
  * Provides basic tools to build correctly formatted and SEO optimized HTML5 documents
- *
- * @package Cherrycake
- * @category Modules
  */
 class HtmlDocument extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"title" => false,  // The page title
 		"description" => false,  // The page description
 		"copyright" => false, // The page copyright info
 		"keywords" => false, // The page keywords
-		"languageCode" => "en", // The language code of the page, from the ISO 639-1 standard (https://www.w3schools.com/tags/ref_language_codes.asp)
+		"languageCode" => "en", // The language code of the page, from the ISO 639-1 standard (https://www.w3schools.com/tags/ref_codes.asp)
 		"charset" => "utf-8",
 		"bodyAdditionalCssClasses" => false,
 		"isAllowRobotsIndex" => true, // Whether to allow robots to index the document
@@ -43,59 +42,50 @@ class HtmlDocument extends \Cherrycake\Module {
 		"matomoServerUrl" => false, // The Matomo (Piwik) server URL, if any.
 		"matomoTrackingId" => false, // The Matomo (Piwik) tracking id, if any.
 		"googleAnalyticsTrackingId" => false, // The Google Analytics id, if any.
-		"cssSets" => false, // An array of the Css set names to link in the HTML document in a single request, or, to add different Css requests instead of one, an array where each item represents a single request, and is an array of Css set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
-		"javascriptSets" => false, // An array of the Javascript set names to link in the HTML document in a single request, or, to add different Javascript requests instead of one, an array where each item represents a single request, and is an array of Javascript set names that will be included in each single request. If set to false, all available sets will be linked in a single request. Default: false
+		"cssSets" => [], // An array of the Css set names to link in the HTML document
+		"javascriptSets" => [], // An array of the Javascript set names to link in the HTML document
 		"googleFonts" => false // An array of the Google fonts to include, where each item is a hash array containing the following keys: "family": The font family (i.e.: "Duru Sans"), "subset" The subset (i.e.: "latin"), "weight" The font weight (i.e.: 300)
 	];
 
 	/**
 	 * @var string $inlineJavascript Javascript code that must be executed inline from the HTML
 	 */
-	private $inlineJavascript;
+	private string $inlineJavascript = '';
 
 	/**
 	 * @var mixed $footerAdditionalHtml HTML code to be additionally added to the end of the document body
 	 */
-	private $footerAdditionalHtml = false;
+	private string $footerAdditionalHtml = '';
 
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module, to be dumped on the header method
 	 */
-	var $dependentCoreModules = [
+	var array $dependentCoreModules = [
 		"Css",
 		"Javascript"
 	];
 
 	/**
-	 * setTitle
-	 *
 	 * Sets the Html document's title
-	 *
 	 * @param string $title The title
 	 */
-	function setTitle($title) {
+	function setTitle(string $title) {
 		$this->setConfig("title", $title);
 	}
 
 	/**
-	 * setDescription
-	 *
 	 * Sets the Html document's description
-	 *
 	 * @param string $description The description
 	 */
-	function setDescription($description) {
+	function setDescription(string $description) {
 		$this->setConfig("description", $description);
 	}
 
 	/**
-	 * addKeywords
-	 *
 	 * Adds keywords to the document
-	 *
-	 * @param mixed $keywords An array of keywords or a single string keyword
+	 * @param array|string $keywords An array of keywords or a single string keyword
 	 */
-	function addKeywords($keywords) {
+	function addKeywords(array|string $keywords) {
 		if (is_array($keywords))
 			$this->setConfig("keywords", array_merge($this->getConfig("keywords"), $keywords));
 		else
@@ -103,42 +93,40 @@ class HtmlDocument extends \Cherrycake\Module {
 	}
 
 	/**
-	 * addInlineJavascript
-	 *
 	 * Adds Javascript code to be executed inline on the HTML itself. If isDeferJavascript is true, this code will be executed only after Javascript sets have been loaded by the client
-	 *
-	 * @param $javascript
+	 * @param string $javascript
 	 */
-	function addInlineJavascript($javascript) {
+	function addInlineJavascript(string $javascript) {
 		$this->inlineJavascript .= $javascript;
 	}
 
 	/**
 	 * Adds HTML code to the end of the document body
-	 *
 	 * @param string $html The HTML to add to the end of the body
 	 */
-	function addFooterAdditionalHtml($html) {
+	function addFooterAdditionalHtml(string $html) {
 		$this->footerAdditionalHtml .= $html;
 	}
 
 	/**
-	 * @return mixed The HTML code to be added to the end of the document body, or false if none specified.
+	 * @return string The HTML code to be added to the end of the document body, or false if none specified.
 	 */
-	function getFooterAdditionalHtml() {
+	function getFooterAdditionalHtml():string {
 		return $this->footerAdditionalHtml;
 	}
 
 	/**
 	 * Builds a standard HTML header, from the <html ... > to the <body ...> tags. It works with the Css and Javascript modules to include the proper CSS/JavaScript calls.
-	 *
-	 * @param array $setup Setup options to configure the HTML header, with possible keys:
-	 * "bodyAdditionalCssClasses" => false // Additional CSS classes for the body element
+	 * @param string $bodyAdditionalCssClasses Additional CSS classes for the body element
+	 * @param array $additionalJavascriptSets The Javascript set names to add to the header, additionally to those specified on the Javascript config
+	 * * @param array $additionalCssSets The Css set names to add to the header, additionally to those specified on the Css config
 	 * @return string The HTML header
 	 */
-	function header($setup = false) {
-		global $e;
-
+	function header(
+		string $bodyAdditionalCssClasses = '',
+		array $additionalJavascriptSets = [],
+		array $additionalCssSets = []
+	): string {
 		$r = "<!DOCTYPE html>\n";
 
 		$r .= "<html lang=\"".$this->getConfig("languageCode")."\">\n";
@@ -170,49 +158,27 @@ class HtmlDocument extends \Cherrycake\Module {
 		if ($iTunesAppId = $this->getConfig("iTunesAppId"))
 			$r .= "<meta name=\"apple-itunes-app\" content=\"".$iTunesAppId."\" />\n";
 
-		if ($e->Actions->currentAction) {
+		if (Engine::e()->Actions->currentAction) {
 			// Canonical
-			if ($e->Locale->getConfig("canonicalLocale"))
-				$r .= "<link rel=\"canonical\" href=\"".$e->Actions->currentAction->request->buildUrl(["locale" => $e->Locale->getConfig("canonicalLocale")])."\" />\n";
+			if (Engine::e()->Locale->getConfig("canonicalLocale"))
+				$r .= "<link rel=\"canonical\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("canonicalLocale"))."\" />\n";
 
 			// Alternates
-			foreach ($e->Locale->getConfig("availableLocales") as $localeName => $locale)
-				$r .= "<link rel=\"alternate\" href=\"".$e->Actions->currentAction->request->buildUrl(["locale" => $localeName])."\" hreflang=\"".$e->Locale->getLanguageCode($locale["language"])."\" />\n";
+			foreach (Engine::e()->Locale->getConfig("availableLocales") as $localeName => $locale)
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: $localeName)."\" hreflang=\"".Engine::e()->Locale->getLanguageCode($locale["language"])."\" />\n";
 
 			// Default
-			if ($e->Locale->getConfig("defaultLocale"))
-				$r .= "<link rel=\"alternate\" href=\"".$e->Actions->currentAction->request->buildUrl(["locale" => $e->Locale->getConfig("defaultLocale")])."\" hreflang=\"x-default\" />\n";
+			if (Engine::e()->Locale->getConfig("defaultLocale"))
+				$r .= "<link rel=\"alternate\" href=\"".Engine::e()->Actions->currentAction->request->buildUrl(locale: Engine::e()->Locale->getConfig("defaultLocale"))."\" hreflang=\"x-default\" />\n";
 		}
 
 		// Css
-		if ($e->Css) {
-			if (!$cssSets = $this->getConfig("cssSets")) {
-				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl()."\" />\n";
-			}
-			else
-			if (is_array($cssSets[0])) {
-				foreach ($cssSets as $cssSet)
-					$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSet)."\" />\n";
-			}
-			else
-			if (is_array($cssSets))
-				$r .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$e->Css->getSetUrl($cssSets)."\" />\n";
-		}
+		if (Engine::e()->Css)
+			$r .= Engine::e()->Css->getSetsHtmlHeaders($this->getConfig("cssSets") + $additionalCssSets);
 
 		// Javascript
-		if ($e->Javascript) {
-			if (!$javascriptSets = $this->getConfig("javascriptSets")) {
-				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl()."\"></script>\n";
-			}
-			else
-			if (is_array($javascriptSets[0])) {
-				foreach ($javascriptSets as $javascriptSet)
-					$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSet)."\"></script>\n";
-			}
-			else
-			if (is_array($javascriptSets))
-				$r .= "<script type=\"text/javascript\" src=\"".$e->Javascript->getSetUrl($javascriptSets)."\"></script>\n";
-		}
+		if (Engine::e()->Javascript)
+			$r .= Engine::e()->Javascript->getSetsHtmlHeaders($this->getConfig("javascriptSets") + $additionalJavascriptSets);
 
 		// Mobile viewport
 		if ($mobileViewport = $this->getConfig("mobileViewport")) {
@@ -283,32 +249,29 @@ class HtmlDocument extends \Cherrycake\Module {
 
 		$r .= "</head>\n";
 
-		$r .= "<body".(isset($setup["bodyAdditionalCssClasses"]) ? " class=\"".$setup["bodyAdditionalCssClasses"]."\"" : "").">\n";
+		$r .= "<body".($bodyAdditionalCssClasses ? " class=\"".$bodyAdditionalCssClasses."\"" : "").">\n";
 
 		return $r;
 	}
 
 	/**
 	 * Builds a standard HTML footer, from the </body> to the </html> tags. Works with the Javascript module to implement deferred JavaScript capabilities.
-	 *
 	 * @todo Inlined Javascript should be minimized
 	 */
 	function footer() {
-		global $e;
-
 		$r = "";
 
-		if ($this->getConfig("googleAnalyticsTrackingId") && !$e->isDevel())
+		if ($this->getConfig("googleAnalyticsTrackingId") && !Engine::e()->isDevel())
 			$r .= $this->getGoogleAnalyticsCode($this->getConfig("googleAnalyticsTrackingId"));
 
-		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !$e->isDevel())
+		if ($this->getConfig("matomoTrackingId") && $this->getConfig("matomoServerUrl") && !Engine::e()->isDevel())
 			$r .= $this->getMatomoCode($this->getConfig("matomoServerUrl"), $this->getConfig("matomoTrackingId"));
 
 		if ($this->getFooterAdditionalHtml())
 			$r .= $this->getFooterAdditionalHtml();
 
 		// Javascript
-		if ($e->Javascript) {
+		if (Engine::e()->Javascript) {
 
 			if ($this->getConfig("isDeferJavascript") && $javascriptSets = $this->getConfig("javascriptSets")) {
 				if (is_array($javascriptSets[0])) {
@@ -318,7 +281,7 @@ class HtmlDocument extends \Cherrycake\Module {
 								var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
 								DOMReady(function () {
 									var element = document.createElement(\"script\");
-									element.src = \"".$e->Javascript->getSetUrl($javascriptSet)."\";
+									element.src = \"".Engine::e()->Javascript->getSetUrl($javascriptSet)."\";
 									document.body.appendChild(element);
 								});
 							</script>";
@@ -330,7 +293,7 @@ class HtmlDocument extends \Cherrycake\Module {
 							var DOMReady = function(a,b,c){b=document,c='addEventListener';b[c]?b[c]('DOMContentLoaded',a):window.attachEvent('onload',a)}
 							DOMReady(function () {
 								var element = document.createElement(\"script\");
-								element.src = \"".$e->Javascript->getSetUrl($javascriptSets)."\";
+								element.src = \"".Engine::e()->Javascript->getSetUrl($javascriptSets)."\";
 								document.body.appendChild(element);
 							});
 						</script>";
@@ -367,7 +330,7 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @param string $trackingId The Google Analytics tracking id to use
 	 * @return string The HTML code for Google Analytics tracking for the given $trackingId
 	 */
-	function getGoogleAnalyticsCode($trackingId) {
+	function getGoogleAnalyticsCode(string $trackingId): string {
 		return
 			"<script>\n".
 				"(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n".
@@ -385,7 +348,10 @@ class HtmlDocument extends \Cherrycake\Module {
 	 * @param string $id The Matomo tracking Id
 	 * @return string The HTML code for Matomo Analytics tracking
 	 */
-	function getMatomoCode($serverUrl, $id) {
+	function getMatomoCode(
+		string $serverUrl,
+		string $id
+	): string {
 		return
 			"<script>\n".
 				"var _paq = _paq || [];\n".

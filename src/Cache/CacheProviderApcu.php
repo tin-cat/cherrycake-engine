@@ -3,12 +3,7 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProviderApcu
- *
  * Cache Provider based on APCu. It provides a very fast memory caching but limited to a relatively small amount of cached objects, depending on memory available on the APCu server configuration.
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProviderApcu extends CacheProvider implements CacheProviderInterface, CacheProviderInterfaceQueue, CacheProviderInterfaceList {
 	/**

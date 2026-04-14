@@ -2,22 +2,21 @@
 
 namespace Cherrycake\Janitor;
 
+use Cherrycake\Engine;
+
 /**
  * Base class for Janitor tasks.
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorTask {
 	/**
 	 * @var array $config Holds the default configuration for this JanitorTask
 	 */
-	protected $config = [
-		"executionPeriodicity" => \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL, // The periodicity for this task execution. One of the available \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_? constants.
-		"periodicityEachSeconds" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS, this is the number of seconds between each execution.
-		"periodicityMinutes" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_MINUTES, this is an array specifying the minutes within each hour when this task will be executed, in the syntax: [0, 15, 30, 45, ...]
-		"periodicityHours" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_HOURS, this is an array specifying the hours and minutes within each day when this task will be executed, in the syntax: ["hour:minute", "hour:minute", "hour:minute", ...]
-		"periodicityDaysOfMonth" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH, this is an array specifying the days, hours and minutes within each month this task will be executed, in the syntax: ["day@hour:minute", "day@hour:minute", "day@hour:minute", ...]
+	protected array $config = [
+		"executionPeriodicity" => \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL, // The periodicity for this task execution. One of the available \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_? constants.
+		"periodicityEachSeconds" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS, this is the number of seconds between each execution.
+		"periodicityMinutes" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_MINUTES, this is an array specifying the minutes within each hour when this task will be executed, in the syntax: [0, 15, 30, 45, ...]
+		"periodicityHours" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_HOURS, this is an array specifying the hours and minutes within each day when this task will be executed, in the syntax: ["hour:minute", "hour:minute", "hour:minute", ...]
+		"periodicityDaysOfMonth" => false, // When executionPeriodicity is set to \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_DAYSOFMONTH, this is an array specifying the days, hours and minutes within each month this task will be executed, in the syntax: ["day@hour:minute", "day@hour:minute", "day@hour:minute", ...]
 	];
 
 	/**
@@ -36,9 +35,8 @@ class JanitorTask {
 	 * Loads the configuration file for this JanitorTask, if there's one
 	 */
 	function loadConfigFile() {
-		global $e;
 		$className = substr(get_class($this), strpos(get_class($this), "\\")+1);
-		$fileName = $e->getConfigDir()."/".$className.".config.php";
+		$fileName = Engine::e()->getConfigDir()."/".$className.".config.php";
 		if (!file_exists($fileName))
 			return;
 		include $fileName;
@@ -72,7 +70,7 @@ class JanitorTask {
 	 *
 	 * @return boolean Whether the JanitorTask has been loaded ok
 	 */
-	function init() {
+	function init(): bool {
 		$this->loadConfigFile();
 		return true;
 	}
@@ -95,7 +93,7 @@ class JanitorTask {
 	 *
 	 * @param integer $baseTimestamp The base timestamp to use for time-based calculations when running this task. Usually, now.
 	 * @return array An array with the following values:
-	 * * One of the \Cherrycake\Janitor\JANITORTASK_EXECUTION_RETURN_? available constants indicating the result of the task execution.
+	 * * One of the \Cherrycake\Janitor\Janitor::EXECUTION_RETURN_? available constants indicating the result of the task execution.
 	 * * The description of the task result, or a hash array of information on the result of the task execution.
 	 */
 	function run($baseTimestamp) {
@@ -125,14 +123,13 @@ class JanitorTask {
 	 * @return mixed The timestamp on which this task ran for the last time. False if haven't ever run.
 	 */
 	function getLastExecutionTimestamp() {
-		global $e;
 
-		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select executionDate from ".$e->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
+		$databaseProviderName = Engine::e()->Janitor->getConfig("logDatabaseProviderName");
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select executionDate from ".Engine::e()->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $this->getName()
 				]
 			],
@@ -159,7 +156,7 @@ class JanitorTask {
 	function isToBeExecuted($baseTimestamp = false) {
 		$executionPeriodicity = $this->getConfig("executionPeriodicity");
 
-		if ($executionPeriodicity == \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ALWAYS || $executionPeriodicity == \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL)
+		if ($executionPeriodicity == \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ALWAYS || $executionPeriodicity == \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL)
 			return true;
 
 		if (!$baseTimestamp)
@@ -169,12 +166,12 @@ class JanitorTask {
 			return true;
 
 		switch ($executionPeriodicity) {
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS:
 				$periodicityEachSeconds = $this->getConfig("periodicityEachSeconds");
 				return ($lastExecutionTimestamp + $periodicityEachSeconds) < $baseTimestamp;
 				break;
 
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_MINUTES:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_MINUTES:
 				$minutes = $this->getConfig("periodicityMinutes");
 				if (!is_array($minutes))
 					$minutes = [$this->getConfig("periodicityMinutes")];
@@ -202,7 +199,7 @@ class JanitorTask {
 				return false;
 				break;
 
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_HOURS:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_HOURS:
 				$hourTokens = $this->getConfig("periodicityHours");
 				if (!is_array($hourTokens))
 					$hourTokens = [$this->getConfig("periodicityHours")];
@@ -231,7 +228,7 @@ class JanitorTask {
 				return false;
 				break;
 
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_DAYSOFMONTH:
 				$dayTokens = $this->getConfig("periodicityDaysOfMonth");
 				if (!is_array($dayTokens))
 					$dayTokens = [$this->getConfig("periodicityDaysOfMonth")];
@@ -271,15 +268,14 @@ class JanitorTask {
 	 * @return mixed A hash array containing status information about this task. Return false if no info about the last execution of this task could be retrieved.
 	 */
 	function getStatus() {
-		global $e;
 
 		// Get last execution log for this task
-		$databaseProviderName = $e->Janitor->getConfig("logDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
-			"select executionDate, executionSeconds, resultCode, resultDescription from ".$e->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
+		$databaseProviderName = Engine::e()->Janitor->getConfig("logDatabaseProviderName");
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
+			"select executionDate, executionSeconds, resultCode, resultDescription from ".Engine::e()->Janitor->getConfig("logTableName")." where taskName = ? order by executionDate desc limit 1",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $this->getName()
 				]
 			],
@@ -322,22 +318,22 @@ class JanitorTask {
 	 */
 	function getPeriodicityDebugInfo() {
 		switch ($this->getConfig("executionPeriodicity")) {
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ONLY_MANUAL:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ONLY_MANUAL:
 				$description = "Manual";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_ALWAYS:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_ALWAYS:
 				$description = "Every time";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_EACH_SECONDS:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_EACH_SECONDS:
 				$description = "Every ".$this->getConfig("periodicityEachSeconds")." seconds";
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_MINUTES:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_MINUTES:
 				$description = "Hourly on ".(!is_array($this->getConfig("periodicityMinutes")) ? "minute ".$this->getConfig("periodicityMinutes") : "minutes ".implode(", ", $this->getConfig("periodicityMinutes")));
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_HOURS:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_HOURS:
 				$description = "Daily at ".(!is_array($this->getConfig("periodicityHours")) ? "hour ".$this->getConfig("periodicityHours") : "hours ".implode(", ", $this->getConfig("periodicityHours")));
 				break;
-			case \Cherrycake\Janitor\JANITORTASK_EXECUTION_PERIODICITY_DAYSOFMONTH:
+			case \Cherrycake\Janitor\Janitor::EXECUTION_PERIODICITY_DAYSOFMONTH:
 				$description = "Monthly on ".(!is_array($this->getConfig("periodicityDaysOfMonth")) ? "day ".$this->getConfig("periodicityDaysOfMonth") : "days ".implode(", ", $this->getConfig("periodicityDaysOfMonth")));
 				break;
 		}

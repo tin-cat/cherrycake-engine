@@ -6,10 +6,7 @@ use \PHPMailer\PHPMailer\PHPMailer;
 use \PHPMailer\PHPMailer\Exception;
 
 /**
- * Email
- *
  * Sends emails
- *
  * Configuration example for email.config.php:
  * <code>
  * $emailConfig = [
@@ -17,18 +14,19 @@ use \PHPMailer\PHPMailer\Exception;
  *  "SMTPHost" => "", // The SMTP host name
  *  "SMTPPort" => 587, // The SMTP port
  *  "SMTPAuth" => true, // Enable or disable SMTP authentication
- *  "SMTPSecure" => EMAIL_SMTP_ENCRYPTION_TLS, // Type of encryption, one of the EMAIL_SMTP_ENCRYPTION_* available
+ *  "SMTPSecure" => SMTP_ENCRYPTION_TLS, // Type of encryption, one of the SMTP_ENCRYPTION_* available
  *  "SMTPUsername" => "", // The user name to authenticate on the SMTP server
  *  "SMTPPassword" => "" // The password for authenticating on the SMTP server
  * ];
  * </code>
  *
  * @todo Implement an email queueing system
- *
- * @package Cherrycake
- * @category Modules
  */
 class Email extends \Cherrycake\Module {
+
+	const SMTP_ENCRYPTION_TLS = 0;
+	const SMTP_ENCRYPTION_SSL = 1;
+
     private $phpMailer;
 
     /**
@@ -63,7 +61,7 @@ class Email extends \Cherrycake\Module {
                 $this->phpMailer->Port = $this->getConfig("SMTPPort");
                 if ($this->getConfig("SMTPAuth")) {
                     $this->phpMailer->SMTPAuth = true;
-                    $this->phpMailer->SMTPSecure = [EMAIL_SMTP_ENCRYPTION_TLS => "tls", EMAIL_SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
+                    $this->phpMailer->SMTPSecure = [SMTP_ENCRYPTION_TLS => "tls", SMTP_ENCRYPTION_SSL => "ssl"][$this->getConfig("SMTPSecure")];
                     $this->phpMailer->Username = $this->getConfig("SMTPUsername");
                     $this->phpMailer->Password = $this->getConfig("SMTPPassword");
                 }

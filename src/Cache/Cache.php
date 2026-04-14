@@ -2,20 +2,43 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Engine;
+use Cherrycake\Errors\Errors;
+
 /**
- * Cache
- *
  * Manages cache providers.
  * It takes configuration from the App-layer configuration file. See there to find available configuration options.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Cache extends \Cherrycake\Module {
+
+	const TTL_1_MINUTE = 60;
+	const TTL_5_MINUTES = 300;
+	const TTL_10_MINUTES = 600;
+	const TTL_30_MINUTES = 1800;
+	const TTL_1_HOUR = 3600;
+	const TTL_2_HOURS = 7200;
+	const TTL_6_HOURS = 21600;
+	const TTL_12_HOURS = 43200;
+	const TTL_1_DAY = 86400;
+	const TTL_2_DAYS = 172800;
+	const TTL_3_DAYS = 259200;
+	const TTL_5_DAYS = 432000;
+	const TTL_1_WEEK = 604800;
+	const TTL_2_WEEKS = 1209600;
+	const TTL_1_MONTH = 2592000;
+
+	const TTL_MINIMAL = 10;
+	const TTL_CRITICAL = self::TTL_1_MINUTE;
+	const TTL_SHORT = self::TTL_5_MINUTES;
+	const TTL_NORMAL = self::TTL_1_HOUR;
+	const TTL_UNCRITICAL = self::TTL_1_DAY;
+	const TTL_LONG = self::TTL_1_WEEK;
+	const TTL_LONGEST = self::TTL_1_MONTH;
+
 	/**
 	 * @var bool $isConfigFileRequired Whether the config file for this module is required to run the app
 	 */
-	protected $isConfigFileRequired = false;
+	protected bool $isConfigFileRequired = false;
 
 	/**
 	 * init
@@ -24,18 +47,17 @@ class Cache extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
-		global $e;
-
 		// Check that the "engine" cache provider has not been defined previously
-		if ($e->isDevel() && isset($this->getConfig("providers")["engine"])) {
-			$e->loadCoreModule("Errors");
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The \"engine\" cache provider name is reserved"
-			]);
+		if (Engine::e()->isDevel() && isset($this->getConfig("providers")["engine"])) {
+			Engine::e()->loadCoreModule("Errors");
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "The \"engine\" cache provider name is reserved"
+			);
 		}
 
 		// Setup the engine cache
@@ -46,7 +68,7 @@ class Cache extends \Cherrycake\Module {
 		// Sets up providers
 		if (is_array($providers = $this->getConfig("providers")))
 			foreach ($providers as $key => $provider)
-				$this->addProvider($key, $provider["providerClassName"], (isset($provider["config"]) ? $provider["config"] : null));
+				$this->addProvider($key, $provider["providerClassName"], $provider["config"] ?? []);
 
 		return true;
 	}
@@ -60,44 +82,49 @@ class Cache extends \Cherrycake\Module {
 	 * @param string $providerClassName The cache provider class name
 	 * @param array $config The configuration for the cache provider
 	 */
-	function addProvider($key, $providerClassName, $config) {
+	function addProvider(
+		string $key,
+		string $providerClassName,
+		?array $config,
+	) {
 		eval("\$this->".$key." = new \\Cherrycake\\Cache\\".$providerClassName."();");
 		$this->$key->config($config);
 	}
 
 	/**
-	 * buildCacheKey
-	 *
 	 * Returns a cache key to be used in caching operations, based on the provided $config.
 	 * The keys built can have one of the following syntaxes:
 	 * <App namespace>_[<prefix>]_<uniqueId>
 	 * <App namespace>_[<prefix>]_[<specificPrefix>]_<key|encoded sql>
 	 *
-	 * @param $cacheKeyNamingOptions The config options to build the cache key, holds the following key-value options:
-	 * "prefix": A prefix to use
-	 * "uniqueId": A unique id for the cache key that will override any other specific key identifier config options
-	 * "specificPrefix": A secondary prefix to prepend to provided sql or key config values
-	 * "hash": A string to be hashed as the cache key instead of using "key". For example: A SQL query
-	 * "key": An arbitrary key to uniquely identify the cache key
-	 *
-	 * @return string The final cache key
+	 * @param string $prefix A prefix
+	 * @param string $uniqueId A unique id for the cache key that will override any other specific key identifier config options
+	 * @param string $specificPrefix A secondary prefix to prepend to provided sql or key config values
+	 * @param string $hash A string to be hashed as the cache key instead of using "key". For example: A SQL query
+	 * @param string $key An arbitrary key to uniquely identify the cache key
+	 * @return string The cache key
 	 */
-	static function buildCacheKey($cacheKeyNamingOptions) {
-		global $e;
-		$key = $e->getAppName();
+	static function buildCacheKey(
+		?string $prefix = null,
+		?string $uniqueId = null,
+		?string $specificPrefix = null,
+		?string $hash = null,
+		?string $key = null
+	) {
+		$r = Engine::e()->getAppName();
 
-		if (isset($cacheKeyNamingOptions["prefix"]))
-			$key .= "_".$cacheKeyNamingOptions["prefix"];
+		if (isset($prefix))
+			$r .= "_".$prefix;
 
-		if (isset($cacheKeyNamingOptions["uniqueId"]))
-			return $key."_".$cacheKeyNamingOptions["uniqueId"];
+		if (isset($uniqueId))
+			return $r."_".$uniqueId;
 
-		if (isset($cacheKeyNamingOptions["specificPrefix"]))
-			$key .= "_".$cacheKeyNamingOptions["specificPrefix"];
+		if (isset($specificPrefix))
+			$r .= "_".$specificPrefix;
 
-		if (isset($cacheKeyNamingOptions["hash"]))
-			return  $key."_".hash("md5", $cacheKeyNamingOptions["hash"]);
+		if (isset($hash))
+			return  $r."_".hash("md5", $hash);
 
-		return $key."_".$cacheKeyNamingOptions["key"];
+		return $r."_".$key;
 	}
 }

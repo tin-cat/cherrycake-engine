@@ -2,17 +2,18 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+
 /**
- * AjaxResponseJson
- *
  * A class that represents an Ajax JSON response, intended to be handled by the Javascript part of the Ajax module
- *
- * @package Cherrycake
- * @category Classes
  */
 class AjaxResponseJson {
+
+	const SUCCESS = 0;
+	const ERROR = 1;
+
 	/**
-	 * @var integer $code The response code, one of the available AJAXRESPONSEJSON_* consts
+	 * @var integer $code The response code, one of the available SUCCESS or ERROR consts
 	 */
 	protected $code;
 
@@ -20,11 +21,6 @@ class AjaxResponseJson {
 	 * @var string $description The succes description, if any
 	 */
 	protected $description;
-
-	/**
-	 * @var integer $messageType The type of the message to show to the user, when there is one. One of the available AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* consts
-	 */
-	protected $messageType = \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_NONE;
 
 	/**
 	 * @var string $redirectUrl The URL to automatically redirect the client to when this response is received by it. Leave to false if no redirection should be done.
@@ -37,19 +33,13 @@ class AjaxResponseJson {
 	protected $data;
 
 	/**
-	 * AjaxResponse
-	 *
-	 * Constructor factory
-	 *
 	 * @param string $setup The configuration for the Ajax response
 	 */
 	function __construct($setup) {
 		if (isset($setup["code"]))
-			$this->code = $setup["code"]; // The response code, one of AJAXRESPONSEJSON_* available consts
+			$this->code = $setup["code"]; // The response code, one of * available consts
 		if (isset($setup["description"]))
 			$this->description = $setup["description"]; // The description of the response code, whether successed or failed. Leave to empty if no notification should be shown.
-		if (isset($setup["messageType"]))
-			$this->messageType = $setup["messageType"]; // The message type to be shown when a description is specified, one of const AJAXRESPONSEJSON_UI_MESSAGE_TYPE_* available consts.
 		if (isset($setup["redirectUrl"]))
 			$this->redirectUrl = $setup["redirectUrl"]; // The URL to automatically redirect the client to when this response is received by it. Leave to false if no redirection should be done.
 		if (isset($setup["data"]))
@@ -60,13 +50,11 @@ class AjaxResponseJson {
 	 * @return Response The response
 	 */
 	function getResponse() {
-		global $e;
 
 		$r["code"] = $this->code;
 
 		if ($this->description) {
 			$r["description"] = $this->description;
-			$r["messageType"] = $this->messageType;
 		}
 
 		if ($this->redirectUrl)
@@ -75,9 +63,7 @@ class AjaxResponseJson {
 		if ($this->data)
 			$r["data"] = $this->data;
 
-		return new \Cherrycake\Actions\ResponseApplicationJson([
-			"payload" => $r
-		]);
+		return new \Cherrycake\Actions\ResponseApplicationJson(payload: $r);
 	}
 
 	/**
@@ -86,7 +72,6 @@ class AjaxResponseJson {
 	 * Outputs the ajax response
 	 */
 	function output() {
-		global $e;
-		$e->Output->setResponse($this->getResponse());
+		Engine::e()->Output->setResponse($this->getResponse());
 	}
 }

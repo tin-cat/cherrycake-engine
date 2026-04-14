@@ -5,9 +5,6 @@ namespace Cherrycake;
 /**
  * Provides a bottom level cache aimed to provide engine-level speed optimizations with a small-size, high performance cache.
  * This cache mechanism is not intended to be used in the Application layers, use Cache module instead.
- *
- * @package Cherrycake
- * @category Classes
  */
 class EngineCache {
 	private $defaultBucketName = "default";
@@ -17,10 +14,9 @@ class EngineCache {
 	 * @return string The cache key
 	 */
 	function buildKey($id) {
-		global $e;
 		return
 			"Cherrycake_".
-			$e->getAppName()."_".
+			Engine::e()->getAppName()."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}
 
@@ -30,10 +26,9 @@ class EngineCache {
 	 * @return string The cache key
 	 */
 	function buildKeyForBucket($bucket, $id) {
-		global $e;
 		return
 			"Cherrycake_".
-			$e->getAppName()."_".
+			Engine::e()->getAppName()."_".
 			$bucket."_".
 			(is_array($id) ? implode("_", $id) : $id);
 	}
@@ -167,7 +162,7 @@ class EngineCache {
 	 * @return array The keys stored in the specified bucket
 	 */
 	function getKeysInBucket($bucket) {
-		return $this->getKey($this->buildKey(["bucketKeys", $bucket]));
+		return $this->getKey($this->buildKey(["bucketKeys", $bucket])) ?: [];
 	}
 
 	/**
@@ -182,7 +177,7 @@ class EngineCache {
 		$keysInBucket[] = $key;
 		$this->setKey($this->buildKey(["bucketKeys", $bucket]), $keysInBucket);
 
-		$buckets = $this->get("buckets");
+		$buckets = $this->get("buckets") ?: [];
 		if (is_array($buckets) && !in_array($bucket, $buckets))
 			$buckets[] = $bucket;
 		else

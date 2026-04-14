@@ -2,26 +2,25 @@
 
 namespace Cherrycake\Log;
 
+use Cherrycake\Engine;
+
 /**
  * Base class to represent log events for the Log module
- *
- * @package Cherrycake
- * @category Classes
  */
 class LogEvent extends \Cherrycake\Item {
 	protected $tableName = "log";
 	protected $cacheSpecificPrefix = "Log";
 
 	protected $fields = [
-		"id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"timestamp" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME],
-		"type" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING],
-		"subType" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING],
-		"ip" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP],
-		"user_id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"outher_id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"secondaryOuther_id" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER],
-		"additionalData" => ["type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_SERIALIZED]
+		"id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"timestamp" => ["type" => \Cherrycake\Database\Database::TYPE_DATETIME],
+		"type" => ["type" => \Cherrycake\Database\Database::TYPE_STRING],
+		"subType" => ["type" => \Cherrycake\Database\Database::TYPE_STRING],
+		"ip" => ["type" => \Cherrycake\Database\Database::TYPE_IP],
+		"user_id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"outher_id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"secondaryOuther_id" => ["type" => \Cherrycake\Database\Database::TYPE_INTEGER],
+		"additionalData" => ["type" => \Cherrycake\Database\Database::TYPE_SERIALIZED]
 	];
 
 	/**
@@ -69,10 +68,9 @@ class LogEvent extends \Cherrycake\Item {
 			$this->user_id = $data["userId"];
 		else
 		if ($this->isUseCurrentLoggedUserId) {
-			global $e;
-			$e->loadCoreModule("Login");
-			if ($e->Login && $e->Login->isLogged()) {
-				$this->user_id = $e->Login->user->id;
+			Engine::e()->loadCoreModule("Login");
+			if (Engine::e()->Login && Engine::e()->Login->isLogged()) {
+				$this->user_id = Engine::e()->Login->user->id;
 			}
 		}
 

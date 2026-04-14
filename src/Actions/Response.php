@@ -3,63 +3,38 @@
 namespace Cherrycake\Actions;
 
 /**
- * Response
- *
  * Class that represents a response to a client. Mostly used by the Output module.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Response {
 	/**
-	 * @var integer $contentType The content type of the response
+	 * @var string $contentType The content type of the response
 	 */
-	protected $contentType;
+	protected string $contentType = '';
 
 	/**
 	 * @var array $headers Holds the headers to send to the client
 	 */
-	private $headers = false;
+	private array $headers = [];
 
-	/**
-	 * @var integet $code The response code, one of the RESPONSE_* availables
-	 */
-	private $code = \Cherrycake\Output\RESPONSE_OK;
-
-	/**
-	 * @var string $url The url to redirect
-	 */
-	private $url = false;
-
-	/**
-	 * @var string $payload The response payload. HTML code, for example.
-	 */
-	private $payload = null;
-
-	function __construct($setup = false) {
-		if (isset($setup["code"]))
-			$this->setCode($setup["code"]);
-
-		if (isset($setup["url"]))
-			$this->setUrl($setup["url"]);
-
-		if (isset($setup["payload"]))
-			$this->setPayload($setup["payload"]);
-	}
+	function __construct(
+		private ?int $code = \Cherrycake\Output\Output::RESPONSE_OK,
+		private string $url = '',
+		private string|array $payload = '',
+	) {}
 
 	/**
 	 * Adds a header to be sent to the client
 	 * @param string $header The header
 	 */
-	function addHeader($header) {
+	function addHeader(string $header) {
 		$this->headers[] = $header;
 	}
 
 	/**
 	 * Sets the code
-	 * @param integet $code The code, one of the available RESPONSE_*
+	 * @param int $code The code, one of the available RESPONSE_*
 	 */
-	function setCode($code) {
+	function setCode(int $code) {
 		$this->code = $code;
 	}
 
@@ -67,7 +42,7 @@ class Response {
 	 * Sets the url
 	 * @param string $url The url to redirect to
 	 */
-	function setUrl($url) {
+	function setUrl(string $url) {
 		$this->url = $url;
 	}
 
@@ -75,7 +50,7 @@ class Response {
 	 * Sets the payload
 	 * @param string $payload The payload
 	 */
-	function setPayload($payload) {
+	function setPayload(string $payload) {
 		$this->payload = $payload;
 	}
 
@@ -83,7 +58,7 @@ class Response {
 	 * Appends the given payload
 	 * @param string $payload The payload to append
 	 */
-	function appendPayload($payload) {
+	function appendPayload(string $payload) {
 		$this->payload .= $payload;
 	}
 
@@ -91,7 +66,7 @@ class Response {
 	 * Prepends the given payload
 	 * @param string $payload The payload to prepend
 	 */
-	function prependPayload($payload) {
+	function prependPayload(string $payload) {
 		$this->payload .= $payload.$this->payload;
 	}
 
@@ -113,14 +88,14 @@ class Response {
 	 * This method is intended to be overloaded if other types of Responses need to treat the payload in some way before sending it to the client. For example, generating a JSON string from the variable stored as payload.
 	 * @return string The Payload as the client expects it
 	 */
-	function getPayloadForClient() {
+	function getPayloadForClient(): string {
 		return $this->getPayload();
 	}
 
 	/**
 	 * @return string The content type mime type string
 	 */
-	function getContentType() {
+	function getContentType(): string {
 		return $this->contentType;
 	}
 
@@ -139,22 +114,22 @@ class Response {
 
 	function addResponseHeader() {
 		switch ($this->code) {
-			case \Cherrycake\Output\RESPONSE_OK:
+			case \Cherrycake\Output\Output::RESPONSE_OK:
 				$this->addHeader("HTTP/1.0 200 Ok");
 				break;
-			case \Cherrycake\Output\RESPONSE_NOT_FOUND:
+			case \Cherrycake\Output\Output::RESPONSE_NOT_FOUND:
 				$this->addHeader("HTTP/1.0 404 Not Found");
 				break;
-			case \Cherrycake\Output\RESPONSE_NO_PERMISSION:
+			case \Cherrycake\Output\Output::RESPONSE_NO_PERMISSION:
 				$this->addHeader("HTTP/1.0 403 Not Found");
 				break;
-			case \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR:
+			case \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR:
 				$this->addHeader("HTTP/1.1 500 Internal Server Error");
 				break;
-			case \Cherrycake\Output\RESPONSE_REDIRECT_MOVED_PERMANENTLY:
+			case \Cherrycake\Output\Output::RESPONSE_REDIRECT_MOVED_PERMANENTLY:
 				$this->addHeader("HTTP/1.1 301 Moved Permanently");
 				break;
-			case \Cherrycake\Output\RESPONSE_REDIRECT_FOUND:
+			case \Cherrycake\Output\Output::RESPONSE_REDIRECT_FOUND:
 				$this->addHeader("HTTP/1.1 302 Found");
 				break;
 		}

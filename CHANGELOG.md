@@ -1,7 +1,20 @@
 # Changelog
 Changelog documentation for the Cherrycake engine. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0b] - 2021-05-25
+## [v2.0.0b] - 2021-08-27
+### Added
+- Support for Sass CSS
+- Modules no longer need to be specifically loaded via the Module->dependentCoreModules and Module->dependentAppModules properties, they're loaded as soon as they're requested for the first time.
+### Changed
+- Upgraded to PHP 8.
+- Multilanguage texts are managed by the easier to use new `Translation` module instead of the previous `Locale` module.
+- Javascript and Css modules no longer merge different sets into one.
+- Constants are now stored inside each relevant class and module, the `.constants.php` file functionality is removed as a result. Constans now should be referenced using their correct namespace.
+- No longer need to acquire the engine using `global $e`, The Engine object is now a singleton that can be acquired anywhere using `Engine::e()`
+### Bugs
+- Solved many minor bugs
+
+## [v1.0.0b] - 2021-05-25
 ### Changed
 - Composer-based autoloading system, a standard class and module autloading mechanism that simplifies overall structure for Cherrycake apps.
 - Core modules are now stored in <Engine dir>/src/<Module name>/<Module name>.php

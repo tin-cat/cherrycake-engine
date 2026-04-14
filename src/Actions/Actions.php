@@ -2,20 +2,25 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+use Cherrycake\Cache\Cache;
+use Cherrycake\Errors\Errors;
+
 /**
  * Module to manage the queries to the engine. It answers to queries by evaluating the query path and finding a matching mapped Action. Methods running via mapped actions must return false if they don't accept the request in order to let other methods in other mapped actions have a chance of accepting it. They must return true or nothing if they accept the request.
  * It takes configuration from the App-layer configuration file.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Actions extends \Cherrycake\Module {
+
+	const MODULE_TYPE_CORE = 0;
+	const MODULE_TYPE_APP = 1;
+
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"defaultCacheProviderName" => "engine", // The default cache provider name to use.
-		"defaultCacheTtl" => \Cherrycake\CACHE_TTL_NORMAL, // De default TTL to use.
+		"defaultCacheTtl" => Cache::TTL_NORMAL, // The default TTL to use.
 		"defaultCachePrefix" => "Actions",
 		"sleepSecondsWhenActionSensibleToBruteForceAttacksFails" => [0, 3] // An array containing the minimum and maximum number of seconds to wait when an action marked as sensible to brute force attacks has been executed and failed.
 	];
@@ -23,7 +28,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Security"
@@ -37,7 +42,7 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @var array $actions An array of Actions to be handled by this module
 	 */
-	private $actions;
+	private $actions = [];
 
 	/**
 	 * @var array $currentRequestPathComponentStrings An array of strings representing the path of the currently made request, built on Actions::buildCurrentRequestPathComponentStringsFromRequestUri
@@ -58,12 +63,11 @@ class Actions extends \Cherrycake\Module {
 	 * Initializes the module
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
-		global $e;
-		$e->callMethodOnAllModules("mapActions");
+		Engine::e()->callMethodOnAllModules("mapActions");
 
 		return true;
 	}
@@ -71,71 +75,71 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * Maps an action for a module (either an App or a Core module). Should be called within the mapActions method of your module, like this:
 	 *
-	 * $e->Actions->mapAction(
+	 * Engine::e()->Actions->mapAction(
 	 * 	"TableAdminGetRows",
 	 * 	new \Cherrycake\ActionHtml([
-	 * 		"moduleType" => ACTION_MODULE_TYPE_CORE,
+	 * 		"moduleType" => MODULE_TYPE_CORE,
 	 * 		"moduleName" => "TableAdmin",
 	 * 		"methodName" => "getRows",
 	 * 		"request" => new \Cherrycake\Request([
 	 * 			"isSecurityCsrf" => true,
 	 * 			"pathComponents" => [
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "TableAdmin"
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_VARIABLE_STRING,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_VARIABLE_STRING,
 	 * 					"name" => "mapName",
 	 * 					"securityRules" => [
-	 * 						SECURITY_RULE_NOT_EMPTY,
-	 * 						SECURITY_RULE_SLUG
+	 * 						RULE_NOT_EMPTY,
+	 * 						RULE_SLUG
 	 * 					]
 	 * 				]),
 	 * 				new \Cherrycake\RequestPathComponent([
-	 * 					"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
+	 * 					"type" => \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
 	 * 					"string" => "getRows"
 	 * 				])
 	 * 			],
 	 * 			"parameters" => [
 	 * 				new \Cherrycake\RequestParameter([
 	 * 					"name" => "additionalFillFromParameters",
-	 * 					"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
+	 * 					"type" => \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
 	 * 				])
 	 * 			]
 	 * 		])
 	 * 	])
 	 * );
 	 *
-	 * @param $actionName string The action name
+	 * @param $name string The action name
 	 * @param $action Action object
 	 */
-	public function mapAction($actionName, $action) {
-		$this->actions[$actionName] = $action;
+	public function mapAction(string $name, Action $action) {
+		$this->actions[$name] = $action;
 	}
 
 	/**
 	 * Checks if an action with the given actionName has been set
 	 *
-	 * @param $actionName string The action name
+	 * @param $name string The action name
 	 * @return bool True if the action exists, false if doesnt's.
 	*/
-	public function isAction($actionName) {
-		if (!is_array($this->actions))
+	public function isAction(string $name): bool {
+		if (!$this->actions)
 			return false;
 
-		return array_key_exists($actionName, $this->actions);
+		return array_key_exists($name, $this->actions);
 	}
 
 	/**
-	 * @param $actionName string The action name
-	 * @return Action The requested action. False if doesn't exists.
+	 * @param $name string The action name
+	 * @return Action The requested action.
 	*/
-	public function getAction($actionName) {
-		if (!$this->isAction($actionName))
+	public function getAction(string $name): Action {
+		if (!$this->isAction($name))
 			return false;
 
-		return $this->actions[$actionName];
+		return $this->actions[$name];
 	}
 
 	/**
@@ -143,18 +147,18 @@ class Actions extends \Cherrycake\Module {
 	 * @param string $requestUri The request URI to run.
 	 * @return bool Returns false if an error occurred when executing the action or if the requested action is not coded and ACTION_NOT_FOUND has not been mapped.
 	 */
-	function run($requestUri) {
-		global $e;
+	function run(string $requestUri): bool {
 
-		if ($e->isDevel() && !is_array($this->actions)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "No mapped actions"
-			]);
+		if (Engine::e()->isDevel() && !$this->actions) {
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "No mapped actions"
+			);
 		}
 
 		// Check the currentRequestPath against all mapped actions
-		$matchingActions = false;
-		if (is_array($this->actions)) {
+		$matchingActions = [];
+		if ($this->actions) {
 			$this->buildCurrentRequestPathComponentStringsFromRequestUri($requestUri);
 			// Loop through all mapped actions
 			foreach ($this->actions as $actionName => $action) {
@@ -165,9 +169,10 @@ class Actions extends \Cherrycake\Module {
 		}
 
 		if (!$matchingActions) {
-			$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
-				"errorDescription" => "No mapped action found for this request"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_NOT_FOUND,
+				description: "No mapped action found for this request"
+			);
 			return false;
 		}
 
@@ -181,22 +186,25 @@ class Actions extends \Cherrycake\Module {
 				continue;
 			}
 			else
-				return;
+				return false;
 		}
 
-		$e->Errors->trigger(\Cherrycake\ERROR_NOT_FOUND, [
-			"errorDescription" => "No matching actions were productive",
-			"errorVariables" => [
+		Engine::e()->Errors->trigger(
+			type: Errors::ERROR_NOT_FOUND,
+			description: "No matching actions were productive",
+			variables: [
 				"nonproductiveMatchingActions" => $nonproductiveMatchingActions
 			]
-		]);
+		);
+
+		return true;
 	}
 
 	/**
 	 * Builds the $currentRequestPathComponentStrings array, to be used lately by Request::isCurrentRequest
 	 * @param string $requestUri The URI string to build the currentRequestPathComponentStrings from
 	 */
-	function buildCurrentRequestPathComponentStringsFromRequestUri($requestUri) {
+	function buildCurrentRequestPathComponentStringsFromRequestUri(string $requestUri) {
 		// Strip get parameters
 		if ($firstInterrogantPosition = strpos($requestUri, "?"))
 			$requestUri = substr($requestUri, 0, $firstInterrogantPosition);
@@ -216,16 +224,15 @@ class Actions extends \Cherrycake\Module {
 	/**
 	 * @return array Status information
 	 */
-	function getStatus() {
-		if (is_array($this->actions)) {
+	function getStatus(): array {
+		if ($this->actions) {
 			foreach ($this->actions as $actionName => $action) {
 				$r["mappedActions"][$actionName] = $action->getStatus();
 				$r["brief"]["mappedActions"][$actionName] = $action->getStatus()["brief"];
 			}
 			reset($this->actions);
 		}
-
-		return $r ?? null;
+		return $r ?? [];
 	}
 
 }

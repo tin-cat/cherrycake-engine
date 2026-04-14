@@ -2,30 +2,30 @@
 
 namespace Cherrycake\Javascript;
 
+use Cherrycake\Engine;
+use Cherrycake\Cache\Cache;
+
 /**
  * Module that manages Javascript code.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Javascript extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"defaultSetOrder" => 100, // The default order to assign to sets when no order is specified
 		"cacheProviderName" => "engine", // The name of the cache provider to use
-		"cacheTtl" => \Cherrycake\CACHE_TTL_LONGEST,
+		"cacheTtl" => Cache::TTL_LONGEST,
 		"lastModifiedTimestamp" => false, // The timestamp of the last modification to the JavaScript files, or any other string that will serve as a unique identifier to force browser cache reloading when needed
 		"isHttpCache" => false, // Whether to send HTTP Cache headers or not
-		"httpCacheMaxAge" => \Cherrycake\CACHE_TTL_LONGEST, //  The TTL of the HTTP Cache
+		"httpCacheMaxAge" => Cache::TTL_LONGEST, //  The TTL of the HTTP Cache
 		"isMinify" => false // Whether to minify the JavaScript code or not
 	];
 
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Actions",
 		"Cache",
@@ -45,22 +45,13 @@ class Javascript extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
 		if ($sets = $this->getConfig("sets"))
 			foreach ($sets as $setName => $setConfig)
 				$this->addSet($setName, $setConfig);
-
-		// Adds cherrycake sets
-		$this->addSet(
-			"coreUiComponents",
-			[
-				"order" => 10,
-				"directory" => ENGINE_DIR."/res/javascript/uicomponents"
-			]
-		);
 
 		return true;
 	}
@@ -71,33 +62,31 @@ class Javascript extends \Cherrycake\Module {
 	 * Maps the Actions to which this module must respond
 	 */
 	public static function mapActions() {
-		global $e;
-
-		$e->Actions->mapAction(
+		Engine::e()->Actions->mapAction(
 			"javascript",
-			new \Cherrycake\Actions\ActionJavascript([
-				"moduleType" => \Cherrycake\ACTION_MODULE_TYPE_CORE,
-				"moduleName" => "Javascript",
-				"methodName" => "dump",
-				"request" => new \Cherrycake\Actions\Request([
-					"pathComponents" => [
-						new \Cherrycake\Actions\RequestPathComponent([
-							"type" => \Cherrycake\REQUEST_PATH_COMPONENT_TYPE_FIXED,
-							"string" => "js"
-						])
+			new \Cherrycake\Actions\ActionJavascript(
+				moduleType: \Cherrycake\Actions\Actions::MODULE_TYPE_CORE,
+				moduleName: "Javascript",
+				methodName: "dump",
+				request: new \Cherrycake\Actions\Request(
+					pathComponents: [
+						new \Cherrycake\Actions\RequestPathComponent(
+							type: \Cherrycake\Actions\Request::PATH_COMPONENT_TYPE_FIXED,
+							string: "js"
+						)
 					],
-					"parameters" => [
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "set",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						]),
-						new \Cherrycake\Actions\RequestParameter([
-							"name" => "version",
-							"type" => \Cherrycake\REQUEST_PARAMETER_TYPE_GET
-						])
+					parameters: [
+						new \Cherrycake\Actions\RequestParameter(
+							name: "set",
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
+						),
+						new \Cherrycake\Actions\RequestParameter(
+							name: "version",
+							type: \Cherrycake\Actions\Request::PARAMETER_TYPE_GET
+						)
 					]
-				])
-			])
+				)
+			)
 		);
 	}
 
@@ -112,82 +101,43 @@ class Javascript extends \Cherrycake\Module {
 	}
 
 	/**
-	 * Builds a unique id that uniquely identifies the specified set with its current files and its contents.
-	 * Unique ids for sets change if the list of files in a set changes, or if the contents of any of the files changes.
-	 * Set unique ids are stored in shared memory, and generated when they're not found there.
-	 * Set unique ids are stored with a TTL of 1 if the app is in development mode.
-	 * This ultimately causes the browser to easily cache the requests because the URL uniquely identifies versions, automatically causing a cache miss when the contents have changed, avoiding any need to keep track of cache versions manually.
-	 * @param string $setName The name of the set
-	 * @return string A uniq id
-	 */
-	function getSetUniqueId($setName) {
-		global $e;
-
-		$cacheProviderName = $this->GetConfig("cacheProviderName");
-		$cacheTtl = $e->isDevel() ? 1 : $this->GetConfig("cacheTtl");
-		$cacheKey = $e->Cache->buildCacheKey([
-			"prefix" => "javascriptSetUniqueId",
-			"uniqueId" => $setName
-		]);
-
-		if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-			return $e->Cache->$cacheProviderName->get($cacheKey);
-
-		$uniqId = md5($this->parseSet($setName));
-
-		$e->Cache->$cacheProviderName->set($cacheKey, $uniqId, $cacheTtl);
-		return $uniqId;
-	}
-
-	/**
-	 * Builds a URL to request the given set contents.
-	 * Also stores the parsed set in cache for further retrieval by the dump method
+	 * Builds HTML headers to request the given sets contents.
 	 *
-	 * @param mixed $setNames Optional nhe name of the Javascript set, or an array of them. If set to false, all available sets are used.
-	 * @return string The Url of the Javascript set
+	 * @param array|string $setNames Name of the Javascript set, or an array of them.
+	 * @return string The HTML header of the Javascript set
 	 */
-	function getSetUrl($setNames = false) {
-		global $e;
-
-		$orderedSets = $this->getOrderedSets($setNames);
-		$parameterSetNames = "";
-		foreach ($orderedSets as $setName => $set) {
-			$parameterSetNames .= $setName.":".$this->getSetUniqueId($setName)."-";
-			$this->storeParsedSetInCache($setName);
-		}
-		$parameterSetNames = substr($parameterSetNames, 0, -1);
-
-		return $e->Actions->getAction("javascript")->request->buildUrl([
-			"parameterValues" => [
-				"set" => $parameterSetNames,
-				"version" => $this->getConfig("lastModifiedTimestamp")
-			]
-		]);
-	}
-
-	/**
-	 * Returns an ordered version of the current sets
-	 * @param mixed $setNames Optional name of the Css set, or an array of them. If set to false, all available sets are used.
-	 * @return array The sets
-	 */
-	function getOrderedSets($setNames = false) {
-		if ($setNames == false)
-			$setNames = array_keys($this->sets);
+	function getSetsHtmlHeaders($setNames = false) {
+		if (!$setNames)
+			return;
 
 		if (!is_array($setNames))
 			$setNames = [$setNames];
 
+		if (!count($setNames))
+			return;
+
+		$r = '';
 		foreach ($setNames as $setName)
-			$orderedSetNames[$this->sets[$setName]["order"] ?? $this->getConfig("defaultSetOrder")][] = $setName;
-		ksort($orderedSetNames);
+			$r .= '<script type="'.($this->sets[$setName]['type'] ?? false ?: 'text/javascript').'" src="'.$this->getSetUrl($setName).'"></script>'."\n";
+		return $r;
+	}
 
-		foreach ($orderedSetNames as $order => $setNames) {
-			foreach ($setNames as $setName) {
-				$orderedSets[$setName] = $this->sets[$setName];
-			}
-		}
+	/**
+	 * Builds a URL to request the given set contents.
+	 * @param string $setName Name of the Javascript set
+	 * @return string The Url of the Javascript set
+	 */
+	function getSetUrl(string $setName): string {
 
-		return $orderedSets;
+		if (!is_array($this->sets))
+			return null;
+
+		return Engine::e()->Actions->getAction("javascript")->request->buildUrl(
+			parameterValues: [
+				"set" => $setName,
+				"version" => ($this->getConfig("isCache") ? $this->getConfig("lastModifiedTimestamp") : uniqid())
+			]
+		);
 	}
 
 	/**
@@ -227,17 +177,16 @@ class Javascript extends \Cherrycake\Module {
 	 * @param string $setName The name of the set
 	 */
 	function storeParsedSetInCache($setName) {
-		global $e;
 		// Get the unique id for each set with its currently added files and see if it's in cache. If it's not, add it to cache.
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 		$cacheTtl = $this->GetConfig("cacheTtl");
-		$cacheKey = $e->Cache->buildCacheKey([
-			"prefix" => "javascriptParsedSet",
-			"setName" => $setName,
-			"uniqueId" => $this->getSetUniqueId($setName)
-		]);
-		if (!$e->Cache->$cacheProviderName->isKey($cacheKey))
-			$e->Cache->$cacheProviderName->set(
+		$cacheKey = Engine::e()->Cache->buildCacheKey(
+			prefix: "javascriptParsedSet",
+			setName: $setName,
+			uniqueId: $this->getSetUniqueId($setName)
+		);
+		if (!Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
+			Engine::e()->Cache->$cacheProviderName->set(
 				$cacheKey,
 				$this->parseSet($setName),
 				$cacheTtl
@@ -250,19 +199,19 @@ class Javascript extends \Cherrycake\Module {
 	* @return array The names of the files on the set, or false if no files
 	*/
 	function getSetFiles($setName) {
-		global $e;
 
 		$requestedSet = $this->sets[$setName];
 
 		if ($requestedSet["isIncludeAllFilesInDirectory"] ?? false) {
-			if ($e->isDevel() && !is_dir($requestedSet["directory"])) {
-				$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-					"errorDescription" => "Couldn't open JavaScript directory",
-					"errorVariables" => [
+			if (Engine::e()->isDevel() && !is_dir($requestedSet["directory"])) {
+				Engine::e()->Errors->trigger(
+					type: Errors::ERROR_SYSTEM,
+					description: "Couldn't open JavaScript directory",
+					variables: [
 						"setName" => $setName,
 						"directory" => $requestedSet["directory"]
 					]
-				]);
+				);
 			}
 			if ($handler = opendir($requestedSet["directory"])) {
 				while (false !== ($entry = readdir($handler))) {
@@ -282,12 +231,11 @@ class Javascript extends \Cherrycake\Module {
 	 * @return string The parsed set
 	 */
 	function parseSet($setName) {
-		global $e;
 
 		if (!isset($this->sets[$setName]))
 			return null;
 
-		if ($e->isDevel())
+		if (Engine::e()->isDevel())
 			$develInformation = "\nSet \"".$setName."\":\n";
 
 		$requestedSet = $this->sets[$setName];
@@ -304,22 +252,20 @@ class Javascript extends \Cherrycake\Module {
 				else
 					$parsed[] = $file;
 
-				if ($e->isDevel())
+				if (Engine::e()->isDevel())
 					$develInformation .= $requestedSet["directory"]."/".$file."\n";
 
-				$js .= $e->Patterns->parse(
+				$js .= Engine::e()->Patterns->parse(
 					$file,
-					[
-						"directoryOverride" => $requestedSet["directory"] ?? false,
-						"fileToIncludeBeforeParsing" => $requestedSet["variablesFile"] ?? false
-					]
+					directoryOverride: $requestedSet["directory"] ?? false,
+					fileToIncludeBeforeParsing: $requestedSet["variablesFile"] ?? false
 				)."\n";
 			}
 		}
 
 		if (isset($requestedSet["appendJavascript"]))
 			$js .=
-				($e->isDevel() ? "\n/* ".$setName." appended JavaScript */\n\n" : null).
+				(Engine::e()->isDevel() ? "\n/* ".$setName." appended JavaScript */\n\n" : null).
 				$requestedSet["appendJavascript"];
 
 		// Include variablesFile specified files
@@ -333,7 +279,7 @@ class Javascript extends \Cherrycake\Module {
 		if($this->getConfig("isMinify"))
 			$js = $this->minify($js);
 
-		if ($e->isDevel())
+		if (Engine::e()->isDevel())
 			$js = "/*\n".$develInformation."\n*/\n\n".$js;
 
 		return $js;
@@ -341,52 +287,46 @@ class Javascript extends \Cherrycake\Module {
 
 
 	/**
-	 * dump
-	 *
 	 * Outputs the requested Javascript sets to the client.
 	 * It guesses what Javascript sets to dump via the "set" get parameter.
 	 * It handles Javascript caching,
 	 * Intended to be called from a <script src ...>
-	 *
 	 * @param Request $request The Request object received
 	 */
 	function dump($request) {
-		global $e;
 
 		if ($this->getConfig("isHttpCache"))
 			\Cherrycake\HttpCache::init($this->getConfig("lastModifiedTimestamp"), $this->getConfig("httpCacheMaxAge"));
 
 		if (!$request->set) {
-			$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss());
+			Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextCss);
 			return;
 		}
 
-		$setPairs = explode("-", $request->set);
-
 		$cacheProviderName = $this->GetConfig("cacheProviderName");
 
-		$js = "";
+		$js = '';
 
-		foreach($setPairs as $setPair) {
-			list($setName, $setUniqueId) = explode(":", $setPair);
-			$cacheKey = $e->Cache->buildCacheKey([
-				"prefix" => "javascriptParsedSet",
-				"setName" => $setName,
-				"uniqueId" => $setUniqueId
-			]);
-			if ($e->Cache->$cacheProviderName->isKey($cacheKey))
-				$js .= $e->Cache->$cacheProviderName->get($cacheKey);
-			else
-			if ($e->isDevel())
-				$js .= "/* Javascript set \"".$setName."\" not cached */\n";
+		$cacheKey = Engine::e()->Cache->buildCacheKey(
+			prefix: "javascriptParsedSet",
+			uniqueId: $request->set.'_'.$this->getConfig("lastModifiedTimestamp")
+		);
+
+		if ($this->getConfig("isCache") && Engine::e()->Cache->$cacheProviderName->isKey($cacheKey))
+			$js = Engine::e()->Cache->$cacheProviderName->get($cacheKey);
+		else {
+			$js = $this->parseSet($request->set);
+			Engine::e()->Cache->$cacheProviderName->set(
+				$cacheKey,
+				$js,
+				$this->GetConfig("cacheTtl")
+			);
 		}
 
 		// Final call to executeDeferredInlineJavascript function that executes all deferred inline javascript when everything else is loaded
 		$js .= "if (typeof obj === 'executeDeferredInlineJavascript') executeDeferredInlineJavascript();";
 
-		$e->Output->setResponse(new \Cherrycake\Actions\ResponseApplicationJavascript([
-			"payload" => $js
-		]));
+		Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseApplicationJavascript(payload: $js));
 		return;
 	}
 
@@ -420,8 +360,7 @@ class Javascript extends \Cherrycake\Module {
 	 */
 	function getStatus() {
 		if (is_array($this->sets)) {
-			$orderedSets = $this->getOrderedSets();
-			foreach ($orderedSets as $setName => $set) {
+			foreach ($this->sets as $setName => $set) {
 
 				$r[$setName]["order"] = $set["order"] ?? $this->getConfig("defaultSetOrder");
 

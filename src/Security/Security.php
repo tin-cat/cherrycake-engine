@@ -2,23 +2,47 @@
 
 namespace Cherrycake\Security;
 
+use Cherrycake\Engine;
+use Cherrycake\Cache\Cache;
+
 /**
  * Provides security mechanisms used by other modules to detect, prevent, log and block attacks like SQL injection, XSS and CSRF.
  * Csrf features require the Session module.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Security  extends \Cherrycake\Module {
+
+	const RULE_NOT_NULL = 0; // The value must be not null (typically used to check whether a parameter has been passed or not. An empty field in a form will not trigger this rule)
+	const RULE_NOT_EMPTY = 1; // The value must not be empty (typically used to check whether a parameter has been passed or not. An empty field in a form _will_ trigger this rule)
+	const RULE_INTEGER = 2; // The value must be an integer (-infinite to +infinite without decimals)
+	const RULE_POSITIVE = 3; // The value must be positive (0 to +infinite)
+	const RULE_MAX_VALUE = 4; // The value must be a number less than or equal the specified value
+	const RULE_MIN_VALUE = 5; // The value must be a number greater than or equal the specified value
+	const RULE_MAX_CHARS = 6; // The value must be less than or equal the specified number of chars
+	const RULE_MIN_CHARS = 7; // The value must be bigger than or equal the specified number of chars
+	const RULE_BOOLEAN = 8; // The value must be either a 0 or a 1
+	const RULE_SLUG = 9; // The value must have the typical URL slug code syntax, containing only numbers and letters from A to Z both lower and uppercase, and -_ characters
+	const RULE_URL_SHORT_CODE = 10; // The value must have the typical URL short code syntax, containing only numbers and letters from A to Z both lower and uppercase
+	const RULE_URL_ROUTE = 11; // The value must have the typical URL slug code syntax, like RULE_SLUG plus the "/" character
+	const RULE_LIMITED_VALUES = 12; // The value must be exactly one of the specified values.
+	const RULE_UPLOADED_FILE = 13; // The value must be a valid uploaded file. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_UPLOADED_FILE_IMAGE = 14; // The value must be an uploaded image. A value can be specified that must be an array of keys with setup options for the checkUploadedFile method.
+	const RULE_SQL_INJECTION = 100; // The value must not contain SQL injection suspicious strings
+	const RULE_TYPICAL_ID = 1000; // Same as RULE_NOT_EMPTY + RULE_INTEGER + RULE_POSITIVE
+
+	const FILTER_XSS = 0; // The value is purified to try to remove XSS attacks
+	const FILTER_STRIP_TAGS = 1; // HTML tags are removed from the value
+	const FILTER_TRIM = 2; // Spaces at the beggining and at the end of the value are trimmed
+	const FILTER_JSON = 3; // Decodes json data
+
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"isCheckMaliciousBadBrowsers" => true, // Whether to check or not for known malicious browserstrings like Havij, defaults to true
 		"permanentlyBannedIps" => [], // An array of banned IPs that must be blocked from accessing the application
 		"isAutoBannedIps" => true, // Whether to automatically ban IPs when a hack is detected
 		"autoBannedIpsCacheProviderName" => "engine", // The name of the CacheProvider used to store banned Ips
-		"autoBannedIpsCacheTtl" => \Cherrycake\CACHE_TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
+		"autoBannedIpsCacheTtl" => Cache::TTL_12_HOURS, // The TTL of banned Ips. Auto banned IPs TTL expiration is resetted if more hack detections are detected for that Ip
 		"autoBannedIpsThreshold" => 10, // The number hack intrusions detected from the same Ip to consider it banned
 		"isRequestServerNameCheck" => false // Whether to check or not that the header reported origin host matches the server reported host when checking requests for CSRF attacks. This will add additional protection against CSRF attacks, but might not work in some server environments, specially development server environments.
 	];
@@ -26,7 +50,7 @@ class Security  extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output",
 		"Errors",
 		"Cache"
@@ -36,14 +60,14 @@ class Security  extends \Cherrycake\Module {
 	 * @var array $fixedParameterRulesForValues Contains the rules that must be always met when checking parameter values
 	 */
 	var $fixedParameterRulesForValues = [
-		\Cherrycake\SECURITY_RULE_SQL_INJECTION
+		self::RULE_SQL_INJECTION
 	];
 
 	/**
 	 * @var array $fixedParametersFilters Contains the filters that must be always applied when retrieving parameter values
 	 */
 	var $fixedParametersFilters = [
-		\Cherrycake\SECURITY_FILTER_XSS
+		self::FILTER_XSS
 	];
 
 	var $sqlInjectionDetectRegexp = "[insert( *)into|delete( *)from|alter( *)table|drop( *)table|drop( *)database|select( *)select|union( *)all|select( *)union|select( *)count|waitfor( *)delay|information_schema|limit( +)0|select( +)1|,null|rand\(|\tables|1=1|0x31303235343830303536]i";
@@ -58,15 +82,14 @@ class Security  extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
 		// Check permanently banned Ips
 		if ($this->getConfig("permanentlyBannedIps"))
 			if (in_array($this->getClientIp(), $this->getConfig("permanentlyBannedIps"))) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Permanently banned Ip trying to access",
 					"data" => [
@@ -79,8 +102,7 @@ class Security  extends \Cherrycake\Module {
 		// Check automatically banned Ips
 		if ($this->getConfig("isAutoBannedIps"))
 			if ($this->isAutoBannedIp()) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Automatically banned Ip access trying to access",
 					"data" => [
@@ -93,8 +115,7 @@ class Security  extends \Cherrycake\Module {
 		// Check malicious browserstrings
 		if ($this->getConfig("isCheckMaliciousBadBrowsers"))
 			if (preg_match($this->maliciousBrowserStringsRegexp, $this->getClientBrowserString())) {
-				global $e;
-				$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 					"subType" => "Security",
 					"description" => "Malicious browserstring detected",
 					"data" => [
@@ -149,7 +170,7 @@ class Security  extends \Cherrycake\Module {
 				$rule = $rule[0];
 			}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_SQL_INJECTION)
+			if ($rule == self::RULE_SQL_INJECTION)
 				if (preg_match($this->sqlInjectionDetectRegexp, $value)) {
 					$isError = true;
 					$description[] = "Suspicious of SQL injection";
@@ -157,81 +178,81 @@ class Security  extends \Cherrycake\Module {
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_NOT_NULL)
+			if ($rule == self::RULE_NOT_NULL)
 				if (is_null($value)) {
 					$isError = true;
 					$description[] = "Parameter not passed";
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_NOT_EMPTY)
+			if ($rule == self::RULE_NOT_EMPTY)
 				if (trim($value) == "") {
 					$isError = true;
 					$description[] = "Parameter is empty";
 					break;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_INTEGER || $rule == \Cherrycake\SECURITY_RULE_TYPICAL_ID)
+			if ($rule == self::RULE_INTEGER || $rule == self::RULE_TYPICAL_ID)
 				if ($value && (!is_numeric($value) || stristr($value, "."))) {
 					$isError = true;
 					$description[] = "Parameter is not integer";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_POSITIVE || $rule == \Cherrycake\SECURITY_RULE_TYPICAL_ID)
+			if ($rule == self::RULE_POSITIVE || $rule == self::RULE_TYPICAL_ID)
 				if ($value < 0) {
 					$isError = true;
 					$description[] = "Parameter is not positive";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MAX_VALUE)
+			if ($rule == self::RULE_MAX_VALUE)
 				if ($value > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is greater than ".$ruleParameter;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MIN_VALUE)
+			if ($rule == self::RULE_MIN_VALUE)
 				if ($value < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter;
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MAX_CHARS)
+			if ($rule == self::RULE_MAX_CHARS)
 				if (strlen($value) > $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is bigger than ".$ruleParameter." characters";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_MIN_CHARS)
+			if ($rule == self::RULE_MIN_CHARS)
 				if (strlen($value) < $ruleParameter) {
 					$isError = true;
 					$description[] = "Parameter is less than ".$ruleParameter." characters";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_BOOLEAN)
+			if ($rule == self::RULE_BOOLEAN)
 				if (intval($value) !== 0 && intval($value) !== 1) {
 					$isError = true;
 					$description[] = "Parameter is not boolean";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_SLUG)
+			if ($rule == self::RULE_SLUG)
 				if (preg_match("/[^0-9A-Za-z\-_]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a slug";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_URL_SHORT_CODE)
+			if ($rule == self::RULE_URL_SHORT_CODE)
 				if (preg_match("/[^0-9A-Za-z]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not a url short code";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_URL_ROUTE)
+			if ($rule == self::RULE_URL_ROUTE)
 				if (preg_match("/[^0-9A-Za-z\-_\/]/", $value)) {
 					$isError = true;
 					$description[] = "Parameter is not an URL route";
 				}
 
-			if ($rule == \Cherrycake\SECURITY_RULE_LIMITED_VALUES) {
+			if ($rule == self::RULE_LIMITED_VALUES) {
 				$isError = true;
 				foreach ($ruleParameter as $possibleValue)
 					if (strcmp($possibleValue, $value) == 0)
@@ -277,7 +298,7 @@ class Security  extends \Cherrycake\Module {
 				$rule = $rule[0];
 			}
 
-			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE) {
+			if ($file && $rule == self::RULE_UPLOADED_FILE) {
 				$result = $this->checkUploadedFile(
 					$file,
 					$ruleParameter
@@ -288,7 +309,7 @@ class Security  extends \Cherrycake\Module {
 				}
 			}
 
-			if ($file && $rule == \Cherrycake\SECURITY_RULE_UPLOADED_FILE_IMAGE) {
+			if ($file && $rule == self::RULE_UPLOADED_FILE_IMAGE) {
 				$result = $this->checkUploadedFile(
 					$file,
 					array_merge(
@@ -351,19 +372,19 @@ class Security  extends \Cherrycake\Module {
 				$filter = $filter[0];
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_XSS) {
+			if ($filter == self::FILTER_XSS) {
 				$value = $this->stripXss($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_STRIP_TAGS) {
+			if ($filter == self::FILTER_STRIP_TAGS) {
 				$value = strip_tags($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_TRIM) {
+			if ($filter == self::FILTER_TRIM) {
 				$value = trim($value);
 			}
 
-			if ($filter == \Cherrycake\SECURITY_FILTER_JSON) {
+			if ($filter == self::FILTER_JSON) {
 				$value = json_decode($value);
 			}
 		}
@@ -377,7 +398,6 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean True if no issues found during checking, false otherwise.
 	 */
 	function checkRequest($request) {
-		global $e;
 
 		if ($request->isSecurityCsrf()) {
 			// Check host
@@ -390,8 +410,8 @@ class Security  extends \Cherrycake\Module {
 				if ($origin) {
 					if ($parsedOrigin = parse_url($origin)) {
 						if (strcmp($parsedOrigin["host"], $_SERVER["HTTP_HOST"]) !== 0) {
-							if ($e->isModuleLoaded("SystemLog"))
-								$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+							if (Engine::e()->isModuleLoaded("SystemLog"))
+								Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 									"subType" => "Csrf",
 									"description" => "CSRF Attack detected: Header reported origin host does not matches the server reported host",
 									"data" => [
@@ -409,41 +429,44 @@ class Security  extends \Cherrycake\Module {
 
 			// Check csrf token
 			if (!$request->isParameterReceived("csrfToken")) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: No token parameter received"
 					]));
 				else
-					$e->Errors->trigger(\ERROR_APP, [
-						"errorDescription" => "CSRF Attack detected: No token parameter received"
-					]);
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_APP,
+						description: "CSRF Attack detected: No token parameter received"
+					);
 				return false;
 			}
 
 			if (!$this->isCsrfTokenInSession()) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: No token in session"
 					]));
 				else
-					$e->Errors->trigger(\ERROR_APP, [
-						"errorDescription" => "CSRF Attack detected: No token in session"
-					]);
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_APP,
+						description: "CSRF Attack detected: No token in session"
+					);
 				return false;
 			}
 
 			if (!hash_equals($this->getCsrfTokenInSession(), $request->csrfToken)) {
-				if ($e->isModuleLoaded("SystemLog"))
-					$e->SystemLog->event(new \Cherrycake\SystemLogEventHack([
+				if (Engine::e()->isModuleLoaded("SystemLog"))
+					Engine::e()->SystemLog->event(new \Cherrycake\SystemLogEventHack([
 						"subType" => "Csrf",
 						"description" => "CSRF Attack detected: Token parameter does not matches token in session"
 					]));
 				else
-					$e->Errors->trigger(\ERROR_APP, [
-						"errorDescription" => "CSRF Attack detected: Token parameter does not matches token in session"
-					]);
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_APP,
+						description: "CSRF Attack detected: Token parameter does not matches token in session"
+					);
 				return false;
 			}
 		}
@@ -467,18 +490,16 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean Whether there is a Csrf token stored on this session
 	 */
 	function isCsrfTokenInSession() {
-		global $e;
-		$e->loadCoreModule("Session");
-		return isset($e->Session->csrfToken);
+		Engine::e()->loadCoreModule("Session");
+		return isset(Engine::e()->Session->csrfToken);
 	}
 
 	/**
 	 * @return string The token stored in session. False if none was present in session.
 	 */
 	function getCsrfTokenInSession() {
-		global $e;
-		$e->loadCoreModule("Session");
-		return $e->Session->csrfToken;
+		Engine::e()->loadCoreModule("Session");
+		return Engine::e()->Session->csrfToken;
 	}
 
 	/**
@@ -486,9 +507,8 @@ class Security  extends \Cherrycake\Module {
 	 * @param boolean True if everything went ok, false otherwise.
 	 */
 	function setCsrfTokenInSession($token) {
-		global $e;
-		$e->loadCoreModule("Session");
-		$e->Session->csrfToken = $token;
+		Engine::e()->loadCoreModule("Session");
+		Engine::e()->Session->csrfToken = $token;
 		return true;
 	}
 
@@ -574,7 +594,6 @@ class Security  extends \Cherrycake\Module {
 	 * @return boolean Whether the given Ip has been auto banned or not
 	 */
 	function isAutoBannedIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -582,7 +601,7 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		if ($e->Cache->$cacheProviderName->get($cacheKey) > $this->getConfig("autoBannedIpsThreshold"))
+		if (Engine::e()->Cache->$cacheProviderName->get($cacheKey) > $this->getConfig("autoBannedIpsThreshold"))
 			return true;
 		else
 			return false;
@@ -595,7 +614,6 @@ class Security  extends \Cherrycake\Module {
 	 * @param $ip The Ip to ban. The current client's Ip is used if not specified
 	 */
 	function autoBanIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -603,12 +621,12 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		if ($e->Cache->$cacheProviderName->get($cacheKey)) {
-			$e->Cache->$cacheProviderName->increment($cacheKey);
-			$e->Cache->$cacheProviderName->touch($cacheKey, $this->getConfig("autoBannedIpsCacheTtl"));
+		if (Engine::e()->Cache->$cacheProviderName->get($cacheKey)) {
+			Engine::e()->Cache->$cacheProviderName->increment($cacheKey);
+			Engine::e()->Cache->$cacheProviderName->touch($cacheKey, $this->getConfig("autoBannedIpsCacheTtl"));
 		}
 		else
-			$e->Cache->$cacheProviderName->set($cacheKey, 1, $this->getConfig("autoBannedIpsCacheTtl"));
+			Engine::e()->Cache->$cacheProviderName->set($cacheKey, 1, $this->getConfig("autoBannedIpsCacheTtl"));
 	}
 
 	/**
@@ -618,7 +636,6 @@ class Security  extends \Cherrycake\Module {
 	 * @param $ip The Ip to unban. The current client's Ip is used if not specified
 	 */
 	function removeAutoBannedIp($ip = false) {
-		global $e;
 
 		if (!$ip)
 			$ip = $this->getClientIp();
@@ -626,7 +643,7 @@ class Security  extends \Cherrycake\Module {
 		$cacheKey = "autoBannedIp_".$ip;
 		$cacheProviderName = $this->getConfig("autoBannedIpsCacheProviderName");
 
-		$e->Cache->$cacheProviderName->delete($cacheKey);
+		Engine::e()->Cache->$cacheProviderName->delete($cacheKey);
 	}
 
 	/**
@@ -635,8 +652,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return mixed The client's IP, or false if it was not available
 	 */
 	function getClientIp() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
 			return $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -650,8 +666,7 @@ class Security  extends \Cherrycake\Module {
 	 * @return mixed The client's browserstring, or false if it was not available
 	 */
 	function getClientBrowserString() {
-		global $e;
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 		return $_SERVER["HTTP_USER_AGENT"];
 	}
@@ -720,13 +735,13 @@ class Security  extends \Cherrycake\Module {
 
 		// Check file name
 		$result = $this->checkValue($file["name"], [
-			\Cherrycake\SECURITY_RULE_SQL_INJECTION
+			self::RULE_SQL_INJECTION
 		]);
 		if (!$result->isOk)
 			return $result;
 
 		if ($this->filterValue($file["name"], [
-			\Cherrycake\SECURITY_FILTER_XSS
+			self::FILTER_XSS
 		]) != $file["name"]) {
 			return new \Cherrycake\ResultKo([
 				"description" => "File name contained was suspicious of XSS attack"

@@ -2,9 +2,9 @@
 
 namespace Cherrycake;
 
+use Cherrycake\Errors\Errors;
+
 /**
- * Image
- *
  * Class that represents an image stored on the server.
  * * It allows for images to be stored in multiple sizes.
  * * Can create the multiple size images from a given file.
@@ -37,9 +37,6 @@ namespace Cherrycake;
  *      "isHd" => true
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Classes
  * @todo Implement forceWidthAndHeight on buildFromFile method
  */
 class Image {
@@ -113,7 +110,7 @@ class Image {
 	 *
 	 * @return  boolean Whether the Image could be initialized ok or not
 	 */
-	function init() {
+	function init(): bool {
 		// Add Hd sizes to the sizes array
 		foreach ($this->sizes as $sizeName => $sizeSetup) {
 			if ($sizeSetup["isHd"] ?? false) {
@@ -270,10 +267,10 @@ class Image {
 	 */
 	function getWidth($sizeName = false, $isHd = false) {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
-			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Can't get image width from given file",
-				"errorVariables" => array_merge(
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Can't get image width from given file",
+				variables: array_merge(
 					$this->getDebugErrorVariables(),
 					[
 						"sizeName" => $sizeName,
@@ -281,7 +278,7 @@ class Image {
 						"file" => $this->getAbsoluteLocalPath($sizeName, $isHd)
 					]
 				)
-			]);
+			);
 			return false;
 		}
 
@@ -298,10 +295,10 @@ class Image {
 	 */
 	function getHeight($sizeName = false, $isHd = false) {
 		if (!$result = getimagesize($this->getAbsoluteLocalPath($sizeName, $isHd))) {
-			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Can't get image height from given file",
-				"errorVariables" => array_merge(
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Can't get image height from given file",
+				variables: array_merge(
 					$this->getDebugErrorVariables(),
 					[
 						"sizeName" => $sizeName,
@@ -309,7 +306,7 @@ class Image {
 						"file" => $this->getAbsoluteLocalPath($sizeName, $isHd)
 					]
 				)
-			]);
+			);
 			return false;
 		}
 
@@ -365,24 +362,24 @@ class Image {
 		$isDebug = false;
 
 		if (!$this->sizes) {
-			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Can't create size files from image because no sizes were defined"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Can't create size files from image because no sizes were defined"
+			);
 			return false;
 		}
 
 		if (!$result = getimagesize($sourceFileName)) {
-			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Can't get image information from given file",
-				"errorVariables" => array_merge(
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Can't get image information from given file",
+				variables: array_merge(
 					$this->getDebugErrorVariables(),
 					[
 						"sourceFileName" => $sourceFileName
 					]
 				)
-			]);
+			);
 			return false;
 		}
 
@@ -410,16 +407,16 @@ class Image {
 		}
 
 		if (!$sourceImage) {
-			global $e;
-			$e->Errors->trigger(ERROR_SYSTEM, [
-				"errorDescription" => "Can't create a GD image resource from given file",
-				"errorVariables" => array_merge(
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Can't create a GD image resource from given file",
+				variables: array_merge(
 					$this->getDebugErrorVariables(),
 					[
 						"sourceFileName" => $sourceFileName
 					]
 				)
-			]);
+			);
 			return false;
 		}
 
@@ -429,10 +426,10 @@ class Image {
 			if($isDebug) echo "Size ".$sizeName." source size: ".$sourceWidth."x".$sourceHeight." ";
 
 			if ($isCreateDirectory && !$this->createFileDirectory($sizeName)) {
-				global $e;
-				$e->Errors->trigger(ERROR_SYSTEM, [
-					"errorDescription" => "Can't create file directory for image"
-				]);
+				Engine::e()->Errors->trigger(
+					type: Errors::ERROR_SYSTEM,
+					description: "Can't create file directory for image"
+				);
 				return false;
 			}
 
@@ -486,10 +483,10 @@ class Image {
 							imageinterlace($tempImage, true);
 
 						if (!imagejpeg($tempImage, $finalFileName, $sizeSetup["jpgCompression"])) {
-							global $e;
-							$e->Errors->trigger(ERROR_SYSTEM, [
-								"errorDescription" => "Can't create JPG image",
-								"errorVariables" => array_merge(
+							Engine::e()->Errors->trigger(
+								type: Errors::ERROR_SYSTEM,
+								description: "Can't create JPG image",
+								variables: array_merge(
 									$this->getDebugErrorVariables(),
 									[
 										"sourceFileName" => $sourceFileName,
@@ -498,17 +495,17 @@ class Image {
 										"jpgCompression" => $sizeSetup["jpgCompression"]
 									]
 								)
-							]);
+							);
 							return false;
 						}
 						break;
 
 					case "png":
 						if (!imagepng($tempImage, $finalFileName, $sizeSetup["pngCompression"])) {
-							global $e;
-							$e->Errors->trigger(ERROR_SYSTEM, [
-								"errorDescription" => "Can't create PNG image",
-								"errorVariables" => array_merge(
+							Engine::e()->Errors->trigger(
+								type: Errors::ERROR_SYSTEM,
+								description: "Can't create PNG image",
+								variables: array_merge(
 									$this->getDebugErrorVariables(),
 									[
 										"sourceFileName" => $sourceFileName,
@@ -516,24 +513,24 @@ class Image {
 										"pngCompression" => $sizeSetup["pngCompression"]
 									]
 								)
-							]);
+							);
 							return false;
 						}
 						break;
 
 					case "gif":
 						if (!imagegif($tempImage, $finalFileName)) {
-							global $e;
-							$e->Errors->trigger(ERROR_SYSTEM, [
-								"errorDescription" => "Can't create GIF image",
-								"errorVariables" => array_merge(
+							Engine::e()->Errors->trigger(
+								type: Errors::ERROR_SYSTEM,
+								description: "Can't create GIF image",
+								variables: array_merge(
 									$this->getDebugErrorVariables(),
 									[
 										"sourceFileName" => $sourceFileName,
 										"finalFileName" => $finalFileName
 									]
 								)
-							]);
+							);
 							return false;
 						}
 						break;
@@ -543,17 +540,17 @@ class Image {
 			}
 			else { // When "copy" image resize method is requested
 				if (!copy($sourceFileName, $finalFileName)) {
-					global $e;
-					$e->Errors->trigger(ERROR_SYSTEM, [
-						"errorDescription" => "Can't copy image",
-						"errorVariables" => array_merge(
+					Engine::e()->Errors->trigger(
+						type: Errors::ERROR_SYSTEM,
+						description: "Can't copy image",
+						variables: array_merge(
 							$this->getDebugErrorVariables(),
 							[
 								"sourceFileName" => $sourceFileName,
 								"finalFileName" => $finalFileName
 							]
 						)
-					]);
+					);
 					return false;
 				}
 			}

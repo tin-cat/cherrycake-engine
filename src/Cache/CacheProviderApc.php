@@ -3,12 +3,7 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProviderApc
- *
  * Cache Provider based on APC. It provides a very fast memory caching but limited to a relatively small amount of cached objects, depending on memory available on the APC server configuration.
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProviderApc extends CacheProvider implements CacheProviderInterface {
 	/**

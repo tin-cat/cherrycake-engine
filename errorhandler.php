@@ -3,7 +3,7 @@
 /**
  * Error handler
  *
- * @package Cherrycake
+
  */
 
 namespace Cherrycake;
@@ -16,6 +16,8 @@ function logError(
 	$errContext = false
 ) {
 	switch ($errNo) {
+		case E_DEPRECATED:
+			break;
 		case E_ERROR:
 		case E_WARNING:
 		// case E_NOTICE:
@@ -60,8 +62,6 @@ function handleError(
 	$errContext = false,
 	$stack = false
 ) {
-	global $e;
-
 	// Build error backtrace array
 	$backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT & DEBUG_BACKTRACE_IGNORE_ARGS);
 
@@ -74,14 +74,14 @@ function handleError(
 
 	if (defined("STDIN")) {
 		echo
-			\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-			\Cherrycake\ANSI_WHITE.$e->getAppName()." Error ".\Cherrycake\ANSI_WHITE.$errNo."\n".
-			\Cherrycake\ANSI_NOCOLOR.
-			\Cherrycake\ANSI_DARK_GRAY."Message: ".\Cherrycake\ANSI_WHITE.$errStr."\n".
-			\Cherrycake\ANSI_DARK_GRAY."File: ".\Cherrycake\ANSI_WHITE.$errFile."\n".
-			\Cherrycake\ANSI_DARK_GRAY."Line: ".\Cherrycake\ANSI_WHITE.$errLine."\n".
-			\Cherrycake\ANSI_NOCOLOR.
-			($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+			\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
+			\Cherrycake\Errors\Errors::ANSI_WHITE.Engine::e()->getAppName()." Error ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errNo."\n".
+			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Message: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errStr."\n".
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."File: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errFile."\n".
+			\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Line: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$errLine."\n".
+			\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+			(Engine::e()->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
 
 		exit();
 	}
@@ -280,11 +280,11 @@ function handleError(
 				strstr($errFile, "eval()'d") !== false
 			)
 			&&
-			isset($e->Patterns)
+			isset(Engine::e()->Patterns)
 		) {
 			$patternParsingErrorLine = $errLine;
-			$errFile = $e->Patterns->getLastTreatedFile();
-			$sourceLines = explode("\n", $e->Patterns->getLastEvaluatedCode());
+			$errFile = Engine::e()->Patterns->getLastTreatedFile();
+			$sourceLines = explode("\n", Engine::e()->Patterns->getLastEvaluatedCode());
 		}
 		else {
 			$filename = substr($errFile, 0, strpos($errFile, ".php")+4);
@@ -361,8 +361,7 @@ function handleError(
 
 					// We have a pattern parsing error, and we're now dumping the Cherrycake\Patterns->parse method stack call
 
-					global $e;
-					$patternFileName = $e->Patterns->getPatternFileName($stackItem["args"][0]);
+					$patternFileName = Engine::e()->Patterns->getPatternFileName($stackItem["args"][0]);
 
 					if (is_readable($patternFileName)) {
 						$sourceLines = explode("<br />", highlight_string(file_get_contents($patternFileName), true));
@@ -400,7 +399,7 @@ function handleError(
 			<tr>
 				<td class='key'>Engine status</td>
 				<td class='engineStatus'>
-					<div>".$e->getStatusHtml()."</div>
+					<div>".Engine::e()->getStatusHtml()."</div>
 				</td>
 			</tr>
 		";
@@ -418,8 +417,8 @@ function handleError(
 	";
 
 	$currentActionClass = false;
-	if (isset($e->Actions) && $e->Actions->currentAction)
-		$currentActionClass = get_class($e->Actions->currentAction);
+	if (isset(Engine::e()->Actions) && Engine::e()->Actions->currentAction)
+		$currentActionClass = get_class(Engine::e()->Actions->currentAction);
 
 	// If we don't have the engine, dump the HTML error straightaway
 	if (!$currentActionClass) {
@@ -431,17 +430,17 @@ function handleError(
 		switch ($currentActionClass) {
 
 			case "Cherrycake\ActionHtml":
-				$response = new \Cherrycake\Actions\ResponseTextHtml([
-					"payload" => $e->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
-				]);
+				$response = new \Cherrycake\Actions\ResponseTextHtml(
+					payload: Engine::e()->isDevel() ? $html : "Sorry, we've got an unexpected error<br>"
+				);
 				break;
 
 			case "Cherrycake\ActionAjax":
-				if ($e->isDevel()) {
+				if (Engine::e()->isDevel()) {
 					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
 						"description" =>
-							"Cherrycake Error / ".$e->getAppName()." / ".[
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								E_ERROR => "Error",
 								E_WARNING => "Warning",
 								E_PARSE => "Parse error",
@@ -461,27 +460,25 @@ function handleError(
 							"Description: ".$errStr."<br>".
 							"File: ".$errFile."<br>".
 							"Line: ".$errLine."<br>".
-							"Backtrace:<br>".implode("<br>", $backtrace_info),
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+							"Backtrace:<br>".implode("<br>", $backtrace_info)
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
 				else {
 					$ajaxResponseJson = new \Cherrycake\Actions\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
-						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+						"description" => "Sorry, we've got an unexpected error"
 					]);
 					$response = $ajaxResponseJson->getResponse();
 				}
 				break;
 
 			default:
-				if ($e->isDevel()) {
-					$response = new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" =>
-							"Cherrycake Error / ".$e->getAppName()." / ".[
+				if (Engine::e()->isDevel()) {
+					$response = new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+						payload:
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
 								E_ERROR => "Error",
 								E_WARNING => "Warning",
 								E_PARSE => "Parse error",
@@ -502,18 +499,18 @@ function handleError(
 							"File: ".$errFile."\n".
 							"Line: ".$errLine."\n".
 							"Backtrace:\n".strip_tags(implode("\n", $backtrace_info))
-					]);
+					);
 				}
 				else {
-					$response = new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" => "Error"
-					]);
+					$response = new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+						payload: "Error"
+					);
 				}
 				break;
 		}
 
-		$e->Output->sendResponse($response);
+		Engine::e()->Output->sendResponse($response);
 	}
 
 	exit();

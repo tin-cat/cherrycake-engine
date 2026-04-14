@@ -4,9 +4,6 @@ namespace Cherrycake;
 
 /**
  * Class that represents a color.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Color {
 	/**
@@ -30,8 +27,6 @@ class Color {
 	private $alpha = 1;
 
 	/**
-	 * Constructor factory
-	 *
 	 * @param string $with How to populate the created color object. Leave to false for unpopulated request.
 	 */
 	function __construct($with = false, $parameter = false) {

@@ -2,6 +2,9 @@
 
 namespace Cherrycake\Session;
 
+use Cherrycake\Engine;
+use Cherrycake\Cache\Cache;
+
 /**
  * Provides a session tracking and storage mechanism.
  *
@@ -14,19 +17,16 @@ namespace Cherrycake\Session;
  * The JanitorTaskSession is required to be run in order to do this maintenance work, so be sure to add it to your Janitor.config.php
  *
  * Important note: You cannot use session keys starting with "_pool_", since it's used for the pools functionality.
- *
- * @package Cherrycake
- * @category Modules
  */
 class Session extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"sessionDatabaseProviderName" => "main", // The name of the database provider to use for storing sessions
 		"sessionTableName" => "cherrycake_session", // The name of the table used to store sessions
 		"sessionCacheProviderName" => "engine", // The name of the cache provider to use to store sessions and the counter of created sessions
-		"sessionCacheTtl" => \Cherrycake\CACHE_TTL_SHORT, // The TTL of cached sessions.
+		"sessionCacheTtl" => Cache::TTL_SHORT, // The TTL of cached sessions.
 		"cachePrefix" => "Session", // The cache prefix to use when storing sessions into cache
 		"cookieName" => "cherrycake", // The name of the cookie. Recommended to be changed.
 		"cookiePath" => "/", // The path of the cookie. If set to "/", it will be available within the entire domain
@@ -39,7 +39,7 @@ class Session extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Cache",
 		"Database"
@@ -57,13 +57,11 @@ class Session extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
-		global $e;
-
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return true;
 
 		if ($this->loadSessionCookie()) {
@@ -130,38 +128,38 @@ class Session extends \Cherrycake\Module {
 	 * @return boolean Whether the session could be created or not
 	 */
 	function newSession() {
-		global $e;
 
 		$sessionId = $this->generateNewSessionId();
 
 		// Create session in DB
 		$databaseProviderName = $this->getConfig("sessionDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
 			"insert into ".$this->getConfig("sessionTableName")." (id, creationDate, ip, browserString, data) values (?, ?, ?, ?, null)",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $sessionId
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+					"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 					"value" => time()
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
+					"type" => \Cherrycake\Database\Database::TYPE_IP,
 					"value" => $this->getClientIp()
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $this->getClientBrowserString()
 				],
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Could not create the session into the DB"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Could not create the session into the DB"
+			);
 			return false;
 		}
 
@@ -202,9 +200,8 @@ class Session extends \Cherrycake\Module {
 	 * @return bool Whether the cookie could be sent or not
 	 */
 	function sendSessionCookie($sessionId) {
-		global $e;
 
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 
 		if(!setcookie(
@@ -216,9 +213,10 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The session cookie could not be sent"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "The session cookie could not be sent"
+			);
 			return false;
 		}
 
@@ -245,9 +243,8 @@ class Session extends \Cherrycake\Module {
 	 * @return bool Whether the cookie could be removed or not
 	 */
 	function removeSessionCookie() {
-		global $e;
 
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 
 		if(!setcookie(
@@ -259,9 +256,10 @@ class Session extends \Cherrycake\Module {
 			$this->getConfig("cookieSecure"),
 			$this->getConfig("cookieHttpOnly")
 		)) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "The session cookie could not be sent"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "The session cookie could not be sent"
+			);
 			return false;
 		}
 
@@ -278,18 +276,18 @@ class Session extends \Cherrycake\Module {
 	 */
 	function generateNewSessionId($attemptsCounter = 0) {
 		if (!function_exists("openssl_random_pseudo_bytes")) {
-			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Session module needs function openssl_random_pseudo_bytes()"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Session module needs function openssl_random_pseudo_bytes()"
+			);
 			return false;
 		}
 
 		if ($attemptsCounter > 10) {
-			global $e;
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Maximum attempts to generate a unique session id had been reached"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Maximum attempts to generate a unique session id had been reached"
+			);
 			return false;
 		}
 
@@ -310,10 +308,10 @@ class Session extends \Cherrycake\Module {
 	 * @return string The cache key to use when accessing or storing the given session id to cache
 	 */
 	function getSessionCacheKey($sessionId) {
-		return \Cherrycake\Cache\Cache::buildCacheKey([
-			"prefix" => $this->getConfig("cachePrefix"),
-			"uniqueId" => $sessionId
-		]);
+		return Cache::buildCacheKey(
+			prefix: $this->getConfig("cachePrefix"),
+			uniqueId: $sessionId
+		);
 	}
 
 	/**
@@ -323,9 +321,8 @@ class Session extends \Cherrycake\Module {
 	 * @return boolean True if the session is on the cache, false if not
 	 */
 	function isSessionExistsOnCache($sessionId) {
-		global $e;
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($sessionId));
+		return Engine::e()->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($sessionId));
 	}
 
 	/**
@@ -335,20 +332,19 @@ class Session extends \Cherrycake\Module {
 	 * @return boolean True if the data could be loaded, false if not (session never existed, or has been purged)
 	 */
 	function loadSessionData($sessionId) {
-		global $e;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
 
 		// If we already have the hashed list key for this session into cache, no need to load it from database
-		if ($e->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($sessionId)))
+		if (Engine::e()->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($sessionId)))
 			return true;
 
 		$databaseProviderName = $this->getConfig("sessionDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
 			"select data from ".$this->getConfig("sessionTableName")." where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $sessionId
 				]
 			]
@@ -362,7 +358,7 @@ class Session extends \Cherrycake\Module {
 		$data = unserialize($row->getField("data"));
 		if (is_array($data)) {
 			foreach ($data as $key => $value)
-				$e->Cache->$cacheProviderName->listSet(
+				Engine::e()->Cache->$cacheProviderName->listSet(
 					$this->getSessionCacheKey($sessionId),
 					$key,
 					$value
@@ -378,13 +374,12 @@ class Session extends \Cherrycake\Module {
 	 * @return boolean True if the data key exists in the session, false if not.
 	 */
 	function isSessionData($key) {
-		global $e;
 
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->listExists(
+		return Engine::e()->Cache->$cacheProviderName->listExists(
 			$this->getSessionCacheKey($this->getSessionId()),
 			$key
 		);
@@ -397,13 +392,12 @@ class Session extends \Cherrycake\Module {
 	 * @return mixed The requested value from session data
 	 */
 	function getSessionData($key) {
-		global $e;
 
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->listGet(
+		return Engine::e()->Cache->$cacheProviderName->listGet(
 			$this->getSessionCacheKey($this->getSessionId()),
 			$key
 		);
@@ -417,51 +411,52 @@ class Session extends \Cherrycake\Module {
 	 * @return bool Whether the value could be stored or not
 	 */
 	function setSessionData($key, $value) {
-		global $e;
 
-		if ($e->isCli())
+		if (Engine::e()->isCli())
 			return false;
 
 		if (!$this->isSession()) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't set session data because no session is present."
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Couldn't set session data because no session is present."
+			);
 			return false;
 		}
 
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
 
 		if (is_null($value))
-			$e->Cache->$cacheProviderName->listDel(
+			Engine::e()->Cache->$cacheProviderName->listDel(
 				$this->getSessionCacheKey($this->getSessionId()),
 				$key
 			);
 		else
-			$e->Cache->$cacheProviderName->listSet(
+			Engine::e()->Cache->$cacheProviderName->listSet(
 				$this->getSessionCacheKey($this->getSessionId()),
 				$key,
 				$value
 			);
 
 		$databaseProviderName = $this->getConfig("sessionDatabaseProviderName");
-		$result = $e->Database->$databaseProviderName->prepareAndExecute(
+		$result = Engine::e()->Database->$databaseProviderName->prepareAndExecute(
 			"update ".$this->getConfig("sessionTableName")." set data = ? where id = ? limit 1",
 			[
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
-					"value" => serialize($e->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId())))
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
+					"value" => serialize(Engine::e()->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId())))
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+					"type" => \Cherrycake\Database\Database::TYPE_STRING,
 					"value" => $this->getSessionId()
 				]
 			]
 		);
 
 		if (!$result) {
-			$e->Errors->trigger(\Cherrycake\ERROR_SYSTEM, [
-				"errorDescription" => "Couldn't update session data in DB"
-			]);
+			Engine::e()->Errors->trigger(
+				type: Errors::ERROR_SYSTEM,
+				description: "Couldn't update session data in DB"
+			);
 			return false;
 		}
 
@@ -562,15 +557,14 @@ class Session extends \Cherrycake\Module {
 	 * @return bool Whether the pool could be removed or not. Returns true also if the pool didn't exist.
 	 */
 	function removeSessionPool($pool) {
-		global $e;
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
 
-		if (!$e->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($this->getSessionId())))
+		if (!Engine::e()->Cache->$cacheProviderName->isKey($this->getSessionCacheKey($this->getSessionId())))
 			return true;
 
 		// Loops through all the session keys
 		$poolPrefix = "_pool_".$pool."_";
-		$data = $e->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId()));
+		$data = Engine::e()->Cache->$cacheProviderName->listGetAll($this->getSessionCacheKey($this->getSessionId()));
 		foreach (array_keys($data) as $key) {
 			if (substr($key, 0, strlen($poolPrefix)) == $poolPrefix)
 				if (!$this->removeSessionData($key))
@@ -586,9 +580,8 @@ class Session extends \Cherrycake\Module {
 	 * @return bool Whether the session cache could be resetted or not
 	 */
 	function resetSessionCache($sessionId) {
-		global $e;
 		$cacheProviderName = $this->getConfig("sessionCacheProviderName");
-		return $e->Cache->$cacheProviderName->delete($this->getSessionCacheKey($sessionId));
+		return Engine::e()->Cache->$cacheProviderName->delete($this->getSessionCacheKey($sessionId));
 	}
 
 	/**

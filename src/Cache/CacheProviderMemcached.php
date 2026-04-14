@@ -2,13 +2,11 @@
 
 namespace Cherrycake\Cache;
 
+use Cherrycake\Engine;
+use Cherrycake\Errors\Errors;
+
 /**
- * CacheProviderMemcached
- *
  * Cache Provider based on Memcached. It provides a relatively fast memory caching (slower than APC, though), but normally allows huge amounts of objects and big objects to be stored. Memcached daemon can also be setup to run in a server cluster.
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProviderMemcached extends CacheProvider implements CacheProviderInterface {
 	/**
@@ -19,7 +17,7 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 	 *
 	 * @var array $config Holds the configuration of the cache provider when needed; things like host, port and password. This is set by the Cache object from the Cherrycake configuration files when this cache provider is setup.
 	 */
-	protected $config = [
+	protected array $config = [
 		"isPersistentConnection" => true,
 		"isCompression" => false
 	];
@@ -39,8 +37,10 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		$this->memcached->setOption(\Memcached::OPT_COMPRESSION, $this->getConfig("isCompression"));
 		if (!$this->memcached->addServers($this->GetConfig("servers")))
 		{
-			global $e;
-			$e->Errors->Trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error connecting to Memcached"]);
+			Engine::e()->Errors->Trigger(
+				type: Errors::ERROR_SYSTEM,
+				desription: "Error connecting to Memcached"
+			);
 			return false;
 		}
 		$this->isConnected = true;
@@ -56,8 +56,10 @@ class CacheProviderMemcached extends CacheProvider implements CacheProviderInter
 		if (!$this->GetConfig("isPersistentConnection"))
 			if (!$this->memcached->quit())
 			{
-				global $e;
-				$e->Errors->Trigger(\Cherrycake\ERROR_SYSTEM, ["errorDescription" => "Error disconnecting from Memcached"]);
+				Engine::e()->Errors->Trigger(
+					type: Errors::ERROR_SYSTEM,
+					description: "Error disconnecting from Memcached"
+				);
 				return false;
 			}
 

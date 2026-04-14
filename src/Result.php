@@ -3,14 +3,9 @@
 namespace Cherrycake;
 
 /**
- * Result
- *
  * Class that represents a result from a method when it needs to provide complex results
- *
- * @package Cherrycake
- * @category Classes
  */
-class Result extends BasicObject {
+class Result {
 	protected $isOk;
 	protected $payload;
 

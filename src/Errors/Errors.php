@@ -2,9 +2,9 @@
 
 namespace Cherrycake\Errors;
 
+use Cherrycake\Engine;
+
 /**
- * Errors
- *
  * Module to manage application and core errors.
  * Errors will be shown on screen if isDevel is set to true or if client's IP is on underMaintenanceExceptionIps, both variables from config/cherrycake.config.php
  *
@@ -13,10 +13,10 @@ namespace Cherrycake\Errors;
  * $errorsConfig = [
  *  "isHtmlOutput" => true, // Whether to dump HTML formatted errors or not when not using a pattern to show errors. Defaults to true
  * 	"patternNames" => [
- *		\Cherrycake\ERROR_SYSTEM => "errors/error.html",
- *		\Cherrycake\ERROR_APP => "errors/error.html",
- *		\Cherrycake\ERROR_NOT_FOUND => "errors/error.html"
- *		\Cherrycake\ERROR_NO_PERMISSION => "errors/error.html"
+ *		self::ERROR_SYSTEM => "errors/error.html",
+ *		self::ERROR_APP => "errors/error.html",
+ *		self::ERROR_NOT_FOUND => "errors/error.html"
+ *		self::ERROR_NO_PERMISSION => "errors/error.html"
  *	], // An array of pattern names to user when an error occurs. If a patterns is not specified, a generic error is triggered.
  * 	"isLogSystemErrors" => true, // Whether or not to log system errors. Defaults to true
  * 	"isLogAppErrors" => true // Whether or not to log app errors.  Defaults to true
@@ -29,21 +29,42 @@ namespace Cherrycake\Errors;
  *  "notificationEmail" => false // The email address to send the error report.
  * ];
  * </code>
- *
- * @package Cherrycake
- * @category Modules
  */
-class Errors  extends \Cherrycake\Module {
+class Errors extends \Cherrycake\Module {
+
+	const ERROR_SYSTEM = 0; // Errors caused by bad programming
+	const ERROR_APP = 1; // Errors caused by bad usering
+	const ERROR_NOT_FOUND = 2; // Errors caused when something requested was not found
+	const ERROR_NO_PERMISSION = 3; // Errors causes when the user didn't have permission to access what they've requested
+
+	const ANSI_NOCOLOR = "\033[0m";
+	const ANSI_BLACK = "\033[0;30m";
+	const ANSI_RED = "\033[0;31m";
+	const ANSI_GREEN = "\033[0;32m";
+	const ANSI_ORANGE = "\033[0;33m";
+	const ANSI_BLUE = "\033[0;34m";
+	const ANSI_PURPLE = "\033[0;35m";
+	const ANSI_CYAN = "\033[0;36m";
+	const ANSI_LIGHT_GRAY = "\033[0;37m";
+	const ANSI_DARK_GRAY = "\033[1;90m";
+	const ANSI_LIGHT_RED = "\033[35m";
+	const ANSI_LIGHT_GREEN = "\033[1;32m";
+	const ANSI_YELLOW = "\033[1;33m";
+	const ANSI_LIGHT_BLUE = "\033[36m";
+	const ANSI_LIGHT_PURPLE = "\033[1;35m";
+	const ANSI_LIGHT_CYAN = "\033[1;36m";
+	const ANSI_WHITE = "\033[1;37m";
+
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"isHtmlOutput" => true,
 		"patternName" => [
-			\Cherrycake\ERROR_SYSTEM => "errors/error.html",
-			\Cherrycake\ERROR_APP => "errors/error.html",
-			\Cherrycake\ERROR_NOT_FOUND => "errors/error.html",
-			\Cherrycake\ERROR_NO_PERMISSION => "errors/error.html"
+			self::ERROR_SYSTEM => "errors/error.html",
+			self::ERROR_APP => "errors/error.html",
+			self::ERROR_NOT_FOUND => "errors/error.html",
+			self::ERROR_NO_PERMISSION => "errors/error.html"
 		],
 		"isLogSystemErrors" => true,
 		"isLogAppErrors" => true,
@@ -59,18 +80,15 @@ class Errors  extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Output"
 	];
 
 	/**
-	 * init
-	 *
-	 * Initializes the module and sets the PHP error level
-	 *
+	 * Initializes the module
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
@@ -78,23 +96,25 @@ class Errors  extends \Cherrycake\Module {
 	}
 
 	/**
-	 * trigger
-	 *
 	 * To be called when an error is detected.
-	 *
-	 * @param integer $errorType The error type, one of the available error types. Private errors are meant to not be shown to the user in production state. Public errors are meant to be shown to the user.
-	 * @param array $setup Additional setup with the following possible keys:
-	 * * errorSubType: Additional, optional string code to easily group this type or errors later
-	 * * errorDescription: Additional, optional description of the error
-	 * * errorVariables: A hash array of additional variables relevant to the error.
-	 * * isForceLog: Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
-	 * * isSilent: If set to true, nothing will be outputted. Used for only logging and/or sending email notification of the error
+	 * @param integer $type The error type, one of the available error types. Private errors are meant to not be shown to the user in production state. Public errors are meant to be shown to the user.
+	 * @param string $subType Code to easily group this type or errors later
+	 * @param string $description Description of the error
+	 * @param array $variables Additional variables relevant to the error.
+	 * @param bool $isForceLog Whether to force this error to be logged or to not be logged in SystemLog even if isLogSystemErrors and/or isLogAppErrors is set to false. Defaults to null, which means that it must obey isLogSystemErrors and isLogAppErrors
+	 * @param bool $isSilent If set to true, nothing will be outputted. Used for only logging and/or sending email notification of the error
 	 */
-	function trigger($errorType, $setup = false) {
-		global $e;
+	function trigger(
+		int $type,
+		string $subType = '',
+		string $description = '',
+		array $variables = [],
+		?bool $isForceLog = null,
+		bool $isSilent = false
+	) {
 
-		if (is_array($setup["errorDescription"]))
-			$setup["errorDescription"] = print_r($setup["errorDescription"], true);
+		if (is_array($description))
+			$description = print_r($description, true);
 
 		// Build error backtrace array
 		$backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT & DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -114,80 +134,80 @@ class Errors  extends \Cherrycake\Module {
 					: null);
 
 		if (
-			$e->isModuleLoaded("SystemLog")
+			Engine::e()->isModuleLoaded("SystemLog")
 			&&
 			(
-				($errorType == \Cherrycake\ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
+				($type == self::ERROR_SYSTEM && $this->getConfig("isLogSystemErrors"))
 				||
-				($errorType == \Cherrycake\ERROR_APP && $this->getConfig("isLogAppErrors"))
+				($type == self::ERROR_APP && $this->getConfig("isLogAppErrors"))
 				||
-				($errorType == \Cherrycake\ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
+				($type == self::ERROR_NOT_FOUND && $this->getConfig("isLogNotFoundErrors"))
 				||
-				($errorType == \Cherrycake\ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
+				($type == self::ERROR_NO_PERMISSION && $this->getConfig("isLogNoPermissionErrors"))
 				||
-				isset($setup["isForceLog"]) && $setup["isForceLog"] == true
+				isset($isForceLog) && $isForceLog == true
 			)
 		)
-			$e->SystemLog->event(new \Cherrycake\SystemLog\SystemLogEventError([
-				"subType" => isset($setup["errorSubType"]) ? $setup["errorSubType"] : false,
-				"description" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
-				"data" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false
+			Engine::e()->SystemLog->event(new \Cherrycake\SystemLog\SystemLogEventError([
+				"subType" => isset($subType) ? $subType : false,
+				"description" => isset($description) ? $description : false,
+				"data" => isset($variables) ? $variables : false
 			]));
 
 		if (
-			($errorType == \Cherrycake\ERROR_SYSTEM && $this->getConfig("isEmailSystemErrors"))
+			($type == self::ERROR_SYSTEM && $this->getConfig("isEmailSystemErrors"))
 			||
-			($errorType == \Cherrycake\ERROR_APP && $this->getConfig("isEmailAppErrors"))
+			($type == self::ERROR_APP && $this->getConfig("isEmailAppErrors"))
 			||
-			($errorType == \Cherrycake\ERROR_NOT_FOUND && $this->getConfig("isEmailNotFoundErrors"))
+			($type == self::ERROR_NOT_FOUND && $this->getConfig("isEmailNotFoundErrors"))
 			||
-			($errorType == \Cherrycake\ERROR_NO_PERMISSION && $this->getConfig("isEmailNoPermissionErrors"))
+			($type == self::ERROR_NO_PERMISSION && $this->getConfig("isEmailNoPermissionErrors"))
 			||
-			isset($setup["isForceEmail"]) && $setup["isForceEmail"] == true
+			isset($isForceEmail) && $isForceEmail == true
 		)
 			$this->emailNotify([
-				"errorDescription" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
-				"errorVariables" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false,
+				"description" => isset($description) ? $description : false,
+				"variables" => isset($variables) ? $variables : false,
 				"backtrace" => implode("<br>Backtrace: ", $backtrace_info)
 			]);
 
-		if (isset($setup["isSilent"]) && $setup["isSilent"] && !$e->isDevel())
+		if (isset($isSilent) && $isSilent && !Engine::e()->isDevel())
 			return;
 
 		$patternNames = $this->getConfig("patternNames");
 
-		if ($e->isCli()) {
+		if (Engine::e()->isCli()) {
 			echo
-				\Cherrycake\ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\ANSI_LIGHT_BLUE."cli\n".
-				\Cherrycake\ANSI_WHITE.$e->getAppName()." ".[
-					\Cherrycake\ERROR_SYSTEM => \Cherrycake\ANSI_RED."System error",
-					\Cherrycake\ERROR_APP => \Cherrycake\ANSI_ORANGE."App error",
-					\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\ANSI_PURPLE."Not found",
-					\Cherrycake\ERROR_NO_PERMISSION => \Cherrycake\ANSI_CYAN."No permission"
-				][$errorType]."\n".
-				\Cherrycake\ANSI_NOCOLOR.
-				(isset($setup["errorSubType"]) ? \Cherrycake\ANSI_DARK_GRAY."Subtype: ".\Cherrycake\ANSI_WHITE.$setup["errorSubType"]."\n" : null).
-				(isset($setup["errorDescription"]) ? \Cherrycake\ANSI_DARK_GRAY."Description: ".\Cherrycake\ANSI_WHITE.$setup["errorDescription"]."\n" : null).
-				(isset($setup["errorVariables"]) ?
-					\Cherrycake\ANSI_DARK_GRAY."Variables:\n".\Cherrycake\ANSI_WHITE.
-					substr(print_r($setup["errorVariables"], true), 8, -3).
+				\Cherrycake\Errors\Errors::ANSI_LIGHT_RED."🧁 Cherrycake ".\Cherrycake\Errors\Errors::ANSI_LIGHT_BLUE."cli\n".
+				\Cherrycake\Errors\Errors::ANSI_WHITE.Engine::e()->getAppName()." ".[
+					self::ERROR_SYSTEM => \Cherrycake\Errors\Errors::ANSI_RED."System error",
+					self::ERROR_APP => \Cherrycake\Errors\Errors::ANSI_ORANGE."App error",
+					self::ERROR_NOT_FOUND => \Cherrycake\Errors\Errors::ANSI_PURPLE."Not found",
+					self::ERROR_NO_PERMISSION => \Cherrycake\Errors\Errors::ANSI_CYAN."No permission"
+				][$type]."\n".
+				\Cherrycake\Errors\Errors::ANSI_NOCOLOR.
+				(isset($subType) ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Subtype: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$subType."\n" : null).
+				(isset($description) ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Description: ".\Cherrycake\Errors\Errors::ANSI_WHITE.$description."\n" : null).
+				(isset($variables) ?
+					\Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Variables:\n".\Cherrycake\Errors\Errors::ANSI_WHITE.
+					substr(print_r($variables, true), 8, -3).
 					"\n"
 				: null).
-				($e->isDevel() ? \Cherrycake\ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
-				\Cherrycake\ANSI_NOCOLOR;
+				(Engine::e()->isDevel() ? \Cherrycake\Errors\Errors::ANSI_DARK_GRAY."Backtrace:\n".\Cherrycake\Errors\Errors::ANSI_YELLOW.strip_tags(implode("\n", $backtrace_info))."\n" : null);
+				\Cherrycake\Errors\Errors::ANSI_NOCOLOR;
 			return;
 		}
 
 		// If this error generated before we couldn't get a action
-		if (!$e->Actions->currentAction) {
+		if (!Engine::e()->Actions->currentAction) {
 			$outputType = "pattern";
 		}
 		else {
-			switch (get_class($e->Actions->currentAction)) {
-				case "Cherrycake\ActionHtml":
+			switch (get_class(Engine::e()->Actions->currentAction)) {
+				case "Cherrycake\Actions\ActionHtml":
 					$outputType = "pattern";
 					break;
-				case "Cherrycake\ActionAjax":
+				case "Cherrycake\Actions\ActionAjax":
 					$outputType = "ajax";
 					break;
 				default:
@@ -199,54 +219,50 @@ class Errors  extends \Cherrycake\Module {
 		switch ($outputType) {
 
 			case "pattern":
-				if (isset($patternNames[$errorType])) {
-					$e->loadCoreModule("Patterns");
-					$e->loadCoreModule("HtmlDocument");
+				if (isset($patternNames[$type])) {
+					Engine::e()->loadCoreModule("Patterns");
+					Engine::e()->loadCoreModule("HtmlDocument");
 
-					$e->Patterns->out(
-						$patternNames[$errorType],
-						[
-							"variables" => [
-								"errorType" => $errorType,
-								"errorDescription" => isset($setup["errorDescription"]) ? $setup["errorDescription"] : false,
-								"errorVariables" => isset($setup["errorVariables"]) ? $setup["errorVariables"] : false,
-								"backtrace" => $backtrace
-							]
+					Engine::e()->Patterns->out(
+						$patternNames[$type],
+						variables: [
+							"type" => $type,
+							"errorDescription" => isset($description) ? $description : false,
+							"variables" => $variables,
+							"backtrace" => $backtrace
 						],
-						[
-							\Cherrycake\ERROR_SYSTEM => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_APP => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-							\Cherrycake\ERROR_NOT_FOUND => \Cherrycake\Output\RESPONSE_NOT_FOUND,
-							\Cherrycake\ERROR_NO_PERMISSION => \Cherrycake\Output\RESPONSE_NO_PERMISSION
-						][$errorType]
+						code: [
+							self::ERROR_SYSTEM => \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_APP => \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+							self::ERROR_NOT_FOUND => \Cherrycake\Output\Output::RESPONSE_NOT_FOUND,
+							self::ERROR_NO_PERMISSION => \Cherrycake\Output\Output::RESPONSE_NO_PERMISSION
+						][$type]
 					);
 				}
 				else {
-					if ($e->isDevel()) {
+					if (Engine::e()->isDevel()) {
 						if ($this->getConfig("isHtmlOutput")) {
 
-							$errorVariables = "";
-
-							if (isset($setup["errorVariables"])) {
-								foreach ($setup["errorVariables"] as $key => $value) {
-									$errorVariables .= "<br><b>".$key."</b>: ".(is_array($value) ? json_encode($value) : $value);
-								}
+							$variablesDescription = [];
+							if (isset($variables)) {
+								foreach ($variables as $key => $value)
+									$variablesDescription .= "<br><b>".$key."</b>: ".(is_array($value) ? json_encode($value) : $value);
 							}
 
 							trigger_error(
-								$setup["errorDescription"].$errorVariables,
+								$description.$variablesDescription,
 								[
-									\Cherrycake\ERROR_SYSTEM => E_USER_ERROR,
-									\Cherrycake\ERROR_APP => E_USER_ERROR,
-									\Cherrycake\ERROR_NOT_FOUND => E_USER_ERROR,
-									\Cherrycake\ERROR_NO_PERMISSION => E_USER_ERROR
-								][$errorType]
+									self::ERROR_SYSTEM => E_USER_ERROR,
+									self::ERROR_APP => E_USER_ERROR,
+									self::ERROR_NOT_FOUND => E_USER_ERROR,
+									self::ERROR_NO_PERMISSION => E_USER_ERROR
+								][$type]
 							);
 						}
 						else {
 
 							echo
-								"Error: ".$setup["errorDescription"]." in ".$backtrace_info[0];
+								"Error: ".$description." in ".$backtrace_info[0];
 						}
 					}
 					else {
@@ -265,62 +281,60 @@ class Errors  extends \Cherrycake\Module {
 
 			case "ajax":
 
-				if ($e->isDevel()) {
-					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
+				if (Engine::e()->isDevel()) {
+					$ajaxResponse = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
 						"description" =>
-							"Cherrycake Error / ".$e->getAppName()." / ".[
-								\Cherrycake\ERROR_SYSTEM => "System error",
-								\Cherrycake\ERROR_APP => "App error",
-								\Cherrycake\ERROR_NOT_FOUND => "Not found",
-								\Cherrycake\ERROR_NO_PERMISSION => "No permission"
-							][$errorType]."<br>".
-							($setup["errorSubType"] ? "Subtype: ".$setup["errorSubType"]."<br>" : null).
-							($setup["errorDescription"] ? "Description: ".$setup["errorDescription"]."<br>" : null).
-							($setup["errorVariables"] ? "Variables:<br>".print_r($setup["errorVariables"], true)."<br>" : null).
-							"Backtrace:<br>".strip_tags(implode("<br>", $backtrace_info)),
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
+								self::ERROR_SYSTEM => "System error",
+								self::ERROR_APP => "App error",
+								self::ERROR_NOT_FOUND => "Not found",
+								self::ERROR_NO_PERMISSION => "No permission"
+							][$type]."<br>".
+							($subType ? "Subtype: ".$subType."<br>" : null).
+							($description ? "Description: ".$description."<br>" : null).
+							($variables ? "Variables:<br>".print_r($variables, true)."<br>" : null).
+							"Backtrace:<br>".strip_tags(implode("<br>", $backtrace_info))
 					]);
 					$ajaxResponse->output();
 				}
 				else {
-					$ajaxResponse = new \Cherrycake\AjaxResponseJson([
-						"code" => \Cherrycake\AJAXRESPONSEJSON_ERROR,
-						"description" => "Sorry, we've got an unexpected error",
-						"messageType" => \Cherrycake\AJAXRESPONSEJSON_UI_MESSAGE_TYPE_POPUP_MODAL
+					$ajaxResponse = new \Cherrycake\Actions\AjaxResponseJson([
+						"code" => \Cherrycake\Actions\AjaxResponseJson::ERROR,
+						"description" => "Sorry, we've got an unexpected error"
 					]);
 					$ajaxResponse->output();
 				}
 				break;
 
 			case "plain":
-				if ($e->isDevel()) {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" =>
-							"Cherrycake Error / ".$e->getAppName()." / ".[
-								\Cherrycake\ERROR_SYSTEM => "System error",
-								\Cherrycake\ERROR_APP => "App error",
-								\Cherrycake\ERROR_NOT_FOUND => "Not found",
-								\Cherrycake\ERROR_NO_PERMISSION => "No permission"
-							][$errorType]."\n".
-							($setup["errorSubType"] ?? false ? "Subtype: ".$setup["errorSubType"]."\n" : null).
-							($setup["errorDescription"] ?? false ? "Description: ".$setup["errorDescription"]."\n" : null).
-							($setup["errorVariables"] ?? false ? "Variables:\n".print_r($setup["errorVariables"], true)."\n" : null).
+				if (Engine::e()->isDevel()) {
+					Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+						payload:
+							"Cherrycake Error / ".Engine::e()->getAppName()." / ".[
+								self::ERROR_SYSTEM => "System error",
+								self::ERROR_APP => "App error",
+								self::ERROR_NOT_FOUND => "Not found",
+								self::ERROR_NO_PERMISSION => "No permission"
+							][$type]."\n".
+							($subType ?? false ? "Subtype: ".$subType."\n" : null).
+							($description ?? false ? "Description: ".$description."\n" : null).
+							($variables ?? false ? "Variables:\n".print_r($variables, true)."\n" : null).
 							"Backtrace:\n".strip_tags(implode("\n", $backtrace_info))
-					]));
+					));
 				}
 				else {
-					$e->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml([
-						"code" => \Cherrycake\Output\RESPONSE_INTERNAL_SERVER_ERROR,
-						"payload" => "Error"
-					]));
+					Engine::e()->Output->setResponse(new \Cherrycake\Actions\ResponseTextHtml(
+						code: \Cherrycake\Output\Output::RESPONSE_INTERNAL_SERVER_ERROR,
+						payload: "Error"
+					));
 				}
 				break;
 		}
 
 
-		$e->end();
+		Engine::e()->end();
 		die;
 	}
 
@@ -332,7 +346,6 @@ class Errors  extends \Cherrycake\Module {
 	 * @param mixed $data A hash array of data to include in the notification, or a simple string
 	 */
 	function emailNotify($data) {
-		global $e;
 
 		$message = "";
 
@@ -356,10 +369,10 @@ class Errors  extends \Cherrycake\Module {
 		else
 			$message = $data;
 
-		$e->loadCoreModule("Email");
-		$e->Email->send(
+		Engine::e()->loadCoreModule("Email");
+		Engine::e()->Email->send(
 			[[$this->getConfig("notificationEmail")]],
-			"[".$e->getAppNamespace()."] Error",
+			"[".Engine::e()->getAppNamespace()."] Error",
 			[
 				"contentHTML" => $message
 			]

@@ -2,17 +2,16 @@
 
 namespace Cherrycake\Stats;
 
+use Cherrycake\Engine;
+
 /**
  * Stores and manages statistical information
- *
- * @package Cherrycake
- * @category Modules
  */
 class Stats extends \Cherrycake\Module {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	var $config = [
+	protected array $config = [
 		"databaseProviderName" => "main", // The name of the database provider to use.
 		"cacheProviderName" => "engine", // The name of the cache provider used to temporarily store stats events. Must support queueing.
 		"cacheKeyUniqueId" => "QueuedStats", // The unique cache key to use when storing stat events into cache. Defaults to "QueuedStats"
@@ -22,7 +21,7 @@ class Stats extends \Cherrycake\Module {
 	/**
 	 * @var array $dependentCoreModules Core module names that are required by this module
 	 */
-	var $dependentCoreModules = [
+	protected array $dependentCoreModules = [
 		"Errors",
 		"Database",
 		"Cache"
@@ -48,18 +47,16 @@ class Stats extends \Cherrycake\Module {
 	 * @return boolean True if everything went ok, false otherwise
 	 */
 	function queueEventInCache($statsEvent) {
-		global $e;
-		return $e->Cache->{$this->getConfig("cacheProviderName")}->queueRPush($this->getCacheKey(), $statsEvent);
+		return Engine::e()->Cache->{$this->getConfig("cacheProviderName")}->queueRPush($this->getCacheKey(), $statsEvent);
 	}
 
 	/**
 	 * @return string The cache key to use when retrieveing and storing cache items
 	 */
 	function getCacheKey() {
-		global $e;
-		return $e->Cache->buildCacheKey([
-			"uniqueId" => $this->getConfig("cacheKeyUniqueId")
-		]);
+		return Engine::e()->Cache->buildCacheKey(
+			uniqueId: $this->getConfig("cacheKeyUniqueId")
+		);
 	}
 
 	/**
@@ -67,10 +64,9 @@ class Stats extends \Cherrycake\Module {
 	 * @return array An array where the first key is a boolean indicating wether the opeartion went ok or not, and the second key is an optional hash array containing detailed information about the operation done.
 	 */
 	function commit() {
-		global $e;
 		$count = 0;
 		while (true) {
-			if (!$statsEvent = $e->Cache->{$this->getConfig("cacheProviderName")}->queueLPop($this->getCacheKey()))
+			if (!$statsEvent = Engine::e()->Cache->{$this->getConfig("cacheProviderName")}->queueLPop($this->getCacheKey()))
 				break;
 			$statsEvent->store();
 			$count ++;

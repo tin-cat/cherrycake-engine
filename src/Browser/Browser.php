@@ -3,14 +3,9 @@
 namespace Cherrycake\Browser;
 
 /**
- * Browser
- *
  * Module that identifies the client's browser identity and capabilities.
  * Strongly based on Browser.php by Chris Schuld (http://chrisschuld.com/), 99% of the code by him.
- *
  * @author Chris Schuld
- * @package Cherrycake
- * @category Modules
  */
 class Browser extends \Cherrycake\Module {
 	private $_agent = '';
@@ -122,7 +117,7 @@ class Browser extends \Cherrycake\Module {
 	 *
 	 * @return boolean Whether the module has been initted ok
 	 */
-	function init() {
+	function init(): bool {
 		if (!parent::init())
 			return false;
 
@@ -176,8 +171,6 @@ class Browser extends \Cherrycake\Module {
 	 * @return The data from $data whose key corresponds to the currently detected browser's engine. Returns false if the detected current browser-engine key is not set in the data array, or if a ENGINE_OTHERS key has not specified.
 	 */
 	function getForEngine($data) {
-		global $e;
-
 		if ($r = $data[$this->getEngine()])
 			return $r;
 		else

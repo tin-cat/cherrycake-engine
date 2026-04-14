@@ -2,11 +2,10 @@
 
 namespace Cherrycake\Log;
 
+use Cherrycake\Engine;
+
 /**
  * Class that represents a log item
- *
- * @package Cherrycake
- * @category Classes
  */
 class LogItem extends \Cherrycake\Item {
 	protected $tableName = "log";
@@ -14,32 +13,32 @@ class LogItem extends \Cherrycake\Item {
 
 	protected $fields = [
 		"id" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"title" => "Id",
 			"prefix" => "#"
 		],
 		"timestamp" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_TIMESTAMP,
+			"type" => \Cherrycake\Database\Database::TYPE_TIMESTAMP,
 			"title" => "Timestamp",
 		],
 		"type" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Type"
 		],
 		"subType" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "Sub type"
 		],
 		"ip" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_IP,
+			"type" => \Cherrycake\Database\Database::TYPE_IP,
 			"title" => "IP"
 		],
 		"user_id" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+			"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 			"title" => "User id"
 		],
 		"username" => [
-			"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_STRING,
+			"type" => \Cherrycake\Database\Database::TYPE_STRING,
 			"title" => "User name"
 		]
 	];
@@ -60,7 +59,6 @@ class LogItem extends \Cherrycake\Item {
 	}
 
 	function humanizeResultCode($resultCode) {
-		global $e;
-		return $e->Janitor->getJanitorTaskReturnCodeDescription($resultCode);
+		return Engine::e()->Janitor->getJanitorTaskReturnCodeDescription($resultCode);
 	}
 }

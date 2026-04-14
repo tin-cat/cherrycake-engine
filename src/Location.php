@@ -7,12 +7,7 @@ const LOCATION_CACHE_PROVIDER_NAME = "engine"; // The name of the CacheProvider 
 const LOCATION_CACHE_TTL = 2592000; // TTL For the location data (2592000 = 1 Month)
 
 /**
- * Location
- *
  * Class that represents a location
- *
- * @package Cherrycake
- * @category Classes
  */
 class Location {
 	/**
@@ -21,17 +16,11 @@ class Location {
 	var $data;
 
 	/**
-	 * __construct
-	 *
 	 * Constructor, allows to create an instance object which automatically fills itself in one of the available forms
-	 *
 	 * Setup keys:
-	 *
 	 * * loadMethod: If specified, it loads the Item using the given method, available methods:
 	 * 	- fromGivenLocationIds: Loads the Location for the given countryId, RegionId and CityId keys
-	 *
 	 * @param array $setup Specifications on how to create the Location object
-	 *
 	 * @return boolean Whether the object could be initialized ok or not
 	 */
 	function __construct($setup = false) {
@@ -103,10 +92,9 @@ class Location {
 	 * @return array The data about the specified country
 	 */
 	function getCountryFromCode($countryCode) {
-		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_countries where code = '".$e->Database->$databaseProviderName->safeString($countryCode)."'",
+		if (!$result = Engine::e()->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_countries where code = '".Engine::e()->Database->$databaseProviderName->safeString($countryCode)."'",
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationCountryCode_".$countryCode
@@ -124,10 +112,9 @@ class Location {
 	 * @return array The data about the specified country
 	 */
 	function loadCountry($countryId) {
-		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_countries where id = ".$e->Database->$databaseProviderName->safeString($countryId),
+		if (!$result = Engine::e()->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_countries where id = ".Engine::e()->Database->$databaseProviderName->safeString($countryId),
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationCountry_".$countryId
@@ -145,10 +132,9 @@ class Location {
 	 * @return array The data about the specified region
 	 */
 	function loadRegion($regionId) {
-		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_regions where id = ".$e->Database->$databaseProviderName->safeString($regionId),
+		if (!$result = Engine::e()->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_regions where id = ".Engine::e()->Database->$databaseProviderName->safeString($regionId),
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationRegion_".$regionId
@@ -166,10 +152,9 @@ class Location {
 	 * @return array The data about the specified city
 	 */
 	function loadCity($cityId) {
-		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->queryCache(
-			"select * from cherrycake_location_cities where id = ".$e->Database->$databaseProviderName->safeString($cityId),
+		if (!$result = Engine::e()->Database->$databaseProviderName->queryCache(
+			"select * from cherrycake_location_cities where id = ".Engine::e()->Database->$databaseProviderName->safeString($cityId),
 			LOCATION_CACHE_TTL,
 			[
 				"cacheUniqueId" => "locationCity_".$cityId
@@ -248,9 +233,8 @@ class Location {
 	 * @return array A hash array of all the countries ordered by name, where each key is the country id
 	 */
 	static function getCountries() {
-		global $e;
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->queryCache(
+		if (!$result = Engine::e()->Database->$databaseProviderName->queryCache(
 			"select * from cherrycake_location_countries order by name asc",
 			LOCATION_CACHE_TTL,
 			[
@@ -267,13 +251,12 @@ class Location {
 	 * @return array A hash array of all the regions ordered by name, where each key is the region id
 	 */
 	static function getRegions($countryId = false) {
-		global $e;
 
 		if ($countryId) {
 			$sql = "select * from cherrycake_location_regions where countries_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $countryId
 				]
 			];
@@ -284,7 +267,7 @@ class Location {
 		}
 
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->prepareAndExecuteCache(
+		if (!$result = Engine::e()->Database->$databaseProviderName->prepareAndExecuteCache(
 			$sql,
 			$fields,
 			LOCATION_CACHE_TTL,
@@ -303,17 +286,16 @@ class Location {
 	 * @return array A hash array of all the cities ordered by name, where each key is the city id
 	 */
 	static function getCities($countryId = false, $regionId = false) {
-		global $e;
 
 		if ($regionId && $countryId) {
 			$sql = "select * from cherrycake_location_cities where countries_id = ? and regions_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $countryId
 				],
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $regionId
 				]
 			];
@@ -323,7 +305,7 @@ class Location {
 			$sql = "select * from cherrycake_location_cities where regions_id = ? order by name asc";
 			$fields = [
 				[
-					"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_INTEGER,
+					"type" => \Cherrycake\Database\Database::TYPE_INTEGER,
 					"value" => $regionId
 				]
 			];
@@ -334,7 +316,7 @@ class Location {
 		}
 
 		$databaseProviderName = LOCATION_DATABASE_PROVIDER_NAME;
-		if (!$result = $e->Database->$databaseProviderName->prepareAndExecuteCache(
+		if (!$result = Engine::e()->Database->$databaseProviderName->prepareAndExecuteCache(
 			$sql,
 			$fields,
 			LOCATION_CACHE_TTL,

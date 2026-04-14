@@ -2,56 +2,35 @@
 
 namespace Cherrycake\Actions;
 
+use Cherrycake\Engine;
+
 /**
- * RequestParameter
- *
  * A class that represents a parameter passed to a Request via Get or Post
- *
- * @package Cherrycake
- * @category Classes
  */
 class RequestParameter {
-	private $type;
-	public $name = false;
-	private $value = null;
-	private $securityRules = false;
-	private $filters = false;
-
-	/**
-	 * RequestParameter
-	 *
-	 * Constructor
-	 */
-	function __construct($setup) {
-		$this->type = $setup["type"];
-		$this->name = $setup["name"];
-
-		if (isset($setup["value"]))
-			$this->setValue($setup["value"]);
-
-		if (isset($setup["securityRules"]))
-			$this->securityRules = $setup["securityRules"];
-
-		if (isset($setup["filters"]))
-			$this->filters = $setup["filters"];
-	}
+	function __construct(
+		public int $type,
+		public string $name,
+		public mixed $value = null,
+		private array $securityRules = [],
+		private array $filters = []
+	) {}
 
 	/**
 	 * retrieveValue
 	 */
 	function retrieveValue() {
-		global $e;
 		switch ($this->type) {
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_GET:
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_CLI:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_GET:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_CLI:
 				if (isset($_GET[$this->name]))
 					$this->setValue($_GET[$this->name]);
 				break;
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_POST:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_POST:
 				if (isset($_POST[$this->name]))
 					$this->setValue($_POST[$this->name]);
 				break;
-			case \Cherrycake\REQUEST_PARAMETER_TYPE_FILE:
+			case \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE:
 				if (isset($_FILES[$this->name]))
 					$this->setValue($_FILES[$this->name]);
 				break;
@@ -67,18 +46,17 @@ class RequestParameter {
 	}
 
 	/**
-	 * @return mixed Returns the value received for this parameter after applying the proper filters
+	 * @return mixed Returns the value received for this parameter after applying the proper filters, null if the parameter was not received
 	 */
 	function getValue() {
-		global $e;
 		if (!$this->isReceived())
 			return null;
 		return
-			$this->type == \Cherrycake\REQUEST_PARAMETER_TYPE_FILE
+			$this->type == \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE
 			?
 			$this->value
 			:
-			$e->Security->filterValue($this->value, $this->filters);
+			Engine::e()->Security->filterValue($this->value, $this->filters);
 	}
 
 	/**
@@ -97,13 +75,12 @@ class RequestParameter {
 	 * @return Result A Result object, like Security::checkValue
 	 */
 	function checkValueSecurity() {
-		global $e;
 		return
-			$this->type == \Cherrycake\REQUEST_PARAMETER_TYPE_FILE
+			$this->type == \Cherrycake\Actions\Request::PARAMETER_TYPE_FILE
 			?
-			$e->Security->checkFile($this->value, $this->securityRules)
+			Engine::e()->Security->checkFile($this->value, $this->securityRules)
 			:
-			$e->Security->checkValue($this->value, $this->securityRules);
+			Engine::e()->Security->checkValue($this->value, $this->securityRules);
 	}
 
 	/**

@@ -10,9 +10,6 @@ const GRADIENT_STYLE_DIAGONAL_DOWN = 4;
 
 /**
  * Class that represents a color gradient.
- *
- * @package Cherrycake
- * @category Classes
  */
 class Gradient
 {
@@ -28,8 +25,6 @@ class Gradient
 	private $colorSteps;
 
 	/**
-	 * Constructor factory
-	 *
 	 * @param string $with How to populate the created gradient object. Leave to false for unpopulated request.
 	 */
 	function __construct($with = false, $parameter = false, $style = false) {
@@ -129,7 +124,6 @@ class Gradient
 	 * @return string Css gradient definition
 	 */
 	function getCss($style = false) {
-		global $e;
 
 		if (!$style)
 			$style = $this->style;
@@ -146,7 +140,7 @@ class Gradient
 					",";
 
 		foreach ($this->colorSteps as $position => $color)
-			$gradientValues .= $color->getCssRgba()." ".$e->Css->unit($position, "%").", ";
+			$gradientValues .= $color->getCssRgba()." ".Engine::e()->Css->unit($position, "%").", ";
 		reset($this->colorSteps);
 		$gradientValues = substr($r, 0, -2);
 
@@ -166,7 +160,6 @@ class Gradient
 	 * @return string Css background gradient definition
 	 */
 	function getCssBackground($style = false) {
-		global $e;
 
 		if (!$style)
 			$style = $this->style;

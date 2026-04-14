@@ -3,12 +3,7 @@
 namespace Cherrycake;
 
 /**
- * ResultOk
- *
  * Class that represents a successful result from a method when it needs to provide complex results
- *
- * @package Cherrycake
- * @category Classes
  */
 class ResultOk extends Result {
 	protected $isOk = true;

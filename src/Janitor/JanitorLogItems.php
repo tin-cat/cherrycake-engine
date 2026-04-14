@@ -4,9 +4,6 @@ namespace Cherrycake\Janitor;
 
 /**
  * Class to work with janitorlog items
- *
- * @package Cherrycake
- * @category Classes
  */
 class JanitorLogItems extends \Cherrycake\Items {
 	protected $tableName = "cherrycake_janitor_log";
@@ -40,7 +37,7 @@ class JanitorLogItems extends \Cherrycake\Items {
 				"sqlPart" => "executionDate > ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["fromExecutionDate"]
 					]
 				]
@@ -51,7 +48,7 @@ class JanitorLogItems extends \Cherrycake\Items {
 				"sqlPart" => "executionDate <= ?",
 				"values" => [
 					[
-						"type" => \Cherrycake\Database\DATABASE_FIELD_TYPE_DATETIME,
+						"type" => \Cherrycake\Database\Database::TYPE_DATETIME,
 						"value" => $p["toExecutionDate"]
 					]
 				]

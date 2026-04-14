@@ -3,19 +3,14 @@
 namespace Cherrycake\Cache;
 
 /**
- * CacheProvider
- *
  * Base class for cache provider implementations. Intended to be overloaded by a higher level cache system implementation class.
  * Cache providers are only connected when required (when the first request is received)
- *
- * @package Cherrycake
- * @category Classes
  */
 class CacheProvider {
 	/**
 	 * @var array $config Default configuration options
 	 */
-	protected $config = [];
+	protected array $config = [];
 
 	/**
 	 * @var bool $isConnected Whether this cache is connected to the provider, when needed
@@ -29,7 +24,7 @@ class CacheProvider {
 	 *
 	 * @param array $config The cache provider parameters
 	 */
-	function config($config) {
+	function config(array $config) {
 		$this->config = $config;
 	}
 
