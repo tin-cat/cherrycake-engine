@@ -14,6 +14,6 @@ Cherrycake is a low-level programming framework for developing modular, efficien
 * **Cherrycake Skeleton** Clone or download the [Cherrycake Skeleton](https://github.com/tin-cat/cherrycake-skeleton) repository to use it as the starting point for your project.
 * **Cherrycake Docker** The [Cherrycake Docker](https://github.com/tin-cat/cherrycake-docker) sets up a complete server with Cherrycake running and a skeleton installed ready for you to start your project straightaway.
 
-### Beta statement
+### Archived project notice
 
-Although Cherrycake is still under heavy development and it's considered to still be in a beta stage, it's functional and it's already running some public web applications without issues. It's still not recommended to use Cherrycake in critical, or data sensitive applications. Instead, you're encouraged to try it to see for yourself whether it meets your security and stability requisites, and to contribute your suggestions or improvements via the official git repositories.
+Cherrycake is an archived project and will not receive any further updates. Because of this, Cherrycake is not recommended for production use and is now presented only for educational purposes, aimed at curious developers or students in the mood for creating a new framework or learning about techniques to do so. If you're one of those, Cherrycake can bring you inspiration, and maybe even provide a foundational layer you can build upon.
