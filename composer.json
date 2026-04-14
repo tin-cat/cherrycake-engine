@@ -3,7 +3,7 @@
     "type": "library",
     "description": "A low level programming framework for developing modular, efficient and secure PHP web applications.",
     "keywords": ["engine","framework"],
-    "homepage": "https://cherrycake.io",
+    "homepage": "https://cherrycake.tin.cat",
     "license": "MIT",
     "authors": [
         {

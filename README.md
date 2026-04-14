@@ -1,6 +1,6 @@
 ![Cherrycake logo](https://raw.githubusercontent.com/tin-cat/cherrycake-gitbook/master/.gitbook/assets/cherrycake-logo.svg)
 # Cherrycake engine
-https://cherrycake.io
+https://cherrycake.tin.cat
 
 ### What is Cherrycake?
 
@@ -8,8 +8,8 @@ Cherrycake is a low-level programming framework for developing modular, efficien
 
 ### Official Cherrycake links
 
-* **Cherrycake Documentation** Documentation is available here: https://cherrycake.io
-* **Examples** All the examples from the documentation at https://cherrycake.io are compiled in this Cherrycake app, you can use it as a reference: [Cherrycake documentation examples](https://github.com/tin-cat/cherrycake-documentation-examples)
+* **Cherrycake Documentation** Documentation is available here: https://cherrycake.tin.cat
+* **Examples** All the examples from the documentation at https://cherrycake.tin.cat are compiled in this Cherrycake app, you can use it as a reference: [Cherrycake documentation examples](https://github.com/tin-cat/cherrycake-documentation-examples)
 * **Cherrycake engine** The Cherrycake engine repository is available at [Cherrycake Engine](https://github.com/tin-cat/cherrycake)
 * **Cherrycake Skeleton** Clone or download the [Cherrycake Skeleton](https://github.com/tin-cat/cherrycake-skeleton) repository to use it as the starting point for your project.
 * **Cherrycake Docker** The [Cherrycake Docker](https://github.com/tin-cat/cherrycake-docker) sets up a complete server with Cherrycake running and a skeleton installed ready for you to start your project straightaway.
